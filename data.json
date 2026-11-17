@@ -1,0 +1,288 @@
+{
+    "name": {
+        "en-US": "Kancamu Project"
+    },
+    "languages": [
+        { "code": "en-US", "name": "English", "dir": "ltr" },
+        { "code": "zh-CN", "name": "简体中文", "dir": "ltr" },
+        { "code": "ar", "name": "العربية", "dir": "rtl" }
+    ],
+    "ui": {
+        "copyright": {
+            "en-US": "© Kancamu Project"
+        },
+        "sortAsc": {
+            "en-US": "Name (A-Z)",
+            "zh-CN": "名称 (A-Z)",
+            "ar": "الاسم (أ-ي)"
+        },
+        "sortDesc": {
+            "en-US": "Name (Z-A)",
+            "zh-CN": "名称 (Z-A)",
+            "ar": "الاسم (ي-أ)"
+        },
+        "search": {
+            "en-US": "Search projects",
+            "zh-CN": "搜索项目",
+            "ar": "ابحث عن مشروع"
+        },
+        "grid": {
+            "en-US": "Grid",
+            "zh-CN": "网格",
+            "ar": "شبكة"
+        },
+        "list": {
+            "en-US": "List",
+            "zh-CN": "列表",
+            "ar": "قائمة"
+        },
+        "theme": {
+            "en-US": "Toggle theme",
+            "zh-CN": "切换主题",
+            "ar": "تبديل المظهر"
+        },
+        "language": {
+            "en-US": "Language",
+            "zh-CN": "语言",
+            "ar": "اللغة"
+        },
+        "all": {
+            "en-US": "All",
+            "zh-CN": "全部",
+            "ar": "الكل"
+        },
+        "project": {
+            "en-US": "Project",
+            "zh-CN": "项目",
+            "ar": "المشروع"
+        },
+        "category": {
+            "en-US": "Category",
+            "zh-CN": "分类",
+            "ar": "الفئة"
+        },
+        "website": {
+            "en-US": "Website",
+            "zh-CN": "网站",
+            "ar": "الموقع"
+        },
+        "publisher": {
+            "en-US": "Publisher",
+            "zh-CN": "发布者",
+            "ar": "الناشر"
+        },
+        "open": {
+            "en-US": "Open",
+            "zh-CN": "打开",
+            "ar": "فتح"
+        },
+        "more": {
+            "en-US": "More",
+            "zh-CN": "更多",
+            "ar": "المزيد"
+        },
+        "copyLink": {
+            "en-US": "Copy link",
+            "zh-CN": "复制链接",
+            "ar": "نسخ الرابط"
+        },
+        "copied": {
+            "en-US": "Copied",
+            "zh-CN": "已复制",
+            "ar": "تم النسخ"
+        },
+        "copyFailed": {
+            "en-US": "Failed to copy",
+            "zh-CN": "复制失败",
+            "ar": "فشل النسخ"
+        },
+        "openHere": {
+            "en-US": "Open in this tab",
+            "zh-CN": "在当前标签页打开",
+            "ar": "فتح في هذا التبويب"
+        },
+        "empty": {
+            "en-US": "No projects found.",
+            "zh-CN": "未找到项目。",
+            "ar": "لم يتم العثور على مشاريع."
+        },
+        "errorLoad": {
+            "en-US": "Failed to load data.json",
+            "zh-CN": "无法加载 data.json",
+            "ar": "تعذر تحميل data.json"
+        }
+    },
+    "categories": {
+        "system": {
+            "en-US": "System",
+            "zh-CN": "系统",
+            "ar": "النظام"
+        },
+        "office": {
+            "en-US": "Office",
+            "zh-CN": "办公",
+            "ar": "المكتب"
+        },
+        "design": {
+            "en-US": "Design",
+            "zh-CN": "设计",
+            "ar": "التصميم"
+        },
+        "video": {
+            "en-US": "Video",
+            "zh-CN": "视频",
+            "ar": "الفيديو"
+        },
+        "creative": {
+            "en-US": "Creative",
+            "zh-CN": "创意",
+            "ar": "إبداعي"
+        }
+    },
+    "projects": [
+        {
+            "name": {
+                "en-US": "muOS"
+            },
+            "description": {
+                "en-US": "Web-Based Operating System.",
+                "zh-CN": "基于网页的操作系统。",
+                "ar": "نظام تشغيل قائم على الويب."
+            },
+            "highlight": {
+                "en-US": "mu"
+            },
+            "publisher": "Kancamu Project",
+            "url": "https://muos.kancamu.site",
+            "icon": "https://muos.kancamu.site/favicon.png",
+            "color": "#1782db",
+            "categories": ["system"]
+        },
+        {
+            "name": {
+                "en-US": "DeckCraft"
+            },
+            "description": {
+                "en-US": "Presentation and slide design.",
+                "zh-CN": "演示文稿与幻灯片设计。",
+                "ar": "تصميم العروض التقديمية والشرائح."
+            },
+            "highlight": {
+                "en-US": "Craft"
+            },
+            "publisher": "ArtCraft",
+            "url": "https://appmu.kancamu.site/apps/deckcraft/",
+            "icon": "https://appmu.kancamu.site/apps/deckcraft/deckcraft-b8fcbb36ecec0385.ico",
+            "color": "#f59e0b",
+            "categories": ["office"]
+        },
+        {
+            "name": {
+                "en-US": "EffectCraft"
+            },
+            "description": {
+                "en-US": "Motion graphics and visual effects.",
+                "zh-CN": "动态图形与视觉特效。",
+                "ar": "الرسوم المتحركة والمؤثرات البصرية."
+            },
+            "highlight": {
+                "en-US": "Craft"
+            },
+            "publisher": "ArtCraft",
+            "url": "https://appmu.kancamu.site/apps/effectcraft/",
+            "icon": "https://appmu.kancamu.site/apps/effectcraft/icon-256.png",
+            "color": "#ec4899",
+            "categories": ["video", "creative"]
+        },
+        {
+            "name": {
+                "en-US": "FilmCraft"
+            },
+            "description": {
+                "en-US": "Video editing, color and sound.",
+                "zh-CN": "视频剪辑、调色与音频。",
+                "ar": "مونتاج الفيديو والألوان والصوت."
+            },
+            "highlight": {
+                "en-US": "Craft"
+            },
+            "publisher": "ArtCraft",
+            "url": "https://appmu.kancamu.site/apps/filmcraft/",
+            "icon": "https://appmu.kancamu.site/apps/filmcraft/favicon.png",
+            "color": "#a78bfa",
+            "categories": ["video", "creative"]
+        },
+        {
+            "name": {
+                "en-US": "GridCraft"
+            },
+            "description": {
+                "en-US": "Spreadsheets for data and calculation.",
+                "zh-CN": "用于数据与计算的电子表格。",
+                "ar": "جداول بيانات للبيانات والحسابات."
+            },
+            "highlight": {
+                "en-US": "Craft"
+            },
+            "publisher": "ArtCraft",
+            "url": "https://appmu.kancamu.site/apps/gridcraft/",
+            "icon": "https://appmu.kancamu.site/apps/gridcraft/gridcraft-45f84b7721cb79a9.ico",
+            "color": "#22c55e",
+            "categories": ["office"]
+        },
+        {
+            "name": {
+                "en-US": "PhotoCraft"
+            },
+            "description": {
+                "en-US": "Image editing and photo retouching.",
+                "zh-CN": "图像编辑与照片修饰。",
+                "ar": "تحرير الصور وتنقيحها."
+            },
+            "highlight": {
+                "en-US": "Craft"
+            },
+            "publisher": "ArtCraft",
+            "url": "https://appmu.kancamu.site/apps/photocraft/",
+            "icon": "https://appmu.kancamu.site/apps/photocraft/icon-256.png",
+            "color": "#38bdf8",
+            "categories": ["design", "creative"]
+        },
+        {
+            "name": {
+                "en-US": "VectorCraft"
+            },
+            "description": {
+                "en-US": "Vector illustration and graphic design.",
+                "zh-CN": "矢量插画与平面设计。",
+                "ar": "الرسم المتجه والتصميم الجرافيكي."
+            },
+            "highlight": {
+                "en-US": "Craft"
+            },
+            "publisher": "ArtCraft",
+            "url": "https://appmu.kancamu.site/apps/vectorcraft/",
+            "icon": "https://appmu.kancamu.site/apps/vectorcraft/icons/256/ai.storyteller.vectorcraft.png",
+            "color": "#f97316",
+            "categories": ["design", "creative"]
+        },
+        {
+            "name": {
+                "en-US": "WordCraft"
+            },
+            "description": {
+                "en-US": "Word processing and document writing.",
+                "zh-CN": "文字处理与文档写作。",
+                "ar": "معالجة النصوص وكتابة المستندات."
+            },
+            "highlight": {
+                "en-US": "Craft"
+            },
+            "publisher": "ArtCraft",
+            "url": "https://appmu.kancamu.site/apps/wordcraft/",
+            "icon": "https://appmu.kancamu.site/apps/wordcraft/wordcraft-fa59e09a3f921e03.ico",
+            "color": "#3b82f6",
+            "categories": ["office"]
+        }
+    ]
+}

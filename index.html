@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+    <script src="theme.js"></script>
+</head>
+<body>
+    <div id="header">
+        <div class="brand">
+            <span id="site-name"></span>
+        </div>
+        <div class="tools">
+            <select id="language" data-i18n-title="language"></select>
+            <button id="theme" data-i18n-title="theme">
+                <div class="glyph theme"></div>
+            </button>
+        </div>
+    </div>
+    <div id="main">
+        <div id="toolbar">
+            <input id="search" type="search" data-i18n-placeholder="search">
+            <div class="spacer"></div>
+            <select id="sort">
+                <option value="asc" data-i18n="sortAsc"></option>
+                <option value="desc" data-i18n="sortDesc"></option>
+            </select>
+            <div id="view-toggle">
+                <button data-view="grid" class="active" data-i18n-title="grid">
+                    <div class="glyph grid"></div>
+                </button>
+                <button data-view="list" data-i18n-title="list">
+                    <div class="glyph list"></div>
+                </button>
+            </div>
+        </div>
+        <div id="category-filter"></div>
+        <div id="project-list"></div>
+    </div>
+    <div id="footer">
+        <span data-i18n="copyright"></span>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
