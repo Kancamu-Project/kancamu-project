@@ -1,0 +1,93 @@
+{
+  "explorer": {
+    "nav": {
+      "back": "رجوع",
+      "forward": "تقدّم",
+      "up": "المستوى الأعلى"
+    },
+    "import": {
+      "importing": "جارٍ نسخ الملفات..."
+    },
+    "props": {
+      "used": "المساحة المستخدمة",
+      "free": "المساحة الفارغة",
+      "capacity": "السعة"
+    },
+    "home": "الصفحة الرئيسية",
+    "thisPC": "هذا الكمبيوتر",
+    "localDisk": "القرص المحلي (C:)",
+    "driveType": "قرص محلي",
+    "driveFree": "{free} فارغة من أصل {total}",
+    "quickAccess": "الوصول السريع",
+    "recent": "الأحدث",
+    "foldersTitle": "المجلدات",
+    "drives": "الأجهزة ومحركات الأقراص",
+    "searchIn": "بحث في {name}",
+    "searchResults": "نتائج البحث في {name}",
+    "noSearchResults": "لا توجد عناصر تطابق بحثك.",
+    "emptyFolder": "هذا المجلد فارغ.",
+    "notFoundTitle": "مستكشف الملفات",
+    "notFound": "تعذّر العثور على \"{path}\". تحقق من الإملاء وحاول مرة أخرى.",
+    "openNewWindow": "فتح في نافذة جديدة",
+    "sort": "ترتيب",
+    "more": "عرض المزيد",
+    "selectAll": "تحديد الكل",
+    "selectNone": "إلغاء تحديد الكل",
+    "invertSelection": "عكس التحديد",
+    "view": {
+      "icons": "أيقونات كبيرة",
+      "xl": "أيقونات كبيرة جدًا",
+      "large": "أيقونات كبيرة",
+      "medium": "أيقونات متوسطة",
+      "small": "أيقونات صغيرة",
+      "list": "قائمة",
+      "details": "تفاصيل",
+      "tiles": "مربعات",
+      "show": "إظهار",
+      "navPane": "جزء التنقل",
+      "detailsPane": "جزء التفاصيل",
+      "previewPane": "جزء المعاينة"
+    },
+    "navPane": "جزء التنقل",
+    "tabs": {
+      "new": "علامة تبويب جديدة",
+      "close": "إغلاق علامة التبويب",
+      "openInNewTab": "فتح في علامة تبويب جديدة"
+    },
+    "details": {
+      "contains": "العناصر"
+    },
+    "columns": {
+      "folder": "المجلد",
+      "originalLocation": "الموقع الأصلي",
+      "dateDeleted": "تاريخ الحذف"
+    },
+    "status": {
+      "items": {
+        "one": "{count} عنصر",
+        "other": "{count} عناصر"
+      },
+      "selected": {
+        "one": "تم تحديد {count} عنصر",
+        "other": "تم تحديد {count} عناصر"
+      }
+    },
+    "trash": {
+      "empty": "سلة المحذوفات فارغة.",
+      "restore": "استعادة",
+      "restoreAll": "استعادة كل العناصر",
+      "restoreSelected": "استعادة العناصر المحددة",
+      "restoreFailed": "تعذّرت استعادة العنصر",
+      "deleteForever": "حذف نهائي"
+    },
+    "preview": {
+      "empty": "حدد ملفًا لمعاينته.",
+      "unavailable": "لا توجد معاينة متاحة.",
+      "revert": "تراجع",
+      "dontSave": "عدم الحفظ",
+      "saveTitle": "تغييرات غير محفوظة",
+      "saveMessage": "هل تريد حفظ التغييرات في \"{name}\"؟",
+      "saveFailed": "تعذّر حفظ الملف"
+    }
+  }
+}

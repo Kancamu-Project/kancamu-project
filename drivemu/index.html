@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drivemu</title>
+<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+<meta name="theme-color" content="#111115">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="layout.css">
+<script src="../assets/theme.js"></script>
+</head>
+<body>
+
+<!-- Sign-in -->
+<section id="login" class="login hidden">
+  <aside class="brand">
+    <div class="logo light"><span class="logo-mark"><img src="favicon.png" width="16" height="16" alt=""></span>Drivemu</div>
+    <div class="brand-copy">
+      <h1>Your drive, powered by your own GitHub.</h1>
+      <p>Store, organise and preview files from a private repository. No servers, no subscriptions, nothing to maintain.</p>
+      <ul class="feats">
+        <li><span class="feat-ico"><span class="icon i-lock"></span></span><div><b>Private by default</b><span>A private repository is created just for your files.</span></div></li>
+        <li><span class="feat-ico"><span class="icon i-zap"></span></span><div><b>No backend</b><span>Runs in your browser and talks straight to GitHub.</span></div></li>
+        <li><span class="feat-ico"><span class="icon i-git-branch"></span></span><div><b>Full history</b><span>Every change is a git commit that you own.</span></div></li>
+      </ul>
+    </div>
+  </aside>
+
+  <div class="login-pane">
+    <form id="loginForm" class="login-card" autocomplete="off">
+      <div class="logo mobile-only"><span class="logo-mark"><img src="favicon.png" width="16" height="16" alt=""></span>Drivemu</div>
+      <button type="button" class="btn ghost back hidden" id="loginBack"><span class="icon i-chevron-left"></span>Back</button>
+      <div class="login-head">
+        <h2 id="loginTitle">Connect your GitHub</h2>
+        <p class="muted" id="loginSub">It takes about a minute. Your token never leaves your browser.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="num">1</span>Get a token</div>
+        <a class="btn primary cta" id="tokenLink" href="https://github.com/settings/tokens/new?scopes=repo&amp;description=Drivemu" target="_blank" rel="noopener">
+          <span class="icon i-external"></span>Create token on GitHub
+        </a>
+        <p class="hint">Opens GitHub with the <b>repo</b> scope already selected. Pick an expiration, click <b>Generate token</b>, then copy it.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="num">2</span>Paste it here</div>
+        <input id="tokenInput" type="password" placeholder="ghp_… or github_pat_…" aria-label="GitHub personal access token" required>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="num">3</span>Storage repository</div>
+        <input id="repoInput" type="text" value="drivemu-storage" aria-label="Storage repository name" required pattern="[A-Za-z0-9._\-]+">
+        <p class="hint">All your drives live in this one repository (each drive is a branch). It is created as a private repository if it doesn't exist yet. You can keep the default.</p>
+      </div>
+
+      <button class="btn primary cta" id="loginBtn" type="submit">Connect</button>
+      <p id="loginError" class="error" role="alert"></p>
+
+      <details class="hint">
+        <summary>Using a fine-grained token?</summary>
+        <p>Create the storage repository on GitHub first and give the token <b>Contents: Read and write</b> on it, then enter its name above. To let Drivemu create the repository for you, give the token access to <i>All repositories</i> with <b>Administration</b> and <b>Contents</b> set to Read &amp; write.</p>
+      </details>
+    </form>
+  </div>
+</section>
+
+<!-- Drive picker -->
+<section id="drives" class="drives hidden">
+  <header class="drives-top">
+    <div class="logo"><span class="logo-mark"><img src="favicon.png" width="16" height="16" alt=""></span>Drivemu</div>
+    <div class="spacer"></div>
+    <button class="btn ghost" id="drivesSettingsBtn" title="Settings"><span class="icon i-sliders"></span></button>
+    <button class="acct-btn" id="drivesAcctBtn" aria-haspopup="menu"></button>
+  </header>
+  <div class="drives-scroll">
+    <div class="drives-body">
+      <div class="drives-head">
+        <h2>Your drives</h2>
+        <p class="muted">Each drive is a separate branch of your storage repository, with its own files and history. Pick one to open it, or create another.</p>
+        <p class="repo-line hint"><span id="repoLine"></span></p>
+      </div>
+      <div id="driveGrid" class="drive-grid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- App -->
+<div id="app" class="app hidden">
+  <aside class="side">
+    <div class="logo"><span class="logo-mark"><img src="favicon.png" width="16" height="16" alt=""></span>Drivemu</div>
+    <button class="btn primary cta" id="newBtn"><span class="icon i-plus"></span>New</button>
+    <nav class="nav">
+      <button class="nav-item" id="navAll"><span class="icon i-layers"></span>All drives</button>
+      <button class="nav-item on" id="navDrive"><span class="icon i-hard-drive"></span>My Drive</button>
+    </nav>
+    <div class="spacer"></div>
+    <div class="usage">
+      <div class="usage-head"><span class="icon i-git-branch"></span><b>Repository size</b></div>
+      <div class="meter"><i id="usageFill"></i></div>
+      <p class="hint" id="usageText"></p>
+    </div>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="logo mobile-only"><span class="logo-mark"><img src="favicon.png" width="16" height="16" alt=""></span></div>
+      <label class="searchbox">
+        <span class="icon i-search"></span>
+        <input id="search" type="search" placeholder="Search in this folder" aria-label="Search in this folder">
+      </label>
+      <div class="spacer"></div>
+      <button class="btn primary mobile-only" id="mobileNewBtn"><span class="icon i-plus"></span>New</button>
+      <div class="seg" role="group" aria-label="View">
+        <button id="viewList" title="List view"><span class="icon i-list"></span></button>
+        <button id="viewGrid" title="Grid view"><span class="icon i-grid"></span></button>
+      </div>
+      <button class="btn ghost" id="refreshBtn" title="Refresh"><span class="icon i-refresh"></span></button>
+      <button class="btn ghost" id="settingsBtn" title="Settings"><span class="icon i-sliders"></span></button>
+      <button class="acct-btn" id="acctBtn" aria-haspopup="menu"></button>
+    </header>
+
+    <main class="main" id="dropzone">
+      <div class="titlebar">
+        <nav id="crumbs" class="crumbs"></nav>
+        <div id="selbar" class="selbar hidden">
+          <button class="btn ghost" id="selClear" title="Clear selection"><span class="icon i-close"></span></button>
+          <b id="selCount"></b>
+          <div class="spacer"></div>
+          <button class="btn danger" id="bulkDelete"><span class="icon i-trash"></span>Delete</button>
+        </div>
+      </div>
+
+      <div id="list" class="list"></div>
+
+      <div id="empty" class="empty hidden">
+        <div class="empty-art"><span class="icon i-folder-open"></span></div>
+        <h3 id="emptyTitle"></h3>
+        <p id="emptyText" class="muted"></p>
+        <button class="btn primary" id="emptyCta"><span class="icon i-upload"></span>Upload files</button>
+      </div>
+      <div id="loading" class="loading hidden"></div>
+      <div id="dropOverlay" class="drop-overlay hidden"><span class="icon i-upload"></span>Drop files or folders to upload</div>
+    </main>
+
+    <footer class="statusbar" id="status"></footer>
+  </div>
+</div>
+
+<!-- "New" menu -->
+<div id="newMenu" class="menu hidden" role="menu">
+  <button role="menuitem" data-act="files"><span class="icon i-upload"></span>Upload files</button>
+  <button role="menuitem" data-act="folder-upload"><span class="icon i-folder-up"></span>Upload folder</button>
+  <hr>
+  <button role="menuitem" data-act="folder"><span class="icon i-folder-plus"></span>New folder</button>
+</div>
+<!-- Account menu (filled by script.js) -->
+<div id="acctMenu" class="menu acct hidden" role="menu"></div>
+<input type="file" id="fileInput" multiple hidden>
+<input type="file" id="folderInput" webkitdirectory hidden>
+
+<!-- Generic dialog -->
+<dialog id="dlg" class="dlg">
+  <form method="dialog" id="dlgForm">
+    <h3 id="dlgTitle"></h3>
+    <p id="dlgText" class="muted"></p>
+    <input id="dlgInput" type="text" class="hidden">
+    <div class="dlg-actions">
+      <button class="btn" value="cancel" type="button" id="dlgCancel">Cancel</button>
+      <button class="btn primary" value="ok" id="dlgOk">OK</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Settings -->
+<dialog id="settings" class="dlg settings">
+  <div class="preview-head">
+    <b>Settings</b>
+    <div class="spacer"></div>
+    <button class="btn ghost" id="settingsClose" title="Close"><span class="icon i-close"></span></button>
+  </div>
+  <div id="settingsBody" class="settings-body"></div>
+</dialog>
+
+<!-- Preview -->
+<dialog id="preview" class="dlg preview">
+  <div class="preview-head">
+    <b id="pvName"></b>
+    <div class="spacer"></div>
+    <button class="btn" id="pvDownload"><span class="icon i-download"></span>Download</button>
+    <button class="btn ghost" id="pvClose" title="Close"><span class="icon i-close"></span></button>
+  </div>
+  <div id="pvBody" class="preview-body"></div>
+</dialog>
+
+<div id="toasts" class="toasts" aria-live="polite"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

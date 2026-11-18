@@ -85,7 +85,7 @@ function renderTabs() {
     tabs.replaceChildren(
         ...allTabs().map(findProject).filter(Boolean).map((project) => {
             const tab = createElement("div", "tab");
-            tab.style.setProperty("--color", project.color);
+            tab.style.setProperty("--color", projectColor(project));
             tab.classList.toggle("active", state.active === project.id);
 
             const select = createElement("button", "select");
@@ -250,7 +250,7 @@ function showMenu(anchor, project) {
     copy.addEventListener("click", async () => {
         let message;
         try {
-            await navigator.clipboard.writeText(project.url);
+            await navigator.clipboard.writeText(new URL(project.url, location.href).href);
             message = t("copied");
         } catch {
             message = t("copyFailed");
@@ -287,7 +287,7 @@ document.addEventListener("scroll", closeMenu, true);
 function createProjectCard(project) {
     const name = pickText(project.name);
     const card = createElement("div", "project");
-    card.style.setProperty("--color", project.color);
+    card.style.setProperty("--color", projectColor(project));
 
     const top = createElement("div", "top");
     const link = createElement("a", "link");
@@ -333,6 +333,11 @@ function createProjectCard(project) {
 
     card.append(top, info, categories, actions);
     return card;
+}
+
+// A palette name ("blue") or, for projects made by others, their own colour ("#a78bfa").
+function projectColor(project) {
+    return project.color.startsWith("#") ? project.color : `var(--${project.color})`;
 }
 
 function createNameElement(name, highlight) {

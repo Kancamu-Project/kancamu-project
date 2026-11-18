@@ -1,0 +1,93 @@
+{
+  "explorer": {
+    "nav": {
+      "back": "Back",
+      "forward": "Forward",
+      "up": "Up one level"
+    },
+    "import": {
+      "importing": "Copying files..."
+    },
+    "props": {
+      "used": "Used space",
+      "free": "Free space",
+      "capacity": "Capacity"
+    },
+    "home": "Home",
+    "thisPC": "This PC",
+    "localDisk": "Local Disk (C:)",
+    "driveType": "Local Disk",
+    "driveFree": "{free} free of {total}",
+    "quickAccess": "Quick access",
+    "recent": "Recent",
+    "foldersTitle": "Folders",
+    "drives": "Devices and drives",
+    "searchIn": "Search {name}",
+    "searchResults": "Search results in {name}",
+    "noSearchResults": "No items match your search.",
+    "emptyFolder": "This folder is empty.",
+    "notFoundTitle": "File Explorer",
+    "notFound": "\"{path}\" can't be found. Check the spelling and try again.",
+    "openNewWindow": "Open in new window",
+    "sort": "Sort",
+    "more": "See more",
+    "selectAll": "Select all",
+    "selectNone": "Select none",
+    "invertSelection": "Invert selection",
+    "view": {
+      "icons": "Large icons",
+      "xl": "Extra large icons",
+      "large": "Large icons",
+      "medium": "Medium icons",
+      "small": "Small icons",
+      "list": "List",
+      "details": "Details",
+      "tiles": "Tiles",
+      "show": "Show",
+      "navPane": "Navigation pane",
+      "detailsPane": "Details pane",
+      "previewPane": "Preview pane"
+    },
+    "navPane": "Navigation pane",
+    "tabs": {
+      "new": "New tab",
+      "close": "Close tab",
+      "openInNewTab": "Open in new tab"
+    },
+    "details": {
+      "contains": "Items"
+    },
+    "columns": {
+      "folder": "Folder",
+      "originalLocation": "Original location",
+      "dateDeleted": "Date deleted"
+    },
+    "status": {
+      "items": {
+        "one": "{count} item",
+        "other": "{count} items"
+      },
+      "selected": {
+        "one": "{count} item selected",
+        "other": "{count} items selected"
+      }
+    },
+    "trash": {
+      "empty": "The Recycle Bin is empty.",
+      "restore": "Restore",
+      "restoreAll": "Restore all items",
+      "restoreSelected": "Restore the selected items",
+      "restoreFailed": "The item can't be restored",
+      "deleteForever": "Delete permanently"
+    },
+    "preview": {
+      "empty": "Select a file to preview.",
+      "unavailable": "No preview available.",
+      "revert": "Revert",
+      "dontSave": "Don't save",
+      "saveTitle": "Unsaved changes",
+      "saveMessage": "Do you want to save the changes to \"{name}\"?",
+      "saveFailed": "The file can't be saved"
+    }
+  }
+}

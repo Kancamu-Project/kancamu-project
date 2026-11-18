@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photos</title>
+    <link rel="icon" href="favicon.png">
+    <script>
+      // Where the OS is: its window passes the address as ?os=; a page opened on its own looks next to /apps.
+      (() => {
+        const os = new URLSearchParams(location.search).get('os') || new URL('../../', location.href).href;
+        const add = (el) => document.head.append(el);
+        add(Object.assign(document.createElement('script'), { type: 'importmap', textContent: JSON.stringify({ imports: { 'webos/': os + 'system/' } }) }));
+        add(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: os + 'style/app.css' }));
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="app.js"></script>
+</head>
+<body>
+    <div class="photos">
+        <div id="bar" class="bar"></div>
+        <div id="content" class="content"></div>
+        <div id="viewer" class="viewer" hidden>
+            <div class="viewer-main">
+                <div id="stage" class="stage"><img id="image" class="image" alt="" draggable="false"></div>
+                <button id="prev" class="nav nav-prev" type="button"><i class="icon" data-icon="chevron-left"></i></button>
+                <button id="next" class="nav nav-next" type="button"><i class="icon" data-icon="chevron-right"></i></button>
+                <div id="film" class="film"></div>
+            </div>
+            <aside id="info" class="side" hidden></aside>
+        </div>
+        <div id="editor" class="viewer editor" hidden>
+            <div class="viewer-main"><div class="stage"><canvas id="preview" class="preview"></canvas></div></div>
+            <aside id="edit-panel" class="side edit-panel"></aside>
+        </div>
+    </div>
+</body>
+</html>

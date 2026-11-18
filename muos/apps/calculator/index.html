@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="icon" href="favicon.png">
+    <script>
+      // Where the OS is: its window passes the address as ?os=; a page opened on its own looks next to /apps.
+      (() => {
+        const os = new URLSearchParams(location.search).get('os') || new URL('../../', location.href).href;
+        const add = (el) => document.head.append(el);
+        add(Object.assign(document.createElement('script'), { type: 'importmap', textContent: JSON.stringify({ imports: { 'webos/': os + 'system/' } }) }));
+        add(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: os + 'style/app.css' }));
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="app.js"></script>
+</head>
+<body>
+    <div id="calc" class="calc" data-mode="standard">
+        <div class="calc-top">
+            <button id="nav-btn" class="icon-btn" type="button"><i class="icon" data-icon="menu"></i></button>
+            <h1 id="mode-title" class="mode-title"></h1>
+            <span class="top-fill"></span>
+            <button id="history-btn" class="icon-btn" type="button" data-i18n-tip="calculator.history"><i class="icon" data-icon="clock"></i></button>
+        </div>
+        <div id="display" class="display">
+            <div id="expr" class="expr"></div>
+            <div id="value" class="value">0</div>
+        </div>
+        <div id="bases" class="bases" hidden></div>
+        <div id="conv" class="conv" hidden></div>
+        <div id="memory-bar" class="memory-bar"></div>
+        <div id="keys" class="keys"></div>
+        <div id="date" class="date-panel" hidden></div>
+        <aside id="history" class="history" hidden>
+            <div class="history-head">
+                <div id="panel-tabs" class="panel-tabs" role="tablist"></div>
+                <button id="history-clear" class="btn btn-subtle btn-icon" type="button"><i class="icon" data-icon="delete"></i></button>
+            </div>
+            <div id="history-list" class="history-list"></div>
+        </aside>
+    </div>
+</body>
+</html>

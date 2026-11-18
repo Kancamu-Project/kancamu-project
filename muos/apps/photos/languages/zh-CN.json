@@ -1,0 +1,94 @@
+{
+  "app": {
+    "name": "照片"
+  },
+  "photos": {
+    "importFailed": "无法添加该照片",
+    "back": "返回",
+    "fit": "适应窗口",
+    "rotate": "旋转",
+    "setBackground": "设为背景",
+    "zoomIn": "放大",
+    "zoomOut": "缩小",
+    "import": "添加照片",
+    "openFolder": "打开文件夹",
+    "empty": "还没有图片。添加照片，或从“画图”或“相机”保存图片。",
+    "emptyFavorites": "还没有收藏。选择照片上的星形图标即可添加到这里。",
+    "noResults": "没有与搜索条件匹配的照片。",
+    "deleteTitle": "删除照片",
+    "deleteMessage": "“{name}”将被移到回收站。",
+    "deleteMany": {
+      "one": "{count} 张照片将被移到回收站。",
+      "other": "{count} 张照片将被移到回收站。"
+    },
+    "tabs": {
+      "gallery": "图库",
+      "albums": "相册",
+      "favorites": "收藏夹"
+    },
+    "count": {
+      "one": "{count} 张照片",
+      "other": "{count} 张照片"
+    },
+    "selected": {
+      "one": "已选择 {count} 项",
+      "other": "已选择 {count} 项"
+    },
+    "select": "选择",
+    "search": "搜索照片",
+    "size": "缩略图大小",
+    "today": "今天",
+    "yesterday": "昨天",
+    "favorite": "添加到收藏夹",
+    "unfavorite": "从收藏夹中删除",
+    "slideshow": "幻灯片放映",
+    "info": "信息",
+    "editAction": "编辑",
+    "facts": {
+      "name": "名称",
+      "location": "位置",
+      "type": "类型",
+      "size": "大小",
+      "dimensions": "尺寸",
+      "created": "创建时间",
+      "modified": "修改时间"
+    },
+    "edit": {
+      "crop": "裁剪",
+      "aspect": {
+        "original": "原始",
+        "square": "正方形",
+        "wide": "16:9",
+        "standard": "4:3",
+        "photo": "3:2"
+      },
+      "transform": "旋转和翻转",
+      "rotateLeft": "向左旋转",
+      "rotateRight": "向右旋转",
+      "flipH": "水平翻转",
+      "flipV": "垂直翻转",
+      "adjust": "调整",
+      "brightness": "亮度",
+      "contrast": "对比度",
+      "saturation": "饱和度",
+      "filters": "滤镜",
+      "filter": {
+        "none": "无",
+        "grayscale": "黑白",
+        "sepia": "复古棕褐",
+        "warm": "暖色",
+        "cool": "冷色",
+        "vivid": "鲜艳",
+        "fade": "褪色",
+        "invert": "底片"
+      },
+      "reset": "全部重置",
+      "save": "保存",
+      "saveCopy": "保存副本",
+      "copySuffix": "（已编辑）",
+      "failed": "无法编辑或保存该照片"
+    },
+    "picturesFolder": "图片",
+    "selectAll": "全选"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "app": {
+    "name": "Notepad"
+  },
+  "notepad": {
+    "untitled": "Untitled",
+    "closeTab": "Close tab",
+    "closeOthers": "Close other tabs",
+    "closeRight": "Close tabs to the right",
+    "menu": {
+      "file": "File",
+      "edit": "Edit",
+      "format": "Format",
+      "view": "View"
+    },
+    "file": {
+      "new": "New tab",
+      "newWindow": "New window",
+      "open": "Open...",
+      "save": "Save",
+      "saveAs": "Save as...",
+      "saveAll": "Save all",
+      "closeWindow": "Close window",
+      "exit": "Exit"
+    },
+    "edit": {
+      "undo": "Undo",
+      "redo": "Redo",
+      "find": "Find...",
+      "findNext": "Find next",
+      "findPrevious": "Find previous",
+      "replace": "Replace...",
+      "goTo": "Go to...",
+      "timeDate": "Time/Date"
+    },
+    "find": {
+      "find": "Find",
+      "replace": "Replace with",
+      "previous": "Previous",
+      "next": "Next",
+      "replaceOne": "Replace",
+      "replaceAll": "Replace all",
+      "matchCase": "Match case",
+      "none": "No results",
+      "count": "{current} of {total}",
+      "replaced": {
+        "one": "{count} replacement",
+        "other": "{count} replacements"
+      }
+    },
+    "goTo": {
+      "title": "Go to line",
+      "message": "Line number (1 to {max})",
+      "go": "Go to"
+    },
+    "format": {
+      "wrap": "Word wrap",
+      "font": "Font..."
+    },
+    "view": {
+      "zoom": "Zoom",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "zoomReset": "Restore default zoom",
+      "statusBar": "Status bar"
+    },
+    "settings": {
+      "title": "Notepad settings",
+      "font": "Font",
+      "size": "Font size",
+      "startup": "When Notepad starts",
+      "startRestore": "Continue the previous session",
+      "startNew": "Start with an empty document",
+      "sample": "The quick brown fox jumps over the lazy dog."
+    },
+    "status": {
+      "position": "Ln {line}, Col {col}",
+      "chars": {
+        "one": "{count} character",
+        "other": "{count} characters"
+      },
+      "selected": "{count} of {total} characters",
+      "eol": "CRLF",
+      "encoding": "UTF-8"
+    },
+    "unsaved": {
+      "message": "Do you want to save changes to {name}?",
+      "dontSave": "Don't save"
+    },
+    "error": {
+      "open": "The file can't be opened",
+      "save": "The file can't be saved"
+    },
+    "selectAll": "Select all"
+  }
+}

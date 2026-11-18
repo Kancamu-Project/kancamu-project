@@ -1,0 +1,63 @@
+{
+  "app": {
+    "name": "Snipping Tool"
+  },
+  "snip": {
+    "title": "Snipping Tool",
+    "modes": {
+      "rect": "Rectangle",
+      "window": "Window",
+      "full": "Full screen",
+      "free": "Freeform"
+    },
+    "errors": {
+      "unsupported": "This browser cannot capture the screen.",
+      "denied": "Screen capture was not allowed. Allow it in the browser when it asks, then try again.",
+      "failed": "The screen could not be captured."
+    },
+    "new": "New",
+    "mode": "Snip mode",
+    "delay": "Delay",
+    "delays": {
+      "0": "No delay",
+      "3": "3 seconds",
+      "5": "5 seconds",
+      "10": "10 seconds"
+    },
+    "tools": {
+      "pen": "Pen",
+      "highlighter": "Highlighter",
+      "eraser": "Eraser",
+      "crop": "Crop"
+    },
+    "sizes": {
+      "0": "Thin",
+      "1": "Medium",
+      "2": "Thick"
+    },
+    "applyCrop": "Apply crop",
+    "undo": "Undo",
+    "redo": "Redo",
+    "fit": "Fit to window",
+    "actual": "Actual size",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyFailed": "The snip could not be copied",
+    "copyFailedMessage": "The browser did not allow access to the clipboard.",
+    "save": "Save",
+    "saveAs": "Save as...",
+    "saveFailed": "The snip can't be saved",
+    "open": "Open a picture...",
+    "openFolder": "Open the Screenshots folder",
+    "openFailed": "The picture can't be opened",
+    "autoSave": "Save every snip automatically",
+    "more": "More options",
+    "untitled": "Snip",
+    "fileName": "Screenshot",
+    "unsaved": "Do you want to save the changes to this snip?",
+    "savedTitle": "Snip saved",
+    "emptyTitle": "Take a snip",
+    "emptyMessage": "Choose New, or press Print Screen or Alt+Shift+S. The browser asks once to share this page; the snip is cut out of it.",
+    "dontSave": "Don't save"
+  }
+}

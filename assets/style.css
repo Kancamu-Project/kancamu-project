@@ -1,0 +1,148 @@
+/* Gaya bersama semua web (kecuali muOS): font, token warna, reset, dan dasar kontrol.
+   Setiap web memuat file ini lebih dulu, lalu layout.css miliknya sendiri. */
+
+@font-face { font-family: "Inter"; font-weight: 400; font-display: swap; src: url("fonts/inter-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 700; font-display: swap; src: url("fonts/inter-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: swap; src: url("fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 700; font-display: swap; src: url("fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2"); }
+
+:root {
+    /* Palet: tujuh warna, dinamai dengan nama warnanya. Nilainya tetap di semua tema.
+       Hitam, abu-abu, dan putih untuk latar dan garis; merah, kuning, biru, dan hijau untuk sorotan. */
+    --black: #111115;
+    --gray: #8d8d98;
+    --white: #ffffff;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --blue: #3b82f6;
+    --green: #22c55e;
+
+    /* Peran: berganti mengikuti tema dan diturunkan dari palet. Komponen memakai nama peran. */
+    --bg: var(--black);
+    --bg-1: color-mix(in srgb, var(--gray) 8%, var(--black));
+    --border: color-mix(in srgb, var(--gray) 20%, var(--black));
+    --fg: var(--white);
+    --fg-1: var(--gray);
+    --fg-2: color-mix(in srgb, var(--gray) 50%, var(--white));
+    --accent: var(--white);
+    --accent-ink: var(--black);
+    --accent-text: var(--white);
+    --danger: var(--red);
+    --ok: var(--green);
+
+    --radius: 0.4rem;
+    --height: 2.4rem;
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, Consolas, system-ui, monospace;
+    color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+    --bg: var(--white);
+    --bg-1: color-mix(in srgb, var(--gray) 12%, var(--white));
+    --border: color-mix(in srgb, var(--gray) 30%, var(--white));
+    --fg: var(--black);
+    --fg-1: color-mix(in srgb, var(--gray) 60%, var(--black));
+    --fg-2: color-mix(in srgb, var(--gray) 20%, var(--black));
+    --accent: var(--black);
+    --accent-ink: var(--white);
+    --accent-text: var(--black);
+    --danger: color-mix(in srgb, var(--red) 80%, var(--black));
+    --ok: color-mix(in srgb, var(--green) 65%, var(--black));
+    color-scheme: light;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    border: none;
+    background: none;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+/* Fallback for browsers without scrollbar-color (older Safari) */
+@supports not (scrollbar-color: auto) {
+    ::-webkit-scrollbar {
+        width: 0.8rem;
+        height: 0.8rem;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border: 0.2rem solid var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--fg-1);
+    }
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+}
+
+html {
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 16px;
+}
+
+body {
+    font-size: 0.8rem;
+}
+
+.hidden {
+    display: none !important;
+}
+
+dialog {
+    margin: auto;
+}
+
+select, input {
+    background: var(--bg);
+    height: var(--height);
+    padding: 0 0.8rem;
+    border: 1px solid var(--border);
+
+    &:focus {
+        border-color: var(--fg);
+    }
+}
+
+select {
+    appearance: none;
+    cursor: pointer;
+    background-image: url("icons/chevron-down-white.svg");
+    background-size: 1rem;
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+
+    & > option {
+        background: var(--bg);
+    }
+}
+
+:root[data-theme="light"] select {
+    background-image: url("icons/chevron-down-black.svg");
+}
+
+:root[dir="rtl"] select {
+    background-position: left 0.6rem center;
+}
+
+input::placeholder {
+    color: var(--fg-1);
+}

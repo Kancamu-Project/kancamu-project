@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link rel="icon" href="favicon.png">
+    <script>
+      // Where the OS is: its window passes the address as ?os=; a page opened on its own looks next to /apps.
+      (() => {
+        const os = new URLSearchParams(location.search).get('os') || new URL('../../', location.href).href;
+        const add = (el) => document.head.append(el);
+        add(Object.assign(document.createElement('script'), { type: 'importmap', textContent: JSON.stringify({ imports: { 'webos/': os + 'system/' } }) }));
+        add(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: os + 'style/app.css' }));
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="app.js"></script>
+</head>
+<body>
+    <div class="tm">
+        <nav id="nav" class="nav"></nav>
+        <section class="pane">
+            <header id="head" class="head"></header>
+            <div id="body-head" class="body-head" hidden></div>
+            <div id="body" class="body"></div>
+        </section>
+    </div>
+</body>
+</html>

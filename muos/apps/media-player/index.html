@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Player</title>
+    <link rel="icon" href="favicon.png">
+    <script>
+      // Where the OS is: its window passes the address as ?os=; a page opened on its own looks next to /apps.
+      (() => {
+        const os = new URLSearchParams(location.search).get('os') || new URL('../../', location.href).href;
+        const add = (el) => document.head.append(el);
+        add(Object.assign(document.createElement('script'), { type: 'importmap', textContent: JSON.stringify({ imports: { 'webos/': os + 'system/' } }) }));
+        add(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: os + 'style/app.css' }));
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="app.js"></script>
+</head>
+<body>
+    <div id="player" class="player">
+        <div class="body">
+            <nav id="nav" class="nav"></nav>
+            <main id="main" class="main">
+                <div id="library" class="library"></div>
+                <section id="now" class="now" hidden>
+                    <div id="stage" class="stage">
+                        <video id="video" class="video" playsinline></video>
+                        <div id="art" class="art"></div>
+                    </div>
+                    <aside id="queue" class="queue"></aside>
+                </section>
+            </main>
+        </div>
+        <div class="controls">
+            <div class="seek-row">
+                <span id="elapsed" class="time">0:00</span>
+                <input id="seek" class="slider seek" type="range" min="0" max="1000" value="0" disabled>
+                <span id="total" class="time">0:00</span>
+            </div>
+            <div class="bar">
+                <div id="info" class="info"></div>
+                <div class="transport">
+                    <button id="shuffle" class="cbtn" type="button"></button>
+                    <button id="prev" class="cbtn" type="button"></button>
+                    <button id="play" class="cbtn cbtn-main" type="button"></button>
+                    <button id="next" class="cbtn" type="button"></button>
+                    <button id="loop" class="cbtn" type="button"></button>
+                </div>
+                <div class="extras">
+                    <button id="mute" class="cbtn" type="button"></button>
+                    <input id="volume" class="slider volume" type="range" min="0" max="100" value="100">
+                    <button id="mini" class="cbtn" type="button"></button>
+                    <button id="full" class="cbtn" type="button"></button>
+                    <button id="more" class="cbtn" type="button"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

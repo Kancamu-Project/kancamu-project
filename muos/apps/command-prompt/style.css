@@ -1,0 +1,260 @@
+/* The colours of the chosen scheme; "color" in a tab overrides them for that tab. */
+:root {
+  --scheme-bg: #0c0c0c;
+  --scheme-fg: #cccccc;
+  --scheme-sel: #ffffff;
+  --cmd-font: "Cascadia Mono", Consolas, "Courier New", monospace;
+  --cmd-size: 0.8rem;
+  --cmd-opacity: 100%;
+}
+
+html,
+html.is-standalone {
+  background: var(--scheme-bg);
+}
+
+body {
+  background: transparent;
+  color: var(--scheme-fg);
+}
+
+.root {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  background: color-mix(in srgb, var(--scheme-bg) var(--cmd-opacity), transparent);
+}
+
+/* ---------------------------------- tabs ---------------------------------- */
+
+.tabs {
+  display: flex;
+  flex: none;
+  align-items: flex-end;
+  gap: 2px;
+  height: 2.2rem;
+  padding: 0.2rem 0.4rem 0;
+  overflow: hidden;
+  background: rgba(127, 127, 127, .16);
+}
+
+.tab {
+  display: flex;
+  flex: 0 1 12.6rem;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 3.6rem;
+  height: 2rem;
+  padding: 0 0.2rem 0 0.8rem;
+  border-radius: 0.6rem 0.6rem 0 0;
+  color: var(--scheme-fg);
+  font: 0.8rem/1rem var(--font);
+  cursor: default;
+}
+
+.tab:hover {
+  background: rgba(127, 127, 127, .2);
+}
+
+.tab.is-active {
+  background: color-mix(in srgb, var(--scheme-bg) 100%, transparent);
+}
+
+.tab-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tab-btn,
+.tab-close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.2rem;
+  background: transparent;
+  color: var(--scheme-fg);
+}
+
+.tab-btn:hover,
+.tab-close:hover {
+  background: rgba(127, 127, 127, .3);
+}
+
+.tab-btn .icon,
+.tab-close .icon {
+  background-color: var(--scheme-fg);
+}
+
+.tab:not(.is-active):not(:hover) .tab-close {
+  opacity: 0;
+}
+
+.tabs-fill {
+  flex: 1;
+}
+
+.tab-add,
+.tab-settings {
+  margin-bottom: 0.2rem;
+}
+
+/* ------------------------------- the console -------------------------------- */
+
+.viewport {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.terminal {
+  position: absolute;
+  inset: 0;
+  padding: 0.2rem 0.4rem 0.8rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: transparent;
+  color: var(--console-fg, var(--scheme-fg));
+  font: var(--cmd-size)/1.25 var(--cmd-font);
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+  scrollbar-color: rgba(127, 127, 127, .5) transparent;
+}
+
+.terminal[hidden] {
+  display: none;
+}
+
+/* "color" in a tab paints that tab with its own colours */
+.terminal.has-color {
+  background: var(--console-bg);
+}
+
+.output,
+.line {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+
+.cursor {
+  background: var(--console-fg, var(--scheme-fg));
+  color: var(--console-bg, var(--scheme-bg));
+  animation: blink 1.06s steps(1) infinite;
+}
+
+/* the shape of the cursor */
+.root[data-cursor="bar"] .cursor {
+  background: transparent;
+  color: inherit;
+  box-shadow: inset 2px 0 0 var(--console-fg, var(--scheme-fg));
+}
+
+.root[data-cursor="underscore"] .cursor {
+  background: transparent;
+  color: inherit;
+  box-shadow: inset 0 -0.2rem 0 var(--console-fg, var(--scheme-fg));
+}
+
+/* an unfocused console shows a hollow, steady cursor */
+.window-inactive .cursor,
+.terminal:not(.has-focus) .cursor {
+  background: transparent !important;
+  color: inherit !important;
+  box-shadow: none !important;
+  outline: 1px solid var(--console-fg, var(--scheme-fg));
+  outline-offset: -1px;
+  animation: none;
+}
+
+@keyframes blink {
+  50% {
+    background: transparent;
+    color: inherit;
+  }
+}
+
+.capture {
+  position: absolute;
+  bottom: 0;
+  inset-inline-start: 0;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: transparent;
+  opacity: 0;
+  resize: none;
+  outline: none;
+  pointer-events: none;
+}
+
+::selection {
+  background: var(--scheme-sel);
+  color: var(--scheme-bg);
+}
+
+/* ------------------------------- settings dialog --------------------------- */
+
+.prefs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  min-width: 20rem;
+}
+
+.pref {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pref .input {
+  width: 11.8rem;
+}
+
+.schemes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+}
+
+.scheme {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.4rem;
+  border: 1px solid var(--stroke-control);
+  border-radius: var(--radius);
+  background: transparent;
+  font-size: 0.6rem;
+}
+
+.scheme.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.scheme-swatch {
+  display: grid;
+  place-items: center;
+  height: 1.8rem;
+  border-radius: 0.2rem;
+  font: 0.8rem var(--font-mono);
+}
+
+/* Right-to-left: a console is always read from left to right. */
+html[dir="rtl"] .viewport,
+html[dir="rtl"] .capture {
+  direction: ltr;
+}

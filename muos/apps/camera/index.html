@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera</title>
+    <link rel="icon" href="favicon.png">
+    <script>
+      // Where the OS is: its window passes the address as ?os=; a page opened on its own looks next to /apps.
+      (() => {
+        const os = new URLSearchParams(location.search).get('os') || new URL('../../', location.href).href;
+        const add = (el) => document.head.append(el);
+        add(Object.assign(document.createElement('script'), { type: 'importmap', textContent: JSON.stringify({ imports: { 'webos/': os + 'system/' } }) }));
+        add(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: os + 'style/app.css' }));
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="app.js"></script>
+</head>
+<body>
+    <div class="camera">
+        <div class="view">
+            <video id="video" class="video" autoplay playsinline muted></video>
+            <div id="message" class="message"></div>
+            <div id="count" class="count" hidden></div>
+            <div id="flash" class="flash"></div>
+        </div>
+        <div class="controls">
+            <button id="last" class="last" type="button" hidden><img id="last-img" alt=""></button>
+            <button id="shutter" class="shutter" type="button" disabled></button>
+            <div class="side">
+                <button id="timer" class="side-btn" type="button"></button>
+                <button id="mirror" class="side-btn is-on" type="button"></button>
+                <select id="device" class="input device" hidden></select>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

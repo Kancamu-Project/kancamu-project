@@ -190,9 +190,9 @@
                 "en-US": "mu"
             },
             "publisher": "Kancamu Project",
-            "url": "https://muos.kancamu.site",
-            "icon": "https://muos.kancamu.site/favicon.png",
-            "color": "#339afc",
+            "url": "muos/",
+            "icon": "muos/favicon.png",
+            "color": "blue",
             "categories": ["system", "tools"]
         },
         {
@@ -209,9 +209,9 @@
                 "en-US": "mu"
             },
             "publisher": "Kancamu Project",
-            "url": "https://drivemu.kancamu.site/",
-            "icon": "https://drivemu.kancamu.site/favicon.png",
-            "color": "#f89520",
+            "url": "drivemu/",
+            "icon": "drivemu/favicon.png",
+            "color": "yellow",
             "categories": ["storage", "tools"]
         },
         {
@@ -228,9 +228,9 @@
                 "en-US": "mu"
             },
             "publisher": "Kancamu Project",
-            "url": "https://muai.kancamu.site/",
-            "icon": "https://muai.kancamu.site/favicon.png",
-            "color": "#ff5774",
+            "url": "muai/",
+            "icon": "muai/favicon.png",
+            "color": "red",
             "categories": ["ai", "tools"]
         },
         {
@@ -247,9 +247,9 @@
                 "en-US": "mu"
             },
             "publisher": "Kancamu Project",
-            "url": "https://kancamu.site/",
+            "url": "./",
             "icon": "favicon.png",
-            "color": "#339afc",
+            "color": "blue",
             "categories": ["directory", "tools"]
         },
         {
@@ -266,8 +266,8 @@
                 "en-US": "Craft"
             },
             "publisher": "ArtCraft",
-            "url": "https://appmu.kancamu.site/apps/deckcraft/",
-            "icon": "https://appmu.kancamu.site/apps/deckcraft/deckcraft-b8fcbb36ecec0385.ico",
+            "url": "artcraft/deckcraft/",
+            "icon": "artcraft/deckcraft/deckcraft-b8fcbb36ecec0385.ico",
             "color": "#f59e0b",
             "categories": ["office", "design", "productivity"]
         },
@@ -285,8 +285,8 @@
                 "en-US": "Craft"
             },
             "publisher": "ArtCraft",
-            "url": "https://appmu.kancamu.site/apps/effectcraft/",
-            "icon": "https://appmu.kancamu.site/apps/effectcraft/icon-256.png",
+            "url": "artcraft/effectcraft/",
+            "icon": "artcraft/effectcraft/icon-256.png",
             "color": "#ec4899",
             "categories": ["video", "creative"]
         },
@@ -304,8 +304,8 @@
                 "en-US": "Craft"
             },
             "publisher": "ArtCraft",
-            "url": "https://appmu.kancamu.site/apps/filmcraft/",
-            "icon": "https://appmu.kancamu.site/apps/filmcraft/favicon.png",
+            "url": "artcraft/filmcraft/",
+            "icon": "artcraft/filmcraft/favicon.png",
             "color": "#a78bfa",
             "categories": ["video", "creative"]
         },
@@ -323,8 +323,8 @@
                 "en-US": "Craft"
             },
             "publisher": "ArtCraft",
-            "url": "https://appmu.kancamu.site/apps/gridcraft/",
-            "icon": "https://appmu.kancamu.site/apps/gridcraft/gridcraft-45f84b7721cb79a9.ico",
+            "url": "artcraft/gridcraft/",
+            "icon": "artcraft/gridcraft/gridcraft-45f84b7721cb79a9.ico",
             "color": "#22c55e",
             "categories": ["office", "productivity"]
         },
@@ -342,8 +342,8 @@
                 "en-US": "Craft"
             },
             "publisher": "ArtCraft",
-            "url": "https://appmu.kancamu.site/apps/photocraft/",
-            "icon": "https://appmu.kancamu.site/apps/photocraft/icon-256.png",
+            "url": "artcraft/photocraft/",
+            "icon": "artcraft/photocraft/icon-256.png",
             "color": "#38bdf8",
             "categories": ["design", "creative"]
         },
@@ -361,8 +361,8 @@
                 "en-US": "Craft"
             },
             "publisher": "ArtCraft",
-            "url": "https://appmu.kancamu.site/apps/vectorcraft/",
-            "icon": "https://appmu.kancamu.site/apps/vectorcraft/icons/256/ai.storyteller.vectorcraft.png",
+            "url": "artcraft/vectorcraft/",
+            "icon": "artcraft/vectorcraft/icons/256/ai.storyteller.vectorcraft.png",
             "color": "#f97316",
             "categories": ["design", "creative"]
         },
@@ -380,8 +380,8 @@
                 "en-US": "Craft"
             },
             "publisher": "ArtCraft",
-            "url": "https://appmu.kancamu.site/apps/wordcraft/",
-            "icon": "https://appmu.kancamu.site/apps/wordcraft/wordcraft-fa59e09a3f921e03.ico",
+            "url": "artcraft/wordcraft/",
+            "icon": "artcraft/wordcraft/wordcraft-fa59e09a3f921e03.ico",
             "color": "#3b82f6",
             "categories": ["office", "productivity"]
         },

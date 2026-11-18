@@ -1,0 +1,72 @@
+{
+  "app": {
+    "name": "媒体播放器"
+  },
+  "player": {
+    "recent": "最近播放",
+    "playlists": {
+      "new": "新建播放列表",
+      "namePrompt": "播放列表名称",
+      "defaultName": "播放列表 {n}",
+      "delete": "删除播放列表",
+      "deleteTitle": "删除播放列表",
+      "deleteMessage": "“{name}”将被删除。歌曲仍保留在你的媒体库中。",
+      "empty": "还没有播放列表。创建一个，然后通过右键菜单添加歌曲。"
+    },
+    "openDisk": "从这台电脑打开",
+    "openLocal": "从你的设备打开",
+    "idle": "打开音频或视频文件开始播放，或从你的媒体库中选择内容。",
+    "previous": "上一个",
+    "next": "下一个",
+    "play": "播放",
+    "pause": "暂停",
+    "shuffle": "随机播放",
+    "repeat": {
+      "off": "重复：关",
+      "all": "全部重复",
+      "one": "单曲重复"
+    },
+    "fullscreen": "全屏",
+    "miniView": "迷你视图",
+    "more": "更多选项",
+    "speed": "播放速度",
+    "queue": "正在播放队列",
+    "clearQueue": "清空队列",
+    "queueEmpty": "队列为空。",
+    "removeFromQueue": "从队列中移除",
+    "unsupported": "只能播放音频和视频文件。",
+    "playFailed": "无法播放“{name}”。",
+    "nav": {
+      "library": "音乐库",
+      "collections": "收藏集",
+      "home": "主页",
+      "songs": "歌曲",
+      "artists": "艺术家",
+      "albums": "专辑",
+      "videos": "视频",
+      "playlists": "播放列表",
+      "now": "正在播放"
+    },
+    "empty": "这里还没有内容。请把音乐放进“音乐”文件夹（文件命名为“艺术家 - 标题”即可按艺术家分组）。",
+    "emptyVideos": "还没有视频。请把视频放进“视频”文件夹。",
+    "unknownArtist": "未知艺术家",
+    "unknownAlbum": "未知专辑",
+    "cols": {
+      "title": "标题",
+      "artist": "艺术家",
+      "album": "专辑",
+      "size": "大小"
+    },
+    "playAll": "全部播放",
+    "shuffleAll": "随机播放全部",
+    "playNext": "下一首播放",
+    "addToQueue": "添加到队列",
+    "addToPlaylist": "添加到播放列表",
+    "removeFromPlaylist": "从此播放列表中移除",
+    "showInFolder": "在文件夹中显示",
+    "count": {
+      "one": "{count} 个项目",
+      "other": "{count} 个项目"
+    }
+  }
+}

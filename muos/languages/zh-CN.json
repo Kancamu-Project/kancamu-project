@@ -1,0 +1,301 @@
+{
+  "common": {
+    "ok": "确定",
+    "cancel": "取消",
+    "close": "关闭",
+    "save": "保存",
+    "on": "开",
+    "off": "关",
+    "justNow": "刚刚",
+    "bytes": {
+      "one": "{count} 字节",
+      "other": "{count} 字节"
+    }
+  },
+  "welcome": {
+    "noStorageTitle": "更改将不会被保存",
+    "noStorageBody": "此浏览器阻止了本地存储，因此关闭页面时文件和设置会丢失。"
+  },
+  "disk": {
+    "errorTitle": "无法保存磁盘",
+    "errorBody": "浏览器拒绝存储更多数据。请删除文件并清空回收站以释放空间。"
+  },
+  "lock": {
+    "signIn": "登录",
+    "hint": "按 Enter 键登录"
+  },
+  "power": {
+    "title": "电源",
+    "lock": "锁定",
+    "signOut": "注销",
+    "sleep": "睡眠",
+    "shutDown": "关机",
+    "restart": "重启",
+    "restarting": "正在重启",
+    "shuttingDown": "正在关机",
+    "turnOn": "按电源按钮开机"
+  },
+  "window": {
+    "minimize": "最小化",
+    "maximize": "最大化",
+    "restore": "还原",
+    "close": "关闭"
+  },
+  "switcher": {
+    "label": "切换窗口"
+  },
+  "taskbar": {
+    "label": "任务栏",
+    "taskView": "任务视图",
+    "widgets": "小组件",
+    "start": "开始",
+    "search": "搜索",
+    "showDesktop": "显示桌面",
+    "pin": "固定到任务栏",
+    "unpin": "从任务栏取消固定",
+    "closeWindow": "关闭窗口",
+    "closeAll": "关闭所有窗口",
+    "settings": "任务栏设置",
+    "appsAndFeatures": "应用和功能",
+    "powerGroup": "关机或注销"
+  },
+  "menubar": {
+    "label": "菜单栏",
+    "about": "关于 {name}",
+    "closeWindow": "关闭窗口",
+    "quit": "退出 {name}",
+    "window": "窗口",
+    "desktop": "桌面"
+  },
+  "tray": {
+    "network": {
+      "wifi": "Wi-Fi：已连接",
+      "offline": "无法访问互联网",
+      "airplane": "飞行模式已开启"
+    },
+    "volume": "扬声器：{value}%",
+    "muted": "扬声器：静音",
+    "battery": "电池：{value}%",
+    "batteryCharging": "电池：{value}%（正在充电）",
+    "exit": "退出"
+  },
+  "start": {
+    "pinned": "已固定",
+    "searchPlaceholder": "搜索应用、设置和文档",
+    "more": "更多",
+    "allApps": "所有应用",
+    "back": "返回",
+    "recommended": "推荐的项目",
+    "noPinned": "尚未固定任何内容。打开“所有应用”，右键单击应用即可将其固定在此处。",
+    "noRecommended": "你处理过的文件将显示在这里。",
+    "open": "打开",
+    "pinStart": "固定到“开始”",
+    "unpinStart": "从“开始”取消固定",
+    "accountSettings": "更改帐户设置"
+  },
+  "search": {
+    "placeholder": "在此键入以搜索",
+    "app": "应用",
+    "apps": "应用",
+    "recent": "最近",
+    "settings": "设置",
+    "files": "文件和文件夹",
+    "noResults": "未找到“{query}”的结果"
+  },
+  "quick": {
+    "wifi": "Wi-Fi",
+    "bluetooth": "蓝牙",
+    "airplane": "飞行模式",
+    "energySaver": "节能模式",
+    "nightLight": "夜间模式",
+    "doNotDisturb": "勿扰模式",
+    "brightness": "亮度",
+    "volume": "音量",
+    "mute": "静音",
+    "unmute": "取消静音",
+    "allSettings": "所有设置"
+  },
+  "notifications": {
+    "title": "通知",
+    "clearAll": "全部清除",
+    "empty": "没有新通知",
+    "dismiss": "关闭",
+    "system": "系统"
+  },
+  "calendar": {
+    "today": "转到今天",
+    "previous": "上个月",
+    "next": "下个月"
+  },
+  "desktop": {
+    "label": "桌面",
+    "recycleBin": "回收站",
+    "menu": {
+      "view": "查看",
+      "largeIcons": "大图标",
+      "mediumIcons": "中等图标",
+      "smallIcons": "小图标",
+      "showIcons": "显示桌面图标",
+      "autoArrange": "自动排列图标",
+      "sortBy": "排序方式",
+      "openTerminal": "在终端中打开",
+      "displaySettings": "显示设置",
+      "personalize": "个性化"
+    }
+  },
+  "files": {
+    "open": "打开",
+    "cut": "剪切",
+    "copy": "复制",
+    "paste": "粘贴",
+    "rename": "重命名",
+    "delete": "删除",
+    "refresh": "刷新",
+    "new": "新建",
+    "folder": "文件夹",
+    "textDocument": "文本文档",
+    "newFolder": "新建文件夹",
+    "newTextDocument": "新建文本文档",
+    "setBackground": "设为桌面背景",
+    "emptyTrash": "清空回收站",
+    "emptyTrashTitle": "清空回收站",
+    "emptyTrashMessage": {
+      "one": "确定要永久删除此项目吗？",
+      "other": "确定要永久删除这 {count} 个项目吗？"
+    },
+    "confirmDeleteTitle": "永久删除",
+    "confirmDeleteOne": "确定要永久删除“{name}”吗？",
+    "confirmDeleteMany": {
+      "one": "确定要永久删除此项目吗？",
+      "other": "确定要永久删除这 {count} 个项目吗？"
+    },
+    "createFailed": "无法创建该项目",
+    "deleteFailed": "无法删除该项目",
+    "renameFailed": "无法重命名该项目",
+    "pasteFailed": "无法粘贴该项目",
+    "moveFailed": "无法移动该项目",
+    "columns": {
+      "name": "名称",
+      "size": "大小",
+      "type": "类型",
+      "modified": "修改日期"
+    },
+    "properties": "属性",
+    "openWith": "打开方式",
+    "copyAsPath": "复制为路径",
+    "sendTo": "发送到",
+    "sortAscending": "递增",
+    "sortDescending": "递减"
+  },
+  "picker": {
+    "openTitle": "打开",
+    "saveTitle": "另存为",
+    "open": "打开",
+    "save": "保存",
+    "empty": "此文件夹为空。",
+    "notFound": "请从列表中选择一个文件。",
+    "fileName": "文件名",
+    "overwrite": "“{name}”已存在。要替换它吗？",
+    "replace": "替换"
+  },
+  "snap": {
+    "title": "贴靠布局",
+    "zone": "将窗口贴靠在此处"
+  },
+  "taskview": {
+    "title": "任务视图",
+    "desktop": "桌面 {n}",
+    "windows": {
+      "one": "{count} 个窗口",
+      "other": "{count} 个窗口"
+    },
+    "newDesktop": "新建桌面",
+    "removeDesktop": "删除此桌面",
+    "moveTo": "移动到",
+    "empty": "此桌面上没有窗口。"
+  },
+  "widgets": {
+    "clock": "时钟",
+    "calendar": "本月",
+    "notes": "便笺",
+    "notesPlaceholder": "写一条便笺。它会保留在这台电脑上。",
+    "thisPc": "这台电脑",
+    "recent": "最近的文件",
+    "battery": "电池",
+    "network": "网络",
+    "storage": "存储",
+    "morning": "早上好，{name}",
+    "afternoon": "下午好，{name}",
+    "evening": "晚上好，{name}"
+  },
+  "clipboard": {
+    "title": "剪贴板",
+    "clearAll": "全部清除",
+    "empty": "尚未复制任何内容。复制内容后会显示在这里。",
+    "off": "剪贴板历史记录已关闭。",
+    "turnOn": "打开",
+    "pin": "固定",
+    "unpin": "取消固定",
+    "delete": "删除",
+    "image": "图片",
+    "copied": "已复制",
+    "cut": "已剪切",
+    "files": {
+      "one": "{count} 个文件或文件夹",
+      "other": "{count} 个文件或文件夹"
+    }
+  },
+  "filetypes": {
+    "folder": "文件夹",
+    "text": "文本文档",
+    "file": "文件",
+    "generic": "{ext} 文件"
+  },
+  "fs": {
+    "errors": {
+      "ENOENT": "找不到该项目：{path}",
+      "EEXIST": "已存在同名的文件或文件夹：{path}",
+      "ENOTDIR": "这不是文件夹：{path}",
+      "EISDIR": "这是文件夹，不是文件：{path}",
+      "ENOTEMPTY": "文件夹不为空：{path}",
+      "EINVAL": "无法使用该名称或目标位置。名称不能为空，也不能包含以下任何字符：\\ / : * ? \" < > |",
+      "EPERM": "你需要获得权限才能执行此操作。该项目受系统保护：{path}",
+      "ENOSPC": "磁盘上没有足够的空间。",
+      "ENODRIVE": "找不到该驱动器：{path}"
+    }
+  },
+  "screenshot": {
+    "title": "截图工具",
+    "modes": {
+      "rect": "矩形",
+      "window": "窗口",
+      "full": "全屏",
+      "free": "任意形状"
+    }
+  },
+  "uninstall": {
+    "action": "卸载",
+    "title": "卸载 {name}？",
+    "message": "{name} 及其打开的窗口将被关闭，并从“开始”和任务栏中移除。你可以随时在此重新安装。"
+  },
+  "folders": {
+    "desktop": "桌面",
+    "documents": "文档",
+    "downloads": "下载",
+    "music": "音乐",
+    "pictures": "图片",
+    "videos": "视频"
+  },
+  "import": {
+    "skipped": "有些文件未被添加",
+    "noSpace": "“{name}”（{size}）放不下：磁盘上只剩 {free}。"
+  },
+  "properties": {
+    "opensWith": "打开方式",
+    "title": "{name} 属性",
+    "location": "位置",
+    "contains": "包含",
+    "containsValue": "{files} 个文件，{folders} 个文件夹",
+    "created": "创建时间"
+  }
+}

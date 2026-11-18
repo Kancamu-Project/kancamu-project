@@ -1,0 +1,301 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save",
+    "on": "On",
+    "off": "Off",
+    "justNow": "Just now",
+    "bytes": {
+      "one": "{count} byte",
+      "other": "{count} bytes"
+    }
+  },
+  "welcome": {
+    "noStorageTitle": "Changes will not be saved",
+    "noStorageBody": "This browser is blocking local storage, so files and settings are lost when the page is closed."
+  },
+  "disk": {
+    "errorTitle": "The disk can't be saved",
+    "errorBody": "The browser refused to store more data. Free up space by deleting files and emptying the Recycle Bin."
+  },
+  "lock": {
+    "signIn": "Sign in",
+    "hint": "Press Enter to sign in"
+  },
+  "power": {
+    "title": "Power",
+    "lock": "Lock",
+    "signOut": "Sign out",
+    "sleep": "Sleep",
+    "shutDown": "Shut down",
+    "restart": "Restart",
+    "restarting": "Restarting",
+    "shuttingDown": "Shutting down",
+    "turnOn": "Press the power button to turn on"
+  },
+  "window": {
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore": "Restore",
+    "close": "Close"
+  },
+  "switcher": {
+    "label": "Switch windows"
+  },
+  "taskbar": {
+    "label": "Taskbar",
+    "taskView": "Task View",
+    "widgets": "Widgets",
+    "start": "Start",
+    "search": "Search",
+    "showDesktop": "Show desktop",
+    "pin": "Pin to taskbar",
+    "unpin": "Unpin from taskbar",
+    "closeWindow": "Close window",
+    "closeAll": "Close all windows",
+    "settings": "Taskbar settings",
+    "appsAndFeatures": "Apps and features",
+    "powerGroup": "Shut down or sign out"
+  },
+  "menubar": {
+    "label": "Menu bar",
+    "about": "About {name}",
+    "closeWindow": "Close window",
+    "quit": "Quit {name}",
+    "window": "Window",
+    "desktop": "Desktop"
+  },
+  "tray": {
+    "network": {
+      "wifi": "Wi-Fi: Connected",
+      "offline": "No internet access",
+      "airplane": "Airplane mode is on"
+    },
+    "volume": "Speakers: {value}%",
+    "muted": "Speakers: Muted",
+    "battery": "Battery: {value}%",
+    "batteryCharging": "Battery: {value}% (charging)",
+    "exit": "Exit"
+  },
+  "start": {
+    "pinned": "Pinned",
+    "searchPlaceholder": "Search for apps, settings and documents",
+    "more": "More",
+    "allApps": "All apps",
+    "back": "Back",
+    "recommended": "Recommended",
+    "noPinned": "Nothing is pinned yet. Open All apps and right-click an app to pin it here.",
+    "noRecommended": "The files you work on will show up here.",
+    "open": "Open",
+    "pinStart": "Pin to Start",
+    "unpinStart": "Unpin from Start",
+    "accountSettings": "Change account settings"
+  },
+  "search": {
+    "placeholder": "Type here to search",
+    "app": "App",
+    "apps": "Apps",
+    "recent": "Recent",
+    "settings": "Settings",
+    "files": "Files and folders",
+    "noResults": "No results found for \"{query}\""
+  },
+  "quick": {
+    "wifi": "Wi-Fi",
+    "bluetooth": "Bluetooth",
+    "airplane": "Airplane mode",
+    "energySaver": "Energy saver",
+    "nightLight": "Night light",
+    "doNotDisturb": "Do not disturb",
+    "brightness": "Brightness",
+    "volume": "Volume",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "allSettings": "All settings"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "clearAll": "Clear all",
+    "empty": "No new notifications",
+    "dismiss": "Dismiss",
+    "system": "System"
+  },
+  "calendar": {
+    "today": "Go to today",
+    "previous": "Previous month",
+    "next": "Next month"
+  },
+  "desktop": {
+    "label": "Desktop",
+    "recycleBin": "Recycle Bin",
+    "menu": {
+      "view": "View",
+      "largeIcons": "Large icons",
+      "mediumIcons": "Medium icons",
+      "smallIcons": "Small icons",
+      "showIcons": "Show desktop icons",
+      "autoArrange": "Auto arrange icons",
+      "sortBy": "Sort by",
+      "openTerminal": "Open in Terminal",
+      "displaySettings": "Display settings",
+      "personalize": "Personalize"
+    }
+  },
+  "files": {
+    "open": "Open",
+    "cut": "Cut",
+    "copy": "Copy",
+    "paste": "Paste",
+    "rename": "Rename",
+    "delete": "Delete",
+    "refresh": "Refresh",
+    "new": "New",
+    "folder": "Folder",
+    "textDocument": "Text Document",
+    "newFolder": "New folder",
+    "newTextDocument": "New Text Document",
+    "setBackground": "Set as desktop background",
+    "emptyTrash": "Empty Recycle Bin",
+    "emptyTrashTitle": "Empty Recycle Bin",
+    "emptyTrashMessage": {
+      "one": "Are you sure you want to permanently delete this item?",
+      "other": "Are you sure you want to permanently delete these {count} items?"
+    },
+    "confirmDeleteTitle": "Delete permanently",
+    "confirmDeleteOne": "Are you sure you want to permanently delete \"{name}\"?",
+    "confirmDeleteMany": {
+      "one": "Are you sure you want to permanently delete this item?",
+      "other": "Are you sure you want to permanently delete these {count} items?"
+    },
+    "createFailed": "The item can't be created",
+    "deleteFailed": "The item can't be deleted",
+    "renameFailed": "The item can't be renamed",
+    "pasteFailed": "The item can't be pasted",
+    "moveFailed": "The item can't be moved",
+    "columns": {
+      "name": "Name",
+      "size": "Size",
+      "type": "Type",
+      "modified": "Date modified"
+    },
+    "properties": "Properties",
+    "openWith": "Open with",
+    "copyAsPath": "Copy as path",
+    "sendTo": "Send to",
+    "sortAscending": "Ascending",
+    "sortDescending": "Descending"
+  },
+  "picker": {
+    "openTitle": "Open",
+    "saveTitle": "Save as",
+    "open": "Open",
+    "save": "Save",
+    "empty": "This folder is empty.",
+    "notFound": "Choose a file from the list.",
+    "fileName": "File name",
+    "overwrite": "\"{name}\" already exists. Do you want to replace it?",
+    "replace": "Replace"
+  },
+  "snap": {
+    "title": "Snap layouts",
+    "zone": "Snap the window here"
+  },
+  "taskview": {
+    "title": "Task View",
+    "desktop": "Desktop {n}",
+    "windows": {
+      "one": "{count} window",
+      "other": "{count} windows"
+    },
+    "newDesktop": "New desktop",
+    "removeDesktop": "Remove this desktop",
+    "moveTo": "Move to",
+    "empty": "No windows on this desktop."
+  },
+  "widgets": {
+    "clock": "Clock",
+    "calendar": "This month",
+    "notes": "Notes",
+    "notesPlaceholder": "Write a note. It stays on this PC.",
+    "thisPc": "This PC",
+    "recent": "Recent files",
+    "battery": "Battery",
+    "network": "Network",
+    "storage": "Storage",
+    "morning": "Good morning, {name}",
+    "afternoon": "Good afternoon, {name}",
+    "evening": "Good evening, {name}"
+  },
+  "clipboard": {
+    "title": "Clipboard",
+    "clearAll": "Clear all",
+    "empty": "Nothing copied yet. Copy something, and it shows up here.",
+    "off": "Clipboard history is turned off.",
+    "turnOn": "Turn on",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "delete": "Delete",
+    "image": "Picture",
+    "copied": "Copied",
+    "cut": "Cut",
+    "files": {
+      "one": "{count} file or folder",
+      "other": "{count} files or folders"
+    }
+  },
+  "filetypes": {
+    "folder": "File folder",
+    "text": "Text Document",
+    "file": "File",
+    "generic": "{ext} File"
+  },
+  "fs": {
+    "errors": {
+      "ENOENT": "The item could not be found: {path}",
+      "EEXIST": "There is already a file or folder with that name: {path}",
+      "ENOTDIR": "This is not a folder: {path}",
+      "EISDIR": "This is a folder, not a file: {path}",
+      "ENOTEMPTY": "The folder is not empty: {path}",
+      "EINVAL": "That name or destination can't be used. A name can't be empty or contain any of these characters: \\ / : * ? \" < > |",
+      "EPERM": "You need permission to do this. The item is protected by the system: {path}",
+      "ENOSPC": "There is not enough space on the disk.",
+      "ENODRIVE": "The drive could not be found: {path}"
+    }
+  },
+  "screenshot": {
+    "title": "Snipping Tool",
+    "modes": {
+      "rect": "Rectangle",
+      "window": "Window",
+      "full": "Full screen",
+      "free": "Freeform"
+    }
+  },
+  "uninstall": {
+    "action": "Uninstall",
+    "title": "Uninstall {name}?",
+    "message": "{name} and its open windows will be closed and removed from Start and the taskbar. You can install it again here at any time."
+  },
+  "folders": {
+    "desktop": "Desktop",
+    "documents": "Documents",
+    "downloads": "Downloads",
+    "music": "Music",
+    "pictures": "Pictures",
+    "videos": "Videos"
+  },
+  "import": {
+    "skipped": "Some files were not added",
+    "noSpace": "\"{name}\" ({size}) does not fit: only {free} are left on the disk."
+  },
+  "properties": {
+    "opensWith": "Opens with",
+    "title": "{name} Properties",
+    "location": "Location",
+    "contains": "Contains",
+    "containsValue": "{files} files, {folders} folders",
+    "created": "Created"
+  }
+}

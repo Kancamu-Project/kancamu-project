@@ -1,0 +1,63 @@
+{
+  "app": {
+    "name": "截图工具"
+  },
+  "snip": {
+    "title": "截图工具",
+    "modes": {
+      "rect": "矩形",
+      "window": "窗口",
+      "full": "全屏",
+      "free": "任意形状"
+    },
+    "errors": {
+      "unsupported": "此浏览器无法截取屏幕。",
+      "denied": "未允许屏幕截取。请在浏览器询问时允许，然后重试。",
+      "failed": "无法截取屏幕。"
+    },
+    "new": "新建",
+    "mode": "截图模式",
+    "delay": "延迟",
+    "delays": {
+      "0": "无延迟",
+      "3": "3 秒",
+      "5": "5 秒",
+      "10": "10 秒"
+    },
+    "tools": {
+      "pen": "笔",
+      "highlighter": "荧光笔",
+      "eraser": "橡皮擦",
+      "crop": "裁剪"
+    },
+    "sizes": {
+      "0": "细",
+      "1": "中",
+      "2": "粗"
+    },
+    "applyCrop": "应用裁剪",
+    "undo": "撤消",
+    "redo": "重做",
+    "fit": "适应窗口",
+    "actual": "实际大小",
+    "copy": "复制",
+    "copied": "已复制",
+    "copyFailed": "无法复制截图",
+    "copyFailedMessage": "浏览器不允许访问剪贴板。",
+    "save": "保存",
+    "saveAs": "另存为...",
+    "saveFailed": "无法保存截图",
+    "open": "打开图片...",
+    "openFolder": "打开“屏幕截图”文件夹",
+    "openFailed": "无法打开该图片",
+    "autoSave": "自动保存每张截图",
+    "more": "更多选项",
+    "untitled": "截图",
+    "fileName": "屏幕截图",
+    "unsaved": "是否要保存对此截图的更改？",
+    "savedTitle": "截图已保存",
+    "emptyTitle": "截取屏幕",
+    "emptyMessage": "选择“新建”，或按 Print Screen 或 Alt+Shift+S。浏览器会询问一次是否共享此页面；截图将从中截取。",
+    "dontSave": "不保存"
+  }
+}

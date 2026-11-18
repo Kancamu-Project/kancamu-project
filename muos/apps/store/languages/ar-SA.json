@@ -1,0 +1,65 @@
+{
+  "store": {
+    "uninstall": "إلغاء التثبيت",
+    "uninstallTitle": "هل تريد إلغاء تثبيت {name}؟",
+    "uninstallMessage": "سيتم إغلاق {name} ونوافذه المفتوحة وإزالته من ابدأ وشريط المهام. يمكنك تثبيته مرة أخرى هنا في أي وقت.",
+    "search": "بحث عن تطبيقات",
+    "back": "رجوع",
+    "clearSearch": "مسح البحث",
+    "previous": "السابق",
+    "next": "التالي",
+    "nav": {
+      "home": "الرئيسية",
+      "apps": "التطبيقات",
+      "library": "المكتبة"
+    },
+    "featured": "مميّز",
+    "topFree": "أفضل التطبيقات المجانية",
+    "seeAll": "عرض الكل",
+    "free": "مجاني",
+    "get": "الحصول عليه",
+    "open": "فتح",
+    "installing": "جارٍ التثبيت...",
+    "installed": "مثبّت",
+    "notInstalled": "غير مثبّت",
+    "installedTitle": "تم تثبيت {name}",
+    "installedBody": "انقر هنا لفتحه.",
+    "nothing": "لا يوجد شيء هنا.",
+    "noResults": "لا توجد تطبيقات تطابق \"{query}\".",
+    "results": "نتائج \"{query}\"",
+    "categories": {
+      "all": "كل التطبيقات",
+      "productivity": "الإنتاجية",
+      "image": "الصور",
+      "video": "الفيديو",
+      "audio": "الصوت",
+      "utilities": "الأدوات والمرافق",
+      "developer": "أدوات المطورين",
+      "internet": "الإنترنت"
+    },
+    "library": {
+      "count": {
+        "one": "تم تثبيت {count} تطبيق",
+        "other": "تم تثبيت {count} تطبيقات"
+      },
+      "available": "متاح للتثبيت"
+    },
+    "detail": {
+      "category": "الفئة",
+      "version": "الإصدار",
+      "price": "السعر",
+      "status": "الحالة",
+      "about": "نبذة عن هذا التطبيق",
+      "whatsNew": "ما الجديد",
+      "firstRelease": "أول إصدار من هذا التطبيق لسطح المكتب.",
+      "additional": "معلومات إضافية",
+      "publishedBy": "الناشر",
+      "identifier": "المعرّف",
+      "worksOn": "يعمل على",
+      "thisDesktop": "سطح المكتب هذا",
+      "more": "المزيد في {category}"
+    },
+    "more": "عرض المزيد",
+    "version": "الإصدار {version}"
+  }
+}

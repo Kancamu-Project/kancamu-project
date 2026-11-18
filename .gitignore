@@ -1,0 +1,13 @@
+# Dependencies and tooling
+node_modules/
+.claude/
+.vscode/
+.idea/
+
+# Local only
+muos/_references/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+*.log

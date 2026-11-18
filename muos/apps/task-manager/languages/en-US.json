@@ -1,0 +1,104 @@
+{
+  "app": {
+    "name": "Task Manager"
+  },
+  "tm": {
+    "nav": {
+      "processes": "Processes",
+      "performance": "Performance",
+      "details": "Details",
+      "startup": "Startup apps"
+    },
+    "speed": {
+      "title": "Update speed",
+      "high": "High (every second)",
+      "normal": "Normal (every 2 seconds)",
+      "low": "Low (every 4 seconds)",
+      "paused": "Paused"
+    },
+    "search": "Type a name to search",
+    "run": {
+      "button": "Run new task",
+      "title": "Run new task",
+      "message": "Type the name of an app, or the path of a file or folder, and it will be opened.",
+      "placeholder": "notepad",
+      "notFound": "Cannot find \"{name}\". Check the name and try again."
+    },
+    "endTask": "End task",
+    "switchTo": "Switch to",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "cols": {
+      "name": "Name",
+      "status": "Status",
+      "cpu": "CPU",
+      "memory": "Memory",
+      "pid": "PID",
+      "user": "User name",
+      "uptime": "Open for",
+      "description": "Description",
+      "publisher": "Publisher",
+      "impact": "Startup impact"
+    },
+    "groups": {
+      "apps": "Apps",
+      "system": "muOS processes",
+      "background": "Background processes"
+    },
+    "status": {
+      "running": "Running",
+      "suspended": "Suspended"
+    },
+    "system": {
+      "dwm": "Desktop Window Manager",
+      "shell": "Start, Search and taskbar",
+      "disk": "Virtual Disk Service"
+    },
+    "perf": {
+      "cpu": "CPU",
+      "memory": "Memory",
+      "disk": "Disk (C:)",
+      "network": "Network",
+      "utilization": "Utilization",
+      "processes": "Processes",
+      "processors": "Logical processors",
+      "uptime": "Up time",
+      "inUse": "In use (script memory)",
+      "limit": "Limit of the browser page",
+      "deviceMemory": "Device memory",
+      "activeTime": "Active time",
+      "capacity": "Capacity",
+      "used": "Used",
+      "free": "Free",
+      "receive": "Receive",
+      "state": "State",
+      "online": "Online",
+      "offline": "Offline",
+      "connection": "Connection type",
+      "downlink": "Download speed",
+      "latency": "Latency",
+      "unsupported": "Not reported by this browser",
+      "usage": "Usage",
+      "seconds": "60 seconds",
+      "note": {
+        "cpu": "A web page cannot read the real processor load. This shows how busy the page was: the time its scripts blocked it, measured every second.",
+        "memory": "The memory of the scripts of this page (the \"heap\"), as far as the browser reports it. Per-app values are shared out by how big each window is.",
+        "disk": "The virtual disk lives in the browser storage. Active time counts how often files changed in the last second.",
+        "network": "Bytes the page downloaded in the last second (apps loading, pictures, web pages). A browser tab cannot see other traffic of the computer."
+      }
+    },
+    "startup": {
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "enable": "Enable",
+      "disable": "Disable",
+      "empty": "No app starts with the system.",
+      "impact": {
+        "none": "None",
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      }
+    }
+  }
+}

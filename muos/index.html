@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>muOS</title>
+    <link rel="shortcut icon" href="favicon.png">
+
+    <link rel="stylesheet" href="style/tokens.css">
+    <link rel="stylesheet" href="style/ui.css">
+    <link rel="stylesheet" href="style/shell.css">
+    <link rel="stylesheet" href="style/desktop.css">
+    <link rel="stylesheet" href="style/menubar.css">
+    <link rel="stylesheet" href="style/taskbar.css">
+    <link rel="stylesheet" href="style/flyouts.css">
+    <link rel="stylesheet" href="style/window.css">
+    <link rel="stylesheet" href="style/overview.css">
+    <link rel="stylesheet" href="style/rtl.css">
+
+    <script type="module" src="system/main.js"></script>
+</head>
+<body>
+    <!-- Boot screen: stays on top until system/main.js has started everything -->
+    <div id="boot" class="boot">
+        <div class="boot-logo" aria-hidden="true"></div>
+        <div class="boot-progress" aria-hidden="true"><span></span></div>
+        <p id="boot-message" class="boot-message"></p>
+    </div>
+
+    <!-- The desktop session (filled in by the modules in system/shell) -->
+    <div id="screen" class="screen" inert>
+        <div id="wallpaper" class="wallpaper"></div>
+        <div id="desktop" class="desktop"></div>
+        <div id="windows" class="windows"></div>
+        <div id="menubar" class="menubar"></div>
+        <div id="flyouts" class="flyouts"></div>
+        <div id="toasts" class="toasts" aria-live="polite"></div>
+        <div id="taskbar" class="taskbar"></div>
+    </div>
+
+    <div id="lock" class="lock" hidden></div>
+    <div id="power" class="power" hidden></div>
+
+    <!-- Display effects: night light and brightness -->
+    <div id="fx-night" class="fx fx-night"></div>
+    <div id="fx-dim" class="fx fx-dim"></div>
+
+    <noscript>
+        <p class="boot-message">JavaScript is required to start the system.</p>
+    </noscript>
+
+    <script>
+        // ES modules and JSON files cannot be loaded from file:// - explain instead of showing a blank screen.
+        if (location.protocol === 'file:') {
+            document.getElementById('boot').classList.add('has-error');
+            document.getElementById('boot-message').textContent =
+                'This project has to be opened through a local web server (http://localhost), not directly from the file system.';
+        }
+    </script>
+</body>
+</html>

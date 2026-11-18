@@ -1,0 +1,198 @@
+/*
+ * Taskbar: a floating dock with Start, the app buttons and the Recycle Bin, as on a Mac.
+ * Every button is a rounded tile; the tiles near the pointer grow (see taskbar.js).
+ * (Widgets, Task View, the clock and the status icons are in the menu bar.)
+ */
+
+.taskbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--dock-gap); /* the dock floats: this is the gap under it */
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--dock-h);
+  pointer-events: none; /* only the dock takes clicks; the strip around it is the screen */
+}
+
+.taskbar[data-align="left"] {
+  justify-content: flex-start;
+  padding-inline-start: 0.6rem;
+}
+
+/* the dock: one rounded bar that floats. Radius 1.4rem = the radius of a tile (1rem) + the space around it (0.4rem) */
+.taskbar-center {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  max-width: calc(100% - 1.2rem);
+  height: var(--dock-h);
+  padding: 0 0.6rem;
+  border: 1px solid var(--stroke);
+  border-radius: 1.4rem;
+  background: var(--bg-4);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  box-shadow: var(--shadow-flyout);
+  pointer-events: auto;
+  transition: transform .3s var(--ease-out);
+}
+
+/* hidden (a window covers it, or Settings says so): the dock sits below the screen until the pointer rests at the bottom edge */
+.taskbar.is-hidden .taskbar-center {
+  transform: translateY(calc(100% + var(--dock-gap) + 0.4rem));
+  pointer-events: none;
+}
+
+.taskbar.is-hidden.is-revealed .taskbar-center {
+  transform: none;
+  pointer-events: auto;
+}
+
+/* the strip at the bottom edge that brings it back, with a thin line to show that the dock is there */
+.dock-zone {
+  display: none;
+}
+
+.taskbar.is-hidden .dock-zone {
+  position: absolute;
+  bottom: calc(var(--dock-gap) * -1);
+  left: 50%;
+  display: block;
+  width: 24rem;
+  height: var(--dock-gap);
+  translate: -50% 0;
+  pointer-events: auto;
+}
+
+.taskbar[data-align="left"].is-hidden .dock-zone {
+  inset-inline-start: 0.6rem;
+  translate: none;
+}
+
+.dock-zone::after {
+  content: "";
+  position: absolute;
+  bottom: 0.2rem;
+  left: 50%;
+  width: 6rem;
+  height: 0.2rem;
+  border-radius: 0.1rem;
+  background: rgba(255, 255, 255, .4);
+  translate: -50% 0;
+}
+
+.taskbar[data-align="left"] .dock-zone::after {
+  inset-inline-start: 8.4rem;
+}
+
+/* the apps, set apart from Start by a thin line */
+.tb-apps {
+  display: flex;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.tb-apps:not(:empty) {
+  padding-inline-start: 0.4rem;
+  border-inline-start: 1px solid var(--stroke-strong);
+}
+
+/* the Recycle Bin, at the right end, set apart by a thin line */
+.tb-end {
+  display: flex;
+  height: 2.8rem;
+  padding-inline-start: 0.4rem;
+  border-inline-start: 1px solid var(--stroke-strong);
+}
+
+/* files are over it */
+.tb-trash.is-drop {
+  filter: brightness(1.25);
+  scale: 1.2;
+}
+
+/* ------------------------------------------------------------------ tiles */
+
+/* 2.8rem, not the 2.4rem of a normal button: these are the icons of a dock */
+.tb-btn {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  padding: 0;
+  border: 0;
+  border-radius: 1rem;
+  background: var(--dock-tile);
+  box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, .2);
+  color: var(--text);
+  /* --zoom is set by taskbar.js while the pointer is near; the tile grows upward from its bottom edge */
+  scale: var(--zoom, 1);
+  transform-origin: 50% 100%;
+  transition: scale .1s ease-out, filter .12s;
+}
+
+/* a panel that belongs to the button is open */
+.tb-btn.is-open {
+  filter: brightness(1.25);
+}
+
+.tb-btn img,
+.tb-btn .icon {
+  transition: transform .14s var(--ease-out);
+  pointer-events: none;
+}
+
+.tb-btn img {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.tb-btn .icon {
+  --icon-size: 1.8rem;
+}
+
+.tb-btn:active img,
+.tb-btn:active .icon {
+  transform: scale(.82);
+}
+
+.tb-app {
+  touch-action: pan-y;
+}
+
+.tb-app.is-dragging {
+  z-index: 3;
+  box-shadow: var(--shadow-flyout);
+  transition: none;
+}
+
+/* the dot under an app that is running */
+.tb-indicator {
+  position: absolute;
+  bottom: -0.2rem;
+  left: 50%;
+  width: 0.2rem;
+  height: 0.2rem;
+  border-radius: 50%;
+  background: var(--text-2);
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity .15s;
+}
+
+.tb-app.is-running .tb-indicator {
+  opacity: 1;
+}
+
+/* phones: the dock may not be wider than the screen */
+@media (max-width: 32.6rem) {
+  .taskbar-center {
+    overflow: hidden;
+  }
+}

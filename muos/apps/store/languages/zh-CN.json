@@ -1,0 +1,65 @@
+{
+  "store": {
+    "uninstall": "卸载",
+    "uninstallTitle": "卸载 {name}？",
+    "uninstallMessage": "{name} 及其打开的窗口将被关闭，并从“开始”和任务栏中移除。你可以随时在此重新安装。",
+    "search": "搜索应用",
+    "back": "返回",
+    "clearSearch": "清除搜索",
+    "previous": "上一个",
+    "next": "下一个",
+    "nav": {
+      "home": "主页",
+      "apps": "应用",
+      "library": "库"
+    },
+    "featured": "精选",
+    "topFree": "热门免费应用",
+    "seeAll": "查看全部",
+    "free": "免费",
+    "get": "获取",
+    "open": "打开",
+    "installing": "正在安装...",
+    "installed": "已安装",
+    "notInstalled": "未安装",
+    "installedTitle": "{name} 已安装",
+    "installedBody": "单击此处打开它。",
+    "nothing": "这里没有内容。",
+    "noResults": "没有与“{query}”匹配的应用。",
+    "results": "“{query}”的搜索结果",
+    "categories": {
+      "all": "所有应用",
+      "productivity": "效率",
+      "image": "图像",
+      "video": "视频",
+      "audio": "音频",
+      "utilities": "实用工具",
+      "developer": "开发人员工具",
+      "internet": "Internet"
+    },
+    "library": {
+      "count": {
+        "one": "已安装 {count} 个应用",
+        "other": "已安装 {count} 个应用"
+      },
+      "available": "可供安装"
+    },
+    "detail": {
+      "category": "类别",
+      "version": "版本",
+      "price": "价格",
+      "status": "状态",
+      "about": "关于此应用",
+      "whatsNew": "新增内容",
+      "firstRelease": "此应用在桌面上的首个版本。",
+      "additional": "附加信息",
+      "publishedBy": "发布者",
+      "identifier": "标识符",
+      "worksOn": "适用于",
+      "thisDesktop": "此桌面",
+      "more": "{category}中的更多内容"
+    },
+    "more": "查看更多",
+    "version": "版本 {version}"
+  }
+}

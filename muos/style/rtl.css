@@ -1,0 +1,43 @@
+/*
+ * Right-to-left languages (Arabic). The page is mirrored by dir="rtl" on <html> (set by the
+ * language, see languages/index.json): flex and grid rows, text alignment and every logical
+ * property (inset-inline-start, margin-inline-end ...) turn around by themselves. What is here
+ * is what that cannot do: pictures that point somewhere, slides that come from a side, and the
+ * parts that must keep reading from left to right (numbers on a keypad, the console, sliders).
+ */
+
+/* Glyphs that point to a side turn around with the text. `scale` composes with the rotation some of them have. */
+html[dir="rtl"] .icon[data-icon="arrow-left"],
+html[dir="rtl"] .icon[data-icon="arrow-right"],
+html[dir="rtl"] .icon[data-icon="chevron-left"],
+html[dir="rtl"] .icon[data-icon="chevron-right"],
+html[dir="rtl"] .icon[data-icon="panel-right"],
+html[dir="rtl"] .icon[data-icon="undo"],
+html[dir="rtl"] .icon[data-icon="redo"] {
+  scale: -1 1;
+}
+
+/* Things that slide in from a side come from the other one. */
+html[dir="rtl"] .switch input:checked::after {
+  transform: translateX(-1.2rem);
+}
+
+html[dir="rtl"] .toast {
+  animation-name: toast-in-rtl;
+}
+
+html[dir="rtl"] .toast.is-leaving {
+  transform: translateX(-3rem);
+}
+
+@keyframes toast-in-rtl {
+  from {
+    opacity: 0;
+    transform: translateX(-4.6rem);
+  }
+}
+
+/* Sliders keep their direction: their fill is drawn from left to right. */
+html[dir="rtl"] input[type="range"] {
+  direction: ltr;
+}

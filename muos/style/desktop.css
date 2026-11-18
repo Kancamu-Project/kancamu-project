@@ -1,0 +1,104 @@
+/*
+ * Desktop icons.
+ */
+
+.desktop {
+  position: absolute;
+  inset: var(--menubar-h) 0 var(--work-bottom) 0;
+  z-index: 1;
+  overflow: hidden;
+  outline: none;
+}
+
+/* Icons sit in slots: --c and --r (set by the shell) are the column and row. */
+.desktop-icons {
+  --cell-w: 4.8rem;
+  --cell-h: 6rem;
+  --icon: 3rem;
+  position: absolute;
+  inset: 0;
+}
+
+.desktop-icons[data-size="small"] {
+  --cell-h: 4.8rem;
+  --icon: 2rem;
+}
+
+.desktop-icons[data-size="large"] {
+  --cell-w: 7rem;
+  --cell-h: 8.6rem;
+  --icon: 5.2rem;
+}
+
+.dicon {
+  position: absolute;
+  left: calc(var(--c, 0) * var(--cell-w) + 2px);
+  top: calc(var(--r, 0) * var(--cell-h) + 2px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: calc(var(--cell-w) - 0.2rem);
+  height: calc(var(--cell-h) - 0.2rem);
+  min-width: 0;
+  padding: 0.4rem 2px 2px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: #fff;
+}
+
+.dicon:hover {
+  border-color: rgba(255, 255, 255, .14);
+  background: rgba(255, 255, 255, .12);
+}
+
+.dicon.is-selected {
+  border-color: rgba(255, 255, 255, .32);
+  background: rgba(255, 255, 255, .22);
+}
+
+.dicon.is-drop {
+  border-color: rgba(255, 255, 255, .5);
+  background: rgba(255, 255, 255, .32);
+}
+
+.dicon.is-cut .dicon-img {
+  opacity: .5;
+}
+
+.dicon-img {
+  flex: none;
+  width: var(--icon);
+  height: var(--icon);
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.dicon-label {
+  display: -webkit-box;
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 0.8rem;
+  line-height: 1rem;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .85), 0 0 0.4rem rgba(0, 0, 0, .55);
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.dicon-edit {
+  width: 100%;
+  padding: 0 2px;
+  overflow: hidden;
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  background: #fff;
+  color: #000;
+  font: 0.8rem/1rem var(--font);
+  text-align: center;
+  resize: none;
+  outline: none;
+}

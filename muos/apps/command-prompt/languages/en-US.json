@@ -1,0 +1,173 @@
+{
+  "cmd": {
+    "banner": "Type \"help\" to see the available commands.",
+    "version": "Version {version}",
+    "echoOn": "ECHO is on.",
+    "pause": "Press any key to continue . . .",
+    "tabs": {
+      "new": "New tab",
+      "close": "Close tab"
+    },
+    "settings": {
+      "title": "Console settings",
+      "scheme": "Color scheme",
+      "font": "Font",
+      "size": "Font size",
+      "cursor": "Cursor",
+      "cursors": {
+        "block": "Block",
+        "bar": "Bar",
+        "underscore": "Underscore"
+      },
+      "opacity": "Background opacity",
+      "reset": "Reset to defaults"
+    },
+    "schemes": {
+      "campbell": "Campbell",
+      "oneHalf": "One Half Dark",
+      "solarizedDark": "Solarized Dark",
+      "solarizedLight": "Solarized Light",
+      "tango": "Tango Dark",
+      "vintage": "Vintage",
+      "ubuntu": "Ubuntu",
+      "retro": "Retro"
+    },
+    "menu": {
+      "selectAll": "Select all",
+      "clear": "Clear screen"
+    },
+    "help": {
+      "intro": "For more information on a specific command, type HELP command-name",
+      "call": "Runs a batch file or a command from another batch file.",
+      "find": "Searches for a text string in files or in piped output.",
+      "findstr": "Searches for strings in files or in piped output.",
+      "if": "Runs a command only when a condition is true.",
+      "more": "Displays a file or piped output.",
+      "path": "Displays the search path for executable files.",
+      "pause": "Suspends processing of a batch file and displays a message.",
+      "rem": "Records comments in batch files.",
+      "sort": "Sorts the lines of a file or piped output.",
+      "vol": "Displays the disk volume label and serial number.",
+      "unknown": "This command is not supported by the help utility.",
+      "aliases": "Also available as: {names}",
+      "cd": "Displays the name of or changes the current directory.",
+      "cls": "Clears the screen.",
+      "color": "Sets the console foreground and background colors.",
+      "copy": "Copies one or more files to another location.",
+      "date": "Displays the date.",
+      "del": "Deletes one or more files.",
+      "dir": "Displays a list of files and subdirectories in a directory.",
+      "echo": "Displays messages.",
+      "exit": "Quits the Command Prompt.",
+      "help": "Provides help information for commands.",
+      "hostname": "Prints the name of this device.",
+      "ipconfig": "Displays the state of the network connection.",
+      "md": "Creates a directory.",
+      "move": "Moves files or directories, or renames them.",
+      "rd": "Removes a directory.",
+      "ren": "Renames a file or a directory.",
+      "set": "Displays, sets, or removes environment variables.",
+      "shutdown": "Shuts down, restarts or signs out of the system.",
+      "start": "Opens an app, a file or a folder in a new window.",
+      "systeminfo": "Displays information about this device and system.",
+      "taskkill": "Closes a window by its process ID or its image name.",
+      "tasklist": "Displays the windows that are currently open.",
+      "time": "Displays the system time.",
+      "title": "Sets the window title of this Command Prompt.",
+      "tree": "Graphically displays the folder structure of a path.",
+      "type": "Displays the contents of a text file.",
+      "ver": "Displays the system version.",
+      "whoami": "Displays the current device and user name."
+    },
+    "errors": {
+      "notRecognized": "'{name}' is not recognized as an internal or external command,\noperable program or batch file.",
+      "pathNotFound": "The system cannot find the path specified.",
+      "fileNotFound": "The system cannot find the file specified.",
+      "couldNotFind": "Could Not Find {path}",
+      "startNotFound": "The system cannot find the file {name}.",
+      "accessDenied": "Access is denied.",
+      "syntax": "The syntax of the command is incorrect.",
+      "exists": "A subdirectory or file {name} already exists.",
+      "duplicateName": "A duplicate file name exists, or the file cannot be found.",
+      "notEmpty": "The directory is not empty.",
+      "dirNameInvalid": "The directory name is invalid.",
+      "invalidSwitch": "Invalid switch - \"{switch}\".",
+      "diskFull": "There is not enough space on the disk.",
+      "driveNotFound": "The system cannot find the drive specified.",
+      "copyOntoItself": "The file cannot be copied onto itself.",
+      "sameColors": "The foreground and background colors cannot be the same.",
+      "envNotDefined": "Environment variable {name} not defined",
+      "noTask": "ERROR: The process \"{name}\" not found.",
+      "pipes": "Pipes ( | ) are not supported in this console.",
+      "batchDepth": "Batch files are nested too deeply.",
+      "batchLoop": "The batch file ran for too long and was stopped.",
+      "label": "The system cannot find the batch label specified - {name}",
+      "standalone": "This command is only available inside the desktop."
+    },
+    "dir": {
+      "volume": "Volume in drive C has no label.",
+      "serial": "Volume Serial Number is {serial}",
+      "directoryOf": "Directory of {path}",
+      "files": "File(s)",
+      "dirs": "Dir(s)",
+      "bytes": "bytes",
+      "bytesFree": "bytes free"
+    },
+    "copy": {
+      "done": "file(s) copied."
+    },
+    "move": {
+      "files": "file(s) moved.",
+      "dirs": "dir(s) moved."
+    },
+    "date": {
+      "current": "The current date is: {value}"
+    },
+    "time": {
+      "current": "The current time is: {value}"
+    },
+    "tree": {
+      "header": "Folder PATH listing",
+      "serial": "Volume serial number is {serial}",
+      "none": "No subfolders exist"
+    },
+    "tasklist": {
+      "image": "Image Name",
+      "pid": "PID",
+      "title": "Window Title"
+    },
+    "taskkill": {
+      "success": "SUCCESS: The process with PID {pid} has been terminated."
+    },
+    "shutdown": {
+      "usage": "Usage: SHUTDOWN [/S | /R | /L | /H]\n\n    /S    Shut down the system.\n    /R    Restart the system.\n    /L    Sign out.\n    /H    Put the system to sleep."
+    },
+    "systeminfo": {
+      "hostName": "Host Name",
+      "osName": "OS Name",
+      "osVersion": "OS Version",
+      "systemType": "System Type",
+      "processors": "Processor(s)",
+      "cores": "{count} logical processor(s)",
+      "memory": "Total Physical Memory",
+      "browser": "Browser",
+      "display": "Display",
+      "locale": "System Locale",
+      "timeZone": "Time Zone",
+      "disk": "Disk Space",
+      "diskValue": "{used} used, {free} free",
+      "battery": "Battery",
+      "unknown": "Unknown"
+    },
+    "ipconfig": {
+      "title": "IP Configuration",
+      "adapter": "Wireless LAN adapter Wi-Fi:",
+      "mediaState": "Media State",
+      "connected": "Media connected",
+      "disconnected": "Media disconnected",
+      "type": "Connection type",
+      "downlink": "Downlink",
+      "rtt": "Round-trip time"
+    }
+  }
+}

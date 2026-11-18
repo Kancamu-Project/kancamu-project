@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Explorer</title>
+    <link rel="icon" href="favicon.png">
+    <script>
+      // Where the OS is: its window passes the address as ?os=; a page opened on its own looks next to /apps.
+      (() => {
+        const os = new URLSearchParams(location.search).get('os') || new URL('../../', location.href).href;
+        const add = (el) => document.head.append(el);
+        add(Object.assign(document.createElement('script'), { type: 'importmap', textContent: JSON.stringify({ imports: { 'webos/': os + 'system/' } }) }));
+        add(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: os + 'style/app.css' }));
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="app.js"></script>
+</head>
+<body>
+    <div class="explorer">
+        <!-- One tab per open location -->
+        <div id="tabs" class="tabs" role="tablist"></div>
+
+        <!-- Command bar: New, Cut, Copy, Paste ... (filled by app.js) -->
+        <div id="commandbar" class="commandbar" role="toolbar"></div>
+
+        <!-- Navigation: back / forward / up, address bar, search -->
+        <div class="navbar">
+            <button id="nav-back" class="nav-btn" type="button" data-i18n-tip="explorer.nav.back"><i class="icon" data-icon="arrow-left"></i></button>
+            <button id="nav-forward" class="nav-btn" type="button" data-i18n-tip="explorer.nav.forward"><i class="icon" data-icon="arrow-right"></i></button>
+            <button id="nav-up" class="nav-btn" type="button" data-i18n-tip="explorer.nav.up"><i class="icon" data-icon="arrow-up"></i></button>
+            <button id="nav-refresh" class="nav-btn" type="button" data-i18n-tip="files.refresh"><i class="icon" data-icon="refresh"></i></button>
+            <div id="address" class="address"></div>
+            <label class="searchbox">
+                <input id="search" type="text" spellcheck="false" autocomplete="off">
+                <i class="icon" data-icon="search"></i>
+            </label>
+        </div>
+
+        <div class="main">
+            <nav id="sidebar" class="sidebar"></nav>
+            <div class="content-pane">
+                <div id="content-head" class="content-head" hidden></div>
+                <section id="content" class="content" tabindex="0" role="listbox" aria-multiselectable="true"></section>
+            </div>
+            <aside id="preview" class="preview" hidden></aside>
+        </div>
+
+        <div class="statusbar">
+            <span id="status-count"></span>
+            <span id="status-selection"></span>
+            <span class="status-spacer"></span>
+            <button id="view-details" class="status-btn" type="button" data-i18n-tip="explorer.view.details"><i class="icon" data-icon="view-list"></i></button>
+            <button id="view-icons" class="status-btn" type="button" data-i18n-tip="explorer.view.icons"><i class="icon" data-icon="view-grid"></i></button>
+        </div>
+    </div>
+</body>
+</html>

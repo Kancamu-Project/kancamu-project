@@ -1,0 +1,93 @@
+{
+  "explorer": {
+    "nav": {
+      "back": "返回",
+      "forward": "前进",
+      "up": "上移一级"
+    },
+    "import": {
+      "importing": "正在复制文件..."
+    },
+    "props": {
+      "used": "已用空间",
+      "free": "可用空间",
+      "capacity": "容量"
+    },
+    "home": "主页",
+    "thisPC": "此电脑",
+    "localDisk": "本地磁盘 (C:)",
+    "driveType": "本地磁盘",
+    "driveFree": "{total} 中可用 {free}",
+    "quickAccess": "快速访问",
+    "recent": "最近使用",
+    "foldersTitle": "文件夹",
+    "drives": "设备和驱动器",
+    "searchIn": "搜索 {name}",
+    "searchResults": "在 {name} 中的搜索结果",
+    "noSearchResults": "没有与搜索条件匹配的项。",
+    "emptyFolder": "此文件夹为空。",
+    "notFoundTitle": "文件资源管理器",
+    "notFound": "找不到“{path}”。请检查拼写，然后重试。",
+    "openNewWindow": "在新窗口中打开",
+    "sort": "排序",
+    "more": "查看更多",
+    "selectAll": "全选",
+    "selectNone": "全部取消",
+    "invertSelection": "反向选择",
+    "view": {
+      "icons": "大图标",
+      "xl": "超大图标",
+      "large": "大图标",
+      "medium": "中等图标",
+      "small": "小图标",
+      "list": "列表",
+      "details": "详细信息",
+      "tiles": "平铺",
+      "show": "显示",
+      "navPane": "导航窗格",
+      "detailsPane": "详细信息窗格",
+      "previewPane": "预览窗格"
+    },
+    "navPane": "导航窗格",
+    "tabs": {
+      "new": "新建标签页",
+      "close": "关闭标签页",
+      "openInNewTab": "在新标签页中打开"
+    },
+    "details": {
+      "contains": "项目"
+    },
+    "columns": {
+      "folder": "文件夹",
+      "originalLocation": "原位置",
+      "dateDeleted": "删除日期"
+    },
+    "status": {
+      "items": {
+        "one": "{count} 个项目",
+        "other": "{count} 个项目"
+      },
+      "selected": {
+        "one": "已选择 {count} 个项目",
+        "other": "已选择 {count} 个项目"
+      }
+    },
+    "trash": {
+      "empty": "回收站为空。",
+      "restore": "还原",
+      "restoreAll": "还原所有项目",
+      "restoreSelected": "还原选定的项目",
+      "restoreFailed": "无法还原该项目",
+      "deleteForever": "永久删除"
+    },
+    "preview": {
+      "empty": "选择一个文件以预览。",
+      "unavailable": "无可用预览。",
+      "revert": "还原",
+      "dontSave": "不保存",
+      "saveTitle": "未保存的更改",
+      "saveMessage": "是否要保存对“{name}”的更改？",
+      "saveFailed": "无法保存该文件"
+    }
+  }
+}

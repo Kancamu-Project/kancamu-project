@@ -1,0 +1,94 @@
+{
+  "app": {
+    "name": "Photos"
+  },
+  "photos": {
+    "importFailed": "The photo can't be added",
+    "back": "Back",
+    "fit": "Fit",
+    "rotate": "Rotate",
+    "setBackground": "Set as background",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "import": "Add photos",
+    "openFolder": "Open folder",
+    "empty": "No pictures yet. Add photos, or save a picture from Paint or Camera.",
+    "emptyFavorites": "No favorites yet. Select the star on a photo to add it here.",
+    "noResults": "No photos match your search.",
+    "deleteTitle": "Delete photo",
+    "deleteMessage": "\"{name}\" will be moved to the Recycle Bin.",
+    "deleteMany": {
+      "one": "{count} photo will be moved to the Recycle Bin.",
+      "other": "{count} photos will be moved to the Recycle Bin."
+    },
+    "tabs": {
+      "gallery": "Gallery",
+      "albums": "Albums",
+      "favorites": "Favorites"
+    },
+    "count": {
+      "one": "{count} photo",
+      "other": "{count} photos"
+    },
+    "selected": {
+      "one": "{count} selected",
+      "other": "{count} selected"
+    },
+    "select": "Select",
+    "search": "Search photos",
+    "size": "Thumbnail size",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "favorite": "Add to favorites",
+    "unfavorite": "Remove from favorites",
+    "slideshow": "Slideshow",
+    "info": "Info",
+    "editAction": "Edit",
+    "facts": {
+      "name": "Name",
+      "location": "Location",
+      "type": "Type",
+      "size": "Size",
+      "dimensions": "Dimensions",
+      "created": "Created",
+      "modified": "Modified"
+    },
+    "edit": {
+      "crop": "Crop",
+      "aspect": {
+        "original": "Original",
+        "square": "Square",
+        "wide": "16:9",
+        "standard": "4:3",
+        "photo": "3:2"
+      },
+      "transform": "Rotate and flip",
+      "rotateLeft": "Rotate left",
+      "rotateRight": "Rotate right",
+      "flipH": "Flip horizontal",
+      "flipV": "Flip vertical",
+      "adjust": "Adjust",
+      "brightness": "Brightness",
+      "contrast": "Contrast",
+      "saturation": "Saturation",
+      "filters": "Filters",
+      "filter": {
+        "none": "None",
+        "grayscale": "Black and white",
+        "sepia": "Sepia",
+        "warm": "Warm",
+        "cool": "Cool",
+        "vivid": "Vivid",
+        "fade": "Faded",
+        "invert": "Negative"
+      },
+      "reset": "Reset all",
+      "save": "Save",
+      "saveCopy": "Save a copy",
+      "copySuffix": "(edited)",
+      "failed": "The photo can't be edited or saved"
+    },
+    "picturesFolder": "Pictures",
+    "selectAll": "Select all"
+  }
+}

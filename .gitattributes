@@ -1,0 +1,13 @@
+# Text files use LF everywhere
+* text=auto eol=lf
+
+# ArtCraft apps are stored byte-for-byte (hashed file names, WASM, scripts)
+artcraft/** -text
+
+# Binary types
+*.png binary
+*.webp binary
+*.ico binary
+*.woff2 binary
+*.wasm binary
+*.ttf binary

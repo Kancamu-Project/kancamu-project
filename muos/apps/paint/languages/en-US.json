@@ -1,0 +1,108 @@
+{
+  "app": {
+    "name": "Paint"
+  },
+  "paint": {
+    "size": "Size",
+    "customColor": "Edit colors",
+    "untitled": "Untitled",
+    "groups": {
+      "image": "Image",
+      "tools": "Tools",
+      "brushes": "Brushes",
+      "shapes": "Shapes",
+      "size": "Size",
+      "colors": "Colors"
+    },
+    "tools": {
+      "select": "Select",
+      "pencil": "Pencil",
+      "eraser": "Eraser",
+      "fill": "Fill with color",
+      "picker": "Color picker",
+      "text": "Text",
+      "zoom": "Magnifier"
+    },
+    "brushes": {
+      "brush": "Brush",
+      "calligraphy": "Calligraphy brush",
+      "marker": "Marker",
+      "spray": "Spray can"
+    },
+    "shapes": {
+      "line": "Line",
+      "rect": "Rectangle",
+      "roundrect": "Rounded rectangle",
+      "ellipse": "Oval",
+      "triangle": "Triangle",
+      "diamond": "Diamond",
+      "pentagon": "Pentagon",
+      "hexagon": "Hexagon",
+      "arrow": "Arrow",
+      "star": "Star"
+    },
+    "outline": "Outline",
+    "fill": "Fill",
+    "style": {
+      "none": "None",
+      "solid": "Solid color"
+    },
+    "menu": {
+      "image": "Image",
+      "file": "File",
+      "edit": "Edit",
+      "view": "View",
+      "new": "New tab",
+      "open": "Open...",
+      "save": "Save",
+      "saveAs": "Save as...",
+      "exit": "Exit",
+      "undo": "Undo",
+      "redo": "Redo",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "statusBar": "Status bar",
+      "selectAll": "Select all"
+    },
+    "crop": "Crop to selection",
+    "rotate": "Rotate and flip",
+    "rotateRight": "Rotate right 90°",
+    "rotateLeft": "Rotate left 90°",
+    "rotate180": "Rotate 180°",
+    "flipH": "Flip horizontal",
+    "flipV": "Flip vertical",
+    "invert": "Invert colors",
+    "resize": "Resize canvas...",
+    "resizeTitle": "Resize canvas",
+    "width": "Width (pixels)",
+    "height": "Height (pixels)",
+    "textTitle": "Text",
+    "textPrompt": "Type the text, then click OK. It is drawn where you clicked, in the left-click color; the Size slider sets how big.",
+    "unsaved": "Do you want to save changes to {name}?",
+    "openFailed": "The picture can't be opened",
+    "saveFailed": "The picture can't be saved",
+    "clear": "Clear image",
+    "zoom": {
+      "title": "Zoom",
+      "fit": "Fit",
+      "actual": "Actual size"
+    },
+    "layers": {
+      "title": "Layers",
+      "layer": "Layer {n}",
+      "background": "Background",
+      "add": "New layer",
+      "visibility": "Show or hide the layer",
+      "rename": "Rename layer",
+      "renamePrompt": "Name of the layer",
+      "opacity": "Opacity",
+      "duplicate": "Duplicate layer",
+      "up": "Move layer up",
+      "down": "Move layer down",
+      "mergeDown": "Merge with the layer below",
+      "delete": "Delete layer",
+      "copyOf": "{name} copy"
+    },
+    "unsavedDontSave": "Don't save"
+  }
+}

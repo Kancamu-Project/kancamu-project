@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paint</title>
+    <link rel="icon" href="favicon.png">
+    <script>
+      // Where the OS is: its window passes the address as ?os=; a page opened on its own looks next to /apps.
+      (() => {
+        const os = new URLSearchParams(location.search).get('os') || new URL('../../', location.href).href;
+        const add = (el) => document.head.append(el);
+        add(Object.assign(document.createElement('script'), { type: 'importmap', textContent: JSON.stringify({ imports: { 'webos/': os + 'system/' } }) }));
+        add(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: os + 'style/app.css' }));
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="app.js"></script>
+</head>
+<body>
+    <div class="paint">
+        <div id="menubar" class="menubar"></div>
+        <div id="ribbon" class="ribbon"></div>
+        <div class="workspace">
+            <div id="stage" class="stage">
+                <div class="canvas-wrap">
+                    <div id="stack" class="stack">
+                        <div id="selection" class="selection" hidden></div>
+                        <div id="surface" class="surface"></div>
+                    </div>
+                </div>
+            </div>
+            <aside id="layers-panel" class="layers-panel"></aside>
+        </div>
+        <div id="status" class="status">
+            <span id="st-pos"></span>
+            <span id="st-sel"></span>
+            <span id="st-size"></span>
+            <span class="status-fill"></span>
+            <div class="zoom-ctl">
+                <button id="zoom-out" class="zbtn" type="button">&minus;</button>
+                <input id="zoom" class="slider" type="range" min="10" max="800" step="5" value="100">
+                <button id="zoom-in" class="zbtn" type="button">+</button>
+                <span id="zoom-text" class="zoom-text"></span>
+                <button id="zoom-fit" class="zbtn zfit" type="button"></button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,173 @@
+{
+  "cmd": {
+    "banner": "输入 \"help\" 查看可用的命令。",
+    "version": "版本 {version}",
+    "echoOn": "ECHO 处于打开状态。",
+    "pause": "请按任意键继续. . .",
+    "tabs": {
+      "new": "新建标签页",
+      "close": "关闭标签页"
+    },
+    "settings": {
+      "title": "控制台设置",
+      "scheme": "配色方案",
+      "font": "字体",
+      "size": "字号",
+      "cursor": "光标",
+      "cursors": {
+        "block": "方块",
+        "bar": "竖线",
+        "underscore": "下划线"
+      },
+      "opacity": "背景不透明度",
+      "reset": "恢复默认设置"
+    },
+    "schemes": {
+      "campbell": "Campbell",
+      "oneHalf": "One Half Dark",
+      "solarizedDark": "Solarized Dark",
+      "solarizedLight": "Solarized Light",
+      "tango": "Tango Dark",
+      "vintage": "Vintage",
+      "ubuntu": "Ubuntu",
+      "retro": "Retro"
+    },
+    "menu": {
+      "selectAll": "全选",
+      "clear": "清屏"
+    },
+    "help": {
+      "intro": "有关某个命令的详细信息，请键入 HELP 命令名",
+      "call": "从另一个批处理文件中调用批处理文件或命令。",
+      "find": "在文件或管道输出中搜索文本字符串。",
+      "findstr": "在文件或管道输出中搜索字符串。",
+      "if": "仅在条件为真时运行命令。",
+      "more": "显示文件或管道输出。",
+      "path": "显示可执行文件的搜索路径。",
+      "pause": "暂停批处理文件的处理并显示一条消息。",
+      "rem": "在批处理文件中记录注释。",
+      "sort": "对文件或管道输出的行进行排序。",
+      "vol": "显示磁盘卷标和序列号。",
+      "unknown": "帮助实用程序不支持此命令。",
+      "aliases": "也可使用：{names}",
+      "cd": "显示当前目录名或改变当前目录。",
+      "cls": "清除屏幕。",
+      "color": "设置控制台的前景色和背景色。",
+      "copy": "将一个或多个文件复制到另一个位置。",
+      "date": "显示日期。",
+      "del": "删除一个或多个文件。",
+      "dir": "显示目录中的文件和子目录列表。",
+      "echo": "显示消息。",
+      "exit": "退出命令提示符。",
+      "help": "提供命令的帮助信息。",
+      "hostname": "打印此设备的名称。",
+      "ipconfig": "显示网络连接的状态。",
+      "md": "创建目录。",
+      "move": "移动文件或目录，或为其重命名。",
+      "rd": "删除目录。",
+      "ren": "重命名文件或目录。",
+      "set": "显示、设置或删除环境变量。",
+      "shutdown": "关闭、重启系统或注销。",
+      "start": "在新窗口中打开应用、文件或文件夹。",
+      "systeminfo": "显示有关此设备和系统的信息。",
+      "taskkill": "按进程 ID 或映像名称关闭窗口。",
+      "tasklist": "显示当前打开的窗口。",
+      "time": "显示系统时间。",
+      "title": "设置此命令提示符的窗口标题。",
+      "tree": "以图形方式显示路径的文件夹结构。",
+      "type": "显示文本文件的内容。",
+      "ver": "显示系统版本。",
+      "whoami": "显示当前的设备名和用户名。"
+    },
+    "errors": {
+      "notRecognized": "'{name}' 不是内部或外部命令，也不是可运行的程序\n或批处理文件。",
+      "pathNotFound": "系统找不到指定的路径。",
+      "fileNotFound": "系统找不到指定的文件。",
+      "couldNotFind": "找不到 {path}",
+      "startNotFound": "系统找不到文件 {name}。",
+      "accessDenied": "拒绝访问。",
+      "syntax": "命令语法不正确。",
+      "exists": "子目录或文件 {name} 已经存在。",
+      "duplicateName": "存在重复的文件名，或找不到文件。",
+      "notEmpty": "目录不是空的。",
+      "dirNameInvalid": "目录名称无效。",
+      "invalidSwitch": "无效的开关 - \"{switch}\"。",
+      "diskFull": "磁盘空间不足。",
+      "driveNotFound": "系统找不到指定的驱动器。",
+      "copyOntoItself": "无法将文件复制到它自身上。",
+      "sameColors": "前景色和背景色不能相同。",
+      "envNotDefined": "未定义环境变量 {name}",
+      "noTask": "错误：找不到进程 \"{name}\"。",
+      "pipes": "此控制台不支持管道 ( | )。",
+      "batchDepth": "批处理文件嵌套过深。",
+      "batchLoop": "批处理文件运行时间过长，已被停止。",
+      "label": "系统找不到指定的批处理标签 - {name}",
+      "standalone": "此命令只能在桌面内使用。"
+    },
+    "dir": {
+      "volume": " 驱动器 C 中的卷没有标签。",
+      "serial": " 卷的序列号是 {serial}",
+      "directoryOf": " {path} 的目录",
+      "files": "个文件",
+      "dirs": "个目录",
+      "bytes": "字节",
+      "bytesFree": "可用字节"
+    },
+    "copy": {
+      "done": "个文件已复制。"
+    },
+    "move": {
+      "files": "个文件已移动。",
+      "dirs": "个目录已移动。"
+    },
+    "date": {
+      "current": "当前日期：{value}"
+    },
+    "time": {
+      "current": "当前时间：{value}"
+    },
+    "tree": {
+      "header": "文件夹 PATH 列表",
+      "serial": "卷序列号为 {serial}",
+      "none": "不存在子文件夹"
+    },
+    "tasklist": {
+      "image": "映像名称",
+      "pid": "PID",
+      "title": "窗口标题"
+    },
+    "taskkill": {
+      "success": "成功：PID 为 {pid} 的进程已被终止。"
+    },
+    "shutdown": {
+      "usage": "用法：SHUTDOWN [/S | /R | /L | /H]\n\n    /S    关闭系统。\n    /R    重启系统。\n    /L    注销。\n    /H    使系统进入睡眠状态。"
+    },
+    "systeminfo": {
+      "hostName": "主机名",
+      "osName": "OS 名称",
+      "osVersion": "OS 版本",
+      "systemType": "系统类型",
+      "processors": "处理器",
+      "cores": "{count} 个逻辑处理器",
+      "memory": "物理内存总量",
+      "browser": "浏览器",
+      "display": "显示器",
+      "locale": "系统区域设置",
+      "timeZone": "时区",
+      "disk": "磁盘空间",
+      "diskValue": "已用 {used}，可用 {free}",
+      "battery": "电池",
+      "unknown": "未知"
+    },
+    "ipconfig": {
+      "title": "IP 配置",
+      "adapter": "无线局域网适配器 Wi-Fi:",
+      "mediaState": "媒体状态",
+      "connected": "媒体已连接",
+      "disconnected": "媒体已断开连接",
+      "type": "连接类型",
+      "downlink": "下行速度",
+      "rtt": "往返时间"
+    }
+  }
+}

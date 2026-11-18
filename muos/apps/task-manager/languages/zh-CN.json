@@ -1,0 +1,104 @@
+{
+  "app": {
+    "name": "任务管理器"
+  },
+  "tm": {
+    "nav": {
+      "processes": "进程",
+      "performance": "性能",
+      "details": "详细信息",
+      "startup": "启动应用"
+    },
+    "speed": {
+      "title": "更新速度",
+      "high": "高（每秒）",
+      "normal": "正常（每 2 秒）",
+      "low": "低（每 4 秒）",
+      "paused": "已暂停"
+    },
+    "search": "键入名称以搜索",
+    "run": {
+      "button": "运行新任务",
+      "title": "运行新任务",
+      "message": "输入应用的名称，或文件或文件夹的路径，即可将其打开。",
+      "placeholder": "notepad",
+      "notFound": "找不到“{name}”。请检查名称，然后重试。"
+    },
+    "endTask": "结束任务",
+    "switchTo": "切换到",
+    "expand": "展开",
+    "collapse": "折叠",
+    "cols": {
+      "name": "名称",
+      "status": "状态",
+      "cpu": "CPU",
+      "memory": "内存",
+      "pid": "PID",
+      "user": "用户名",
+      "uptime": "已打开时间",
+      "description": "描述",
+      "publisher": "发布者",
+      "impact": "启动影响"
+    },
+    "groups": {
+      "apps": "应用",
+      "system": "muOS 进程",
+      "background": "后台进程"
+    },
+    "status": {
+      "running": "正在运行",
+      "suspended": "已暂停"
+    },
+    "system": {
+      "dwm": "桌面窗口管理器",
+      "shell": "开始、搜索和任务栏",
+      "disk": "虚拟磁盘服务"
+    },
+    "perf": {
+      "cpu": "CPU",
+      "memory": "内存",
+      "disk": "磁盘 (C:)",
+      "network": "网络",
+      "utilization": "利用率",
+      "processes": "进程",
+      "processors": "逻辑处理器",
+      "uptime": "运行时间",
+      "inUse": "使用中（脚本内存）",
+      "limit": "浏览器页面的上限",
+      "deviceMemory": "设备内存",
+      "activeTime": "活动时间",
+      "capacity": "容量",
+      "used": "已用",
+      "free": "可用",
+      "receive": "接收",
+      "state": "状态",
+      "online": "在线",
+      "offline": "离线",
+      "connection": "连接类型",
+      "downlink": "下载速度",
+      "latency": "延迟",
+      "unsupported": "此浏览器未报告",
+      "usage": "使用情况",
+      "seconds": "60 秒",
+      "note": {
+        "cpu": "网页无法读取真实的处理器负载。这里显示的是页面的繁忙程度：每秒测量其脚本阻塞页面的时间。",
+        "memory": "此页面脚本的内存（“堆”），以浏览器报告的为准。各应用的数值按每个窗口的大小分摊。",
+        "disk": "虚拟磁盘存放在浏览器存储中。活动时间统计的是上一秒内文件发生变化的次数。",
+        "network": "页面在上一秒内下载的字节数（应用加载、图片、网页）。浏览器标签页无法看到电脑的其他流量。"
+      }
+    },
+    "startup": {
+      "enabled": "已启用",
+      "disabled": "已禁用",
+      "enable": "启用",
+      "disable": "禁用",
+      "empty": "没有随系统启动的应用。",
+      "impact": {
+        "none": "无",
+        "low": "低",
+        "medium": "中",
+        "high": "高"
+      }
+    }
+  }
+}

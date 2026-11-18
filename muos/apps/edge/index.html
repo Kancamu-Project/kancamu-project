@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edge</title>
+    <link rel="icon" href="favicon.png">
+    <script>
+      // Where the OS is: its window passes the address as ?os=; a page opened on its own looks next to /apps.
+      (() => {
+        const os = new URLSearchParams(location.search).get('os') || new URL('../../', location.href).href;
+        const add = (el) => document.head.append(el);
+        add(Object.assign(document.createElement('script'), { type: 'importmap', textContent: JSON.stringify({ imports: { 'webos/': os + 'system/' } }) }));
+        add(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: os + 'style/app.css' }));
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="app.js"></script>
+</head>
+<body>
+    <div class="edge">
+        <div id="tabs" class="tabs" role="tablist"></div>
+        <div class="toolbar">
+            <button id="back" class="tbtn" type="button"><i class="icon" data-icon="arrow-left"></i></button>
+            <button id="forward" class="tbtn" type="button"><i class="icon" data-icon="arrow-right"></i></button>
+            <button id="reload" class="tbtn" type="button"><i class="icon" data-icon="refresh"></i></button>
+            <button id="home" class="tbtn" type="button"><i class="icon" data-icon="home"></i></button>
+            <form id="form" class="address" autocomplete="off">
+                <button id="site" class="site" type="button" tabindex="-1"></button>
+                <input id="url" type="text" spellcheck="false" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="suggest">
+                <div id="url-view" class="url-view" aria-hidden="true"></div>
+                <button id="star" class="star" type="button"><i class="icon" data-icon="star"></i></button>
+                <div id="suggest" class="suggest" role="listbox" hidden></div>
+            </form>
+            <button id="favorites" class="tbtn" type="button"><i class="icon" data-icon="panel-right"></i></button>
+            <button id="menu" class="tbtn" type="button"><i class="icon" data-icon="more"></i></button>
+        </div>
+        <div id="bookmarks" class="bookmarks" hidden></div>
+        <div id="notice" class="notice" hidden>
+            <span id="notice-text"></span>
+            <button id="notice-open" class="btn" type="button"></button>
+            <button id="notice-close" class="tbtn" type="button"><i class="icon" data-icon="dismiss"></i></button>
+        </div>
+        <div class="body">
+            <div id="page" class="page">
+                <div id="start" class="start">
+                    <h1 id="start-title"></h1>
+                    <form id="search" class="search">
+                        <i class="icon" data-icon="search"></i>
+                        <input id="search-input" type="text" spellcheck="false" autocomplete="off">
+                    </form>
+                    <div id="tiles" class="tiles"></div>
+                </div>
+            </div>
+            <aside id="panel" class="panel" hidden>
+                <div class="panel-head">
+                    <h2 id="panel-title"></h2>
+                    <button id="panel-clear" class="btn" type="button"></button>
+                    <button id="panel-close" class="tbtn" type="button"><i class="icon" data-icon="dismiss"></i></button>
+                </div>
+                <label class="panel-search">
+                    <i class="icon" data-icon="search"></i>
+                    <input id="panel-search" type="text" spellcheck="false" autocomplete="off">
+                </label>
+                <div id="panel-list" class="panel-list"></div>
+            </aside>
+        </div>
+    </div>
+</body>
+</html>

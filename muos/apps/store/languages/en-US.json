@@ -1,0 +1,65 @@
+{
+  "store": {
+    "uninstall": "Uninstall",
+    "uninstallTitle": "Uninstall {name}?",
+    "uninstallMessage": "{name} and its open windows will be closed and removed from Start and the taskbar. You can install it again here at any time.",
+    "search": "Search apps",
+    "back": "Back",
+    "clearSearch": "Clear search",
+    "previous": "Previous",
+    "next": "Next",
+    "nav": {
+      "home": "Home",
+      "apps": "Apps",
+      "library": "Library"
+    },
+    "featured": "Featured",
+    "topFree": "Top free apps",
+    "seeAll": "See all",
+    "free": "Free",
+    "get": "Get",
+    "open": "Open",
+    "installing": "Installing...",
+    "installed": "Installed",
+    "notInstalled": "Not installed",
+    "installedTitle": "{name} was installed",
+    "installedBody": "Click here to open it.",
+    "nothing": "Nothing here.",
+    "noResults": "No apps match \"{query}\".",
+    "results": "Results for \"{query}\"",
+    "categories": {
+      "all": "All apps",
+      "productivity": "Productivity",
+      "image": "Images",
+      "video": "Video",
+      "audio": "Audio",
+      "utilities": "Utilities & tools",
+      "developer": "Developer tools",
+      "internet": "Internet"
+    },
+    "library": {
+      "count": {
+        "one": "{count} app installed",
+        "other": "{count} apps installed"
+      },
+      "available": "Available to install"
+    },
+    "detail": {
+      "category": "Category",
+      "version": "Version",
+      "price": "Price",
+      "status": "Status",
+      "about": "About this app",
+      "whatsNew": "What's new",
+      "firstRelease": "The first release of this app for the desktop.",
+      "additional": "Additional information",
+      "publishedBy": "Published by",
+      "identifier": "Identifier",
+      "worksOn": "Works on",
+      "thisDesktop": "This desktop",
+      "more": "More in {category}"
+    },
+    "more": "See more",
+    "version": "Version {version}"
+  }
+}

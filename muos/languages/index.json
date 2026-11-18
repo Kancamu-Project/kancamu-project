@@ -1,0 +1,20 @@
+{
+  "default": "en-US",
+  "languages": [
+    {
+      "code": "en-US",
+      "name": "English (United States)",
+      "dir": "ltr"
+    },
+    {
+      "code": "zh-CN",
+      "name": "中文（简体）",
+      "dir": "ltr"
+    },
+    {
+      "code": "ar-SA",
+      "name": "العربية",
+      "dir": "rtl"
+    }
+  ]
+}

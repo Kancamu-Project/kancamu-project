@@ -1,0 +1,14 @@
+{
+  "name": "muos",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "muOS, a desktop that runs in the browser. There is nothing to build: serve this folder with any static web server. The scripts are only for the tests and for the list of project files.",
+  "scripts": {
+    "test": "node --test \"tests/*.test.mjs\"",
+    "index": "node tools/build-file-index.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

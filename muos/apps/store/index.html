@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store</title>
+    <link rel="icon" href="favicon.png">
+    <script>
+      // Where the OS is: its window passes the address as ?os=; a page opened on its own looks next to /apps.
+      (() => {
+        const os = new URLSearchParams(location.search).get('os') || new URL('../../', location.href).href;
+        const add = (el) => document.head.append(el);
+        add(Object.assign(document.createElement('script'), { type: 'importmap', textContent: JSON.stringify({ imports: { 'webos/': os + 'system/' } }) }));
+        add(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: os + 'style/app.css' }));
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="app.js"></script>
+</head>
+<body>
+    <div class="store">
+        <!-- Rail on the left: Home, Apps, Library -->
+        <nav id="rail" class="rail"></nav>
+
+        <div class="main">
+            <header class="topbar">
+                <button id="back" class="icon-btn" type="button"><i class="icon" data-icon="arrow-left"></i></button>
+                <label class="searchbox">
+                    <i class="icon" data-icon="search"></i>
+                    <input id="search" type="text" spellcheck="false" autocomplete="off">
+                    <button id="search-clear" class="clear" type="button" hidden><i class="icon" data-icon="dismiss"></i></button>
+                </label>
+            </header>
+            <main id="page" class="page" tabindex="-1"></main>
+        </div>
+    </div>
+</body>
+</html>

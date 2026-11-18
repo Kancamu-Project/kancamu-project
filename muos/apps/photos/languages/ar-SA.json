@@ -1,0 +1,94 @@
+{
+  "app": {
+    "name": "الصور"
+  },
+  "photos": {
+    "importFailed": "تعذّرت إضافة الصورة",
+    "back": "رجوع",
+    "fit": "ملاءمة",
+    "rotate": "تدوير",
+    "setBackground": "تعيين كخلفية",
+    "zoomIn": "تكبير",
+    "zoomOut": "تصغير",
+    "import": "إضافة صور",
+    "openFolder": "فتح المجلد",
+    "empty": "لا توجد صور بعد. أضف صورًا، أو احفظ صورة من الرسام أو الكاميرا.",
+    "emptyFavorites": "لا توجد صور مفضلة بعد. حدد النجمة على صورة لإضافتها هنا.",
+    "noResults": "لا توجد صور تطابق بحثك.",
+    "deleteTitle": "حذف الصورة",
+    "deleteMessage": "سيتم نقل \"{name}\" إلى سلة المحذوفات.",
+    "deleteMany": {
+      "one": "سيتم نقل {count} صورة إلى سلة المحذوفات.",
+      "other": "سيتم نقل {count} صور إلى سلة المحذوفات."
+    },
+    "tabs": {
+      "gallery": "المعرض",
+      "albums": "الألبومات",
+      "favorites": "المفضلة"
+    },
+    "count": {
+      "one": "{count} صورة",
+      "other": "{count} صور"
+    },
+    "selected": {
+      "one": "تم تحديد {count}",
+      "other": "تم تحديد {count}"
+    },
+    "select": "تحديد",
+    "search": "بحث في الصور",
+    "size": "حجم الصور المصغّرة",
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "favorite": "إضافة إلى المفضلة",
+    "unfavorite": "إزالة من المفضلة",
+    "slideshow": "عرض شرائح",
+    "info": "معلومات",
+    "editAction": "تحرير",
+    "facts": {
+      "name": "الاسم",
+      "location": "الموقع",
+      "type": "النوع",
+      "size": "الحجم",
+      "dimensions": "الأبعاد",
+      "created": "تاريخ الإنشاء",
+      "modified": "تاريخ التعديل"
+    },
+    "edit": {
+      "crop": "اقتصاص",
+      "aspect": {
+        "original": "الأصلي",
+        "square": "مربع",
+        "wide": "16:9",
+        "standard": "4:3",
+        "photo": "3:2"
+      },
+      "transform": "تدوير وقلب",
+      "rotateLeft": "تدوير لليسار",
+      "rotateRight": "تدوير لليمين",
+      "flipH": "قلب أفقي",
+      "flipV": "قلب رأسي",
+      "adjust": "ضبط",
+      "brightness": "السطوع",
+      "contrast": "التباين",
+      "saturation": "التشبع",
+      "filters": "المرشحات",
+      "filter": {
+        "none": "بلا",
+        "grayscale": "أبيض وأسود",
+        "sepia": "بني قديم",
+        "warm": "دافئ",
+        "cool": "بارد",
+        "vivid": "زاهٍ",
+        "fade": "باهت",
+        "invert": "سالب"
+      },
+      "reset": "إعادة تعيين الكل",
+      "save": "حفظ",
+      "saveCopy": "حفظ نسخة",
+      "copySuffix": "(معدّلة)",
+      "failed": "تعذّر تحرير الصورة أو حفظها"
+    },
+    "picturesFolder": "الصور",
+    "selectAll": "تحديد الكل"
+  }
+}

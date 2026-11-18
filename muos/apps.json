@@ -1,0 +1,933 @@
+{
+  "apps": [
+    {
+      "id": "edge",
+      "name": {
+        "en-US": "Edge",
+        "zh-CN": "Edge",
+        "ar-SA": "Edge"
+      },
+      "description": {
+        "en-US": "Browse web pages inside the desktop.",
+        "zh-CN": "在桌面内浏览网页。",
+        "ar-SA": "تصفّح صفحات الويب داخل سطح المكتب."
+      },
+      "publisher": {
+        "en-US": "Kancamu Project",
+        "zh-CN": "Kancamu Project",
+        "ar-SA": "Kancamu Project"
+      },
+      "version": "1.0.0",
+      "icon": "apps/edge/favicon.png",
+      "entry": "apps/edge/index.html",
+      "permissions": ["storage", "launch", "tray"],
+      "window": {
+        "width": 1000,
+        "height": 660,
+        "minWidth": 420,
+        "minHeight": 320
+      },
+      "behaviors": ["installed", "startup"],
+      "roles": ["browser"],
+      "categories": ["internet"],
+      "pinned": ["taskbar", "start"],
+      "store": {
+        "color": ["#0f7bd8", "#073761"]
+      }
+    },
+    {
+      "id": "file-explorer",
+      "name": {
+        "en-US": "File Explorer",
+        "zh-CN": "文件资源管理器",
+        "ar-SA": "مستكشف الملفات"
+      },
+      "description": {
+        "en-US": "Browse and manage the files and folders on this PC.",
+        "zh-CN": "浏览和管理这台电脑上的文件和文件夹。",
+        "ar-SA": "تصفّح الملفات والمجلدات على هذا الكمبيوتر وأدرها."
+      },
+      "publisher": {
+        "en-US": "Kancamu Project",
+        "zh-CN": "Kancamu Project",
+        "ar-SA": "Kancamu Project"
+      },
+      "version": "1.0.0",
+      "icon": "apps/file-explorer/favicon.png",
+      "entry": "apps/file-explorer/index.html",
+      "permissions": ["storage", "notify", "fs", "launch", "clipboard", "settings", "apps"],
+      "window": {
+        "width": 980,
+        "height": 620,
+        "minWidth": 440,
+        "minHeight": 320
+      },
+      "behaviors": ["installed"],
+      "roles": ["file-manager"],
+      "categories": ["utilities"],
+      "pinned": ["taskbar", "start"],
+      "store": {
+        "color": ["#d9a21b", "#62490c"]
+      }
+    },
+    {
+      "id": "store",
+      "name": {
+        "en-US": "Store",
+        "zh-CN": "Store",
+        "ar-SA": "Store"
+      },
+      "description": {
+        "en-US": "Browse the apps that are available on this desktop.",
+        "zh-CN": "浏览这台桌面上可用的应用。",
+        "ar-SA": "تصفّح التطبيقات المتاحة على سطح المكتب هذا."
+      },
+      "publisher": {
+        "en-US": "Kancamu Project",
+        "zh-CN": "Kancamu Project",
+        "ar-SA": "Kancamu Project"
+      },
+      "version": "1.0.0",
+      "icon": "apps/store/favicon.png",
+      "entry": "apps/store/index.html",
+      "permissions": ["storage", "notify", "launch", "settings", "apps"],
+      "window": {
+        "width": 960,
+        "height": 640,
+        "minWidth": 420,
+        "minHeight": 320
+      },
+      "behaviors": ["singleInstance", "installed"],
+      "roles": ["store"],
+      "categories": ["utilities"],
+      "pinned": ["taskbar", "start"]
+    },
+    {
+      "id": "settings",
+      "name": {
+        "en-US": "Settings",
+        "zh-CN": "设置",
+        "ar-SA": "الإعدادات"
+      },
+      "description": {
+        "en-US": "Personalize the system and change how it works.",
+        "zh-CN": "个性化系统并更改其工作方式。",
+        "ar-SA": "خصّص النظام وغيّر طريقة عمله."
+      },
+      "publisher": {
+        "en-US": "Kancamu Project",
+        "zh-CN": "Kancamu Project",
+        "ar-SA": "Kancamu Project"
+      },
+      "version": "1.0.0",
+      "icon": "apps/settings/favicon.png",
+      "entry": "apps/settings/index.html",
+      "permissions": ["storage", "notify", "launch", "power", "clipboard", "settings", "fs", "apps", "system"],
+      "window": {
+        "width": 1020,
+        "height": 680,
+        "minWidth": 460,
+        "minHeight": 380
+      },
+      "behaviors": ["singleInstance", "installed"],
+      "roles": ["settings"],
+      "categories": ["utilities"],
+      "pinned": ["start"],
+      "store": {
+        "color": ["#64748b", "#2d343f"]
+      },
+      "deepLinks": [
+        {
+          "title": {
+            "en-US": "Display",
+            "zh-CN": "显示",
+            "ar-SA": "العرض"
+          },
+          "args": {
+            "page": "system/display"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Sound",
+            "zh-CN": "声音",
+            "ar-SA": "الصوت"
+          },
+          "args": {
+            "page": "system/sound"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Notifications",
+            "zh-CN": "通知",
+            "ar-SA": "الإشعارات"
+          },
+          "args": {
+            "page": "system/notifications"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Power & battery",
+            "zh-CN": "电源和电池",
+            "ar-SA": "الطاقة والبطارية"
+          },
+          "args": {
+            "page": "system/power"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Storage",
+            "zh-CN": "存储",
+            "ar-SA": "التخزين"
+          },
+          "args": {
+            "page": "system/storage"
+          }
+        },
+        {
+          "title": {
+            "en-US": "About",
+            "zh-CN": "关于",
+            "ar-SA": "حول"
+          },
+          "args": {
+            "page": "system/about"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Bluetooth & devices",
+            "zh-CN": "蓝牙和设备",
+            "ar-SA": "Bluetooth والأجهزة"
+          },
+          "args": {
+            "page": "bluetooth"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Network & internet",
+            "zh-CN": "网络和 Internet",
+            "ar-SA": "الشبكة والإنترنت"
+          },
+          "args": {
+            "page": "network"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Background",
+            "zh-CN": "背景",
+            "ar-SA": "الخلفية"
+          },
+          "args": {
+            "page": "personalization/background"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Colors",
+            "zh-CN": "颜色",
+            "ar-SA": "الألوان"
+          },
+          "args": {
+            "page": "personalization/colors"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Lock screen",
+            "zh-CN": "锁屏界面",
+            "ar-SA": "شاشة القفل"
+          },
+          "args": {
+            "page": "personalization/lock-screen"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Start",
+            "zh-CN": "开始",
+            "ar-SA": "ابدأ"
+          },
+          "args": {
+            "page": "personalization/start"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Taskbar",
+            "zh-CN": "任务栏",
+            "ar-SA": "شريط المهام"
+          },
+          "args": {
+            "page": "personalization/taskbar"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Installed apps",
+            "zh-CN": "已安装的应用",
+            "ar-SA": "التطبيقات المثبّتة"
+          },
+          "args": {
+            "page": "apps/installed"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Startup",
+            "zh-CN": "启动",
+            "ar-SA": "بدء التشغيل"
+          },
+          "args": {
+            "page": "apps/startup"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Accounts",
+            "zh-CN": "帐户",
+            "ar-SA": "الحسابات"
+          },
+          "args": {
+            "page": "accounts"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Date & time",
+            "zh-CN": "时间和日期",
+            "ar-SA": "التاريخ والوقت"
+          },
+          "args": {
+            "page": "time-language/date-time"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Language & region",
+            "zh-CN": "语言和区域",
+            "ar-SA": "اللغة والمنطقة"
+          },
+          "args": {
+            "page": "time-language/language"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Accessibility",
+            "zh-CN": "辅助功能",
+            "ar-SA": "سهولة الوصول"
+          },
+          "args": {
+            "page": "accessibility"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Multitasking",
+            "zh-CN": "多任务处理",
+            "ar-SA": "تعدد المهام"
+          },
+          "args": {
+            "page": "system/multitasking"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Clipboard",
+            "zh-CN": "剪贴板",
+            "ar-SA": "الحافظة"
+          },
+          "args": {
+            "page": "system/clipboard"
+          }
+        },
+        {
+          "title": {
+            "en-US": "Privacy & security",
+            "zh-CN": "隐私和安全性",
+            "ar-SA": "الخصوصية والأمان"
+          },
+          "args": {
+            "page": "privacy"
+          }
+        },
+        {
+          "title": {
+            "en-US": "muOS Update",
+            "zh-CN": "muOS 更新",
+            "ar-SA": "muOS Update"
+          },
+          "args": {
+            "page": "update"
+          }
+        }
+      ]
+    },
+    {
+      "id": "command-prompt",
+      "name": {
+        "en-US": "Command Prompt",
+        "zh-CN": "命令提示符",
+        "ar-SA": "موجه الأوامر"
+      },
+      "description": {
+        "en-US": "Work with the files on this PC by typing commands.",
+        "zh-CN": "通过输入命令处理这台电脑上的文件。",
+        "ar-SA": "تعامل مع ملفات هذا الكمبيوتر بكتابة الأوامر."
+      },
+      "publisher": {
+        "en-US": "Kancamu Project",
+        "zh-CN": "Kancamu Project",
+        "ar-SA": "Kancamu Project"
+      },
+      "version": "1.0.0",
+      "icon": "apps/command-prompt/favicon.png",
+      "entry": "apps/command-prompt/index.html",
+      "permissions": ["storage", "fs", "launch", "windows", "power", "settings", "apps"],
+      "window": {
+        "width": 860,
+        "height": 480,
+        "minWidth": 320,
+        "minHeight": 200
+      },
+      "behaviors": ["installed"],
+      "roles": ["terminal"],
+      "categories": ["developer","utilities"],
+      "pinned": ["start"],
+      "store": {
+        "color": ["#374151", "#191d24"]
+      }
+    },
+    {
+      "id": "notepad",
+      "name": {
+        "en-US": "Notepad",
+        "zh-CN": "记事本",
+        "ar-SA": "المفكرة"
+      },
+      "description": {
+        "en-US": "Create and edit plain text files.",
+        "zh-CN": "创建和编辑纯文本文件。",
+        "ar-SA": "أنشئ ملفات نصية عادية وحرّرها."
+      },
+      "publisher": {
+        "en-US": "Kancamu Project",
+        "zh-CN": "Kancamu Project",
+        "ar-SA": "Kancamu Project"
+      },
+      "version": "1.0.0",
+      "icon": "apps/notepad/favicon.png",
+      "entry": "apps/notepad/index.html",
+      "permissions": ["storage", "fs", "launch", "windows"],
+      "window": {
+        "width": 820,
+        "height": 560,
+        "minWidth": 340,
+        "minHeight": 240
+      },
+      "behaviors": ["installed"],
+      "roles": ["text-editor"],
+      "categories": ["productivity","utilities"],
+      "pinned": ["start"],
+      "store": {
+        "color": ["#2d8fd5", "#144060"]
+      }
+    },
+    {
+      "id": "calculator",
+      "name": {
+        "en-US": "Calculator",
+        "zh-CN": "计算器",
+        "ar-SA": "الآلة الحاسبة"
+      },
+      "description": {
+        "en-US": "Standard, scientific and programmer calculator, date calculation and unit converters.",
+        "zh-CN": "标准、科学和程序员计算器，以及日期计算和单位转换器。",
+        "ar-SA": "آلة حاسبة قياسية وعلمية ومبرمج، وحساب التواريخ ومحوّلات الوحدات."
+      },
+      "publisher": {
+        "en-US": "Kancamu Project",
+        "zh-CN": "Kancamu Project",
+        "ar-SA": "Kancamu Project"
+      },
+      "version": "1.0.0",
+      "icon": "apps/calculator/favicon.png",
+      "entry": "apps/calculator/index.html",
+      "permissions": ["storage"],
+      "window": {
+        "width": 380,
+        "height": 640,
+        "minWidth": 300,
+        "minHeight": 500
+      },
+      "behaviors": ["removable", "installed"],
+      "roles": ["calculator"],
+      "categories": ["productivity","utilities"],
+      "pinned": ["start"],
+      "store": {
+        "color": ["#475569", "#20262f"]
+      }
+    },
+    {
+      "id": "paint",
+      "name": {
+        "en-US": "Paint",
+        "zh-CN": "画图",
+        "ar-SA": "الرسام"
+      },
+      "description": {
+        "en-US": "Draw, fill and edit pictures.",
+        "zh-CN": "绘制、填充和编辑图片。",
+        "ar-SA": "ارسم وعبّئ وحرّر الصور."
+      },
+      "publisher": {
+        "en-US": "Kancamu Project",
+        "zh-CN": "Kancamu Project",
+        "ar-SA": "Kancamu Project"
+      },
+      "version": "1.0.0",
+      "icon": "apps/paint/favicon.png",
+      "entry": "apps/paint/index.html",
+      "permissions": ["storage", "fs", "launch"],
+      "window": {
+        "width": 960,
+        "height": 640,
+        "minWidth": 480,
+        "minHeight": 360
+      },
+      "behaviors": ["removable", "installed"],
+      "roles": ["paint"],
+      "categories": ["image"],
+      "pinned": ["start"],
+      "store": {
+        "color": ["#e11d48", "#650d20"]
+      }
+    },
+    {
+      "id": "photos",
+      "name": {
+        "en-US": "Photos",
+        "zh-CN": "照片",
+        "ar-SA": "الصور"
+      },
+      "description": {
+        "en-US": "View and organize your pictures.",
+        "zh-CN": "查看和整理你的图片。",
+        "ar-SA": "اعرض صورك ونظّمها."
+      },
+      "publisher": {
+        "en-US": "Kancamu Project",
+        "zh-CN": "Kancamu Project",
+        "ar-SA": "Kancamu Project"
+      },
+      "version": "1.0.0",
+      "icon": "apps/photos/favicon.png",
+      "entry": "apps/photos/index.html",
+      "permissions": ["storage", "fs", "launch"],
+      "window": {
+        "width": 960,
+        "height": 640,
+        "minWidth": 400,
+        "minHeight": 320
+      },
+      "behaviors": ["singleInstance", "installed"],
+      "roles": ["image-viewer"],
+      "categories": ["image"],
+      "pinned": ["start"],
+      "store": {
+        "color": ["#2563eb", "#112d6a"]
+      }
+    },
+    {
+      "id": "media-player",
+      "name": {
+        "en-US": "Media Player",
+        "zh-CN": "媒体播放器",
+        "ar-SA": "مشغّل الوسائط"
+      },
+      "description": {
+        "en-US": "Play audio and video files.",
+        "zh-CN": "播放音频和视频文件。",
+        "ar-SA": "شغّل ملفات الصوت والفيديو."
+      },
+      "publisher": {
+        "en-US": "Kancamu Project",
+        "zh-CN": "Kancamu Project",
+        "ar-SA": "Kancamu Project"
+      },
+      "version": "1.0.0",
+      "icon": "apps/media-player/favicon.png",
+      "entry": "apps/media-player/index.html",
+      "permissions": ["storage", "fs", "launch"],
+      "window": {
+        "width": 900,
+        "height": 600,
+        "minWidth": 420,
+        "minHeight": 320
+      },
+      "behaviors": ["singleInstance", "installed"],
+      "roles": ["media-player"],
+      "categories": ["video","audio"],
+      "pinned": ["start"],
+      "store": {
+        "color": ["#7c3aed", "#381a6b"]
+      }
+    },
+    {
+      "id": "camera",
+      "name": {
+        "en-US": "Camera",
+        "zh-CN": "相机",
+        "ar-SA": "الكاميرا"
+      },
+      "description": {
+        "en-US": "Take photos with your webcam.",
+        "zh-CN": "使用网络摄像头拍照。",
+        "ar-SA": "التقط صورًا بكاميرا الويب."
+      },
+      "publisher": {
+        "en-US": "Kancamu Project",
+        "zh-CN": "Kancamu Project",
+        "ar-SA": "Kancamu Project"
+      },
+      "version": "1.0.0",
+      "icon": "apps/camera/favicon.png",
+      "entry": "apps/camera/index.html",
+      "permissions": ["storage", "notify", "fs", "launch"],
+      "window": {
+        "width": 760,
+        "height": 560,
+        "minWidth": 360,
+        "minHeight": 320
+      },
+      "behaviors": ["singleInstance", "removable", "installed"],
+      "roles": ["camera"],
+      "categories": ["image","video"],
+      "pinned": ["start"],
+      "store": {
+        "color": ["#0d9488", "#06433d"]
+      }
+    },
+    {
+      "id": "task-manager",
+      "name": {
+        "en-US": "Task Manager",
+        "zh-CN": "任务管理器",
+        "ar-SA": "إدارة المهام"
+      },
+      "description": {
+        "en-US": "See the windows and system load, and end tasks.",
+        "zh-CN": "查看窗口和系统负载，并结束任务。",
+        "ar-SA": "اطّلع على النوافذ وحمل النظام وأنهِ المهام."
+      },
+      "publisher": {
+        "en-US": "Kancamu Project",
+        "zh-CN": "Kancamu Project",
+        "ar-SA": "Kancamu Project"
+      },
+      "version": "1.0.0",
+      "icon": "apps/task-manager/favicon.png",
+      "entry": "apps/task-manager/index.html",
+      "permissions": ["storage", "fs", "launch", "windows", "settings", "apps", "system"],
+      "window": {
+        "width": 920,
+        "height": 600,
+        "minWidth": 520,
+        "minHeight": 360
+      },
+      "behaviors": ["singleInstance", "installed"],
+      "roles": ["task-manager"],
+      "categories": ["utilities"],
+      "pinned": [],
+      "store": {
+        "color": ["#1f6fd0", "#0e325e"]
+      }
+    },
+    {
+      "id": "snipping-tool",
+      "name": {
+        "en-US": "Snipping Tool",
+        "zh-CN": "截图工具",
+        "ar-SA": "أداة القطع"
+      },
+      "description": {
+        "en-US": "Capture the screen, mark it up and save it.",
+        "zh-CN": "截取屏幕、标注并保存。",
+        "ar-SA": "التقط الشاشة وعلّم عليها واحفظها."
+      },
+      "publisher": {
+        "en-US": "Kancamu Project",
+        "zh-CN": "Kancamu Project",
+        "ar-SA": "Kancamu Project"
+      },
+      "version": "1.0.0",
+      "icon": "apps/snipping-tool/favicon.png",
+      "entry": "apps/snipping-tool/index.html",
+      "permissions": ["storage", "notify", "fs", "launch", "snip"],
+      "window": {
+        "width": 820,
+        "height": 560,
+        "minWidth": 440,
+        "minHeight": 320
+      },
+      "behaviors": ["singleInstance", "removable", "installed"],
+      "roles": ["screenshot"],
+      "categories": ["image","utilities"],
+      "pinned": ["start"],
+      "store": {
+        "color": ["#0e8f86", "#06403c"]
+      }
+    },
+    {
+      "id": "wordcraft",
+      "name": {
+        "en-US": "WordCraft",
+        "zh-CN": "WordCraft",
+        "ar-SA": "WordCraft"
+      },
+      "description": {
+        "en-US": "A word processor for writing and formatting documents.",
+        "zh-CN": "用于撰写和排版文档的文字处理器。",
+        "ar-SA": "معالج نصوص لكتابة المستندات وتنسيقها."
+      },
+      "publisher": {
+        "en-US": "ArtCraft",
+        "zh-CN": "ArtCraft",
+        "ar-SA": "ArtCraft"
+      },
+      "version": "1.0.0",
+      "icon": "../artcraft/wordcraft/wordcraft-fa59e09a3f921e03.ico",
+      "entry": "../artcraft/wordcraft/",
+      "permissions": [],
+      "behaviors": ["removable"],
+      "window": {
+        "width": 1100,
+        "height": 700,
+        "minWidth": 480,
+        "minHeight": 360
+      },
+      "categories": ["productivity"],
+      "pinned": [],
+      "store": {
+        "color": ["#2b579a", "#132745"],
+        "featured": true
+      }
+    },
+    {
+      "id": "gridcraft",
+      "name": {
+        "en-US": "GridCraft",
+        "zh-CN": "GridCraft",
+        "ar-SA": "GridCraft"
+      },
+      "description": {
+        "en-US": "A spreadsheet for tables, formulas and calculations.",
+        "zh-CN": "用于表格、公式和计算的电子表格。",
+        "ar-SA": "جدول بيانات للجداول والمعادلات والحسابات."
+      },
+      "publisher": {
+        "en-US": "ArtCraft",
+        "zh-CN": "ArtCraft",
+        "ar-SA": "ArtCraft"
+      },
+      "version": "1.0.0",
+      "icon": "../artcraft/gridcraft/gridcraft-45f84b7721cb79a9.ico",
+      "entry": "../artcraft/gridcraft/",
+      "permissions": [],
+      "behaviors": ["removable"],
+      "window": {
+        "width": 1100,
+        "height": 700,
+        "minWidth": 480,
+        "minHeight": 360
+      },
+      "categories": ["productivity"],
+      "pinned": [],
+      "store": {
+        "color": ["#217346", "#0f3420"],
+        "featured": true
+      }
+    },
+    {
+      "id": "deckcraft",
+      "name": {
+        "en-US": "DeckCraft",
+        "zh-CN": "DeckCraft",
+        "ar-SA": "DeckCraft"
+      },
+      "description": {
+        "en-US": "A tool for making presentation slides.",
+        "zh-CN": "用于制作演示文稿的工具。",
+        "ar-SA": "أداة لإنشاء العروض التقديمية."
+      },
+      "publisher": {
+        "en-US": "ArtCraft",
+        "zh-CN": "ArtCraft",
+        "ar-SA": "ArtCraft"
+      },
+      "version": "1.0.0",
+      "icon": "../artcraft/deckcraft/deckcraft-b8fcbb36ecec0385.ico",
+      "entry": "../artcraft/deckcraft/",
+      "permissions": [],
+      "behaviors": ["removable"],
+      "window": {
+        "width": 1100,
+        "height": 700,
+        "minWidth": 480,
+        "minHeight": 360
+      },
+      "categories": ["productivity"],
+      "pinned": [],
+      "store": {
+        "color": ["#c43e1c", "#581c0d"],
+        "featured": true
+      }
+    },
+    {
+      "id": "photocraft",
+      "name": {
+        "en-US": "PhotoCraft",
+        "zh-CN": "PhotoCraft",
+        "ar-SA": "PhotoCraft"
+      },
+      "description": {
+        "en-US": "A photo editor for retouching and compositing images.",
+        "zh-CN": "用于修饰和合成图像的照片编辑器。",
+        "ar-SA": "محرر صور لتحسين الصور ودمجها."
+      },
+      "publisher": {
+        "en-US": "ArtCraft",
+        "zh-CN": "ArtCraft",
+        "ar-SA": "ArtCraft"
+      },
+      "version": "1.0.0",
+      "icon": "../artcraft/photocraft/icon-256.png",
+      "entry": "../artcraft/photocraft/",
+      "permissions": [],
+      "behaviors": ["removable"],
+      "window": {
+        "width": 1100,
+        "height": 700,
+        "minWidth": 480,
+        "minHeight": 360
+      },
+      "categories": ["image"],
+      "pinned": [],
+      "store": {
+        "color": ["#31a8ff", "#164c73"],
+        "featured": true
+      }
+    },
+    {
+      "id": "vectorcraft",
+      "name": {
+        "en-US": "VectorCraft",
+        "zh-CN": "VectorCraft",
+        "ar-SA": "VectorCraft"
+      },
+      "description": {
+        "en-US": "A vector graphics editor for illustrations, logos and icons.",
+        "zh-CN": "用于绘制插画、标志和图标的矢量图形编辑器。",
+        "ar-SA": "محرر رسومات متجهية للرسوم التوضيحية والشعارات والأيقونات."
+      },
+      "publisher": {
+        "en-US": "ArtCraft",
+        "zh-CN": "ArtCraft",
+        "ar-SA": "ArtCraft"
+      },
+      "version": "1.0.0",
+      "icon": "../artcraft/vectorcraft/icons/ai.storyteller.vectorcraft.svg",
+      "entry": "../artcraft/vectorcraft/",
+      "permissions": [],
+      "behaviors": ["removable"],
+      "window": {
+        "width": 1100,
+        "height": 700,
+        "minWidth": 480,
+        "minHeight": 360
+      },
+      "categories": ["image"],
+      "pinned": [],
+      "store": {
+        "color": ["#ff9a00", "#734500"],
+        "featured": true
+      }
+    },
+    {
+      "id": "filmcraft",
+      "name": {
+        "en-US": "FilmCraft",
+        "zh-CN": "FilmCraft",
+        "ar-SA": "FilmCraft"
+      },
+      "description": {
+        "en-US": "A video editor for cutting and assembling clips.",
+        "zh-CN": "用于剪辑和组合视频片段的视频编辑器。",
+        "ar-SA": "محرر فيديو لقص المقاطع وتجميعها."
+      },
+      "publisher": {
+        "en-US": "ArtCraft",
+        "zh-CN": "ArtCraft",
+        "ar-SA": "ArtCraft"
+      },
+      "version": "1.0.0",
+      "icon": "../artcraft/filmcraft/favicon.png",
+      "entry": "../artcraft/filmcraft/",
+      "permissions": [],
+      "behaviors": ["removable"],
+      "window": {
+        "width": 1100,
+        "height": 700,
+        "minWidth": 480,
+        "minHeight": 360
+      },
+      "categories": ["video"],
+      "pinned": [],
+      "store": {
+        "color": ["#9999ff", "#454573"],
+        "featured": true
+      }
+    },
+    {
+      "id": "effectcraft",
+      "name": {
+        "en-US": "EffectCraft",
+        "zh-CN": "EffectCraft",
+        "ar-SA": "EffectCraft"
+      },
+      "description": {
+        "en-US": "A motion graphics tool for animation and visual effects.",
+        "zh-CN": "用于动画和视觉特效的动态图形工具。",
+        "ar-SA": "أداة رسوم متحركة لإنشاء الحركة والمؤثرات البصرية."
+      },
+      "publisher": {
+        "en-US": "ArtCraft",
+        "zh-CN": "ArtCraft",
+        "ar-SA": "ArtCraft"
+      },
+      "version": "1.0.0",
+      "icon": "../artcraft/effectcraft/icon-256.png",
+      "entry": "../artcraft/effectcraft/",
+      "permissions": [],
+      "behaviors": ["removable"],
+      "window": {
+        "width": 1100,
+        "height": 700,
+        "minWidth": 480,
+        "minHeight": 360
+      },
+      "categories": ["video"],
+      "pinned": [],
+      "store": {
+        "color": ["#9999ff", "#454573"],
+        "featured": true
+      }
+    }
+  ]
+}

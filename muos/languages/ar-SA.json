@@ -1,0 +1,301 @@
+{
+  "common": {
+    "ok": "موافق",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "save": "حفظ",
+    "on": "تشغيل",
+    "off": "إيقاف",
+    "justNow": "الآن",
+    "bytes": {
+      "one": "{count} بايت",
+      "other": "{count} بايت"
+    }
+  },
+  "welcome": {
+    "noStorageTitle": "لن يتم حفظ التغييرات",
+    "noStorageBody": "يحظر هذا المتصفح التخزين المحلي، لذلك ستُفقد الملفات والإعدادات عند إغلاق الصفحة."
+  },
+  "disk": {
+    "errorTitle": "تعذّر حفظ القرص",
+    "errorBody": "رفض المتصفح تخزين المزيد من البيانات. حرّر مساحة بحذف الملفات وإفراغ سلة المحذوفات."
+  },
+  "lock": {
+    "signIn": "تسجيل الدخول",
+    "hint": "اضغط Enter لتسجيل الدخول"
+  },
+  "power": {
+    "title": "الطاقة",
+    "lock": "قفل",
+    "signOut": "تسجيل الخروج",
+    "sleep": "السكون",
+    "shutDown": "إيقاف التشغيل",
+    "restart": "إعادة التشغيل",
+    "restarting": "جارٍ إعادة التشغيل",
+    "shuttingDown": "جارٍ إيقاف التشغيل",
+    "turnOn": "اضغط على زر الطاقة للتشغيل"
+  },
+  "window": {
+    "minimize": "تصغير",
+    "maximize": "تكبير",
+    "restore": "استعادة",
+    "close": "إغلاق"
+  },
+  "switcher": {
+    "label": "تبديل النوافذ"
+  },
+  "taskbar": {
+    "label": "شريط المهام",
+    "taskView": "عرض المهام",
+    "widgets": "الأدوات",
+    "start": "ابدأ",
+    "search": "بحث",
+    "showDesktop": "إظهار سطح المكتب",
+    "pin": "تثبيت في شريط المهام",
+    "unpin": "إزالة التثبيت من شريط المهام",
+    "closeWindow": "إغلاق النافذة",
+    "closeAll": "إغلاق كل النوافذ",
+    "settings": "إعدادات شريط المهام",
+    "appsAndFeatures": "التطبيقات والميزات",
+    "powerGroup": "إيقاف التشغيل أو تسجيل الخروج"
+  },
+  "menubar": {
+    "label": "شريط القوائم",
+    "about": "حول {name}",
+    "closeWindow": "إغلاق النافذة",
+    "quit": "إنهاء {name}",
+    "window": "نافذة",
+    "desktop": "سطح المكتب"
+  },
+  "tray": {
+    "network": {
+      "wifi": "Wi-Fi: متصل",
+      "offline": "لا يوجد اتصال بالإنترنت",
+      "airplane": "وضع الطائرة قيد التشغيل"
+    },
+    "volume": "مكبّرات الصوت: {value}%",
+    "muted": "مكبّرات الصوت: صامتة",
+    "battery": "البطارية: {value}%",
+    "batteryCharging": "البطارية: {value}% (قيد الشحن)",
+    "exit": "خروج"
+  },
+  "start": {
+    "pinned": "المثبّتة",
+    "searchPlaceholder": "ابحث عن التطبيقات والإعدادات والمستندات",
+    "more": "المزيد",
+    "allApps": "كل التطبيقات",
+    "back": "رجوع",
+    "recommended": "الموصى به",
+    "noPinned": "لم يتم تثبيت أي شيء بعد. افتح كل التطبيقات وانقر بزر الماوس الأيمن على تطبيق لتثبيته هنا.",
+    "noRecommended": "ستظهر هنا الملفات التي تعمل عليها.",
+    "open": "فتح",
+    "pinStart": "تثبيت في ابدأ",
+    "unpinStart": "إزالة التثبيت من ابدأ",
+    "accountSettings": "تغيير إعدادات الحساب"
+  },
+  "search": {
+    "placeholder": "اكتب هنا للبحث",
+    "app": "تطبيق",
+    "apps": "التطبيقات",
+    "recent": "الأحدث",
+    "settings": "الإعدادات",
+    "files": "الملفات والمجلدات",
+    "noResults": "لم يتم العثور على نتائج لـ \"{query}\""
+  },
+  "quick": {
+    "wifi": "Wi-Fi",
+    "bluetooth": "Bluetooth",
+    "airplane": "وضع الطائرة",
+    "energySaver": "توفير الطاقة",
+    "nightLight": "الإضاءة الليلية",
+    "doNotDisturb": "عدم الإزعاج",
+    "brightness": "السطوع",
+    "volume": "مستوى الصوت",
+    "mute": "كتم الصوت",
+    "unmute": "إلغاء الكتم",
+    "allSettings": "كل الإعدادات"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "clearAll": "مسح الكل",
+    "empty": "لا توجد إشعارات جديدة",
+    "dismiss": "تجاهل",
+    "system": "النظام"
+  },
+  "calendar": {
+    "today": "الانتقال إلى اليوم",
+    "previous": "الشهر السابق",
+    "next": "الشهر التالي"
+  },
+  "desktop": {
+    "label": "سطح المكتب",
+    "recycleBin": "سلة المحذوفات",
+    "menu": {
+      "view": "عرض",
+      "largeIcons": "أيقونات كبيرة",
+      "mediumIcons": "أيقونات متوسطة",
+      "smallIcons": "أيقونات صغيرة",
+      "showIcons": "إظهار أيقونات سطح المكتب",
+      "autoArrange": "ترتيب الأيقونات تلقائيًا",
+      "sortBy": "ترتيب حسب",
+      "openTerminal": "فتح في الطرفية",
+      "displaySettings": "إعدادات العرض",
+      "personalize": "التخصيص"
+    }
+  },
+  "files": {
+    "open": "فتح",
+    "cut": "قص",
+    "copy": "نسخ",
+    "paste": "لصق",
+    "rename": "إعادة تسمية",
+    "delete": "حذف",
+    "refresh": "تحديث",
+    "new": "جديد",
+    "folder": "مجلد",
+    "textDocument": "مستند نصي",
+    "newFolder": "مجلد جديد",
+    "newTextDocument": "مستند نصي جديد",
+    "setBackground": "تعيين كخلفية لسطح المكتب",
+    "emptyTrash": "إفراغ سلة المحذوفات",
+    "emptyTrashTitle": "إفراغ سلة المحذوفات",
+    "emptyTrashMessage": {
+      "one": "هل أنت متأكد أنك تريد حذف هذا العنصر نهائيًا؟",
+      "other": "هل أنت متأكد أنك تريد حذف هذه العناصر ({count}) نهائيًا؟"
+    },
+    "confirmDeleteTitle": "حذف نهائي",
+    "confirmDeleteOne": "هل أنت متأكد أنك تريد حذف \"{name}\" نهائيًا؟",
+    "confirmDeleteMany": {
+      "one": "هل أنت متأكد أنك تريد حذف هذا العنصر نهائيًا؟",
+      "other": "هل أنت متأكد أنك تريد حذف هذه العناصر ({count}) نهائيًا؟"
+    },
+    "createFailed": "تعذّر إنشاء العنصر",
+    "deleteFailed": "تعذّر حذف العنصر",
+    "renameFailed": "تعذّرت إعادة تسمية العنصر",
+    "pasteFailed": "تعذّر لصق العنصر",
+    "moveFailed": "تعذّر نقل العنصر",
+    "columns": {
+      "name": "الاسم",
+      "size": "الحجم",
+      "type": "النوع",
+      "modified": "تاريخ التعديل"
+    },
+    "properties": "خصائص",
+    "openWith": "فتح باستخدام",
+    "copyAsPath": "نسخ كمسار",
+    "sendTo": "إرسال إلى",
+    "sortAscending": "تصاعدي",
+    "sortDescending": "تنازلي"
+  },
+  "picker": {
+    "openTitle": "فتح",
+    "saveTitle": "حفظ باسم",
+    "open": "فتح",
+    "save": "حفظ",
+    "empty": "هذا المجلد فارغ.",
+    "notFound": "اختر ملفًا من القائمة.",
+    "fileName": "اسم الملف",
+    "overwrite": "\"{name}\" موجود بالفعل. هل تريد استبداله؟",
+    "replace": "استبدال"
+  },
+  "snap": {
+    "title": "تخطيطات الإلصاق",
+    "zone": "ألصق النافذة هنا"
+  },
+  "taskview": {
+    "title": "عرض المهام",
+    "desktop": "سطح المكتب {n}",
+    "windows": {
+      "one": "{count} نافذة",
+      "other": "{count} نوافذ"
+    },
+    "newDesktop": "سطح مكتب جديد",
+    "removeDesktop": "إزالة سطح المكتب هذا",
+    "moveTo": "نقل إلى",
+    "empty": "لا توجد نوافذ على سطح المكتب هذا."
+  },
+  "widgets": {
+    "clock": "الساعة",
+    "calendar": "هذا الشهر",
+    "notes": "ملاحظات",
+    "notesPlaceholder": "اكتب ملاحظة. ستبقى على هذا الكمبيوتر.",
+    "thisPc": "هذا الكمبيوتر",
+    "recent": "الملفات الأخيرة",
+    "battery": "البطارية",
+    "network": "الشبكة",
+    "storage": "التخزين",
+    "morning": "صباح الخير، {name}",
+    "afternoon": "مساء الخير، {name}",
+    "evening": "مساء الخير، {name}"
+  },
+  "clipboard": {
+    "title": "الحافظة",
+    "clearAll": "مسح الكل",
+    "empty": "لم يتم نسخ أي شيء بعد. انسخ شيئًا وسيظهر هنا.",
+    "off": "سجل الحافظة متوقف.",
+    "turnOn": "تشغيل",
+    "pin": "تثبيت",
+    "unpin": "إزالة التثبيت",
+    "delete": "حذف",
+    "image": "صورة",
+    "copied": "تم النسخ",
+    "cut": "تم القص",
+    "files": {
+      "one": "{count} ملف أو مجلد",
+      "other": "{count} ملفات أو مجلدات"
+    }
+  },
+  "filetypes": {
+    "folder": "مجلد ملفات",
+    "text": "مستند نصي",
+    "file": "ملف",
+    "generic": "ملف {ext}"
+  },
+  "fs": {
+    "errors": {
+      "ENOENT": "تعذّر العثور على العنصر: {path}",
+      "EEXIST": "يوجد بالفعل ملف أو مجلد بهذا الاسم: {path}",
+      "ENOTDIR": "هذا ليس مجلدًا: {path}",
+      "EISDIR": "هذا مجلد وليس ملفًا: {path}",
+      "ENOTEMPTY": "المجلد ليس فارغًا: {path}",
+      "EINVAL": "لا يمكن استخدام هذا الاسم أو الوجهة. لا يمكن أن يكون الاسم فارغًا أو أن يحتوي على أي من هذه الأحرف: \\ / : * ? \" < > |",
+      "EPERM": "تحتاج إلى إذن للقيام بذلك. العنصر محمي بواسطة النظام: {path}",
+      "ENOSPC": "لا توجد مساحة كافية على القرص.",
+      "ENODRIVE": "تعذّر العثور على محرك الأقراص: {path}"
+    }
+  },
+  "screenshot": {
+    "title": "أداة القطع",
+    "modes": {
+      "rect": "مستطيل",
+      "window": "نافذة",
+      "full": "ملء الشاشة",
+      "free": "شكل حر"
+    }
+  },
+  "uninstall": {
+    "action": "إلغاء التثبيت",
+    "title": "هل تريد إلغاء تثبيت {name}؟",
+    "message": "سيتم إغلاق {name} ونوافذه المفتوحة وإزالته من ابدأ وشريط المهام. يمكنك تثبيته مرة أخرى هنا في أي وقت."
+  },
+  "folders": {
+    "desktop": "سطح المكتب",
+    "documents": "المستندات",
+    "downloads": "التنزيلات",
+    "music": "الموسيقى",
+    "pictures": "الصور",
+    "videos": "مقاطع الفيديو"
+  },
+  "import": {
+    "skipped": "لم تتم إضافة بعض الملفات",
+    "noSpace": "\"{name}\" ({size}) لا يتسع: المتبقي على القرص {free} فقط."
+  },
+  "properties": {
+    "opensWith": "يُفتح باستخدام",
+    "title": "خصائص {name}",
+    "location": "الموقع",
+    "contains": "يحتوي على",
+    "containsValue": "{files} ملفات، {folders} مجلدات",
+    "created": "تاريخ الإنشاء"
+  }
+}

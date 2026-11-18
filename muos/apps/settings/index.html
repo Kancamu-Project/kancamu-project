@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="icon" href="favicon.png">
+    <script>
+      // Where the OS is: its window passes the address as ?os=; a page opened on its own looks next to /apps.
+      (() => {
+        const os = new URLSearchParams(location.search).get('os') || new URL('../../', location.href).href;
+        const add = (el) => document.head.append(el);
+        add(Object.assign(document.createElement('script'), { type: 'importmap', textContent: JSON.stringify({ imports: { 'webos/': os + 'system/' } }) }));
+        add(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: os + 'style/app.css' }));
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="app.js"></script>
+</head>
+<body>
+    <div class="settings">
+        <!-- Left: account, search and the list of categories -->
+        <aside class="nav">
+            <div class="nav-top">
+                <button id="back" class="icon-btn" type="button" data-i18n-tip="settings.back"><i class="icon" data-icon="arrow-left"></i></button>
+            </div>
+            <button id="profile" class="profile" type="button">
+                <img src="icons/avatar.svg" alt="">
+                <span class="profile-text">
+                    <span id="profile-name" class="profile-name"></span>
+                    <span class="profile-sub" data-i18n="settings.localAccount"></span>
+                </span>
+            </button>
+            <label class="nav-search">
+                <input id="search" type="text" spellcheck="false" autocomplete="off" data-i18n-placeholder="settings.findSetting">
+                <i class="icon" data-icon="search"></i>
+            </label>
+            <div id="nav-list" class="nav-list"></div>
+        </aside>
+
+        <!-- Right: the current page -->
+        <main id="page" class="page" tabindex="-1">
+            <div class="page-inner">
+                <header id="page-head" class="page-head"></header>
+                <div id="page-body"></div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

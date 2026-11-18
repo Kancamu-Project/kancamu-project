@@ -1,0 +1,96 @@
+{
+  "app": {
+    "name": "المفكرة"
+  },
+  "notepad": {
+    "untitled": "بدون عنوان",
+    "closeTab": "إغلاق علامة التبويب",
+    "closeOthers": "إغلاق علامات التبويب الأخرى",
+    "closeRight": "إغلاق علامات التبويب إلى اليمين",
+    "menu": {
+      "file": "ملف",
+      "edit": "تحرير",
+      "format": "تنسيق",
+      "view": "عرض"
+    },
+    "file": {
+      "new": "علامة تبويب جديدة",
+      "newWindow": "نافذة جديدة",
+      "open": "فتح...",
+      "save": "حفظ",
+      "saveAs": "حفظ باسم...",
+      "saveAll": "حفظ الكل",
+      "closeWindow": "إغلاق النافذة",
+      "exit": "خروج"
+    },
+    "edit": {
+      "undo": "تراجع",
+      "redo": "إعادة",
+      "find": "بحث...",
+      "findNext": "بحث عن التالي",
+      "findPrevious": "بحث عن السابق",
+      "replace": "استبدال...",
+      "goTo": "الانتقال إلى...",
+      "timeDate": "الوقت/التاريخ"
+    },
+    "find": {
+      "find": "بحث",
+      "replace": "استبدال بـ",
+      "previous": "السابق",
+      "next": "التالي",
+      "replaceOne": "استبدال",
+      "replaceAll": "استبدال الكل",
+      "matchCase": "مطابقة حالة الأحرف",
+      "none": "لا توجد نتائج",
+      "count": "{current} من {total}",
+      "replaced": {
+        "one": "{count} استبدال",
+        "other": "{count} استبدالات"
+      }
+    },
+    "goTo": {
+      "title": "الانتقال إلى سطر",
+      "message": "رقم السطر (من 1 إلى {max})",
+      "go": "انتقال"
+    },
+    "format": {
+      "wrap": "التفاف النص",
+      "font": "الخط..."
+    },
+    "view": {
+      "zoom": "التكبير",
+      "zoomIn": "تكبير",
+      "zoomOut": "تصغير",
+      "zoomReset": "استعادة التكبير الافتراضي",
+      "statusBar": "شريط الحالة"
+    },
+    "settings": {
+      "title": "إعدادات المفكرة",
+      "font": "الخط",
+      "size": "حجم الخط",
+      "startup": "عند بدء تشغيل المفكرة",
+      "startRestore": "متابعة الجلسة السابقة",
+      "startNew": "البدء بمستند فارغ",
+      "sample": "The quick brown fox jumps over the lazy dog. نص عربي تجريبي لعرض الخط."
+    },
+    "status": {
+      "position": "سطر {line}، عمود {col}",
+      "chars": {
+        "one": "{count} حرف",
+        "other": "{count} أحرف"
+      },
+      "selected": "{count} من {total} حرفًا",
+      "eol": "CRLF",
+      "encoding": "UTF-8"
+    },
+    "unsaved": {
+      "message": "هل تريد حفظ التغييرات في {name}؟",
+      "dontSave": "عدم الحفظ"
+    },
+    "error": {
+      "open": "تعذّر فتح الملف",
+      "save": "تعذّر حفظ الملف"
+    },
+    "selectAll": "تحديد الكل"
+  }
+}

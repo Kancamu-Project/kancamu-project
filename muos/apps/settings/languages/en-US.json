@@ -1,0 +1,435 @@
+{
+  "settings": {
+    "pages": {
+      "display": {
+        "title": "Display",
+        "desc": "Brightness, night light, display info"
+      },
+      "sound": {
+        "title": "Sound",
+        "desc": "Volume level, mute"
+      },
+      "notifications": {
+        "title": "Notifications",
+        "desc": "Alerts from apps and the system, do not disturb"
+      },
+      "power": {
+        "title": "Power & battery",
+        "desc": "Battery level, energy saver"
+      },
+      "storage": {
+        "title": "Storage",
+        "desc": "Disk space, Recycle Bin"
+      },
+      "about": {
+        "title": "About",
+        "desc": "Device specifications, rename this PC, reset"
+      },
+      "bluetooth": {
+        "title": "Bluetooth & devices",
+        "desc": "Bluetooth, mouse, touch"
+      },
+      "network": {
+        "title": "Network & internet",
+        "desc": "Wi-Fi, airplane mode, connection properties"
+      },
+      "background": {
+        "title": "Background",
+        "desc": "Background picture, color, fit"
+      },
+      "colors": {
+        "title": "Colors",
+        "desc": "Light or dark mode, accent color, transparency effects"
+      },
+      "lockScreen": {
+        "title": "Lock screen",
+        "desc": "Lock screen at startup, lock now"
+      },
+      "start": {
+        "title": "Start",
+        "desc": "Recommended files, pinned apps"
+      },
+      "taskbar": {
+        "title": "Taskbar",
+        "desc": "Taskbar alignment, search button, pinned apps"
+      },
+      "apps": {
+        "title": "Apps",
+        "desc": "Installed apps and apps that start with the system"
+      },
+      "accounts": {
+        "title": "Accounts",
+        "desc": "Your info, display name"
+      },
+      "dateTime": {
+        "title": "Date & time",
+        "desc": "Time zone, 24-hour clock, seconds in the taskbar"
+      },
+      "language": {
+        "title": "Language & region",
+        "desc": "Display language, regional format"
+      },
+      "accessibility": {
+        "title": "Accessibility",
+        "desc": "High contrast, color filters, focus indicator, transparency, animation"
+      },
+      "multitasking": {
+        "title": "Multitasking",
+        "desc": "Snap windows and snap layouts, virtual desktops"
+      },
+      "clipboard": {
+        "title": "Clipboard",
+        "desc": "Clipboard history, clear clipboard data"
+      },
+      "privacy": {
+        "title": "Privacy & security",
+        "desc": "Permissions, clear activity data, lock"
+      },
+      "update": {
+        "title": "muOS Update",
+        "desc": "Check for updates, update history"
+      },
+      "system": {
+        "title": "System",
+        "desc": "Display, sound, notifications, power"
+      },
+      "personalization": {
+        "title": "Personalization",
+        "desc": "Background, colors, themes, taskbar"
+      },
+      "timeLanguage": {
+        "title": "Time & language",
+        "desc": "Date and time, language, regional format"
+      },
+      "home": {
+        "title": "Home",
+        "desc": "Your PC at a glance, quick access to settings"
+      },
+      "installedApps": {
+        "title": "Installed apps",
+        "desc": "Open apps and choose where they are pinned"
+      },
+      "startupApps": {
+        "title": "Startup",
+        "desc": "Apps that start with the system and run in the background"
+      }
+    },
+    "update": {
+      "status": "muOS Update",
+      "upToDate": "You're up to date",
+      "checking": "Checking for updates...",
+      "check": "Check for updates",
+      "lastChecked": "Last checked: {when}",
+      "neverChecked": "Not checked yet",
+      "note": "There are no updates to install. Checking only shows how it would look.",
+      "history": "Update history",
+      "initial": "Initial release",
+      "installed": "Installed",
+      "advanced": "Advanced options",
+      "resetDesc": "Reset this PC and other recovery options"
+    },
+    "localAccount": "Local account",
+    "findSetting": "Find a setting",
+    "noResults": "No settings match your search.",
+    "home": {
+      "status": "Status",
+      "more": "Settings",
+      "free": "{size} free"
+    },
+    "multitasking": {
+      "snap": "Snap",
+      "snapWindows": "Snap windows",
+      "snapWindowsDesc": "Drag a window to the edge of the screen to fill half of it, or to the top to maximize",
+      "snapLayouts": "Show snap layouts",
+      "snapLayoutsDesc": "Rest the pointer on the maximize button of a window to pick a layout",
+      "desktops": "Desktops",
+      "desktopsTitle": "Virtual desktops",
+      "desktopsDesc": "Group your windows on several desktops. Open Task View from the taskbar."
+    },
+    "privacy": {
+      "permissions": "App permissions",
+      "camera": "Camera",
+      "cameraDesc": "Camera and Photos apps use the camera of your device",
+      "microphone": "Microphone",
+      "microphoneDesc": "Apps that record sound use the microphone of your device",
+      "location": "Location",
+      "locationDesc": "Apps that need to know where you are",
+      "state": {
+        "granted": "Allowed",
+        "denied": "Blocked",
+        "prompt": "Ask each time",
+        "unknown": "Not known"
+      },
+      "permissionsNote": "The browser decides these. Change them in the site settings of the browser.",
+      "activity": "Activity data",
+      "clearAll": "Clear all activity data",
+      "clearAllDesc": "Browsing history, favorites, recently played, playlists, photo favorites, Notepad session and notes",
+      "clearAllButton": "Clear all",
+      "clear": "Clear",
+      "cleared": "Cleared",
+      "clearTitle": "Clear this data?",
+      "clearMessage": "This can't be undone. Your files are not touched.",
+      "data": {
+        "edgeHistory": "Edge: history",
+        "edgeFavorites": "Edge: favorites",
+        "playerRecent": "Media Player: recently played",
+        "playerPlaylists": "Media Player: playlists",
+        "photoFavorites": "Photos: favorites",
+        "notepadSession": "Notepad: previous session and unsaved text",
+        "widgetNotes": "Widgets: notes"
+      },
+      "security": "Security"
+    },
+    "clipboard": {
+      "history": "Clipboard history",
+      "historyDesc": "Save texts, pictures and files that you copy, so you can paste them again later",
+      "shortcut": "Show the clipboard history",
+      "shortcutDesc": "Browsers keep the Meta key for themselves, so press Alt+V instead",
+      "data": "Clipboard data",
+      "clear": "Clear clipboard data",
+      "clearDesc": "Remove everything from the history, except the items you pinned",
+      "clearButton": "Clear",
+      "cleared": "Cleared",
+      "note": "The history lives on this desktop only. It does not see what you copy in other programs of your computer."
+    },
+    "display": {
+      "brightnessColor": "Brightness & color",
+      "brightnessDesc": "Adjust the brightness of the screen",
+      "nightLightDesc": "Use warmer colors to help block blue light",
+      "scaleLayout": "Scale & layout",
+      "resolution": "Display resolution",
+      "resolutionDesc": "The resolution of the screen this browser is running on",
+      "scale": "Scale",
+      "scaleDesc": "The zoom level reported by the browser"
+    },
+    "sound": {
+      "output": "Output",
+      "volumeDesc": "The volume level of the speakers",
+      "muteDesc": "Turn off all sound",
+      "system": "System sounds",
+      "systemSounds": "Play system sounds",
+      "systemSoundsDesc": "Short tones at start-up, shut down, and for notifications",
+      "test": "Test sound",
+      "testDesc": "Play the notification sound at the current volume",
+      "testButton": "Play"
+    },
+    "notifications": {
+      "dndDesc": "Notifications go straight to the notification center without showing a banner",
+      "test": "Test notification",
+      "testDesc": "See what a notification looks like",
+      "send": "Send notification",
+      "sampleTitle": "This is a notification",
+      "sampleBody": "Notifications show up here and are kept above the calendar."
+    },
+    "power": {
+      "level": "Battery level",
+      "charging": "Plugged in, charging",
+      "onBattery": "Running on battery",
+      "unavailable": "This browser does not share the battery status",
+      "saverDesc": "Saves energy by turning off animations and transparency effects"
+    },
+    "storage": {
+      "usedOf": "{used} used of {total}",
+      "used": "{size} used",
+      "free": "{size} free",
+      "breakdown": "What takes up space",
+      "note": "The disk is kept in this browser's storage (IndexedDB). How much fits depends on the free space on your computer.",
+      "localDisk": "Local Disk (C:)",
+      "items": {
+        "one": "{count} item",
+        "other": "{count} items"
+      }
+    },
+    "about": {
+      "device": "Device specifications",
+      "deviceName": "Device name",
+      "processor": "Processor",
+      "processorValue": "{count} logical processors",
+      "memory": "Installed RAM",
+      "systemType": "System type",
+      "browser": "Browser",
+      "display": "Display",
+      "touch": "Pen and touch",
+      "touchYes": "Touch support with {count} touch points",
+      "touchNo": "No pen or touch input is available for this display",
+      "unknown": "Not available",
+      "system": "System specifications",
+      "edition": "Edition",
+      "version": "Version",
+      "build": "Build",
+      "rename": "Rename this PC",
+      "renameMessage": "Use up to 15 letters, numbers and hyphens.",
+      "renameConfirm": "Rename",
+      "renameInvalid": "A PC name can only contain letters, numbers and hyphens, can't start or end with a hyphen, and can be up to 15 characters long.",
+      "recovery": "Recovery",
+      "reset": "Reset this PC",
+      "resetDesc": "Remove all files and settings and start again from scratch",
+      "resetButton": "Reset PC",
+      "resetMessage": "All files on the disk and all settings will be removed, and the system will restart. This can't be undone.",
+      "resetConfirm": "Reset"
+    },
+    "bluetooth": {
+      "onDesc": "Discoverable as this device",
+      "offDesc": "Bluetooth is turned off",
+      "input": "Input",
+      "pointer": "Pointing device",
+      "mouse": "Mouse or touchpad",
+      "touch": "Touch screen",
+      "touchPoints": "Touch points"
+    },
+    "network": {
+      "status": {
+        "wifi": "Connected",
+        "offline": "Not connected",
+        "airplane": "Airplane mode"
+      },
+      "wifiDesc": "Connect to the internet over a wireless network",
+      "airplaneDesc": "Stop all wireless communication",
+      "properties": "Connection properties",
+      "type": "Connection type",
+      "downlink": "Download speed (estimate)",
+      "rtt": "Round-trip time"
+    },
+    "personalization": {
+      "selectTheme": "Select a theme to apply"
+    },
+    "background": {
+      "personalize": "Personalize your background",
+      "personalizeDesc": "A picture background applies to the desktop and the lock screen",
+      "picture": "Picture",
+      "solid": "Solid color",
+      "choose": "Choose a photo",
+      "chooseDesc": "Pictures stored in your Pictures folder",
+      "browse": "Browse photos",
+      "browseFailed": "The photo can't be added",
+      "auto": "Default picture, follows light or dark mode",
+      "autoBadge": "Auto",
+      "fit": "Choose a fit for your desktop image",
+      "fits": {
+        "fill": "Fill",
+        "fit": "Fit",
+        "stretch": "Stretch",
+        "center": "Center"
+      },
+      "color": "Choose your background color"
+    },
+    "colors": {
+      "mode": "Choose your mode",
+      "modeDesc": "Change the colors that appear in the system and in your apps",
+      "system": "Use system setting",
+      "light": "Light",
+      "dark": "Dark",
+      "transparency": "Transparency effects",
+      "transparencyDesc": "Windows and surfaces appear translucent",
+      "accent": "Accent color",
+      "accentDesc": "The color used for buttons, switches and highlights"
+    },
+    "lockScreen": {
+      "startup": "Show the lock screen at startup",
+      "startupDesc": "When this is off, the desktop appears right after the system starts",
+      "background": "Lock screen background",
+      "backgroundDesc": "The lock screen uses the desktop background",
+      "lockNow": "Lock this PC",
+      "lockNowDesc": "Show the lock screen right now"
+    },
+    "start": {
+      "recommended": "Show recommended files in Start",
+      "recommendedDesc": "The files you worked on most recently",
+      "pinned": "Apps pinned to Start"
+    },
+    "taskbar": {
+      "behaviors": "Taskbar behaviors",
+      "alignment": "Taskbar alignment",
+      "alignmentDesc": "Where Start and the app buttons sit on the taskbar",
+      "center": "Center",
+      "left": "Left",
+      "dock": "Dock",
+      "dockDesc": "When the dock is in the way (Alt+D brings it up)",
+      "dockShow": "Always show",
+      "dockAuto": "Hide when a window covers it",
+      "dockHide": "Always hide",
+      "taskView": "Show the Task View button",
+      "taskViewDesc": "Windows and virtual desktops (Alt+T), in the menu bar",
+      "widgets": "Show the Widgets button",
+      "widgetsDesc": "The widgets board (Alt+Z), in the menu bar",
+      "pinned": "Apps pinned to the taskbar"
+    },
+    "apps": {
+      "count": {
+        "one": "{count} app found",
+        "other": "{count} apps found"
+      },
+      "version": "Version {version}",
+      "note": "Apps live in the /apps folder of the project. Each one is described in apps.json.",
+      "more": "See more",
+      "uninstall": "Uninstall",
+      "uninstallTitle": "Uninstall {name}?",
+      "uninstallMessage": "{name} and its open windows will be closed and removed from Start and the taskbar. You can install it again here at any time."
+    },
+    "accounts": {
+      "info": "Your info",
+      "displayName": "Display name",
+      "displayNameDesc": "Shown in Start and on the lock screen"
+    },
+    "dateTime": {
+      "timeZone": "Time zone",
+      "format": "Format",
+      "clock24": "Use the 24-hour clock",
+      "clock24Desc": "Show 16:30 instead of 4:30 PM",
+      "seconds": "Show seconds in the taskbar clock",
+      "secondsDesc": "The clock in the corner of the taskbar updates every second"
+    },
+    "language": {
+      "display": "muOS display language",
+      "displayDesc": "The system and its apps appear in this language",
+      "regional": "Regional format",
+      "regionalDesc": "Dates, times and numbers follow the display language",
+      "longDate": "Long date",
+      "shortDate": "Short date",
+      "time": "Time",
+      "number": "Number"
+    },
+    "accessibility": {
+      "visual": "Visual effects",
+      "contrast": "Contrast and color",
+      "highContrast": "High contrast",
+      "highContrastDesc": "Black background, white text and bright yellow accents in the whole system",
+      "colorFilter": "Color filter",
+      "colorFilterDesc": "Make the screen easier to read, in black and white or with inverted colors",
+      "filters": {
+        "none": "Off",
+        "grayscale": "Grayscale",
+        "inverted": "Inverted",
+        "grayscaleInverted": "Grayscale inverted"
+      },
+      "focus": "Thicker focus indicator",
+      "focusDesc": "A bold ring shows which control has the keyboard focus",
+      "animations": "Animation effects",
+      "animationsDesc": "Windows and menus open and close with animations",
+      "note": "Energy saver turns both effects off while it is on. Both effects are also off when your system asks for reduced motion.",
+      "shortcuts": "Keyboard",
+      "shortcutsTitle": "Keyboard shortcuts",
+      "shortcutsNote": "Browsers keep Alt+Tab and most Meta-key shortcuts for themselves, so these are used instead. To switch windows, hold Alt and press Q again to go through them; let go to switch.",
+      "shortcut": {
+        "switch": "Switch between windows (add Shift to go backwards)",
+        "clipboard": "Clipboard history",
+        "taskmanager": "Open Task Manager",
+        "snip": "Take a screen snip with the Snipping Tool",
+        "taskview": "Task View: windows and virtual desktops",
+        "widgets": "Widgets",
+        "desktops": "Previous or next virtual desktop; D adds a new one",
+        "desktop": "Show the desktop",
+        "search": "Search",
+        "start": "Start menu (press the Meta key on its own, if the browser passes it on)",
+        "apps": "Open, switch to or minimize the app at that place on the taskbar",
+        "snap": "Snap the window to the left or right half",
+        "maximize": "Maximize the window; down restores it, then minimizes it"
+      }
+    },
+    "back": "Back",
+    "startup": {
+      "note": "Apps that start with the system run in the background and keep an icon behind the arrow in the taskbar. Turn one off to stop it from starting; you can also end it from the menu of its icon.",
+      "empty": "No installed app can start with the system."
+    }
+  }
+}

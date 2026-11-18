@@ -1,0 +1,72 @@
+{
+  "app": {
+    "name": "Media Player"
+  },
+  "player": {
+    "recent": "Played recently",
+    "playlists": {
+      "new": "New playlist",
+      "namePrompt": "Name of the playlist",
+      "defaultName": "Playlist {n}",
+      "delete": "Delete playlist",
+      "deleteTitle": "Delete playlist",
+      "deleteMessage": "\"{name}\" will be deleted. The songs stay in your library.",
+      "empty": "No playlists yet. Create one, then add songs from the context menu."
+    },
+    "openDisk": "Open from this PC",
+    "openLocal": "Open from your device",
+    "idle": "Open an audio or video file to start playing, or pick something from your library.",
+    "previous": "Previous",
+    "next": "Next",
+    "play": "Play",
+    "pause": "Pause",
+    "shuffle": "Shuffle",
+    "repeat": {
+      "off": "Repeat: off",
+      "all": "Repeat all",
+      "one": "Repeat one"
+    },
+    "fullscreen": "Full screen",
+    "miniView": "Mini view",
+    "more": "More options",
+    "speed": "Playback speed",
+    "queue": "Now playing queue",
+    "clearQueue": "Clear queue",
+    "queueEmpty": "The queue is empty.",
+    "removeFromQueue": "Remove from queue",
+    "unsupported": "Only audio and video files can be played.",
+    "playFailed": "\"{name}\" can't be played.",
+    "nav": {
+      "library": "Music library",
+      "collections": "Collections",
+      "home": "Home",
+      "songs": "Songs",
+      "artists": "Artists",
+      "albums": "Albums",
+      "videos": "Videos",
+      "playlists": "Playlists",
+      "now": "Now playing"
+    },
+    "empty": "Nothing here yet. Put music in the Music folder (name files \"Artist - Title\" to group them by artist).",
+    "emptyVideos": "No videos yet. Put videos in the Videos folder.",
+    "unknownArtist": "Unknown artist",
+    "unknownAlbum": "Unknown album",
+    "cols": {
+      "title": "Title",
+      "artist": "Artist",
+      "album": "Album",
+      "size": "Size"
+    },
+    "playAll": "Play all",
+    "shuffleAll": "Shuffle and play",
+    "playNext": "Play next",
+    "addToQueue": "Add to queue",
+    "addToPlaylist": "Add to playlist",
+    "removeFromPlaylist": "Remove from this playlist",
+    "showInFolder": "Show in folder",
+    "count": {
+      "one": "{count} item",
+      "other": "{count} items"
+    }
+  }
+}

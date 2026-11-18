@@ -1,0 +1,96 @@
+{
+  "app": {
+    "name": "记事本"
+  },
+  "notepad": {
+    "untitled": "无标题",
+    "closeTab": "关闭标签页",
+    "closeOthers": "关闭其他标签页",
+    "closeRight": "关闭右侧标签页",
+    "menu": {
+      "file": "文件",
+      "edit": "编辑",
+      "format": "格式",
+      "view": "查看"
+    },
+    "file": {
+      "new": "新建标签页",
+      "newWindow": "新建窗口",
+      "open": "打开...",
+      "save": "保存",
+      "saveAs": "另存为...",
+      "saveAll": "全部保存",
+      "closeWindow": "关闭窗口",
+      "exit": "退出"
+    },
+    "edit": {
+      "undo": "撤消",
+      "redo": "重做",
+      "find": "查找...",
+      "findNext": "查找下一个",
+      "findPrevious": "查找上一个",
+      "replace": "替换...",
+      "goTo": "转到...",
+      "timeDate": "时间/日期"
+    },
+    "find": {
+      "find": "查找",
+      "replace": "替换为",
+      "previous": "上一个",
+      "next": "下一个",
+      "replaceOne": "替换",
+      "replaceAll": "全部替换",
+      "matchCase": "区分大小写",
+      "none": "无结果",
+      "count": "第 {current} 个，共 {total} 个",
+      "replaced": {
+        "one": "已替换 {count} 处",
+        "other": "已替换 {count} 处"
+      }
+    },
+    "goTo": {
+      "title": "转到行",
+      "message": "行号（1 到 {max}）",
+      "go": "转到"
+    },
+    "format": {
+      "wrap": "自动换行",
+      "font": "字体..."
+    },
+    "view": {
+      "zoom": "缩放",
+      "zoomIn": "放大",
+      "zoomOut": "缩小",
+      "zoomReset": "恢复默认缩放",
+      "statusBar": "状态栏"
+    },
+    "settings": {
+      "title": "记事本设置",
+      "font": "字体",
+      "size": "字号",
+      "startup": "记事本启动时",
+      "startRestore": "继续上一次会话",
+      "startNew": "从空白文档开始",
+      "sample": "The quick brown fox jumps over the lazy dog. 敏捷的棕色狐狸跳过了懒狗。"
+    },
+    "status": {
+      "position": "第 {line} 行，第 {col} 列",
+      "chars": {
+        "one": "{count} 个字符",
+        "other": "{count} 个字符"
+      },
+      "selected": "{total} 个字符中的 {count} 个",
+      "eol": "CRLF",
+      "encoding": "UTF-8"
+    },
+    "unsaved": {
+      "message": "是否要保存对 {name} 的更改？",
+      "dontSave": "不保存"
+    },
+    "error": {
+      "open": "无法打开该文件",
+      "save": "无法保存该文件"
+    },
+    "selectAll": "全选"
+  }
+}

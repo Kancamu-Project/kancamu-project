@@ -1,0 +1,807 @@
+/*
+ * Base styles and reusable controls, shared by the shell and by every app.
+ * Needs tokens.css.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font: 0.8rem/1.2rem var(--font);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: default;
+}
+
+input,
+textarea {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 1px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text) 38%, transparent) transparent;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* People who asked their system for less motion get none (spinners keep turning) */
+@media (prefers-reduced-motion: reduce) {
+  *:not(.spinner, .spinner *),
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}
+
+[tabindex="-1"]:focus-visible {
+  outline: none;
+}
+
+/* "Animation effects" switched off (progress spinners keep turning) */
+.no-animations *:not(.spinner, .spinner *),
+.no-animations *::before,
+.no-animations *::after {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+}
+
+/* ------------------------------------------------------------------ icons */
+
+/* Monochrome glyph: an SVG from /icons used as a mask, tinted by `color`. */
+.icon {
+  display: inline-block;
+  flex: none;
+  width: var(--icon-size, 1rem);
+  height: var(--icon-size, 1rem);
+  background-color: currentColor;
+  -webkit-mask: var(--icon-src) center / contain no-repeat;
+  mask: var(--icon-src) center / contain no-repeat;
+}
+
+.battery {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 1.2rem;
+  height: 0.6rem;
+  margin-inline-end: 0.2rem;
+  border: 1px solid currentColor;
+  border-radius: 0.2rem;
+}
+
+.battery::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  inset-inline-end: -0.2rem;
+  width: 2px;
+  height: 0.2rem;
+  border-radius: 0 1px 1px 0;
+  background: currentColor;
+}
+
+.battery-level {
+  position: absolute;
+  inset: 1px auto 1px 1px;
+  width: calc((100% - 2px) * var(--level, 1));
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.battery.is-charging .battery-level {
+  background: var(--success);
+}
+
+.battery.is-low .battery-level {
+  background: var(--danger-text);
+}
+
+/* ---------------------------------------------------------------- buttons */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 2rem;
+  padding: 0.2rem 0.8rem;
+  border: 1px solid var(--stroke-control);
+  border-bottom-color: var(--stroke-control-bottom);
+  border-radius: var(--radius);
+  background: var(--bg-control);
+  color: var(--text);
+  font-size: 0.8rem;
+  line-height: 1.2rem;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background: var(--bg-control-hover);
+}
+
+.btn:active {
+  background: var(--bg-control-pressed);
+  border-bottom-color: var(--stroke-control);
+  color: var(--text-2);
+}
+
+.btn:disabled {
+  color: var(--text-disabled);
+  pointer-events: none;
+}
+
+.btn-accent {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.btn-accent:hover {
+  background: var(--accent-hover);
+}
+
+.btn-accent:active {
+  background: var(--accent-pressed);
+  color: color-mix(in srgb, var(--on-accent) 72%, transparent);
+}
+
+.btn-accent:disabled {
+  background: var(--stroke-strong);
+  color: var(--on-accent);
+  opacity: .5;
+}
+
+.btn-accent.btn-danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+.btn-accent.btn-danger:hover {
+  background: color-mix(in srgb, var(--danger) 90%, #fff);
+}
+
+.btn-subtle {
+  border-color: transparent;
+  background: transparent;
+}
+
+.btn-subtle:hover {
+  background: var(--bg-hover);
+}
+
+.btn-subtle:active {
+  background: var(--bg-pressed);
+}
+
+.btn-icon {
+  width: 2rem;
+  padding: 0;
+}
+
+/* ----------------------------------------------------------------- inputs */
+
+.input {
+  width: 100%;
+  height: 2rem;
+  padding: 0 0.6rem;
+  border: 1px solid var(--stroke-control);
+  border-bottom-color: var(--stroke-strong);
+  border-radius: var(--radius);
+  background: var(--bg-input);
+  color: var(--text);
+  outline: none;
+}
+
+.input:hover {
+  background: var(--bg-control-hover);
+}
+
+.input:focus {
+  background: var(--bg-content);
+  border-bottom-color: var(--accent);
+  box-shadow: inset 0 -1px 0 var(--accent);
+}
+
+.input::placeholder {
+  color: var(--text-3);
+}
+
+/* toggle switch: <label class="switch"><input type="checkbox"><span>On</span></label> */
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.switch input {
+  position: relative;
+  flex: none;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 2.6rem;
+  height: 1.2rem;
+  margin: 0;
+  border: 1px solid var(--stroke-strong);
+  border-radius: 0.6rem;
+  background: transparent;
+  transition: background-color .12s, border-color .12s;
+}
+
+.switch input::after {
+  content: "";
+  position: absolute;
+  top: 0.2rem;
+  inset-inline-start: 0.2rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: var(--text-2);
+  transition: transform .16s var(--ease-out), scale .12s;
+}
+
+.switch input:hover::after {
+  scale: 1.17;
+}
+
+.switch input:checked {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.switch input:checked::after {
+  transform: translateX(1.2rem);
+  background: var(--on-accent);
+}
+
+.switch input:disabled {
+  opacity: .45;
+}
+
+/* slider: <input class="slider" type="range">, --value is the filled part in %.
+   --slider-track and --slider-knob are its thickness and the size of the knob */
+.slider {
+  --value: 50%;
+  --slider-track: 0.4rem;
+  --slider-knob: 1.6rem;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 1.6rem;
+  margin: 0;
+  background: transparent;
+}
+
+.slider::-webkit-slider-runnable-track {
+  height: var(--slider-track);
+  border-radius: calc(var(--slider-track) / 2);
+  background: linear-gradient(to right, var(--accent) var(--value), var(--shade-5) var(--value));
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: var(--slider-knob);
+  height: var(--slider-knob);
+  margin-top: calc((var(--slider-track) - var(--slider-knob)) / 2);
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0.1rem 0.4rem rgba(0, 0, 0, .35);
+}
+
+.slider::-moz-range-track {
+  height: var(--slider-track);
+  border-radius: calc(var(--slider-track) / 2);
+  background: var(--shade-5);
+}
+
+.slider::-moz-range-progress {
+  height: var(--slider-track);
+  border-radius: calc(var(--slider-track) / 2);
+  background: var(--accent);
+}
+
+.slider::-moz-range-thumb {
+  width: var(--slider-knob);
+  height: var(--slider-knob);
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0.1rem 0.4rem rgba(0, 0, 0, .35);
+}
+
+/* ------------------------------------------------------------------ menus */
+
+.menu-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 30000;
+  pointer-events: none;
+}
+
+/* menus, dialogs and the panels of the shell are rounder than the controls inside an app window */
+.menu,
+.dialog {
+  --radius: 0.6rem;
+  --radius-lg: 1.4rem;
+}
+
+/* radius 1rem = the radius of a row (0.6rem) + the space around the rows (0.4rem) */
+.menu {
+  position: absolute;
+  min-width: 11.8rem;
+  max-width: min(22.6rem, calc(100vw - 0.8rem));
+  padding: 0.4rem;
+  overflow-y: auto;
+  border: 1px solid var(--stroke);
+  border-radius: 1rem;
+  background: var(--acrylic-menu);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  box-shadow: var(--shadow-menu);
+  pointer-events: auto;
+  outline: none;
+  animation: menu-in .12s ease-out;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.4rem);
+  }
+}
+
+/* closing: the menu fades and rises a little (as long as MENU_CLOSE_DELAY) */
+.menu.is-closing {
+  pointer-events: none;
+  animation: menu-out .1s ease-in forwards;
+}
+
+@keyframes menu-out {
+  to {
+    opacity: 0;
+    transform: translateY(-0.4rem);
+  }
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  height: 2rem;
+  padding: 0 0.8rem;
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  line-height: 1.2rem;
+}
+
+/* the row under the pointer is lit with the accent colour */
+.menu-item.is-active {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.menu-item.is-active:active {
+  background: var(--accent-pressed);
+}
+
+.menu-item.is-active .menu-shortcut,
+.menu-item.is-active .menu-arrow {
+  color: inherit;
+}
+
+.menu-item.is-disabled {
+  color: var(--text-disabled);
+}
+
+.menu-item.is-danger:not(.is-disabled) {
+  color: var(--danger-text);
+}
+
+.menu-check,
+.menu-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+.menu-icon img {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* a menu is words: only the pictures of apps and files stay, not the glyphs, and no empty column for a row without one */
+.menu-icon:not(:has(> img)) {
+  display: none;
+}
+
+.menu-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menu-shortcut {
+  flex: none;
+  margin-inline-start: 1.2rem;
+  color: var(--text-3);
+  font-size: 0.8rem;
+}
+
+.menu-arrow {
+  display: grid;
+  flex: none;
+  place-items: center;
+  margin-inline-end: -0.4rem;
+  color: var(--text-2);
+  --icon-size: 0.8rem;
+}
+
+.menu-sep {
+  height: 1px;
+  margin: 0.4rem 0.8rem;
+  background: var(--divider);
+}
+
+/* ---------------------------------------------------------------- dialogs */
+
+.dialog-smoke {
+  position: fixed;
+  inset: 0;
+  z-index: 29000;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: var(--smoke);
+  animation: dialog-fade .14s ease-out;
+}
+
+.dialog-smoke.is-closing {
+  opacity: 0;
+  transition: opacity .1s linear;
+}
+
+@keyframes dialog-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  width: 26.2rem;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-lg);
+  background: var(--bg-solid);
+  box-shadow: var(--shadow-dialog);
+  animation: dialog-in .18s var(--ease-out);
+}
+
+@keyframes dialog-in {
+  from {
+    transform: scale(1.06);
+  }
+}
+
+.dialog-body {
+  padding: 1.6rem;
+  overflow-y: auto;
+  background: var(--bg-content);
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.dialog-title {
+  margin: 0 0 0.8rem;
+  font: 600 1.2rem/1.8rem var(--font-display);
+}
+
+.dialog-message {
+  margin: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.dialog-input {
+  margin-top: 1rem;
+}
+
+.dialog-footer {
+  display: flex;
+  gap: 0.6rem;
+  padding: 1.6rem;
+  border-top: 1px solid var(--divider);
+}
+
+.dialog-footer .btn {
+  flex: 1;
+  min-width: 0;
+}
+
+/* --------------------------------------------------------------- tooltips */
+
+.tooltip {
+  position: fixed;
+  z-index: 31000;
+  max-width: 20rem;
+  padding: 0.4rem 0.6rem 0.4rem;
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  background: var(--bg-menu-solid);
+  box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, .14);
+  color: var(--text);
+  font-size: 0.8rem;
+  line-height: 1rem;
+  white-space: pre-line;
+  pointer-events: none;
+  animation: dialog-fade .1s linear;
+}
+
+/* ---------------------------------------------------------------- spinner */
+
+.spinner {
+  width: 2.6rem;
+  height: 2.6rem;
+  animation: spinner-turn 1.4s linear infinite;
+}
+
+.spinner circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+  animation: spinner-dash 1.4s ease-in-out infinite;
+}
+
+@keyframes spinner-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinner-dash {
+  0% {
+    stroke-dasharray: 1 150;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray: 90 150;
+    stroke-dashoffset: -35;
+  }
+
+  100% {
+    stroke-dasharray: 90 150;
+    stroke-dashoffset: -124;
+  }
+}
+
+/* ------------------------------------------------------- open / save dialog */
+
+.picker {
+  width: 32.6rem;
+}
+
+.picker-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.picker-path {
+  flex: 1;
+  min-width: 0;
+  padding: 0 0.6rem;
+  overflow: hidden;
+  border: 1px solid var(--stroke-control);
+  border-radius: var(--radius);
+  background: var(--bg-input);
+  line-height: 1.8rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picker-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-bottom: 0.6rem;
+}
+
+.picker-quick .btn {
+  min-height: 1.8rem;
+  padding: 2px 0.6rem;
+  font-size: 0.8rem;
+}
+
+.picker-list {
+  height: 13.8rem;
+  margin-bottom: 0.8rem;
+  overflow-y: auto;
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+}
+
+.picker-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 2rem;
+  padding: 0 0.6rem;
+}
+
+.picker-row img {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.picker-row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picker-row:hover {
+  background: var(--bg-hover);
+}
+
+.picker-row.is-selected {
+  background: var(--accent-soft);
+}
+
+.empty-note {
+  margin: 1.6rem 0.8rem;
+  color: var(--text-2);
+  text-align: center;
+}
+
+.picker-name {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.picker-name span {
+  flex: none;
+}
+
+/* ---------------------------------------------------- rubber-band selection */
+
+.marquee {
+  position: absolute;
+  z-index: 5;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------- properties dialog */
+
+.props {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem 1.2rem;
+  margin: 0;
+}
+
+.props dt {
+  color: var(--text-2);
+}
+
+.props dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.props-head {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--divider);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.props-head img {
+  flex: none;
+  width: 2.6rem;
+  height: 2.6rem;
+  object-fit: contain;
+}
+
+/* Accessibility: a thicker focus ring, and colour filters over the whole desktop (the shell page only, the apps inside it are filtered with it). */
+:root.big-focus :focus-visible {
+  outline: 0.2rem solid var(--accent);
+  outline-offset: 2px;
+}
+
+:root:not(.os-ready)[data-color-filter="grayscale"] body {
+  filter: grayscale(1);
+}
+
+:root:not(.os-ready)[data-color-filter="inverted"] body {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+:root:not(.os-ready)[data-color-filter="grayscaleInverted"] body {
+  filter: grayscale(1) invert(1);
+}
+
+/* Icons of apps: the shadow follows the shape of the picture, so transparent icons get it too. */
+.dicon-img,
+.tb-btn img,
+.start-tile img,
+.start-reco-item img,
+.start-row img,
+.search-row img,
+.switcher-item img,
+.tray-app img,
+.window-icon,
+.tb-preview-head img,
+.tb-thumb-win img,
+.toast-head img,
+.menu-icon img,
+.picker-row img,
+.props-head img {
+  filter: var(--shadow-icon);
+}

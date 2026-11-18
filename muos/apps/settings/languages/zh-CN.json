@@ -1,0 +1,435 @@
+{
+  "settings": {
+    "pages": {
+      "display": {
+        "title": "显示",
+        "desc": "亮度、夜间模式、显示信息"
+      },
+      "sound": {
+        "title": "声音",
+        "desc": "音量、静音"
+      },
+      "notifications": {
+        "title": "通知",
+        "desc": "来自应用和系统的提醒、勿扰模式"
+      },
+      "power": {
+        "title": "电源和电池",
+        "desc": "电池电量、节能模式"
+      },
+      "storage": {
+        "title": "存储",
+        "desc": "磁盘空间、回收站"
+      },
+      "about": {
+        "title": "关于",
+        "desc": "设备规格、重命名这台电脑、重置"
+      },
+      "bluetooth": {
+        "title": "蓝牙和设备",
+        "desc": "蓝牙、鼠标、触摸"
+      },
+      "network": {
+        "title": "网络和 Internet",
+        "desc": "Wi-Fi、飞行模式、连接属性"
+      },
+      "background": {
+        "title": "背景",
+        "desc": "背景图片、颜色、契合度"
+      },
+      "colors": {
+        "title": "颜色",
+        "desc": "浅色或深色模式、主题色、透明效果"
+      },
+      "lockScreen": {
+        "title": "锁屏界面",
+        "desc": "启动时显示锁屏、立即锁定"
+      },
+      "start": {
+        "title": "开始",
+        "desc": "推荐的文件、已固定的应用"
+      },
+      "taskbar": {
+        "title": "任务栏",
+        "desc": "任务栏对齐方式、搜索按钮、已固定的应用"
+      },
+      "apps": {
+        "title": "应用",
+        "desc": "已安装的应用和随系统启动的应用"
+      },
+      "accounts": {
+        "title": "帐户",
+        "desc": "你的信息、显示名称"
+      },
+      "dateTime": {
+        "title": "时间和日期",
+        "desc": "时区、24 小时制、任务栏中的秒数"
+      },
+      "language": {
+        "title": "语言和区域",
+        "desc": "显示语言、区域格式"
+      },
+      "accessibility": {
+        "title": "辅助功能",
+        "desc": "高对比度、颜色滤镜、焦点指示器、透明度、动画"
+      },
+      "multitasking": {
+        "title": "多任务处理",
+        "desc": "贴靠窗口和贴靠布局、虚拟桌面"
+      },
+      "clipboard": {
+        "title": "剪贴板",
+        "desc": "剪贴板历史记录、清除剪贴板数据"
+      },
+      "privacy": {
+        "title": "隐私和安全性",
+        "desc": "权限、清除活动数据、锁定"
+      },
+      "update": {
+        "title": "muOS 更新",
+        "desc": "检查更新、更新历史记录"
+      },
+      "system": {
+        "title": "系统",
+        "desc": "显示、声音、通知、电源"
+      },
+      "personalization": {
+        "title": "个性化",
+        "desc": "背景、颜色、主题、任务栏"
+      },
+      "timeLanguage": {
+        "title": "时间和语言",
+        "desc": "日期和时间、语言、区域格式"
+      },
+      "home": {
+        "title": "主页",
+        "desc": "一览你的电脑，快速访问设置"
+      },
+      "installedApps": {
+        "title": "已安装的应用",
+        "desc": "打开应用并选择它们的固定位置"
+      },
+      "startupApps": {
+        "title": "启动",
+        "desc": "随系统启动并在后台运行的应用"
+      }
+    },
+    "update": {
+      "status": "muOS 更新",
+      "upToDate": "你使用的是最新版本",
+      "checking": "正在检查更新...",
+      "check": "检查更新",
+      "lastChecked": "上次检查时间：{when}",
+      "neverChecked": "尚未检查",
+      "note": "没有可安装的更新。检查只是展示效果。",
+      "history": "更新历史记录",
+      "initial": "初始版本",
+      "installed": "已安装",
+      "advanced": "高级选项",
+      "resetDesc": "重置这台电脑和其他恢复选项"
+    },
+    "localAccount": "本地帐户",
+    "findSetting": "查找设置",
+    "noResults": "没有与搜索条件匹配的设置。",
+    "home": {
+      "status": "状态",
+      "more": "设置",
+      "free": "可用 {size}"
+    },
+    "multitasking": {
+      "snap": "贴靠",
+      "snapWindows": "贴靠窗口",
+      "snapWindowsDesc": "将窗口拖到屏幕边缘可占满一半屏幕，拖到顶部可最大化",
+      "snapLayouts": "显示贴靠布局",
+      "snapLayoutsDesc": "将指针停在窗口的最大化按钮上即可选择布局",
+      "desktops": "桌面",
+      "desktopsTitle": "虚拟桌面",
+      "desktopsDesc": "将窗口分组到多个桌面上。从任务栏打开任务视图。"
+    },
+    "privacy": {
+      "permissions": "应用权限",
+      "camera": "相机",
+      "cameraDesc": "“相机”和“照片”应用会使用你设备的相机",
+      "microphone": "麦克风",
+      "microphoneDesc": "录制声音的应用会使用你设备的麦克风",
+      "location": "位置",
+      "locationDesc": "需要知道你所在位置的应用",
+      "state": {
+        "granted": "已允许",
+        "denied": "已阻止",
+        "prompt": "每次都询问",
+        "unknown": "未知"
+      },
+      "permissionsNote": "这些由浏览器决定。请在浏览器的网站设置中更改。",
+      "activity": "活动数据",
+      "clearAll": "清除所有活动数据",
+      "clearAllDesc": "浏览历史记录、收藏夹、最近播放、播放列表、照片收藏、记事本会话和便笺",
+      "clearAllButton": "全部清除",
+      "clear": "清除",
+      "cleared": "已清除",
+      "clearTitle": "清除这些数据？",
+      "clearMessage": "此操作无法撤消。你的文件不会受到影响。",
+      "data": {
+        "edgeHistory": "Edge：历史记录",
+        "edgeFavorites": "Edge：收藏夹",
+        "playerRecent": "媒体播放器：最近播放",
+        "playerPlaylists": "媒体播放器：播放列表",
+        "photoFavorites": "照片：收藏夹",
+        "notepadSession": "记事本：上一次会话和未保存的文本",
+        "widgetNotes": "小组件：便笺"
+      },
+      "security": "安全性"
+    },
+    "clipboard": {
+      "history": "剪贴板历史记录",
+      "historyDesc": "保存你复制的文本、图片和文件，以便稍后再次粘贴",
+      "shortcut": "显示剪贴板历史记录",
+      "shortcutDesc": "浏览器会保留 Meta 键，因此请改按 Alt+V",
+      "data": "剪贴板数据",
+      "clear": "清除剪贴板数据",
+      "clearDesc": "清除历史记录中除已固定项目以外的所有内容",
+      "clearButton": "清除",
+      "cleared": "已清除",
+      "note": "历史记录仅存在于此桌面。它看不到你在电脑上其他程序中复制的内容。"
+    },
+    "display": {
+      "brightnessColor": "亮度和颜色",
+      "brightnessDesc": "调整屏幕亮度",
+      "nightLightDesc": "使用更暖的颜色来帮助阻挡蓝光",
+      "scaleLayout": "缩放和布局",
+      "resolution": "显示分辨率",
+      "resolutionDesc": "此浏览器所运行屏幕的分辨率",
+      "scale": "缩放",
+      "scaleDesc": "浏览器报告的缩放级别"
+    },
+    "sound": {
+      "output": "输出",
+      "volumeDesc": "扬声器的音量",
+      "muteDesc": "关闭所有声音",
+      "system": "系统声音",
+      "systemSounds": "播放系统声音",
+      "systemSoundsDesc": "启动、关机和通知时的短提示音",
+      "test": "测试声音",
+      "testDesc": "以当前音量播放通知声音",
+      "testButton": "播放"
+    },
+    "notifications": {
+      "dndDesc": "通知将直接进入通知中心，不显示横幅",
+      "test": "测试通知",
+      "testDesc": "查看通知的外观",
+      "send": "发送通知",
+      "sampleTitle": "这是一条通知",
+      "sampleBody": "通知会显示在这里，并保留在日历上方。"
+    },
+    "power": {
+      "level": "电池电量",
+      "charging": "已接通电源，正在充电",
+      "onBattery": "使用电池供电",
+      "unavailable": "此浏览器不共享电池状态",
+      "saverDesc": "通过关闭动画和透明效果来节省电量"
+    },
+    "storage": {
+      "usedOf": "{total} 中已用 {used}",
+      "used": "已用 {size}",
+      "free": "可用 {size}",
+      "breakdown": "占用空间的内容",
+      "note": "磁盘保存在此浏览器的存储 (IndexedDB) 中。能存多少取决于你电脑上的可用空间。",
+      "localDisk": "本地磁盘 (C:)",
+      "items": {
+        "one": "{count} 个项目",
+        "other": "{count} 个项目"
+      }
+    },
+    "about": {
+      "device": "设备规格",
+      "deviceName": "设备名称",
+      "processor": "处理器",
+      "processorValue": "{count} 个逻辑处理器",
+      "memory": "已安装的 RAM",
+      "systemType": "系统类型",
+      "browser": "浏览器",
+      "display": "显示器",
+      "touch": "笔和触控",
+      "touchYes": "支持触控，共 {count} 个触摸点",
+      "touchNo": "此显示器没有可用的笔或触控输入",
+      "unknown": "不可用",
+      "system": "系统规格",
+      "edition": "版本",
+      "version": "版本号",
+      "build": "内部版本",
+      "rename": "重命名这台电脑",
+      "renameMessage": "最多使用 15 个字母、数字和连字符。",
+      "renameConfirm": "重命名",
+      "renameInvalid": "电脑名称只能包含字母、数字和连字符，不能以连字符开头或结尾，且最长 15 个字符。",
+      "recovery": "恢复",
+      "reset": "重置这台电脑",
+      "resetDesc": "删除所有文件和设置，从头开始",
+      "resetButton": "重置电脑",
+      "resetMessage": "磁盘上的所有文件和所有设置都将被删除，系统将重启。此操作无法撤消。",
+      "resetConfirm": "重置"
+    },
+    "bluetooth": {
+      "onDesc": "可作为此设备被发现",
+      "offDesc": "蓝牙已关闭",
+      "input": "输入",
+      "pointer": "指点设备",
+      "mouse": "鼠标或触摸板",
+      "touch": "触摸屏",
+      "touchPoints": "触摸点"
+    },
+    "network": {
+      "status": {
+        "wifi": "已连接",
+        "offline": "未连接",
+        "airplane": "飞行模式"
+      },
+      "wifiDesc": "通过无线网络连接到互联网",
+      "airplaneDesc": "停止所有无线通信",
+      "properties": "连接属性",
+      "type": "连接类型",
+      "downlink": "下载速度（估计）",
+      "rtt": "往返时间"
+    },
+    "personalization": {
+      "selectTheme": "选择要应用的主题"
+    },
+    "background": {
+      "personalize": "个性化你的背景",
+      "personalizeDesc": "图片背景会应用于桌面和锁屏界面",
+      "picture": "图片",
+      "solid": "纯色",
+      "choose": "选择照片",
+      "chooseDesc": "存放在“图片”文件夹中的图片",
+      "browse": "浏览照片",
+      "browseFailed": "无法添加该照片",
+      "auto": "默认图片，随浅色或深色模式变化",
+      "autoBadge": "自动",
+      "fit": "为桌面图像选择契合度",
+      "fits": {
+        "fill": "填充",
+        "fit": "适应",
+        "stretch": "拉伸",
+        "center": "居中"
+      },
+      "color": "选择背景颜色"
+    },
+    "colors": {
+      "mode": "选择模式",
+      "modeDesc": "更改系统和应用中显示的颜色",
+      "system": "跟随系统设置",
+      "light": "浅色",
+      "dark": "深色",
+      "transparency": "透明效果",
+      "transparencyDesc": "窗口和界面呈半透明",
+      "accent": "主题色",
+      "accentDesc": "用于按钮、开关和突出显示的颜色"
+    },
+    "lockScreen": {
+      "startup": "启动时显示锁屏界面",
+      "startupDesc": "关闭后，系统启动后会直接显示桌面",
+      "background": "锁屏界面背景",
+      "backgroundDesc": "锁屏界面使用桌面背景",
+      "lockNow": "锁定这台电脑",
+      "lockNowDesc": "立即显示锁屏界面"
+    },
+    "start": {
+      "recommended": "在“开始”中显示推荐的文件",
+      "recommendedDesc": "你最近处理过的文件",
+      "pinned": "固定到“开始”的应用"
+    },
+    "taskbar": {
+      "behaviors": "任务栏行为",
+      "alignment": "任务栏对齐方式",
+      "alignmentDesc": "“开始”和应用按钮在任务栏上的位置",
+      "center": "居中",
+      "left": "靠左",
+      "dock": "程序坞",
+      "dockDesc": "程序坞何时让开（Alt+D 可调出）",
+      "dockShow": "始终显示",
+      "dockAuto": "窗口遮挡时隐藏",
+      "dockHide": "始终隐藏",
+      "taskView": "显示“任务视图”按钮",
+      "taskViewDesc": "窗口和虚拟桌面 (Alt+T)，在菜单栏中",
+      "widgets": "显示“小组件”按钮",
+      "widgetsDesc": "小组件面板 (Alt+Z)，在菜单栏中",
+      "pinned": "固定到任务栏的应用"
+    },
+    "apps": {
+      "count": {
+        "one": "找到 {count} 个应用",
+        "other": "找到 {count} 个应用"
+      },
+      "version": "版本 {version}",
+      "note": "应用位于项目的 /apps 文件夹中。每个应用都在 apps.json 中描述。",
+      "more": "查看更多",
+      "uninstall": "卸载",
+      "uninstallTitle": "卸载 {name}？",
+      "uninstallMessage": "{name} 及其打开的窗口将被关闭，并从“开始”和任务栏中移除。你可以随时在此重新安装。"
+    },
+    "accounts": {
+      "info": "你的信息",
+      "displayName": "显示名称",
+      "displayNameDesc": "显示在“开始”和锁屏界面上"
+    },
+    "dateTime": {
+      "timeZone": "时区",
+      "format": "格式",
+      "clock24": "使用 24 小时制",
+      "clock24Desc": "显示 16:30，而不是下午 4:30",
+      "seconds": "在任务栏时钟中显示秒数",
+      "secondsDesc": "任务栏角落的时钟每秒更新一次"
+    },
+    "language": {
+      "display": "muOS 显示语言",
+      "displayDesc": "系统及其应用将以此语言显示",
+      "regional": "区域格式",
+      "regionalDesc": "日期、时间和数字遵循显示语言",
+      "longDate": "长日期",
+      "shortDate": "短日期",
+      "time": "时间",
+      "number": "数字"
+    },
+    "accessibility": {
+      "visual": "视觉效果",
+      "contrast": "对比度和颜色",
+      "highContrast": "高对比度",
+      "highContrastDesc": "整个系统使用黑色背景、白色文字和亮黄色强调",
+      "colorFilter": "颜色滤镜",
+      "colorFilterDesc": "让屏幕更易阅读，使用黑白或反色",
+      "filters": {
+        "none": "关",
+        "grayscale": "灰度",
+        "inverted": "反转",
+        "grayscaleInverted": "灰度反转"
+      },
+      "focus": "更粗的焦点指示器",
+      "focusDesc": "用粗圈标出哪个控件拥有键盘焦点",
+      "animations": "动画效果",
+      "animationsDesc": "窗口和菜单在打开和关闭时带有动画",
+      "note": "节能模式开启时会关闭这两种效果。当系统要求减弱动态效果时，这两种效果也会关闭。",
+      "shortcuts": "键盘",
+      "shortcutsTitle": "键盘快捷方式",
+      "shortcutsNote": "浏览器会保留 Alt+Tab 和大多数 Meta 键快捷方式，因此改用下面这些。切换窗口时，按住 Alt 并再次按 Q 逐个浏览；松开即可切换。",
+      "shortcut": {
+        "switch": "在窗口之间切换（加按 Shift 可反向切换）",
+        "clipboard": "剪贴板历史记录",
+        "taskmanager": "打开任务管理器",
+        "snip": "使用截图工具截取屏幕",
+        "taskview": "任务视图：窗口和虚拟桌面",
+        "widgets": "小组件",
+        "desktops": "上一个或下一个虚拟桌面；按 D 新建一个",
+        "desktop": "显示桌面",
+        "search": "搜索",
+        "start": "“开始”菜单（如果浏览器放行，可单独按 Meta 键）",
+        "apps": "打开、切换到或最小化任务栏上对应位置的应用",
+        "snap": "将窗口贴靠到左半边或右半边",
+        "maximize": "最大化窗口；按向下键还原，再按则最小化"
+      }
+    },
+    "back": "返回",
+    "startup": {
+      "note": "随系统启动的应用在后台运行，并在任务栏箭头后面保留一个图标。关闭开关即可阻止它启动；也可以在其图标的菜单中结束它。",
+      "empty": "没有可随系统启动的已安装应用。"
+    }
+  }
+}

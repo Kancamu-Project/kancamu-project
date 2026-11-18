@@ -1,0 +1,15 @@
+{
+  "camera": {
+    "capture": "Take photo",
+    "timer": "3 s timer",
+    "mirror": "Mirror",
+    "openLast": "Open the last photo",
+    "starting": "Starting the camera...",
+    "unsupported": "This browser can't use a camera.",
+    "denied": "Camera access was blocked.\nAllow the camera for this site in the browser, then reopen the app.",
+    "none": "No camera was found.",
+    "failed": "The camera can't be started. Another app may be using it.",
+    "device": "Camera",
+    "saveFailed": "The photo can't be saved"
+  }
+}
