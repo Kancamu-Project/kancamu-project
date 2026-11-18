@@ -8,6 +8,8 @@
 
     &.refresh { --icon: url("assets/icons/refresh.svg"); }
     &.theme { --icon: url("assets/icons/sun.svg"); }
+    &.search { --icon: url("assets/icons/search.svg"); }
+    &.user { --icon: url("assets/icons/user.svg"); }
     &.grid { --icon: url("assets/icons/grid.svg"); }
     &.list { --icon: url("assets/icons/list.svg"); }
     &.external { --icon: url("assets/icons/external.svg"); }
@@ -179,8 +181,8 @@ body {
             }
         }
 
-        & > #theme {
-            width: 2.8rem;
+        & > :is(#theme, #account) {
+            aspect-ratio: 1;
             padding: 0;
             border-inline-start: 1px solid var(--border);
         }
@@ -248,7 +250,7 @@ body {
 }
 
 select {
-    width: 10rem;
+    width: 9rem;
 }
 
 input {
@@ -271,8 +273,24 @@ input {
     }
 }
 
+.searchbox {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    & > .glyph {
+        position: absolute;
+        inset-inline-start: 0.8rem;
+        color: var(--fg-1);
+        pointer-events: none;
+    }
+
+    & > input {
+        padding-inline-start: 2.8rem;
+    }
+}
+
 button {
-    background: var(--bg);
     height: 2.4rem;
     display: flex;
     flex-direction: row;
@@ -280,7 +298,6 @@ button {
     align-items: center;
     gap: 0.4rem;
     padding: 0 0.8rem;
-    border: 1px solid var(--border);
     cursor: pointer;
     font-family: var(--font-mono);
     font-size: 0.8rem;
@@ -288,11 +305,6 @@ button {
     letter-spacing: 0.1rem;
     text-transform: uppercase;
     transition: background 0.2s, color 0.2s, border-color 0.2s;
-
-    &:hover {
-        background: var(--bg-1);
-        border-color: var(--fg-1);
-    }
 }
 
 #reset {

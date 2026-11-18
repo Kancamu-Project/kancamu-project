@@ -15,9 +15,12 @@
             <div id="tabs"></div>
         </div>
         <div class="tools">
-            <select id="language" data-i18n-title="language"></select>
+            <select id="language" class="language" data-i18n-title="language"></select>
             <button id="theme" data-i18n-title="theme">
                 <div class="glyph theme"></div>
+            </button>
+            <button id="account" class="account" data-i18n-title="account">
+                <div class="glyph user"></div>
             </button>
         </div>
     </div>
@@ -25,7 +28,10 @@
     <div id="viewer" hidden></div>
     <div id="main">
         <div id="toolbar">
-            <input id="search" type="search" data-i18n-placeholder="search">
+            <label class="searchbox">
+                <div class="glyph search"></div>
+                <input id="search" type="search" data-i18n-placeholder="search">
+            </label>
             <div class="spacer"></div>
             <button id="reset"><span data-i18n="reset"></span></button>
             <select id="publisher" data-i18n-title="publisher"></select>
@@ -49,6 +55,8 @@
     <div id="footer">
         <span data-i18n="copyright"></span>
     </div>
+    <script src="assets/i18n.js"></script>
+    <script src="assets/account.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

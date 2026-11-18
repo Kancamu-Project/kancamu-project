@@ -18,26 +18,32 @@ import {
 // Models are downloaded from Hugging Face and kept in the browser cache.
 env.allowLocalModels = false;
 
+await i18n.load();
+i18n.selects();
+const tr = (key, params) => i18n.t(key, params);
+
 // Model catalog. kind "text" = AutoModelForCausalLM, "multi" = Gemma 4 (text + images).
 // Every repo below was checked to exist on Hugging Face with q4f16 files; size = total files downloaded.
 const MODELS = [
   { id: "onnx-community/gemma-3-270m-it-ONNX", name: "Gemma 3 270M", family: "Gemma", by: "Google", kind: "text", mb: 273,
-    tag: "Tiny", desc: "Smallest and fastest. Good for testing and weak devices, basic answer quality." },
+    key: "gemma-3-270m", tagKey: "tag.tiny" },
   { id: "onnx-community/Qwen3-0.6B-ONNX", name: "Qwen3 0.6B", family: "Qwen", by: "Alibaba", kind: "text", mb: 570,
-    tag: "Light", desc: "Small but capable, supports many languages." },
+    key: "qwen3-0.6b", tagKey: "tag.light" },
   { id: "onnx-community/gemma-3-1b-it-ONNX", name: "Gemma 3 1B", family: "Gemma", by: "Google", kind: "text", mb: 763,
-    tag: "Light", desc: "Balanced speed and quality for everyday chat." },
+    key: "gemma-3-1b", tagKey: "tag.light" },
   { id: "onnx-community/Llama-3.2-1B-Instruct-ONNX", name: "Llama 3.2 1B", family: "Llama", by: "Meta", kind: "text", mb: 1090,
-    tag: "Light", desc: "Meta's small model, strongest in English." },
+    key: "llama-3.2-1b", tagKey: "tag.light" },
   { id: "onnx-community/Qwen3-1.7B-ONNX", name: "Qwen3 1.7B", family: "Qwen", by: "Alibaba", kind: "text", mb: 1426,
-    tag: "Medium", desc: "Smarter than 0.6B, still comfortable on a laptop with an ordinary GPU." },
+    key: "qwen3-1.7b", tagKey: "tag.medium" },
   { id: "onnx-community/Qwen3-4B-ONNX", name: "Qwen3 4B", family: "Qwen", by: "Alibaba", kind: "text", mb: 2830,
-    tag: "Large", desc: "Strong at text and code. Needs a GPU with plenty of memory." },
+    key: "qwen3-4b", tagKey: "tag.large" },
   { id: "onnx-community/gemma-4-E2B-it-ONNX", name: "Gemma 4 E2B", family: "Gemma", by: "Google", kind: "multi", mb: 3380,
-    tag: "Newest", desc: "Google's newest model, can read images. Large download because of embeddings." },
+    key: "gemma-4-e2b", tagKey: "tag.newest" },
   { id: "onnx-community/gemma-4-E4B-it-ONNX", name: "Gemma 4 E4B", family: "Gemma", by: "Google", kind: "multi", mb: 5180,
-    tag: "Newest · heavy", desc: "The smartest Gemma 4 in this catalog and can read images. Very heavy." },
+    key: "gemma-4-e4b", tagKey: "tag.newestHeavy" },
 ];
+const modelTag = (m) => tr(m.tagKey);
+const modelDesc = (m) => tr("m." + m.key);
 const sizeLabel = (mb) => (mb >= 1000 ? (mb / 1000).toFixed(1) + " GB" : mb + " MB");
 let MODEL = MODELS.find((m) => m.id === lsGetEarly("muai.model")) || MODELS[2];   // default: Gemma 3 1B
 function lsGetEarly(k) { try { return localStorage.getItem(k); } catch { return null; } }
@@ -46,12 +52,7 @@ const DEFAULTS = {
   system: "You are muAI, a helpful assistant. Reply in the language the user writes in, concisely and clearly.",
   maxTokens: 1024, temperature: 0.7, ctx: 30,
 };
-const SUGGESTIONS = [
-  "Explain what WebGPU is with a simple example",
-  "Write a JavaScript function that sorts an array of objects",
-  "Give me 5 name ideas for a coffee shop",
-  "Summarize the difference between RAM and storage",
-];
+const SUGGESTIONS = ["s1", "s2", "s3", "s4"];
 
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
@@ -64,8 +65,8 @@ const els = Object.fromEntries([
 const setModelLabel = (t) => { els.modelLabel.textContent = t; };
 function showSelected() {
   $("modelName").textContent = MODEL.name;
-  $("modelDesc").textContent = `${MODEL.by} · ${MODEL.kind === "multi" ? "text + images" : "text"} · download ±${sizeLabel(MODEL.mb)}. ${MODEL.desc}`;
-  els.loadHint.textContent = "Downloaded from Hugging Face the first time it loads, then kept in the browser cache.";
+  $("modelDesc").textContent = tr("model.desc", { by: MODEL.by, kind: tr(MODEL.kind === "multi" ? "model.kind.multi" : "model.kind.text"), size: sizeLabel(MODEL.mb), desc: modelDesc(MODEL) });
+  els.loadHint.textContent = tr("model.hint");
   els.attachBtn.classList.toggle("hidden", MODEL.kind !== "multi");
   if (!model) setModelLabel(MODEL.name);
 }
@@ -111,7 +112,7 @@ const idb = {
   del: (id) => db ? new Promise((res) => { const r = tx("readwrite").delete(id); r.onsuccess = r.onerror = () => res(); }) : Promise.resolve(),
   clear: () => db ? new Promise((res) => { const r = tx("readwrite").clear(); r.onsuccess = r.onerror = () => res(); }) : Promise.resolve(),
 };
-if (!db) toast("Browser storage is unavailable, history will not be saved");
+if (!db) toast(tr("toast.storage"));
 
 let convs = (await idb.all()).sort((a, b) => b.updated - a.updated);
 let current = null;          // active chat (null = not created yet)
@@ -124,13 +125,16 @@ const stopper = new InterruptableStoppingCriteria();
 // ---------- WebGPU ----------
 let gpuOk = false;
 try { if (navigator.gpu && (await navigator.gpu.requestAdapter())) gpuOk = true; } catch {}
-els.gpuBadge.textContent = gpuOk ? "Active" : "Unavailable";
 els.gpuBadge.classList.add(gpuOk ? "ok" : "bad");
+function renderGpu() {
+  els.gpuBadge.textContent = tr(gpuOk ? "gpu.active" : "gpu.unavailable");
+  if (!gpuOk) els.loadErr.textContent = tr("gpu.unsupported");
+}
 if (!gpuOk) {
   els.loadBtn.disabled = true;
-  els.loadErr.textContent = "This browser or device does not support WebGPU yet. Try the latest Chrome or Edge on desktop.";
   els.loadErr.classList.remove("hidden");
 }
+renderGpu();
 
 // ---------- Light markdown (safe: all text is escaped first) ----------
 function md(src) {
@@ -149,7 +153,7 @@ function md(src) {
     let m;
     if ((m = line.match(/^\u0000B(\d+)\u0000$/))) {
       flushP(); flushL(); const b = blocks[m[1]];
-      out.push(`<div class="code"><div class="codehead"><span>${esc(b.l || "code")}</span><button class="ghost copycode" type="button">${icon("copy")}<span>Copy</span></button></div><pre><code>${esc(b.c)}</code></pre></div>`);
+      out.push(`<div class="code"><div class="codehead"><span>${esc(b.l || tr("code.label"))}</span><button class="ghost copycode" type="button">${icon("copy")}<span>${tr("msg.copy")}</span></button></div><pre><code>${esc(b.c)}</code></pre></div>`);
     } else if ((m = line.match(/^(#{1,4})\s+(.*)$/))) {
       flushP(); flushL(); out.push(`<h${m[1].length}>${inl(m[2])}</h${m[1].length}>`);
     } else if (/^\s*([-*_])\1{2,}\s*$/.test(line)) {
@@ -172,7 +176,7 @@ function groupName(ts) {
   const d = new Date(ts), n = new Date();
   const day = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
   const diff = Math.round((day(n) - day(d)) / 864e5);
-  return diff <= 0 ? "Today" : diff === 1 ? "Yesterday" : diff < 7 ? "Last 7 days" : "Older";
+  return tr(diff <= 0 ? "group.today" : diff === 1 ? "group.yesterday" : diff < 7 ? "group.week" : "group.older");
 }
 function renderList() {
   const q = els.search.value.trim().toLowerCase();
@@ -180,7 +184,7 @@ function renderList() {
   els.list.innerHTML = "";
   if (!shown.length) {
     const e = document.createElement("span"); e.className = "empty-list";
-    e.textContent = q ? "No matches." : "No history yet. Chats are saved automatically in this browser.";
+    e.textContent = tr(q ? "list.noMatches" : "list.empty");
     els.list.appendChild(e); return;
   }
   let last = "";
@@ -190,9 +194,9 @@ function renderList() {
     const it = document.createElement("div");
     it.className = "item" + (current && current.id === c.id ? " active" : "");
     it.dataset.id = c.id;
-    it.innerHTML = `<span class="t"></span><div class="acts"><button data-a="rename" type="button" title="Rename" aria-label="Rename">${icon("edit")}</button><button data-a="delete" type="button" title="Delete" aria-label="Delete">${icon("trash")}</button></div>`;
+    it.innerHTML = `<span class="t"></span><div class="acts"><button data-a="rename" type="button" title="${tr("chat.rename")}" aria-label="${tr("chat.rename")}">${icon("edit")}</button><button data-a="delete" type="button" title="${tr("chat.delete")}" aria-label="${tr("chat.delete")}">${icon("trash")}</button></div>`;
     it.querySelector(".t").textContent = c.title;
-    it.title = new Date(c.updated).toLocaleString("en-US");
+    it.title = new Date(c.updated).toLocaleString(i18n.lang);
     els.list.appendChild(it);
   }
 }
@@ -201,11 +205,11 @@ els.list.addEventListener("click", async (e) => {
   const c = convs.find((x) => x.id === it.dataset.id); if (!c) return;
   const a = e.target.closest("button")?.dataset.a;
   if (a === "rename") {
-    const t = prompt("Chat name:", c.title);
+    const t = prompt(tr("prompt.name"), c.title);
     if (t && t.trim()) { c.title = t.trim().slice(0, 80); await idb.put(c); renderList(); if (current === c) els.title.textContent = c.title; }
   } else if (a === "delete") {
-    if (busy && current === c) return toast("Wait for the reply to finish");
-    if (!confirm(`Delete "${c.title}"?`)) return;
+    if (busy && current === c) return toast(tr("toast.wait"));
+    if (!confirm(tr("confirm.delete", { title: c.title }))) return;
     convs = convs.filter((x) => x !== c); await idb.del(c.id);
     if (current === c) newChat(); else renderList();
   } else openConv(c);
@@ -214,7 +218,7 @@ els.search.addEventListener("input", renderList);
 
 // ---------- Chat view ----------
 function setTitle() {
-  els.title.textContent = current ? current.title : "New chat";
+  els.title.textContent = current ? current.title : tr("title.new");
   els.exportBtn.classList.toggle("hidden", !current);
 }
 function makeMsgEl(m, idx) {
@@ -223,7 +227,7 @@ function makeMsgEl(m, idx) {
   const b = document.createElement("div"); b.className = "bubble";
   if (m.image) {
     const im = document.createElement("div"); im.className = "att";
-    im.style.backgroundImage = `url("${m.image}")`; im.setAttribute("role", "img"); im.setAttribute("aria-label", "attachment");
+    im.style.backgroundImage = `url("${m.image}")`; im.setAttribute("role", "img"); im.setAttribute("aria-label", tr("msg.attachment"));
     b.appendChild(im);
   }
   const body = document.createElement("div");
@@ -231,11 +235,11 @@ function makeMsgEl(m, idx) {
   else { body.className = "md" + (m.error ? " err" : ""); body.innerHTML = m.error ? esc(m.text) : md(m.text); }
   b.appendChild(body); row.appendChild(b);
   const acts = document.createElement("div"); acts.className = "msg-actions";
-  acts.innerHTML = `<button class="ghost" type="button" data-a="copy">${icon("copy")}<span>Copy</span></button>` +
+  acts.innerHTML = `<button class="ghost" type="button" data-a="copy">${icon("copy")}<span>${tr("msg.copy")}</span></button>` +
     (m.role === "user"
-      ? `<button class="ghost" type="button" data-a="edit">${icon("edit")}<span>Edit</span></button>`
-      : `<button class="ghost" type="button" data-a="regen">${icon("refresh")}<span>Regenerate</span></button>`) +
-    (m.tps ? `<span class="meta">${m.model ? esc(m.model) + " · " : ""}${m.tps.toFixed(1)} tokens/s</span>` : "");
+      ? `<button class="ghost" type="button" data-a="edit">${icon("edit")}<span>${tr("msg.edit")}</span></button>`
+      : `<button class="ghost" type="button" data-a="regen">${icon("refresh")}<span>${tr("msg.regen")}</span></button>`) +
+    (m.tps ? `<span class="meta">${m.model ? esc(m.model) + " · " : ""}${tr("msg.tps", { n: m.tps.toFixed(1) })}</span>` : "");
   row.appendChild(acts);
   return { row, body };
 }
@@ -254,18 +258,18 @@ els.chat.addEventListener("click", async (e) => {
   if (btn.classList.contains("copycode")) {
     await navigator.clipboard?.writeText(btn.closest(".code").querySelector("code").innerText).catch(() => {});
     const label = btn.querySelector("span:not(.icon)");
-    label.textContent = "Copied"; setTimeout(() => (label.textContent = "Copy"), 1200); return;
+    label.textContent = tr("code.copied"); setTimeout(() => (label.textContent = tr("msg.copy")), 1200); return;
   }
   const a = btn.dataset.a; if (!a) return;
   const idx = +btn.closest(".msg").dataset.idx, m = current.messages[idx];
-  if (a === "copy") { await navigator.clipboard?.writeText(m.text).catch(() => {}); toast("Copied"); return; }
-  if (busy) return toast("Wait for the reply to finish");
+  if (a === "copy") { await navigator.clipboard?.writeText(m.text).catch(() => {}); toast(tr("toast.copied")); return; }
+  if (busy) return toast(tr("toast.wait"));
   if (a === "edit") {
     current.messages.splice(idx); current.updated = Date.now(); await idb.put(current);
     els.input.value = m.text; pendingImage = m.image && loadedDef?.kind === "multi" ? m.image : null;
     showPreview(); autosize(); renderChat(); els.input.focus();
   } else if (a === "regen") {
-    if (!model) return toast("Load a model first");
+    if (!model) return toast(tr("toast.loadFirst"));
     current.messages.splice(idx); await runAssistant();
   }
 });
@@ -275,23 +279,27 @@ function newChat() {
   current = null; renderChat(); closeSide(); els.input.focus();
 }
 function openConv(c) {
-  if (busy) return toast("Wait for the reply to finish");
+  if (busy) return toast(tr("toast.wait"));
   current = c; renderChat(); closeSide();
 }
 els.newBtn.addEventListener("click", newChat);
-els.chips.innerHTML = "";
-for (const s of SUGGESTIONS) {
-  const b = document.createElement("button"); b.type = "button"; b.innerHTML = "<span></span>"; b.firstChild.textContent = s;
-  b.addEventListener("click", () => { if (!model) return toast("Load a model first"); els.input.value = s; send(); });
-  els.chips.appendChild(b);
+function renderChips() {
+  els.chips.innerHTML = "";
+  for (const key of SUGGESTIONS) {
+    const text = tr(key);
+    const b = document.createElement("button"); b.type = "button"; b.innerHTML = "<span></span>"; b.firstChild.textContent = text;
+    b.addEventListener("click", () => { if (!model) return toast(tr("toast.loadFirst")); els.input.value = text; send(); });
+    els.chips.appendChild(b);
+  }
 }
+renderChips();
 
 // ---------- Loading the model ----------
 async function unloadModel() {
   try { await model?.dispose?.(); } catch (e) { console.warn("dispose failed", e); }
   model = null; processor = null; tokenizer = null; loadedDef = null;
   els.modelBadge.classList.remove("ok");
-  els.input.disabled = true; els.sendBtn.disabled = true; els.input.placeholder = "Load a model first…";
+  els.input.disabled = true; els.sendBtn.disabled = true; els.input.placeholder = tr("composer.loadFirst");
   els.loadBtn.classList.remove("hidden");
 }
 
@@ -300,8 +308,8 @@ async function loadModel() {
   const def = MODEL;
   els.loadBtn.disabled = true; els.changeModelBtn.disabled = true;
   els.loadErr.classList.add("hidden"); els.progressBox.classList.remove("hidden");
-  els.barFill.style.width = "0%"; els.progressText.textContent = "Preparing…";
-  setModelLabel("loading " + def.name + "…");
+  els.barFill.style.width = "0%"; els.progressText.textContent = tr("progress.preparing");
+  setModelLabel(tr("load.loading", { name: def.name }));
   const files = new Map();
   const onProgress = (info) => {
     if (info.status === "progress" && info.file) {
@@ -309,8 +317,8 @@ async function loadModel() {
       let l = 0, t = 0; for (const f of files.values()) { l += f.loaded; t += f.total; }
       const pct = t ? (l / t) * 100 : 0;
       els.barFill.style.width = pct.toFixed(1) + "%";
-      els.progressText.textContent = `Loading ${(l / 1e6).toFixed(0)} / ${(t / 1e6).toFixed(0)} MB (${pct.toFixed(0)}%)`;
-    } else if (info.status === "ready") els.progressText.textContent = "Preparing GPU…";
+      els.progressText.textContent = tr("load.progress", { loaded: (l / 1e6).toFixed(0), total: (t / 1e6).toFixed(0), pct: pct.toFixed(0) });
+    } else if (info.status === "ready") els.progressText.textContent = tr("load.gpu");
   };
   try {
     const opts = { dtype: "q4f16", device: "webgpu", progress_callback: onProgress };
@@ -323,19 +331,19 @@ async function loadModel() {
       model = await AutoModelForCausalLM.from_pretrained(def.id, opts);
     }
     loadedDef = def;
-    els.progressText.textContent = "Warming up model…";
+    els.progressText.textContent = tr("load.warm");
     await generate([{ role: "user", content: def.kind === "multi" ? [{ type: "text", text: "Hi" }] : "Hi" }], [], { maxTokens: 1, temperature: 0 });
     lsSet("muai.model", def.id); lsSet("muai.autoload", "1");
     setModelLabel(def.name); els.modelBadge.classList.add("ok");
     els.progressBox.classList.add("hidden"); els.loadBtn.classList.add("hidden");
-    els.input.disabled = false; els.sendBtn.disabled = false; els.input.placeholder = "Type a message…";
+    els.input.disabled = false; els.sendBtn.disabled = false; els.input.placeholder = tr("composer.type");
     renderChat(); els.input.focus();
   } catch (e) {
     console.error(e);
     try { await model?.dispose?.(); } catch {}
     model = null; processor = null; tokenizer = null; loadedDef = null;
     setModelLabel(def.name);
-    els.loadErr.textContent = `Failed to load ${def.name}: ` + (e?.message || e) + " — try a smaller model.";
+    els.loadErr.textContent = tr("load.failed", { name: def.name, message: e?.message || e });
     els.loadErr.classList.remove("hidden");
     els.loadBtn.disabled = false; els.progressBox.classList.add("hidden");
   } finally {
@@ -345,14 +353,14 @@ async function loadModel() {
 els.loadBtn.addEventListener("click", loadModel);
 
 // ---------- Model picker ----------
-let familyPick = "All";
+let familyPick = "All"; // "All" is the internal value of the first filter; it is shown translated
 function renderFamilyFilter() {
   els.familyFilter.innerHTML = "";
   const fams = ["All", ...new Set(MODELS.map((m) => m.family))];
   for (const f of fams) {
     const n = f === "All" ? MODELS.length : MODELS.filter((m) => m.family === f).length;
     const b = document.createElement("button");
-    b.type = "button"; b.innerHTML = "<span></span>"; b.firstChild.textContent = `${f} ${n}`;
+    b.type = "button"; b.innerHTML = "<span></span>"; b.firstChild.textContent = `${f === "All" ? tr("filter.all") : f} ${n}`;
     b.classList.toggle("active", f === familyPick);
     b.addEventListener("click", () => { familyPick = f; renderFamilyFilter(); renderModelList(); });
     els.familyFilter.appendChild(b);
@@ -366,20 +374,20 @@ function renderModelList() {
     card.className = "mcard" + (isSel ? " sel" : "");
     card.innerHTML = `<div class="info"><div class="nm"><span></span><span class="tag"></span><span class="tag vis"></span></div><span class="ds"></span></div><span class="sz"></span><button type="button"><span></span></button>`;
     const [nm, tag, vis] = card.querySelectorAll(".nm span");
-    nm.textContent = m.name; tag.textContent = m.tag; vis.textContent = m.kind === "multi" ? "text + images" : "text";
-    card.querySelector(".ds").textContent = `${m.by} · ${m.desc}`;
+    nm.textContent = m.name; tag.textContent = modelTag(m); vis.textContent = tr(m.kind === "multi" ? "model.kind.multi" : "model.kind.text");
+    card.querySelector(".ds").textContent = `${m.by} · ${modelDesc(m)}`;
     card.querySelector(".sz").textContent = "±" + sizeLabel(m.mb);
     const btn = card.querySelector("button");
-    btn.firstChild.textContent = isLoaded ? "In use" : "Select & load";
+    btn.firstChild.textContent = tr(isLoaded ? "picker.inUse" : "picker.select");
     btn.disabled = isLoaded || busy; if (!isLoaded) btn.classList.add("outline");
     btn.addEventListener("click", () => chooseModel(m));
     els.modelList.appendChild(card);
   }
 }
 async function chooseModel(m) {
-  if (busy) return toast("Wait for the reply to finish");
+  if (busy) return toast(tr("toast.wait"));
   const seen = lsGet("muai.seen." + m.id) === "1";
-  if (!seen && m.mb >= 1000 && !confirm(`${m.name} will download about ${sizeLabel(m.mb)} from Hugging Face. Continue?`)) return;
+  if (!seen && m.mb >= 1000 && !confirm(tr("picker.confirm", { name: m.name, size: sizeLabel(m.mb) }))) return;
   els.modelDlg.close();
   if (model) await unloadModel();
   MODEL = m; lsSet("muai.model", m.id); showSelected(); renderChat();
@@ -458,9 +466,9 @@ async function runAssistant() {
   try {
     const { msgs, imgs } = buildMessages();
     const r = await generate(msgs, imgs, { maxTokens: settings.maxTokens, temperature: settings.temperature }, (t) => { acc += t; if (!raf) raf = requestAnimationFrame(paint); });
-    m.text = r.text.trim() || "(empty reply)"; m.tps = r.tps; m.model = loadedDef.name;
+    m.text = r.text.trim() || tr("msg.empty"); m.tps = r.tps; m.model = loadedDef.name;
   } catch (e) {
-    console.error(e); m.text = "Something went wrong: " + (e?.message || e); m.error = true;
+    console.error(e); m.text = tr("msg.error", { message: e?.message || e }); m.error = true;
   } finally {
     cancelAnimationFrame(raf);
     current.messages.push(m); current.updated = Date.now();
@@ -510,7 +518,7 @@ function shrink(file, max = 1024) {
       c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
       URL.revokeObjectURL(url); res(c.toDataURL("image/jpeg", 0.85));
     };
-    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("Image could not be read")); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error(tr("error.image"))); };
     img.src = url;
   });
 }
@@ -522,10 +530,10 @@ els.file.addEventListener("change", async () => {
 });
 
 // ---------- Export / import / delete ----------
-const toMarkdown = (c) => `# ${c.title}\n\n_${new Date(c.created).toLocaleString("en-US")}_\n\n` +
-  c.messages.map((m) => `**${m.role === "user" ? "You" : "muAI"}:**${m.image ? " _(image attached)_" : ""}\n\n${m.text}`).join("\n\n---\n\n") + "\n";
+const toMarkdown = (c) => `# ${c.title}\n\n_${new Date(c.created).toLocaleString(i18n.lang)}_\n\n` +
+  c.messages.map((m) => `**${m.role === "user" ? tr("export.you") : "muAI"}:**${m.image ? ` _${tr("export.imageAttached")}_` : ""}\n\n${m.text}`).join("\n\n---\n\n") + "\n";
 els.exportBtn.addEventListener("click", () => current && download(`${current.title.replace(/[^\w-]+/g, "_") || "muai"}.md`, toMarkdown(current), "text/markdown"));
-els.exportAllBtn.addEventListener("click", () => convs.length ? download("muai-history.json", JSON.stringify(convs), "application/json") : toast("No history yet"));
+els.exportAllBtn.addEventListener("click", () => convs.length ? download("muai-history.json", JSON.stringify(convs), "application/json") : toast(tr("toast.noHistory")));
 els.importBtn.addEventListener("click", () => els.importFile.click());
 els.importFile.addEventListener("change", async () => {
   const f = els.importFile.files[0]; els.importFile.value = ""; if (!f) return;
@@ -541,13 +549,13 @@ els.importFile.addEventListener("change", async () => {
       };
       convs.push(clean); await idb.put(clean); n++;
     }
-    convs.sort((a, b) => b.updated - a.updated); renderList(); toast(`${n} chats imported`);
-  } catch { toast("Invalid import file"); }
+    convs.sort((a, b) => b.updated - a.updated); renderList(); toast(tr("toast.imported", { n }));
+  } catch { toast(tr("toast.invalidImport")); }
 });
 els.clearAllBtn.addEventListener("click", async () => {
-  if (busy) return toast("Wait for the reply to finish");
-  if (!convs.length) return toast("No history yet");
-  if (!confirm(`Delete all ${convs.length} chats? This cannot be undone.`)) return;
+  if (busy) return toast(tr("toast.wait"));
+  if (!convs.length) return toast(tr("toast.noHistory"));
+  if (!confirm(tr("confirm.deleteAll", { n: convs.length }))) return;
   convs = []; await idb.clear(); els.settingsDlg.close(); newChat();
 });
 
@@ -557,6 +565,9 @@ function fillSettings() {
   els.setTemp.value = settings.temperature; els.tempVal.textContent = settings.temperature; els.setCtx.value = settings.ctx;
 }
 els.settingsBtn.addEventListener("click", () => { fillSettings(); els.settingsDlg.showModal(); });
+
+// The sign-in is the account web, opened by assets/account.js.
+account.bind($("accountBtn"));
 els.setTemp.addEventListener("input", () => (els.tempVal.textContent = els.setTemp.value));
 els.cancelSettings.addEventListener("click", () => els.settingsDlg.close());
 els.resetSettings.addEventListener("click", () => { settings = { ...DEFAULTS }; fillSettings(); });
@@ -568,7 +579,7 @@ els.settingsForm.addEventListener("submit", () => {
     temperature: clamp(els.setTemp.value, 0, 1.5, DEFAULTS.temperature),
     ctx: clamp(els.setCtx.value, 2, 60, DEFAULTS.ctx),
   };
-  saveSettings(); toast("Settings saved");
+  saveSettings(); toast(tr("toast.saved"));
 });
 
 // ---------- Theme ----------
@@ -581,6 +592,9 @@ function applyTheme(t, save) {
 els.themeDark.addEventListener("click", () => applyTheme("dark", true));
 els.themeLight.addEventListener("click", () => applyTheme("light", true));
 applyTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark", false);
+window.addEventListener("storage", (event) => {
+  if (event.key === "theme" || event.key === null) applyTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark", false);
+});
 
 // ---------- Resizable sidebar ----------
 // Width is kept in rem (multiples of 0.2rem), clamped to 16rem-40rem and at most 60% of the window.
@@ -599,7 +613,10 @@ els.resizer.addEventListener("pointerdown", (e) => {
   document.body.classList.add("resizing"); els.resizer.classList.add("active");
 });
 els.resizer.addEventListener("pointermove", (e) => {
-  if (els.resizer.hasPointerCapture(e.pointerId)) setSideWidth((e.clientX - els.side.getBoundingClientRect().left) / remPx());
+  if (els.resizer.hasPointerCapture(e.pointerId)) {
+    const box = els.side.getBoundingClientRect();
+    setSideWidth((document.documentElement.dir === "rtl" ? box.right - e.clientX : e.clientX - box.left) / remPx());
+  }
 });
 const endResize = (e) => {
   if (els.resizer.hasPointerCapture(e.pointerId)) els.resizer.releasePointerCapture(e.pointerId);
@@ -609,7 +626,8 @@ els.resizer.addEventListener("pointerup", endResize);
 els.resizer.addEventListener("pointercancel", endResize);
 els.resizer.addEventListener("dblclick", () => { setSideWidth(SIDE.def); saveSideWidth(); });
 els.resizer.addEventListener("keydown", (e) => {
-  const to = { ArrowLeft: sideRem - 1, ArrowRight: sideRem + 1, Home: SIDE.min, End: SIDE.max }[e.key];
+  const flip = document.documentElement.dir === "rtl" ? -1 : 1;
+  const to = { ArrowLeft: sideRem - flip, ArrowRight: sideRem + flip, Home: SIDE.min, End: SIDE.max }[e.key];
   if (to === undefined) return;
   e.preventDefault(); setSideWidth(to); saveSideWidth();
 });
@@ -620,6 +638,15 @@ setSideWidth(sideRem);
 const closeSide = () => document.body.classList.remove("side-open");
 els.menuBtn.addEventListener("click", () => document.body.classList.toggle("side-open"));
 els.overlay.addEventListener("click", closeSide);
+
+// ---------- Language ----------
+i18n.onChange(() => {
+  renderGpu(); renderChips(); showSelected();
+  setModelLabel(model ? loadedDef.name : MODEL.name);
+  els.input.placeholder = tr(model ? "composer.type" : "composer.loadFirst");
+  renderChat();
+  if (els.modelDlg.open) { renderFamilyFilter(); renderModelList(); }
+});
 
 // ---------- Start ----------
 showSelected(); renderChat();

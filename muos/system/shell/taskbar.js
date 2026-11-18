@@ -1,4 +1,4 @@
-import { h, picture, rectOf } from '../core/dom.js';
+import { h, rectOf } from '../core/dom.js';
 import { settings } from '../core/settings.js';
 import { apps } from '../core/apps.js';
 import { i18n, t } from '../core/i18n.js';
@@ -21,7 +21,7 @@ export function createTaskbar(shell) {
 
   /* ------------------------------- layout -------------------------------- */
 
-  const startBtn = h('button', { class: 'tb-btn tb-start', type: 'button', dataset: { flyout: 'start' }, onclick: () => flyouts.toggle('start') }, picture('logo'));
+  const startBtn = h('button', { class: 'tb-btn tb-start', type: 'button', dataset: { flyout: 'start' }, onclick: () => flyouts.toggle('start') }, h('img', { src: url('favicon.png'), alt: '', draggable: false }));
   const appsEl = h('div', { class: 'tb-apps' });
 
   // the Recycle Bin: the last tile, set apart by a thin line (as the Trash of a Mac)

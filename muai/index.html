@@ -16,41 +16,44 @@
 <div class="side" id="side">
   <div class="side-top">
     <div class="brand-row">
-      <div class="logo"><div class="mark"></div><div class="name"><span>mu</span><span class="accent">AI</span></div></div>
-      <button id="settingsBtn" class="ghost square" type="button" title="Settings" aria-label="Settings"><span class="icon i-sliders"></span></button>
+      <div class="logo"><div class="mark"></div><div class="name"><span class="highlight">mu</span><span>AI</span></div></div>
+      <div class="brand-tools">
+        <button id="settingsBtn" class="ghost square" type="button" data-i18n-title="settings" data-i18n-label="settings"><span class="icon i-sliders"></span></button>
+        <button id="accountBtn" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon i-user"></span></button>
+      </div>
     </div>
-    <button id="newBtn" class="primary" type="button"><span class="icon i-plus"></span><span>New chat</span></button>
-    <input id="search" type="search" placeholder="Search chats…" aria-label="Search chats">
+    <button id="newBtn" class="primary" type="button"><span class="icon i-plus"></span><span data-i18n="title.new"></span></button>
+    <input id="search" type="search" data-i18n-placeholder="search.placeholder" data-i18n-label="search.label">
   </div>
   <div id="list"></div>
   <div class="side-foot"><span>&copy; Kancamu Project</span></div>
-  <div id="resizer" class="resizer" role="separator" aria-orientation="vertical" aria-label="Resize sidebar" aria-valuemin="16" aria-valuemax="40" tabindex="0" title="Drag to resize · double-click to reset"></div>
+  <div id="resizer" class="resizer" role="separator" aria-orientation="vertical" data-i18n-label="resizer.label" aria-valuemin="16" aria-valuemax="40" tabindex="0" data-i18n-title="resizer.title"></div>
 </div>
 <div class="overlay" id="overlay"></div>
 
 <div class="app">
   <div class="topbar">
-    <button id="menuBtn" class="ghost square" type="button" aria-label="Menu"><span class="icon i-menu"></span></button>
-    <div id="title">New chat</div>
-    <button id="exportBtn" class="ghost hidden" type="button"><span class="icon i-download"></span><span>Export .md</span></button>
-    <button id="modelBadge" type="button" title="Choose AI model"><span class="icon i-cpu"></span><span id="modelLabel">Choose model</span><span class="icon i-chevron"></span></button>
+    <button id="menuBtn" class="ghost square" type="button" data-i18n-label="menu"><span class="icon i-menu"></span></button>
+    <div id="title"></div>
+    <button id="exportBtn" class="ghost hidden" type="button"><span class="icon i-download"></span><span data-i18n="export.md"></span></button>
+    <button id="modelBadge" type="button" data-i18n-title="model.choose"><span class="icon i-cpu"></span><span id="modelLabel"></span><span class="icon i-chevron"></span></button>
   </div>
 
   <div id="main" class="scroll">
     <div class="wrap">
       <div id="intro" class="intro">
-        <h1>AI that runs in your browser</h1>
-        <span class="sub">Models run directly on your device's GPU through WebGPU. No server, and your chats stay in this browser.</span>
+        <h1 data-i18n="intro.title"></h1>
+        <span class="sub" data-i18n="intro.sub"></span>
         <div class="card" id="loadCard">
-          <h2 id="modelName">Model</h2>
+          <h2 id="modelName"></h2>
           <span id="modelDesc" class="note"></span>
           <div class="row-start">
-            <button id="loadBtn" class="primary" type="button"><span>Load model</span></button>
-            <button id="changeModelBtn" type="button"><span>Change model</span></button>
+            <button id="loadBtn" class="primary" type="button"><span data-i18n="model.load"></span></button>
+            <button id="changeModelBtn" type="button"><span data-i18n="model.change"></span></button>
           </div>
           <div id="progressBox" class="hidden">
             <div class="bar"><div id="barFill"></div></div>
-            <span id="progressText" class="note">Preparing…</span>
+            <span id="progressText" class="note"></span>
           </div>
           <span id="loadHint" class="note"></span>
           <span id="loadErr" class="note err hidden"></span>
@@ -62,84 +65,90 @@
   </div>
 
   <div class="bottom">
-    <div id="preview" class="hidden"><div id="previewImg" class="thumb" role="img" aria-label="Attached image"></div><span id="previewName" class="note">Attached image</span><button id="removeImg" class="ghost" type="button"><span class="icon i-x"></span><span>Remove</span></button></div>
+    <div id="preview" class="hidden"><div id="previewImg" class="thumb" role="img" data-i18n-label="attached.image"></div><span id="previewName" class="note" data-i18n="attached.image"></span><button id="removeImg" class="ghost" type="button"><span class="icon i-x"></span><span data-i18n="remove"></span></button></div>
     <div class="composer">
       <input type="file" id="file" accept="image/*" hidden>
-      <button id="attachBtn" class="square" type="button" title="Attach image" aria-label="Attach image"><span class="icon i-image"></span></button>
-      <textarea id="input" rows="1" placeholder="Load a model first…" disabled></textarea>
-      <button id="sendBtn" class="primary" type="button" disabled><span class="icon i-send"></span><span>Send</span></button>
-      <button id="stopBtn" class="hidden" type="button"><span class="icon i-stop"></span><span>Stop</span></button>
+      <button id="attachBtn" class="square" type="button" data-i18n-title="attach.image" data-i18n-label="attach.image"><span class="icon i-image"></span></button>
+      <textarea id="input" rows="1" data-i18n-placeholder="composer.loadFirst" disabled></textarea>
+      <button id="sendBtn" class="primary" type="button" disabled><span class="icon i-send"></span><span data-i18n="send"></span></button>
+      <button id="stopBtn" class="hidden" type="button"><span class="icon i-stop"></span><span data-i18n="stop"></span></button>
     </div>
-    <span class="hint">Enter to send · Shift+Enter for a new line · AI can be wrong, double-check important info.</span>
+    <span class="hint" data-i18n="hint"></span>
   </div>
 </div>
 
 <dialog id="modelDlg">
   <div class="dlg-body">
-    <h2>Choose AI model</h2>
-    <span class="note sub">All models run in your browser through WebGPU and are downloaded from Hugging Face once. Sizes are the approximate first download. Larger models are smarter but need more GPU and memory.</span>
+    <h2 data-i18n="model.choose"></h2>
+    <span class="note sub" data-i18n="dlg.models.text"></span>
     <div id="familyFilter" class="filters"></div>
     <div id="modelList"></div>
-    <div class="row"><button type="button" id="closeModelDlg"><span>Close</span></button></div>
+    <div class="row"><button type="button" id="closeModelDlg"><span data-i18n="close"></span></button></div>
   </div>
 </dialog>
 
 <dialog id="settingsDlg">
   <form method="dialog" id="settingsForm">
-    <h2>Settings</h2>
-    <label>
-      <span class="lbl">System prompt</span>
-      <span class="h">Base behavior of the AI in every chat. Leave empty for none.</span>
-      <textarea id="setSystem"></textarea>
-    </label>
+    <h2 data-i18n="settings"></h2>
     <div class="fields">
-    <label>
-      <span class="lbl">Max response tokens</span>
-      <span class="h">Length limit of a single reply (64–4096).</span>
-      <input id="setMax" type="number" min="64" max="4096" step="64">
-    </label>
-    <label>
-      <span class="lbl">Creativity (temperature): <span id="tempVal"></span></span>
-      <span class="h">0 = always the same and consistent, higher = more varied.</span>
-      <input id="setTemp" type="range" min="0" max="1.5" step="0.1">
-    </label>
-    <label>
-      <span class="lbl">Messages sent as context</span>
-      <span class="h">Only the last N messages are read by the model. Smaller = faster and uses less memory (2–60).</span>
-      <input id="setCtx" type="number" min="2" max="60" step="2">
-    </label>
-    </div>
-    <div class="pair">
       <div class="field">
-        <span class="lbl">Theme</span>
+        <span class="lbl" data-i18n="set.language"></span>
+        <select class="language" data-i18n-label="set.language"></select>
+      </div>
+      <div class="field">
+        <span class="lbl" data-i18n="set.theme"></span>
         <div class="seg">
-          <button id="themeDark" type="button"><span class="icon i-moon"></span><span>Dark</span></button>
-          <button id="themeLight" type="button"><span class="icon i-sun"></span><span>Light</span></button>
+          <button id="themeDark" type="button"><span class="icon i-moon"></span><span data-i18n="theme.dark"></span></button>
+          <button id="themeLight" type="button"><span class="icon i-sun"></span><span data-i18n="theme.light"></span></button>
         </div>
       </div>
       <div class="field">
         <span class="lbl">WebGPU</span>
-        <span id="gpuBadge" class="status">Checking…</span>
+        <span id="gpuBadge" class="status"></span>
       </div>
     </div>
+    <label>
+      <span class="lbl" data-i18n="set.system.label"></span>
+      <span class="h" data-i18n="set.system.hint"></span>
+      <textarea id="setSystem"></textarea>
+    </label>
+    <div class="fields">
+    <label>
+      <span class="lbl" data-i18n="set.max.label"></span>
+      <span class="h" data-i18n="set.max.hint"></span>
+      <input id="setMax" type="number" min="64" max="4096" step="64">
+    </label>
+    <label>
+      <span class="lbl"><span data-i18n="set.temp.label"></span>: <span id="tempVal"></span></span>
+      <span class="h" data-i18n="set.temp.hint"></span>
+      <input id="setTemp" type="range" min="0" max="1.5" step="0.1">
+    </label>
+    <label>
+      <span class="lbl" data-i18n="set.ctx.label"></span>
+      <span class="h" data-i18n="set.ctx.hint"></span>
+      <input id="setCtx" type="number" min="2" max="60" step="2">
+    </label>
+    </div>
     <div class="data">
-      <span class="lbl">Data</span>
-      <span class="h">Chats are stored only in this browser. Export a backup, restore one, or wipe everything.</span>
+      <span class="lbl" data-i18n="set.data.label"></span>
+      <span class="h" data-i18n="set.data.hint"></span>
       <div class="row-start">
-        <button id="exportAllBtn" type="button"><span class="icon i-download"></span><span>Export all</span></button>
-        <button id="importBtn" type="button"><span class="icon i-upload"></span><span>Import</span></button>
-        <button id="clearAllBtn" class="danger" type="button"><span class="icon i-trash"></span><span>Delete all</span></button>
+        <button id="exportAllBtn" type="button"><span class="icon i-download"></span><span data-i18n="data.exportAll"></span></button>
+        <button id="importBtn" type="button"><span class="icon i-upload"></span><span data-i18n="data.import"></span></button>
+        <button id="clearAllBtn" class="danger" type="button"><span class="icon i-trash"></span><span data-i18n="data.deleteAll"></span></button>
         <input type="file" id="importFile" accept="application/json" hidden>
       </div>
     </div>
     <div class="row">
-      <button type="button" id="resetSettings"><span class="icon i-refresh"></span><span>Reset</span></button>
-      <button type="button" id="cancelSettings"><span>Cancel</span></button>
-      <button type="submit" class="primary" value="save"><span>Save</span></button>
+      <button type="button" id="resetSettings"><span class="icon i-refresh"></span><span data-i18n="reset"></span></button>
+      <button type="button" id="cancelSettings"><span data-i18n="cancel"></span></button>
+      <button type="submit" class="primary" value="save"><span data-i18n="save"></span></button>
     </div>
   </form>
 </dialog>
 
+<script src="../assets/i18n.js"></script>
+<script src="../assets/account.js"></script>
 <script type="module" src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,34 @@
+{
+    "wordcraft":  {
+                      "repo":  "storytold/wordcraft",
+                      "version":  "v0.18.1"
+                  },
+    "gridcraft":  {
+                      "repo":  "storytold/gridcraft",
+                      "version":  "v0.19.1"
+                  },
+    "deckcraft":  {
+                      "repo":  "storytold/deckcraft",
+                      "version":  "v0.18.1"
+                  },
+    "filmcraft":  {
+                      "repo":  "storytold/filmcraft",
+                      "version":  "v0.20.1"
+                  },
+    "effectcraft":  {
+                        "repo":  "storytold/effectcraft",
+                        "version":  "v0.24.1"
+                    },
+    "photocraft":  {
+                       "repo":  "storytold/photocraft",
+                       "version":  "v0.23.1"
+                   },
+    "vectorcraft":  {
+                        "repo":  "storytold/vectorcraft",
+                        "version":  "v0.24.1"
+                    },
+    "pdfcraft":  {
+                     "repo":  "storytold/pdfcraft",
+                     "version":  "v0.21.1"
+                 }
+}

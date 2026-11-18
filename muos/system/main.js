@@ -11,6 +11,7 @@ import { persistent } from './core/store.js';
 import { kindOf } from './core/filetypes.js';
 import { playSound } from './core/sound.js';
 import { watchTheme } from './core/system.js';
+import { syncShared } from './core/sync.js';
 import { isEditable } from './core/dom.js';
 import { closeMenus } from './ui/menu.js';
 import { initTooltips } from './ui/tooltip.js';
@@ -50,6 +51,7 @@ const shell = new Emitter();
 
 async function boot() {
   const started = performance.now();
+  syncShared();
   watchTheme();
   initTooltips();
   await Promise.all([i18n.init(), apps.init(), fs.init()]);

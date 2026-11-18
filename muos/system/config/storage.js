@@ -13,3 +13,12 @@ export const STORAGE_KEYS = Object.freeze({
   clipboardHistory: 'clipboard.history',
   widgetNotes: 'widgets.notes'
 });
+
+/**
+ * Keys shared with the other webs of this site (same origin, no prefix):
+ * the language and the theme chosen in any web are followed by all of them.
+ */
+export const SHARED_KEYS = Object.freeze({
+  language: 'lang',
+  theme: 'theme'
+});

@@ -125,3 +125,69 @@ select {
 input::placeholder {
     color: var(--fg-1);
 }
+
+/* The default look of button, input, select and textarea: the background of the page and a gray border.
+   Hovering turns the background gray (and the border a little lighter). Checkboxes, radios, ranges, file and
+   color inputs keep their own look, and so do buttons that are selected (.active, .on, .invert) or that have
+   their own look (.primary, .danger). A layout.css may still give any of them a look of its own. */
+button,
+textarea {
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+}
+
+input:hover:not(:disabled, [type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"]),
+textarea:hover:not(:disabled),
+select:hover:not(:disabled),
+button:hover:not(:disabled, .active, .on, .invert, .primary, .danger) {
+    background-color: var(--bg-1);
+    border-color: var(--fg-1);
+}
+
+/* The account web is shown in this dialog (assets/account.js). */
+dialog.account-dialog {
+    width: min(32rem, calc(100vw - 2.4rem));
+    padding: 0;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--fg-1);
+
+    &::backdrop {
+        background: color-mix(in srgb, var(--black) 60%, transparent);
+    }
+
+    & > iframe {
+        display: block;
+        width: 100%;
+        height: 20rem;
+        max-height: calc(100vh - 3.2rem);
+        border: 0;
+        background: var(--bg);
+    }
+}
+
+/* A button with the class "account" shows the avatar instead of its icon once signed in. */
+button.account.signed-in {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    & > * {
+        display: none;
+    }
+}
+
+/* A button that holds only an icon has the class "square": its width follows its height. */
+button.square {
+    aspect-ratio: 1;
+    padding: 0;
+    flex: none;
+}
+
+/* Focus stays the strongest, also while the pointer is over the field. */
+input:focus:not(:disabled, [type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"]),
+textarea:focus:not(:disabled),
+select:focus:not(:disabled) {
+    border-color: var(--fg);
+}

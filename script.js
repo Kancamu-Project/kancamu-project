@@ -1,11 +1,5 @@
-const FALLBACK_LANG = "en-US";
-
 const state = {
-    lang: null,
-    languages: [],
-    siteName: {},
     home: null,
-    ui: {},
     categories: {},
     projects: [],
     category: "all",
@@ -152,70 +146,15 @@ function syncControls() {
     );
 }
 
-function findSameBase(codes, lang) {
-    const base = lang.split("-")[0];
-    return codes.find((code) => code.split("-")[0] === base);
-}
-
-function pickText(texts) {
-    const lang = state.lang || navigator.language;
-    const sameBase = findSameBase(Object.keys(texts), lang);
-    return texts[lang] || texts[sameBase] || texts[FALLBACK_LANG] || Object.values(texts)[0] || "";
-}
-
-function resolveLanguage() {
-    const codes = state.languages.map((language) => language.code);
-    let saved = null;
-    try {
-        saved = localStorage.getItem("lang");
-    } catch {}
-    if (codes.includes(saved)) return saved;
-    return codes.includes(navigator.language)
-        ? navigator.language
-        : findSameBase(codes, navigator.language) || FALLBACK_LANG;
-}
-
-function renderLanguageSelect() {
-    const select = document.getElementById("language");
-    select.replaceChildren(
-        ...state.languages.map((language) => {
-            const option = createElement("option", "", language.name);
-            option.value = language.code;
-            return option;
-        })
-    );
-    select.value = state.lang;
-}
+const pickText = (texts) => i18n.pick(texts);
+const t = (key, params) => i18n.t(key, params);
 
 function renderAll() {
-    const language = state.languages.find((item) => item.code === state.lang);
-    document.documentElement.lang = state.lang;
-    document.documentElement.dir = language?.dir || "ltr";
-
-    document.title = pickText(state.siteName);
-
-    applyUi();
+    i18n.apply();
     renderTabs();
     renderPublisherSelect();
     renderCategoryFilter();
     renderProjects();
-}
-
-function t(key, params = {}) {
-    const text = state.ui[key] ? pickText(state.ui[key]) : key;
-    return text.replace(/\{(\w+)\}/g, (_, name) => params[name] ?? "");
-}
-
-function applyUi() {
-    document.querySelectorAll("[data-i18n]").forEach((element) => {
-        element.textContent = t(element.dataset.i18n);
-    });
-    document.querySelectorAll("[data-i18n-title]").forEach((element) => {
-        element.title = t(element.dataset.i18nTitle);
-    });
-    document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
-        element.placeholder = t(element.dataset.i18nPlaceholder);
-    });
 }
 
 function createElement(tag, className, text) {
@@ -362,7 +301,7 @@ function categoryLabel(key) {
 function renderPublisherSelect() {
     const select = document.getElementById("publisher");
     const publishers = [...new Set(state.projects.map((project) => project.publisher).filter(Boolean))]
-        .sort((a, b) => a.localeCompare(b, state.lang));
+        .sort((a, b) => a.localeCompare(b, i18n.lang));
     const options = [["all", t("allPublishers")], ...publishers.map((name) => [name, name])];
     select.replaceChildren(
         ...options.map(([value, label]) => {
@@ -378,7 +317,7 @@ function renderPublisherSelect() {
 function renderCategoryFilter() {
     const filter = document.getElementById("category-filter");
     const sorted = Object.keys(state.categories).sort((a, b) =>
-        categoryLabel(a).localeCompare(categoryLabel(b), state.lang)
+        categoryLabel(a).localeCompare(categoryLabel(b), i18n.lang)
     );
     const keys = ["all", ...sorted];
     filter.replaceChildren(
@@ -436,18 +375,13 @@ function createListHeader() {
 }
 
 async function loadData() {
-    const response = await fetch("data.json", { cache: "no-store" });
-    const data = await response.json();
+    const data = await i18n.load();
 
-    state.siteName = data.name;
     state.home = data.home;
-    state.languages = data.languages;
-    state.ui = data.ui;
     state.categories = data.categories;
     state.projects = data.projects;
-    state.lang = resolveLanguage();
     restoreFilters();
-    renderLanguageSelect();
+    i18n.selects();
     renderAll();
     syncControls();
     syncViewer();
@@ -485,11 +419,7 @@ document.getElementById("tabs").addEventListener(
     { passive: false }
 );
 
-document.getElementById("language").addEventListener("change", (event) => {
-    state.lang = event.target.value;
-    try {
-        localStorage.setItem("lang", state.lang);
-    } catch {}
+i18n.onChange(() => {
     closeMenu();
     renderAll();
 });
@@ -501,6 +431,9 @@ document.getElementById("theme").addEventListener("click", () => {
         localStorage.setItem("theme", root.dataset.theme);
     } catch {}
 });
+
+// Account: the sign-in is the account web, opened by assets/account.js.
+account.bind(document.getElementById("account"));
 
 document.getElementById("publisher").addEventListener("change", (event) => {
     state.publisher = event.target.value;

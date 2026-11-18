@@ -157,6 +157,13 @@
   --icon-size: 1.8rem;
 }
 
+/* The Start icon is the 16x16 pixel favicon: shown at exactly 2x so the pixels stay sharp. */
+.tb-start img {
+  width: 2rem;
+  height: 2rem;
+  image-rendering: pixelated;
+}
+
 .tb-btn:active img,
 .tb-btn:active .icon {
   transform: scale(.82);

@@ -11,3 +11,8 @@ muos/_references/
 .DS_Store
 Thumbs.db
 *.log
+
+# Temporary folders of artcraft/update.ps1
+artcraft/.*.staging/
+artcraft/.*.download.zip
+artcraft/*.old/

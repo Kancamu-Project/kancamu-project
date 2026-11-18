@@ -1,0 +1,576 @@
+{
+  "name": {
+    "en-US": "muAI — AI in your browser",
+    "zh-CN": "muAI — 浏览器中的 AI",
+    "ar-SA": "muAI — الذكاء الاصطناعي في متصفحك"
+  },
+  "languages": [
+    {
+      "code": "en-US",
+      "name": "English",
+      "dir": "ltr"
+    },
+    {
+      "code": "zh-CN",
+      "name": "简体中文",
+      "dir": "ltr"
+    },
+    {
+      "code": "ar-SA",
+      "name": "العربية",
+      "dir": "rtl"
+    }
+  ],
+  "ui": {
+    "title.new": {
+      "en-US": "New chat",
+      "zh-CN": "新对话",
+      "ar-SA": "محادثة جديدة"
+    },
+    "search.placeholder": {
+      "en-US": "Search chats…",
+      "zh-CN": "搜索对话…",
+      "ar-SA": "ابحث في المحادثات…"
+    },
+    "search.label": {
+      "en-US": "Search chats",
+      "zh-CN": "搜索对话",
+      "ar-SA": "ابحث في المحادثات"
+    },
+    "settings": {
+      "en-US": "Settings",
+      "zh-CN": "设置",
+      "ar-SA": "الإعدادات"
+    },
+    "menu": {
+      "en-US": "Menu",
+      "zh-CN": "菜单",
+      "ar-SA": "القائمة"
+    },
+    "resizer.label": {
+      "en-US": "Resize sidebar",
+      "zh-CN": "调整侧边栏大小",
+      "ar-SA": "تغيير حجم الشريط الجانبي"
+    },
+    "resizer.title": {
+      "en-US": "Drag to resize · double-click to reset",
+      "zh-CN": "拖动调整大小 · 双击重置",
+      "ar-SA": "اسحب لتغيير الحجم · انقر مرتين لإعادة الضبط"
+    },
+    "export.md": {
+      "en-US": "Export .md",
+      "zh-CN": "导出 .md",
+      "ar-SA": "تصدير .md"
+    },
+    "model.choose": {
+      "en-US": "Choose AI model",
+      "zh-CN": "选择 AI 模型",
+      "ar-SA": "اختر نموذج الذكاء الاصطناعي"
+    },
+    "intro.title": {
+      "en-US": "AI that runs in your browser",
+      "zh-CN": "在浏览器中运行的 AI",
+      "ar-SA": "ذكاء اصطناعي يعمل في متصفحك"
+    },
+    "intro.sub": {
+      "en-US": "Models run directly on your device's GPU through WebGPU. No server, and your chats stay in this browser.",
+      "zh-CN": "模型通过 WebGPU 直接在你设备的 GPU 上运行。无需服务器，你的对话只保存在此浏览器中。",
+      "ar-SA": "تعمل النماذج مباشرة على وحدة معالجة الرسوميات في جهازك عبر WebGPU. بلا خادم، وتبقى محادثاتك في هذا المتصفح."
+    },
+    "model.load": {
+      "en-US": "Load model",
+      "zh-CN": "加载模型",
+      "ar-SA": "تحميل النموذج"
+    },
+    "model.change": {
+      "en-US": "Change model",
+      "zh-CN": "更换模型",
+      "ar-SA": "تغيير النموذج"
+    },
+    "progress.preparing": {
+      "en-US": "Preparing…",
+      "zh-CN": "准备中…",
+      "ar-SA": "جارٍ التحضير…"
+    },
+    "attach.image": {
+      "en-US": "Attach image",
+      "zh-CN": "附加图片",
+      "ar-SA": "إرفاق صورة"
+    },
+    "attached.image": {
+      "en-US": "Attached image",
+      "zh-CN": "已附加的图片",
+      "ar-SA": "الصورة المرفقة"
+    },
+    "remove": {
+      "en-US": "Remove",
+      "zh-CN": "移除",
+      "ar-SA": "إزالة"
+    },
+    "composer.loadFirst": {
+      "en-US": "Load a model first…",
+      "zh-CN": "请先加载模型…",
+      "ar-SA": "حمّل نموذجًا أولًا…"
+    },
+    "composer.type": {
+      "en-US": "Type a message…",
+      "zh-CN": "输入消息…",
+      "ar-SA": "اكتب رسالة…"
+    },
+    "send": {
+      "en-US": "Send",
+      "zh-CN": "发送",
+      "ar-SA": "إرسال"
+    },
+    "stop": {
+      "en-US": "Stop",
+      "zh-CN": "停止",
+      "ar-SA": "إيقاف"
+    },
+    "hint": {
+      "en-US": "Enter to send · Shift+Enter for a new line · AI can be wrong, double-check important info.",
+      "zh-CN": "按 Enter 发送 · Shift+Enter 换行 · AI 可能出错，请核实重要信息。",
+      "ar-SA": "اضغط Enter للإرسال · Shift+Enter لسطر جديد · قد يخطئ الذكاء الاصطناعي، تحقق من المعلومات المهمة."
+    },
+    "dlg.models.text": {
+      "en-US": "All models run in your browser through WebGPU and are downloaded from Hugging Face once. Sizes are the approximate first download. Larger models are smarter but need more GPU and memory.",
+      "zh-CN": "所有模型都通过 WebGPU 在浏览器中运行，并只需从 Hugging Face 下载一次。大小为首次下载的大致体积。模型越大越聪明，但需要更多 GPU 和内存。",
+      "ar-SA": "تعمل جميع النماذج في متصفحك عبر WebGPU وتُنزَّل من Hugging Face مرة واحدة. الأحجام تقريبية للتنزيل الأول. النماذج الأكبر أذكى لكنها تحتاج إلى مزيد من وحدة الرسوميات والذاكرة."
+    },
+    "close": {
+      "en-US": "Close",
+      "zh-CN": "关闭",
+      "ar-SA": "إغلاق"
+    },
+    "set.system.label": {
+      "en-US": "System prompt",
+      "zh-CN": "系统提示词",
+      "ar-SA": "موجّه النظام"
+    },
+    "set.system.hint": {
+      "en-US": "Base behavior of the AI in every chat. Leave empty for none.",
+      "zh-CN": "AI 在每次对话中的基本行为。留空表示不设置。",
+      "ar-SA": "السلوك الأساسي للذكاء الاصطناعي في كل محادثة. اتركه فارغًا لعدم استخدامه."
+    },
+    "set.max.label": {
+      "en-US": "Max response tokens",
+      "zh-CN": "最大回复令牌数",
+      "ar-SA": "الحد الأقصى لرموز الرد"
+    },
+    "set.max.hint": {
+      "en-US": "Length limit of a single reply (64–4096).",
+      "zh-CN": "单次回复的长度上限（64–4096）。",
+      "ar-SA": "الحد الأقصى لطول الرد الواحد (64–4096)."
+    },
+    "set.temp.label": {
+      "en-US": "Creativity (temperature)",
+      "zh-CN": "创造力（温度）",
+      "ar-SA": "الإبداع (درجة الحرارة)"
+    },
+    "set.temp.hint": {
+      "en-US": "0 = always the same and consistent, higher = more varied.",
+      "zh-CN": "0 = 始终一致，数值越高回答越多样。",
+      "ar-SA": "0 = دائمًا نفس الإجابة، وكلما ارتفعت القيمة زاد التنوع."
+    },
+    "set.ctx.label": {
+      "en-US": "Messages sent as context",
+      "zh-CN": "作为上下文发送的消息数",
+      "ar-SA": "عدد الرسائل المرسلة كسياق"
+    },
+    "set.ctx.hint": {
+      "en-US": "Only the last N messages are read by the model. Smaller = faster and uses less memory (2–60).",
+      "zh-CN": "模型只读取最近 N 条消息。数值越小越快，占用内存越少（2–60）。",
+      "ar-SA": "يقرأ النموذج آخر N رسالة فقط. كلما قلّ الرقم زادت السرعة وقلّ استهلاك الذاكرة (2–60)."
+    },
+    "set.theme": {
+      "en-US": "Theme",
+      "zh-CN": "主题",
+      "ar-SA": "السمة"
+    },
+    "theme.dark": {
+      "en-US": "Dark",
+      "zh-CN": "深色",
+      "ar-SA": "داكنة"
+    },
+    "theme.light": {
+      "en-US": "Light",
+      "zh-CN": "浅色",
+      "ar-SA": "فاتحة"
+    },
+    "set.language": {
+      "en-US": "Language",
+      "zh-CN": "语言",
+      "ar-SA": "اللغة"
+    },
+    "gpu.active": {
+      "en-US": "Active",
+      "zh-CN": "可用",
+      "ar-SA": "مفعّل"
+    },
+    "gpu.unavailable": {
+      "en-US": "Unavailable",
+      "zh-CN": "不可用",
+      "ar-SA": "غير متاح"
+    },
+    "gpu.unsupported": {
+      "en-US": "This browser or device does not support WebGPU yet. Try the latest Chrome or Edge on desktop.",
+      "zh-CN": "此浏览器或设备暂不支持 WebGPU。请在桌面端尝试最新版 Chrome 或 Edge。",
+      "ar-SA": "هذا المتصفح أو الجهاز لا يدعم WebGPU بعد. جرّب أحدث إصدار من Chrome أو Edge على الحاسوب."
+    },
+    "set.data.label": {
+      "en-US": "Data",
+      "zh-CN": "数据",
+      "ar-SA": "البيانات"
+    },
+    "set.data.hint": {
+      "en-US": "Chats are stored only in this browser. Export a backup, restore one, or wipe everything.",
+      "zh-CN": "对话只保存在此浏览器中。你可以导出备份、恢复备份，或清除全部内容。",
+      "ar-SA": "تُحفظ المحادثات في هذا المتصفح فقط. يمكنك تصدير نسخة احتياطية أو استعادتها أو مسح كل شيء."
+    },
+    "data.exportAll": {
+      "en-US": "Export all",
+      "zh-CN": "全部导出",
+      "ar-SA": "تصدير الكل"
+    },
+    "data.import": {
+      "en-US": "Import",
+      "zh-CN": "导入",
+      "ar-SA": "استيراد"
+    },
+    "data.deleteAll": {
+      "en-US": "Delete all",
+      "zh-CN": "全部删除",
+      "ar-SA": "حذف الكل"
+    },
+    "reset": {
+      "en-US": "Reset",
+      "zh-CN": "重置",
+      "ar-SA": "إعادة ضبط"
+    },
+    "cancel": {
+      "en-US": "Cancel",
+      "zh-CN": "取消",
+      "ar-SA": "إلغاء"
+    },
+    "save": {
+      "en-US": "Save",
+      "zh-CN": "保存",
+      "ar-SA": "حفظ"
+    },
+    "model.kind.text": {
+      "en-US": "text",
+      "zh-CN": "文本",
+      "ar-SA": "نص"
+    },
+    "model.kind.multi": {
+      "en-US": "text + images",
+      "zh-CN": "文本 + 图片",
+      "ar-SA": "نص + صور"
+    },
+    "model.desc": {
+      "en-US": "{by} · {kind} · download ±{size}. {desc}",
+      "zh-CN": "{by} · {kind} · 下载约 {size}。{desc}",
+      "ar-SA": "{by} · {kind} · تنزيل ±{size}. {desc}"
+    },
+    "model.hint": {
+      "en-US": "Downloaded from Hugging Face the first time it loads, then kept in the browser cache.",
+      "zh-CN": "首次加载时从 Hugging Face 下载，之后保存在浏览器缓存中。",
+      "ar-SA": "يُنزَّل من Hugging Face عند أول تحميل، ثم يُحفظ في ذاكرة المتصفح المؤقتة."
+    },
+    "tag.tiny": {
+      "en-US": "Tiny",
+      "zh-CN": "微型",
+      "ar-SA": "صغير جدًا"
+    },
+    "tag.light": {
+      "en-US": "Light",
+      "zh-CN": "轻量",
+      "ar-SA": "خفيف"
+    },
+    "tag.medium": {
+      "en-US": "Medium",
+      "zh-CN": "中等",
+      "ar-SA": "متوسط"
+    },
+    "tag.large": {
+      "en-US": "Large",
+      "zh-CN": "大型",
+      "ar-SA": "كبير"
+    },
+    "tag.newest": {
+      "en-US": "Newest",
+      "zh-CN": "最新",
+      "ar-SA": "الأحدث"
+    },
+    "tag.newestHeavy": {
+      "en-US": "Newest · heavy",
+      "zh-CN": "最新 · 重量级",
+      "ar-SA": "الأحدث · ثقيل"
+    },
+    "m.gemma-3-270m": {
+      "en-US": "Smallest and fastest. Good for testing and weak devices, basic answer quality.",
+      "zh-CN": "最小最快。适合测试和性能较弱的设备，回答质量一般。",
+      "ar-SA": "الأصغر والأسرع. مناسب للتجربة والأجهزة الضعيفة، وجودة الإجابات أساسية."
+    },
+    "m.qwen3-0.6b": {
+      "en-US": "Small but capable, supports many languages.",
+      "zh-CN": "体积小但能力不弱，支持多种语言。",
+      "ar-SA": "صغير لكنه كفء، ويدعم لغات كثيرة."
+    },
+    "m.gemma-3-1b": {
+      "en-US": "Balanced speed and quality for everyday chat.",
+      "zh-CN": "速度与质量均衡，适合日常对话。",
+      "ar-SA": "توازن بين السرعة والجودة للمحادثات اليومية."
+    },
+    "m.llama-3.2-1b": {
+      "en-US": "Meta's small model, strongest in English.",
+      "zh-CN": "Meta 的小型模型，英语表现最佳。",
+      "ar-SA": "نموذج Meta الصغير، وهو الأقوى في اللغة الإنجليزية."
+    },
+    "m.qwen3-1.7b": {
+      "en-US": "Smarter than 0.6B, still comfortable on a laptop with an ordinary GPU.",
+      "zh-CN": "比 0.6B 更聪明，在配备普通显卡的笔记本上仍然流畅。",
+      "ar-SA": "أذكى من 0.6B، ويعمل بسلاسة على حاسوب محمول ببطاقة رسوميات عادية."
+    },
+    "m.qwen3-4b": {
+      "en-US": "Strong at text and code. Needs a GPU with plenty of memory.",
+      "zh-CN": "擅长文本和代码。需要显存充足的 GPU。",
+      "ar-SA": "قوي في النصوص والبرمجة. يحتاج إلى وحدة رسوميات بذاكرة كبيرة."
+    },
+    "m.gemma-4-e2b": {
+      "en-US": "Google's newest model, can read images. Large download because of embeddings.",
+      "zh-CN": "Google 最新的模型，可以读取图片。因包含嵌入数据，下载体积较大。",
+      "ar-SA": "أحدث نماذج Google، ويستطيع قراءة الصور. حجم التنزيل كبير بسبب التضمينات."
+    },
+    "m.gemma-4-e4b": {
+      "en-US": "The smartest Gemma 4 in this catalog and can read images. Very heavy.",
+      "zh-CN": "本列表中最聪明的 Gemma 4，可以读取图片。非常占资源。",
+      "ar-SA": "أذكى Gemma 4 في هذه القائمة ويستطيع قراءة الصور. ثقيل جدًا."
+    },
+    "s1": {
+      "en-US": "Explain what WebGPU is with a simple example",
+      "zh-CN": "用一个简单的例子解释什么是 WebGPU",
+      "ar-SA": "اشرح ما هو WebGPU بمثال بسيط"
+    },
+    "s2": {
+      "en-US": "Write a JavaScript function that sorts an array of objects",
+      "zh-CN": "写一个对对象数组排序的 JavaScript 函数",
+      "ar-SA": "اكتب دالة JavaScript تفرز مصفوفة من الكائنات"
+    },
+    "s3": {
+      "en-US": "Give me 5 name ideas for a coffee shop",
+      "zh-CN": "给我 5 个咖啡店的名字创意",
+      "ar-SA": "أعطني 5 أفكار لاسم مقهى"
+    },
+    "s4": {
+      "en-US": "Summarize the difference between RAM and storage",
+      "zh-CN": "概括内存和存储的区别",
+      "ar-SA": "لخّص الفرق بين الذاكرة العشوائية والتخزين"
+    },
+    "toast.storage": {
+      "en-US": "Browser storage is unavailable, history will not be saved",
+      "zh-CN": "浏览器存储不可用，历史记录将不会保存",
+      "ar-SA": "تخزين المتصفح غير متاح، ولن يتم حفظ السجل"
+    },
+    "toast.wait": {
+      "en-US": "Wait for the reply to finish",
+      "zh-CN": "请等待回复完成",
+      "ar-SA": "انتظر حتى ينتهي الرد"
+    },
+    "toast.loadFirst": {
+      "en-US": "Load a model first",
+      "zh-CN": "请先加载模型",
+      "ar-SA": "حمّل نموذجًا أولًا"
+    },
+    "toast.copied": {
+      "en-US": "Copied",
+      "zh-CN": "已复制",
+      "ar-SA": "تم النسخ"
+    },
+    "toast.noHistory": {
+      "en-US": "No history yet",
+      "zh-CN": "还没有历史记录",
+      "ar-SA": "لا يوجد سجل بعد"
+    },
+    "toast.invalidImport": {
+      "en-US": "Invalid import file",
+      "zh-CN": "导入文件无效",
+      "ar-SA": "ملف الاستيراد غير صالح"
+    },
+    "toast.imported": {
+      "en-US": "{n} chats imported",
+      "zh-CN": "已导入 {n} 个对话",
+      "ar-SA": "تم استيراد {n} محادثة"
+    },
+    "toast.saved": {
+      "en-US": "Settings saved",
+      "zh-CN": "设置已保存",
+      "ar-SA": "تم حفظ الإعدادات"
+    },
+    "error.image": {
+      "en-US": "Image could not be read",
+      "zh-CN": "无法读取图片",
+      "ar-SA": "تعذّرت قراءة الصورة"
+    },
+    "list.noMatches": {
+      "en-US": "No matches.",
+      "zh-CN": "没有匹配项。",
+      "ar-SA": "لا توجد نتائج."
+    },
+    "list.empty": {
+      "en-US": "No history yet. Chats are saved automatically in this browser.",
+      "zh-CN": "还没有历史记录。对话会自动保存在此浏览器中。",
+      "ar-SA": "لا يوجد سجل بعد. تُحفظ المحادثات تلقائيًا في هذا المتصفح."
+    },
+    "group.today": {
+      "en-US": "Today",
+      "zh-CN": "今天",
+      "ar-SA": "اليوم"
+    },
+    "group.yesterday": {
+      "en-US": "Yesterday",
+      "zh-CN": "昨天",
+      "ar-SA": "أمس"
+    },
+    "group.week": {
+      "en-US": "Last 7 days",
+      "zh-CN": "最近 7 天",
+      "ar-SA": "آخر 7 أيام"
+    },
+    "group.older": {
+      "en-US": "Older",
+      "zh-CN": "更早",
+      "ar-SA": "أقدم"
+    },
+    "chat.rename": {
+      "en-US": "Rename",
+      "zh-CN": "重命名",
+      "ar-SA": "إعادة تسمية"
+    },
+    "chat.delete": {
+      "en-US": "Delete",
+      "zh-CN": "删除",
+      "ar-SA": "حذف"
+    },
+    "prompt.name": {
+      "en-US": "Chat name:",
+      "zh-CN": "对话名称：",
+      "ar-SA": "اسم المحادثة:"
+    },
+    "confirm.delete": {
+      "en-US": "Delete \"{title}\"?",
+      "zh-CN": "删除“{title}”？",
+      "ar-SA": "هل تريد حذف \"{title}\"؟"
+    },
+    "msg.copy": {
+      "en-US": "Copy",
+      "zh-CN": "复制",
+      "ar-SA": "نسخ"
+    },
+    "msg.edit": {
+      "en-US": "Edit",
+      "zh-CN": "编辑",
+      "ar-SA": "تعديل"
+    },
+    "msg.regen": {
+      "en-US": "Regenerate",
+      "zh-CN": "重新生成",
+      "ar-SA": "إعادة التوليد"
+    },
+    "msg.tps": {
+      "en-US": "{n} tokens/s",
+      "zh-CN": "{n} 令牌/秒",
+      "ar-SA": "{n} رمز/ثانية"
+    },
+    "msg.attachment": {
+      "en-US": "attachment",
+      "zh-CN": "附件",
+      "ar-SA": "مرفق"
+    },
+    "msg.empty": {
+      "en-US": "(empty reply)",
+      "zh-CN": "（空回复）",
+      "ar-SA": "(رد فارغ)"
+    },
+    "msg.error": {
+      "en-US": "Something went wrong: {message}",
+      "zh-CN": "出错了：{message}",
+      "ar-SA": "حدث خطأ ما: {message}"
+    },
+    "code.label": {
+      "en-US": "code",
+      "zh-CN": "代码",
+      "ar-SA": "شيفرة"
+    },
+    "code.copied": {
+      "en-US": "Copied",
+      "zh-CN": "已复制",
+      "ar-SA": "تم النسخ"
+    },
+    "load.loading": {
+      "en-US": "loading {name}…",
+      "zh-CN": "正在加载 {name}…",
+      "ar-SA": "جارٍ تحميل {name}…"
+    },
+    "load.progress": {
+      "en-US": "Loading {loaded} / {total} MB ({pct}%)",
+      "zh-CN": "正在加载 {loaded} / {total} MB（{pct}%）",
+      "ar-SA": "جارٍ التحميل {loaded} / {total} MB ({pct}%)"
+    },
+    "load.gpu": {
+      "en-US": "Preparing GPU…",
+      "zh-CN": "正在准备 GPU…",
+      "ar-SA": "جارٍ تجهيز وحدة الرسوميات…"
+    },
+    "load.warm": {
+      "en-US": "Warming up model…",
+      "zh-CN": "正在预热模型…",
+      "ar-SA": "جارٍ تهيئة النموذج…"
+    },
+    "load.failed": {
+      "en-US": "Failed to load {name}: {message} — try a smaller model.",
+      "zh-CN": "加载 {name} 失败：{message} — 请尝试更小的模型。",
+      "ar-SA": "فشل تحميل {name}: {message} — جرّب نموذجًا أصغر."
+    },
+    "filter.all": {
+      "en-US": "All",
+      "zh-CN": "全部",
+      "ar-SA": "الكل"
+    },
+    "picker.inUse": {
+      "en-US": "In use",
+      "zh-CN": "使用中",
+      "ar-SA": "قيد الاستخدام"
+    },
+    "picker.select": {
+      "en-US": "Select & load",
+      "zh-CN": "选择并加载",
+      "ar-SA": "اختيار وتحميل"
+    },
+    "picker.confirm": {
+      "en-US": "{name} will download about {size} from Hugging Face. Continue?",
+      "zh-CN": "{name} 将从 Hugging Face 下载约 {size}。是否继续？",
+      "ar-SA": "سيُنزَّل {name} نحو {size} من Hugging Face. هل تريد المتابعة؟"
+    },
+    "export.you": {
+      "en-US": "You",
+      "zh-CN": "你",
+      "ar-SA": "أنت"
+    },
+    "export.imageAttached": {
+      "en-US": "(image attached)",
+      "zh-CN": "（已附图片）",
+      "ar-SA": "(صورة مرفقة)"
+    },
+    "confirm.deleteAll": {
+      "en-US": "Delete all {n} chats? This cannot be undone.",
+      "zh-CN": "删除全部 {n} 个对话？此操作无法撤销。",
+      "ar-SA": "هل تريد حذف جميع المحادثات البالغ عددها {n}؟ لا يمكن التراجع عن هذا الإجراء."
+    },
+    "account": {
+      "en-US": "Account",
+      "zh-CN": "账户",
+      "ar-SA": "الحساب"
+    }
+  }
+}

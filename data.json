@@ -121,6 +121,11 @@
             "en-US": "Failed to load data.json",
             "zh-CN": "无法加载 data.json",
             "ar-SA": "تعذر تحميل data.json"
+        },
+        "account": {
+            "en-US": "Account",
+            "zh-CN": "账户",
+            "ar-SA": "الحساب"
         }
     },
     "categories": {
@@ -201,9 +206,9 @@
                 "en-US": "Drivemu"
             },
             "description": {
-                "en-US": "File storage powered by your own GitHub.",
-                "zh-CN": "由你自己的 GitHub 驱动的文件存储。",
-                "ar-SA": "تخزين الملفات مدعوم بحساب GitHub الخاص بك."
+                "en-US": "Simple file storage for everyone.",
+                "zh-CN": "人人可用的简单文件存储。",
+                "ar-SA": "تخزين ملفات بسيط للجميع."
             },
             "highlight": {
                 "en-US": "mu"
@@ -258,9 +263,9 @@
                 "en-US": "DeckCraft"
             },
             "description": {
-                "en-US": "Presentation and slide design.",
-                "zh-CN": "演示文稿与幻灯片设计。",
-                "ar-SA": "تصميم العروض التقديمية والشرائح."
+                "en-US": "Build and deliver dynamic slide presentations, in pure Rust.",
+                "zh-CN": "用纯 Rust 制作并演示动态幻灯片。",
+                "ar-SA": "أنشئ عروضًا تقديمية ديناميكية وقدّمها، بلغة Rust الخالصة."
             },
             "highlight": {
                 "en-US": "Craft"
@@ -268,7 +273,7 @@
             "publisher": "ArtCraft",
             "url": "artcraft/deckcraft/",
             "icon": "artcraft/deckcraft/deckcraft-b8fcbb36ecec0385.ico",
-            "color": "#f59e0b",
+            "color": "#f26b1d",
             "categories": ["office", "design", "productivity"]
         },
         {
@@ -277,9 +282,9 @@
                 "en-US": "EffectCraft"
             },
             "description": {
-                "en-US": "Motion graphics and visual effects.",
-                "zh-CN": "动态图形与视觉特效。",
-                "ar-SA": "الرسوم المتحركة والمؤثرات البصرية."
+                "en-US": "Open-source motion graphics and visual effects, built in pure Rust.",
+                "zh-CN": "开源的动态图形与视觉特效软件，用纯 Rust 构建。",
+                "ar-SA": "رسوم متحركة ومؤثرات بصرية مفتوحة المصدر، مبنية بلغة Rust الخالصة."
             },
             "highlight": {
                 "en-US": "Craft"
@@ -287,7 +292,7 @@
             "publisher": "ArtCraft",
             "url": "artcraft/effectcraft/",
             "icon": "artcraft/effectcraft/icon-256.png",
-            "color": "#ec4899",
+            "color": "#e0368f",
             "categories": ["video", "creative"]
         },
         {
@@ -296,9 +301,9 @@
                 "en-US": "FilmCraft"
             },
             "description": {
-                "en-US": "Video editing, color and sound.",
-                "zh-CN": "视频剪辑、调色与音频。",
-                "ar-SA": "مونتاج الفيديو والألوان والصوت."
+                "en-US": "Professional, open-source video editing, rebuilt from scratch in Rust.",
+                "zh-CN": "专业的开源视频剪辑软件，用 Rust 从零重建。",
+                "ar-SA": "مونتاج فيديو احترافي ومفتوح المصدر، أُعيد بناؤه من الصفر بلغة Rust."
             },
             "highlight": {
                 "en-US": "Craft"
@@ -306,7 +311,7 @@
             "publisher": "ArtCraft",
             "url": "artcraft/filmcraft/",
             "icon": "artcraft/filmcraft/favicon.png",
-            "color": "#a78bfa",
+            "color": "#8b5cf6",
             "categories": ["video", "creative"]
         },
         {
@@ -315,9 +320,9 @@
                 "en-US": "GridCraft"
             },
             "description": {
-                "en-US": "Spreadsheets for data and calculation.",
-                "zh-CN": "用于数据与计算的电子表格。",
-                "ar-SA": "جداول بيانات للبيانات والحسابات."
+                "en-US": "Fast, open-source spreadsheets and data analysis, rebuilt in pure Rust.",
+                "zh-CN": "快速的开源电子表格与数据分析软件，用纯 Rust 重建。",
+                "ar-SA": "جداول بيانات وتحليل بيانات سريعة ومفتوحة المصدر، أُعيد بناؤها بلغة Rust الخالصة."
             },
             "highlight": {
                 "en-US": "Craft"
@@ -325,7 +330,7 @@
             "publisher": "ArtCraft",
             "url": "artcraft/gridcraft/",
             "icon": "artcraft/gridcraft/gridcraft-45f84b7721cb79a9.ico",
-            "color": "#22c55e",
+            "color": "#1f9d55",
             "categories": ["office", "productivity"]
         },
         {
@@ -334,9 +339,9 @@
                 "en-US": "PhotoCraft"
             },
             "description": {
-                "en-US": "Image editing and photo retouching.",
-                "zh-CN": "图像编辑与照片修饰。",
-                "ar-SA": "تحرير الصور وتنقيحها."
+                "en-US": "The open-source image editor you already know how to use.",
+                "zh-CN": "你早已会用的开源图像编辑器。",
+                "ar-SA": "محرر الصور مفتوح المصدر الذي تعرف بالفعل كيف تستخدمه."
             },
             "highlight": {
                 "en-US": "Craft"
@@ -344,7 +349,7 @@
             "publisher": "ArtCraft",
             "url": "artcraft/photocraft/",
             "icon": "artcraft/photocraft/icon-256.png",
-            "color": "#38bdf8",
+            "color": "#2f7bf5",
             "categories": ["design", "creative"]
         },
         {
@@ -353,9 +358,9 @@
                 "en-US": "VectorCraft"
             },
             "description": {
-                "en-US": "Vector illustration and graphic design.",
-                "zh-CN": "矢量插画与平面设计。",
-                "ar-SA": "الرسم المتجه والتصميم الجرافيكي."
+                "en-US": "Fast, open-source vector illustration, reimagined in pure Rust.",
+                "zh-CN": "快速的开源矢量插画软件，用纯 Rust 重新构想。",
+                "ar-SA": "رسم متجه سريع ومفتوح المصدر، أُعيد تصوره بلغة Rust الخالصة."
             },
             "highlight": {
                 "en-US": "Craft"
@@ -363,7 +368,7 @@
             "publisher": "ArtCraft",
             "url": "artcraft/vectorcraft/",
             "icon": "artcraft/vectorcraft/icons/256/ai.storyteller.vectorcraft.png",
-            "color": "#f97316",
+            "color": "#e8573f",
             "categories": ["design", "creative"]
         },
         {
@@ -372,9 +377,9 @@
                 "en-US": "WordCraft"
             },
             "description": {
-                "en-US": "Word processing and document writing.",
-                "zh-CN": "文字处理与文档写作。",
-                "ar-SA": "معالجة النصوص وكتابة المستندات."
+                "en-US": "Fast, open-source word processing, rebuilt in pure Rust.",
+                "zh-CN": "快速的开源文字处理软件，用纯 Rust 重建。",
+                "ar-SA": "معالجة نصوص سريعة ومفتوحة المصدر، أُعيد بناؤها بلغة Rust الخالصة."
             },
             "highlight": {
                 "en-US": "Craft"
@@ -382,7 +387,7 @@
             "publisher": "ArtCraft",
             "url": "artcraft/wordcraft/",
             "icon": "artcraft/wordcraft/wordcraft-fa59e09a3f921e03.ico",
-            "color": "#3b82f6",
+            "color": "#3b5bdb",
             "categories": ["office", "productivity"]
         },
         {
@@ -403,6 +408,25 @@
             "icon": "https://tracedraw.github.io/tracedraw/icon-256.png",
             "color": "#60a5fa",
             "categories": ["design", "creative"]
+        },
+        {
+            "id": "pdfcraft",
+            "name": {
+                "en-US": "PdfCraft"
+            },
+            "description": {
+                "en-US": "The open-source PDF workbench: read, organize, combine, split and secure.",
+                "zh-CN": "开源 PDF 工作台：阅读、整理、合并、拆分与保护。",
+                "ar-SA": "منصة عمل PDF مفتوحة المصدر: اقرأ ونظّم وادمج وقسّم وأمّن."
+            },
+            "highlight": {
+                "en-US": "Craft"
+            },
+            "publisher": "ArtCraft",
+            "url": "artcraft/pdfcraft/",
+            "icon": "artcraft/pdfcraft/icon-256.png",
+            "color": "#b70228",
+            "categories": ["office", "tools"]
         }
     ]
 }

@@ -1,0 +1,506 @@
+{
+  "name": {
+    "en-US": "Drivemu",
+    "zh-CN": "Drivemu",
+    "ar-SA": "Drivemu"
+  },
+  "languages": [
+    {
+      "code": "en-US",
+      "name": "English",
+      "dir": "ltr"
+    },
+    {
+      "code": "zh-CN",
+      "name": "简体中文",
+      "dir": "ltr"
+    },
+    {
+      "code": "ar-SA",
+      "name": "العربية",
+      "dir": "rtl"
+    }
+  ],
+  "ui": {
+    "brand.title": {
+      "en-US": "Your files, always with you.",
+      "zh-CN": "你的文件，随时随地。",
+      "ar-SA": "ملفاتك معك أينما كنت."
+    },
+    "brand.text": {
+      "en-US": "Store, organise and preview your files. No subscriptions, nothing to maintain.",
+      "zh-CN": "存储、整理和预览你的文件。无需订阅，无需维护。",
+      "ar-SA": "خزّن ملفاتك ونظّمها واعرضها. بلا اشتراكات وبلا صيانة."
+    },
+    "brand.private.title": {
+      "en-US": "Private by default",
+      "zh-CN": "默认私有",
+      "ar-SA": "خاص افتراضيًا"
+    },
+    "brand.private.text": {
+      "en-US": "Your files are visible only to you.",
+      "zh-CN": "只有你能看到你的文件。",
+      "ar-SA": "ملفاتك مرئية لك وحدك."
+    },
+    "brand.backend.title": {
+      "en-US": "Nothing to install",
+      "zh-CN": "无需安装",
+      "ar-SA": "لا حاجة للتثبيت"
+    },
+    "brand.backend.text": {
+      "en-US": "Runs in your browser, ready whenever you are.",
+      "zh-CN": "在浏览器中运行，随时可用。",
+      "ar-SA": "يعمل في متصفحك وجاهز في أي وقت."
+    },
+    "brand.history.title": {
+      "en-US": "Full history",
+      "zh-CN": "完整历史记录",
+      "ar-SA": "سجل كامل"
+    },
+    "brand.history.text": {
+      "en-US": "Every change is saved, so you can always go back.",
+      "zh-CN": "每次更改都会保存，你可以随时回退。",
+      "ar-SA": "تُحفظ كل التغييرات، فيمكنك العودة إليها دائمًا."
+    },
+    "login.title": {
+      "en-US": "Sign in",
+      "zh-CN": "登录",
+      "ar-SA": "تسجيل الدخول"
+    },
+    "login.sub": {
+      "en-US": "Sign in once and every Kancamu web knows it. Your token never leaves your browser.",
+      "zh-CN": "登录一次，所有 Kancamu 网站都会自动识别。你的令牌不会离开浏览器。",
+      "ar-SA": "سجّل الدخول مرة واحدة لتتعرف عليه كل مواقع Kancamu. لا يغادر رمزك متصفحك أبدًا."
+    },
+    "login.couldNotConnect": {
+      "en-US": "Could not connect: {message}",
+      "zh-CN": "无法连接：{message}",
+      "ar-SA": "تعذّر الاتصال: {message}"
+    },
+    "cancel": {
+      "en-US": "Cancel",
+      "zh-CN": "取消",
+      "ar-SA": "إلغاء"
+    },
+    "ok": {
+      "en-US": "OK",
+      "zh-CN": "确定",
+      "ar-SA": "موافق"
+    },
+    "close": {
+      "en-US": "Close",
+      "zh-CN": "关闭",
+      "ar-SA": "إغلاق"
+    },
+    "settings": {
+      "en-US": "Settings",
+      "zh-CN": "设置",
+      "ar-SA": "الإعدادات"
+    },
+    "language": {
+      "en-US": "Language",
+      "zh-CN": "语言",
+      "ar-SA": "اللغة"
+    },
+    "download": {
+      "en-US": "Download",
+      "zh-CN": "下载",
+      "ar-SA": "تنزيل"
+    },
+    "delete": {
+      "en-US": "Delete",
+      "zh-CN": "删除",
+      "ar-SA": "حذف"
+    },
+    "rename": {
+      "en-US": "Rename",
+      "zh-CN": "重命名",
+      "ar-SA": "إعادة تسمية"
+    },
+    "create": {
+      "en-US": "Create",
+      "zh-CN": "创建",
+      "ar-SA": "إنشاء"
+    },
+    "save": {
+      "en-US": "Save",
+      "zh-CN": "保存",
+      "ar-SA": "حفظ"
+    },
+    "acct.tokenInvalid": {
+      "en-US": "Your sign-in for {name} has expired. Please sign in again.",
+      "zh-CN": "{name} 的登录已失效，请重新登录。",
+      "ar-SA": "انتهت صلاحية تسجيل دخول {name}. سجّل الدخول مرة أخرى."
+    },
+    "acct.anAccount": {
+      "en-US": "an account",
+      "zh-CN": "某个账户",
+      "ar-SA": "أحد الحسابات"
+    },
+    "set.storage": {
+      "en-US": "Storage",
+      "zh-CN": "存储",
+      "ar-SA": "التخزين"
+    },
+    "error.noWrite": {
+      "en-US": "This sign-in has no permission to write files.",
+      "zh-CN": "此登录没有写入文件的权限。",
+      "ar-SA": "لا يملك تسجيل الدخول هذا صلاحية كتابة الملفات."
+    },
+    "new": {
+      "en-US": "New",
+      "zh-CN": "新建",
+      "ar-SA": "جديد"
+    },
+    "nav.myDrive": {
+      "en-US": "My Drive",
+      "zh-CN": "我的云盘",
+      "ar-SA": "مساحتي"
+    },
+    "usage.title": {
+      "en-US": "Used",
+      "zh-CN": "已用空间",
+      "ar-SA": "المساحة المستخدمة"
+    },
+    "search": {
+      "en-US": "Search in this folder",
+      "zh-CN": "在此文件夹中搜索",
+      "ar-SA": "البحث في هذا المجلد"
+    },
+    "view": {
+      "en-US": "View",
+      "zh-CN": "视图",
+      "ar-SA": "العرض"
+    },
+    "view.list": {
+      "en-US": "List view",
+      "zh-CN": "列表视图",
+      "ar-SA": "عرض القائمة"
+    },
+    "view.grid": {
+      "en-US": "Grid view",
+      "zh-CN": "网格视图",
+      "ar-SA": "عرض الشبكة"
+    },
+    "refresh": {
+      "en-US": "Refresh",
+      "zh-CN": "刷新",
+      "ar-SA": "تحديث"
+    },
+    "sel.clear": {
+      "en-US": "Clear selection",
+      "zh-CN": "取消选择",
+      "ar-SA": "إلغاء التحديد"
+    },
+    "sel.count": {
+      "en-US": "{n} selected",
+      "zh-CN": "已选择 {n} 项",
+      "ar-SA": "تم تحديد {n}"
+    },
+    "sel.item": {
+      "en-US": "Select {name}",
+      "zh-CN": "选择 {name}",
+      "ar-SA": "تحديد {name}"
+    },
+    "sel.all": {
+      "en-US": "Select all",
+      "zh-CN": "全选",
+      "ar-SA": "تحديد الكل"
+    },
+    "menu.uploadFiles": {
+      "en-US": "Upload files",
+      "zh-CN": "上传文件",
+      "ar-SA": "رفع ملفات"
+    },
+    "menu.uploadFolder": {
+      "en-US": "Upload folder",
+      "zh-CN": "上传文件夹",
+      "ar-SA": "رفع مجلد"
+    },
+    "menu.newFolder": {
+      "en-US": "New folder",
+      "zh-CN": "新建文件夹",
+      "ar-SA": "مجلد جديد"
+    },
+    "drop": {
+      "en-US": "Drop files or folders to upload",
+      "zh-CN": "拖放文件或文件夹以上传",
+      "ar-SA": "أفلت الملفات أو المجلدات لرفعها"
+    },
+    "list.folders": {
+      "en-US": "Folders",
+      "zh-CN": "文件夹",
+      "ar-SA": "المجلدات"
+    },
+    "list.files": {
+      "en-US": "Files",
+      "zh-CN": "文件",
+      "ar-SA": "الملفات"
+    },
+    "list.name": {
+      "en-US": "Name",
+      "zh-CN": "名称",
+      "ar-SA": "الاسم"
+    },
+    "list.type": {
+      "en-US": "Type",
+      "zh-CN": "类型",
+      "ar-SA": "النوع"
+    },
+    "list.size": {
+      "en-US": "Size",
+      "zh-CN": "大小",
+      "ar-SA": "الحجم"
+    },
+    "type.folder": {
+      "en-US": "Folder",
+      "zh-CN": "文件夹",
+      "ar-SA": "مجلد"
+    },
+    "type.file": {
+      "en-US": "File",
+      "zh-CN": "文件",
+      "ar-SA": "ملف"
+    },
+    "type.fileExt": {
+      "en-US": "{ext} file",
+      "zh-CN": "{ext} 文件",
+      "ar-SA": "ملف {ext}"
+    },
+    "empty.noMatches": {
+      "en-US": "No matches",
+      "zh-CN": "没有匹配项",
+      "ar-SA": "لا توجد نتائج"
+    },
+    "empty.noMatchesText": {
+      "en-US": "Nothing in this folder matches “{query}”.",
+      "zh-CN": "此文件夹中没有与“{query}”匹配的内容。",
+      "ar-SA": "لا يوجد في هذا المجلد ما يطابق \"{query}\"."
+    },
+    "empty.title": {
+      "en-US": "This folder is empty",
+      "zh-CN": "此文件夹为空",
+      "ar-SA": "هذا المجلد فارغ"
+    },
+    "empty.text": {
+      "en-US": "Drag files here, or upload something to get started.",
+      "zh-CN": "将文件拖到这里，或上传内容开始使用。",
+      "ar-SA": "اسحب الملفات إلى هنا أو ارفع شيئًا للبدء."
+    },
+    "status": {
+      "en-US": "{folders} folders · {files} files · {size}",
+      "zh-CN": "{folders} 个文件夹 · {files} 个文件 · {size}",
+      "ar-SA": "{folders} مجلد · {files} ملف · {size}"
+    },
+    "load.failed": {
+      "en-US": "Failed to load: {message}",
+      "zh-CN": "加载失败：{message}",
+      "ar-SA": "فشل التحميل: {message}"
+    },
+    "preview.none": {
+      "en-US": "No preview available for this file type. Use the Download button.",
+      "zh-CN": "此文件类型无法预览。请使用下载按钮。",
+      "ar-SA": "لا تتوفر معاينة لهذا النوع من الملفات. استخدم زر التنزيل."
+    },
+    "preview.failed": {
+      "en-US": "Failed to load: {message}",
+      "zh-CN": "加载失败：{message}",
+      "ar-SA": "فشل التحميل: {message}"
+    },
+    "download.start": {
+      "en-US": "Downloading {name}…",
+      "zh-CN": "正在下载 {name}…",
+      "ar-SA": "جارٍ تنزيل {name}…"
+    },
+    "download.failed": {
+      "en-US": "Download failed: {message}",
+      "zh-CN": "下载失败：{message}",
+      "ar-SA": "فشل التنزيل: {message}"
+    },
+    "upload.skipped": {
+      "en-US": "Skipped (over the {size} file limit): {names}",
+      "zh-CN": "已跳过（超过 {size} 的文件大小限制）：{names}",
+      "ar-SA": "تم التخطي (تجاوز حد حجم الملف {size}): {names}"
+    },
+    "upload.overwriteTitle": {
+      "en-US": "Overwrite files?",
+      "zh-CN": "覆盖文件？",
+      "ar-SA": "هل تريد استبدال الملفات؟"
+    },
+    "upload.overwriteText": {
+      "en-US": "{count} file(s) already exist and will be overwritten: {names}",
+      "zh-CN": "{count} 个文件已存在，将被覆盖：{names}",
+      "ar-SA": "{count} ملف موجود بالفعل وسيتم استبداله: {names}"
+    },
+    "upload.overwrite": {
+      "en-US": "Overwrite",
+      "zh-CN": "覆盖",
+      "ar-SA": "استبدال"
+    },
+    "upload.start": {
+      "en-US": "Uploading…",
+      "zh-CN": "正在上传…",
+      "ar-SA": "جارٍ الرفع…"
+    },
+    "upload.progressFile": {
+      "en-US": "Uploading {done}/{total}: {name}",
+      "zh-CN": "正在上传 {done}/{total}：{name}",
+      "ar-SA": "جارٍ الرفع {done}/{total}: {name}"
+    },
+    "upload.progress": {
+      "en-US": "Uploading {done}/{total}",
+      "zh-CN": "正在上传 {done}/{total}",
+      "ar-SA": "جارٍ الرفع {done}/{total}"
+    },
+    "upload.saving": {
+      "en-US": "Saving…",
+      "zh-CN": "正在保存…",
+      "ar-SA": "جارٍ الحفظ…"
+    },
+    "upload.done": {
+      "en-US": "{count} file(s) uploaded",
+      "zh-CN": "已上传 {count} 个文件",
+      "ar-SA": "تم رفع {count} ملف"
+    },
+    "upload.failed": {
+      "en-US": "Upload failed: {message}",
+      "zh-CN": "上传失败：{message}",
+      "ar-SA": "فشل الرفع: {message}"
+    },
+    "folder.newTitle": {
+      "en-US": "New folder",
+      "zh-CN": "新建文件夹",
+      "ar-SA": "مجلد جديد"
+    },
+    "folder.untitled": {
+      "en-US": "Untitled folder",
+      "zh-CN": "未命名文件夹",
+      "ar-SA": "مجلد بلا اسم"
+    },
+    "folder.invalid": {
+      "en-US": "Invalid folder name",
+      "zh-CN": "文件夹名称无效",
+      "ar-SA": "اسم المجلد غير صالح"
+    },
+    "folder.created": {
+      "en-US": "Folder created",
+      "zh-CN": "文件夹已创建",
+      "ar-SA": "تم إنشاء المجلد"
+    },
+    "name.inUse": {
+      "en-US": "That name is already in use",
+      "zh-CN": "该名称已被使用",
+      "ar-SA": "هذا الاسم مستخدم بالفعل"
+    },
+    "name.invalid": {
+      "en-US": "Invalid name",
+      "zh-CN": "名称无效",
+      "ar-SA": "الاسم غير صالح"
+    },
+    "rename.renaming": {
+      "en-US": "Renaming…",
+      "zh-CN": "正在重命名…",
+      "ar-SA": "جارٍ إعادة التسمية…"
+    },
+    "rename.done": {
+      "en-US": "Renamed",
+      "zh-CN": "已重命名",
+      "ar-SA": "تمت إعادة التسمية"
+    },
+    "delete.labelOne": {
+      "en-US": "\"{name}\"",
+      "zh-CN": "“{name}”",
+      "ar-SA": "\"{name}\""
+    },
+    "delete.labelMany": {
+      "en-US": "{count} items",
+      "zh-CN": "{count} 项",
+      "ar-SA": "{count} عنصر"
+    },
+    "delete.title": {
+      "en-US": "Delete permanently?",
+      "zh-CN": "永久删除？",
+      "ar-SA": "هل تريد الحذف نهائيًا؟"
+    },
+    "delete.text": {
+      "en-US": "{label} will be deleted.",
+      "zh-CN": "{label} 将被删除。",
+      "ar-SA": "سيتم حذف {label}."
+    },
+    "delete.deleting": {
+      "en-US": "Deleting…",
+      "zh-CN": "正在删除…",
+      "ar-SA": "جارٍ الحذف…"
+    },
+    "delete.done": {
+      "en-US": "Deleted",
+      "zh-CN": "已删除",
+      "ar-SA": "تم الحذف"
+    },
+    "failed": {
+      "en-US": "Failed: {message}",
+      "zh-CN": "失败：{message}",
+      "ar-SA": "فشل: {message}"
+    },
+    "set.appearance": {
+      "en-US": "Appearance",
+      "zh-CN": "外观",
+      "ar-SA": "المظهر"
+    },
+    "theme": {
+      "en-US": "Theme",
+      "zh-CN": "主题",
+      "ar-SA": "السمة"
+    },
+    "theme.dark": {
+      "en-US": "Dark",
+      "zh-CN": "深色",
+      "ar-SA": "داكن"
+    },
+    "theme.light": {
+      "en-US": "Light",
+      "zh-CN": "浅色",
+      "ar-SA": "فاتح"
+    },
+    "account": {
+      "en-US": "Account",
+      "zh-CN": "账户",
+      "ar-SA": "الحساب"
+    },
+    "login.signIn": {
+      "en-US": "Sign in",
+      "zh-CN": "登录",
+      "ar-SA": "تسجيل الدخول"
+    },
+    "sort.label": {
+      "en-US": "Sort",
+      "zh-CN": "排序",
+      "ar-SA": "ترتيب"
+    },
+    "sort.nameAsc": {
+      "en-US": "Name (A–Z)",
+      "zh-CN": "名称 (A–Z)",
+      "ar-SA": "الاسم (أ–ي)"
+    },
+    "sort.nameDesc": {
+      "en-US": "Name (Z–A)",
+      "zh-CN": "名称 (Z–A)",
+      "ar-SA": "الاسم (ي–أ)"
+    },
+    "sort.typeAsc": {
+      "en-US": "Type",
+      "zh-CN": "类型",
+      "ar-SA": "النوع"
+    },
+    "sort.sizeAsc": {
+      "en-US": "Size (smallest)",
+      "zh-CN": "大小（从小到大）",
+      "ar-SA": "الحجم (الأصغر)"
+    },
+    "sort.sizeDesc": {
+      "en-US": "Size (largest)",
+      "zh-CN": "大小（从大到小）",
+      "ar-SA": "الحجم (الأكبر)"
+    }
+  }
+}
