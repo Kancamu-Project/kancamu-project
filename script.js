@@ -4,8 +4,7 @@ const state = {
     lang: null,
     languages: [],
     siteName: {},
-    siteHighlight: null,
-    siteColor: null,
+    home: null,
     ui: {},
     categories: {},
     projects: [],
@@ -14,6 +13,8 @@ const state = {
     sort: "asc",
     query: "",
     view: "grid",
+    tabs: [],
+    active: null,
 };
 
 function saveFilters() {
@@ -23,6 +24,8 @@ function saveFilters() {
     if (state.publisher !== "all") params.set("publisher", state.publisher);
     if (state.sort !== "asc") params.set("sort", state.sort);
     if (state.view !== "grid") params.set("view", state.view);
+    if (state.tabs.length) params.set("tabs", state.tabs.join(","));
+    if (state.active !== state.home) params.set("tab", state.active);
     const search = params.toString();
     history.replaceState(null, "", location.pathname + (search ? `?${search}` : "") + location.hash);
     syncControls();
@@ -36,6 +39,107 @@ function restoreFilters() {
     if (["asc", "desc"].includes(params.get("sort"))) state.sort = params.get("sort");
     state.query = params.get("q") || "";
     if (["grid", "list"].includes(params.get("view"))) state.view = params.get("view");
+
+    const known = state.projects.map((project) => project.id);
+    state.tabs = [...new Set((params.get("tabs") || "").split(","))].filter(
+        (id) => known.includes(id) && id !== state.home
+    );
+    const active = params.get("tab");
+    state.active = allTabs().includes(active) ? active : state.home;
+}
+
+// The first tab is this site itself: it is always open and cannot be closed.
+function allTabs() {
+    return [state.home, ...state.tabs];
+}
+
+function findProject(id) {
+    return state.projects.find((project) => project.id === id);
+}
+
+function openTab(id) {
+    if (!allTabs().includes(id)) state.tabs.push(id);
+    selectTab(id);
+}
+
+function selectTab(id) {
+    state.active = id;
+    saveFilters();
+    renderTabs();
+    syncViewer();
+}
+
+function closeTab(id) {
+    const index = state.tabs.indexOf(id);
+    if (index === -1) return;
+    state.tabs.splice(index, 1);
+    if (state.active === id) state.active = allTabs()[index];
+    saveFilters();
+    renderTabs();
+    syncViewer();
+}
+
+function renderTabs() {
+    const tabs = document.getElementById("tabs");
+
+    tabs.replaceChildren(
+        ...allTabs().map(findProject).filter(Boolean).map((project) => {
+            const tab = createElement("div", "tab");
+            tab.style.setProperty("--color", project.color);
+            tab.classList.toggle("active", state.active === project.id);
+
+            const select = createElement("button", "select");
+            select.title = pickText(project.name);
+            const icon = createElement("div", "icon");
+            icon.style.backgroundImage = `url(${JSON.stringify(project.icon)})`;
+            select.append(
+                icon,
+                createNameElement(pickText(project.name), project.highlight && pickText(project.highlight))
+            );
+            select.addEventListener("click", () => selectTab(project.id));
+            select.addEventListener("auxclick", (event) => {
+                if (event.button === 1) closeTab(project.id);
+            });
+
+            tab.appendChild(select);
+            if (state.tabs.includes(project.id)) {
+                const close = createElement("button", "close");
+                close.title = t("close");
+                close.appendChild(createGlyph("close"));
+                close.addEventListener("click", () => closeTab(project.id));
+                tab.appendChild(close);
+            }
+            return tab;
+        })
+    );
+    tabs.querySelector(".tab.active")?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    updateTabFade();
+}
+
+function syncViewer() {
+    const viewer = document.getElementById("viewer");
+    const onHome = state.active === state.home;
+    viewer.hidden = onHome;
+    document.getElementById("main").hidden = !onHome;
+    document.getElementById("footer").hidden = !onHome;
+
+    viewer.querySelectorAll("iframe").forEach((frame) => {
+        if (!state.tabs.includes(frame.dataset.id)) frame.remove();
+    });
+    state.tabs.forEach((id) => {
+        const project = findProject(id);
+        if (!project) return;
+        let frame = viewer.querySelector(`iframe[data-id="${id}"]`);
+        if (!frame) {
+            frame = createElement("iframe");
+            frame.dataset.id = id;
+            frame.src = project.url;
+            frame.allow = "fullscreen; clipboard-write";
+            viewer.appendChild(frame);
+        }
+        frame.title = pickText(project.name);
+        frame.hidden = id !== state.active;
+    });
 }
 
 function syncControls() {
@@ -88,18 +192,10 @@ function renderAll() {
     document.documentElement.lang = state.lang;
     document.documentElement.dir = language?.dir || "ltr";
 
-    const siteName = pickText(state.siteName);
-    document.title = siteName;
-    const siteElement = document.getElementById("site-name");
-    siteElement.style.setProperty("--color", state.siteColor);
-    siteElement.replaceChildren(
-        ...createNameElement(
-            siteName,
-            state.siteHighlight && pickText(state.siteHighlight)
-        ).childNodes
-    );
+    document.title = pickText(state.siteName);
 
     applyUi();
+    renderTabs();
     renderPublisherSelect();
     renderCategoryFilter();
     renderProjects();
@@ -163,9 +259,10 @@ function showMenu(anchor, project) {
         setTimeout(closeMenu, 800);
     });
 
-    const here = createButton("item", t("openHere"));
+    const here = createButton("item", t("openNew"));
     here.addEventListener("click", () => {
-        window.location.href = project.url;
+        window.open(project.url, "_blank", "noopener");
+        closeMenu();
     });
 
     menu.append(copy, here);
@@ -197,7 +294,7 @@ function createProjectCard(project) {
     link.href = project.url;
     link.target = "_blank";
     link.rel = "noopener";
-    link.append(createElement("span", "", t("website")), createGlyph("external"));
+    link.append(createElement("span", "", project.id), createGlyph("external"));
     top.append(createElement("span", "tag", project.publisher || ""), link);
 
     const icon = createElement("div", "icon");
@@ -212,7 +309,7 @@ function createProjectCard(project) {
     info.append(icon, text);
 
     const open = createButton("open", t("open"));
-    open.addEventListener("click", () => window.open(project.url, "_blank", "noopener"));
+    open.addEventListener("click", () => openTab(project.id));
 
     const more = createElement("button", "more");
     more.title = t("more");
@@ -338,9 +435,7 @@ async function loadData() {
     const data = await response.json();
 
     state.siteName = data.name;
-    state.siteHighlight = data.highlight;
-    state.siteColor = data.color;
-    document.getElementById("site-logo").style.backgroundImage = `url(${JSON.stringify(data.icon)})`;
+    state.home = data.home;
     state.languages = data.languages;
     state.ui = data.ui;
     state.categories = data.categories;
@@ -350,6 +445,7 @@ async function loadData() {
     renderLanguageSelect();
     renderAll();
     syncControls();
+    syncViewer();
 }
 
 function load() {
@@ -360,6 +456,29 @@ function load() {
         );
     });
 }
+
+// Darken the edge of the tab bar where more tabs are hidden.
+function updateTabFade() {
+    const tabs = document.getElementById("tabs");
+    const offset = Math.abs(tabs.scrollLeft);
+    tabs.classList.toggle("fade-start", offset > 1);
+    tabs.classList.toggle("fade-end", offset + tabs.clientWidth < tabs.scrollWidth - 1);
+}
+
+document.getElementById("tabs").addEventListener("scroll", updateTabFade);
+window.addEventListener("resize", updateTabFade);
+
+// Let a plain mouse wheel scroll the tab bar sideways.
+document.getElementById("tabs").addEventListener(
+    "wheel",
+    (event) => {
+        const tabs = event.currentTarget;
+        if (tabs.scrollWidth <= tabs.clientWidth || Math.abs(event.deltaY) < Math.abs(event.deltaX)) return;
+        event.preventDefault();
+        tabs.scrollLeft += event.deltaY;
+    },
+    { passive: false }
+);
 
 document.getElementById("language").addEventListener("change", (event) => {
     state.lang = event.target.value;

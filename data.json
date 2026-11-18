@@ -2,11 +2,7 @@
     "name": {
         "en-US": "Kancamu Project"
     },
-    "highlight": {
-        "en-US": "mu"
-    },
-    "color": "#339afc",
-    "icon": "favicon.png",
+    "home": "kancamu",
     "languages": [
         { "code": "en-US", "name": "English", "dir": "ltr" },
         { "code": "zh-CN", "name": "简体中文", "dir": "ltr" },
@@ -71,11 +67,6 @@
             "zh-CN": "分类",
             "ar-SA": "الفئة"
         },
-        "website": {
-            "en-US": "Website",
-            "zh-CN": "网站",
-            "ar-SA": "الموقع"
-        },
         "publisher": {
             "en-US": "Publisher",
             "zh-CN": "发布者",
@@ -90,6 +81,11 @@
             "en-US": "Open",
             "zh-CN": "打开",
             "ar-SA": "فتح"
+        },
+        "close": {
+            "en-US": "Close tab",
+            "zh-CN": "关闭标签页",
+            "ar-SA": "إغلاق التبويب"
         },
         "more": {
             "en-US": "More",
@@ -111,10 +107,10 @@
             "zh-CN": "复制失败",
             "ar-SA": "فشل النسخ"
         },
-        "openHere": {
-            "en-US": "Open in this tab",
-            "zh-CN": "在当前标签页打开",
-            "ar-SA": "فتح في هذا التبويب"
+        "openNew": {
+            "en-US": "Open in new window",
+            "zh-CN": "在新窗口打开",
+            "ar-SA": "فتح في نافذة جديدة"
         },
         "empty": {
             "en-US": "No projects found.",
@@ -181,6 +177,7 @@
     },
     "projects": [
         {
+            "id": "muos",
             "name": {
                 "en-US": "muOS"
             },
@@ -199,6 +196,7 @@
             "categories": ["system", "tools"]
         },
         {
+            "id": "drivemu",
             "name": {
                 "en-US": "Drivemu"
             },
@@ -217,6 +215,7 @@
             "categories": ["storage", "tools"]
         },
         {
+            "id": "muai",
             "name": {
                 "en-US": "muAI"
             },
@@ -235,6 +234,7 @@
             "categories": ["ai", "tools"]
         },
         {
+            "id": "kancamu",
             "name": {
                 "en-US": "Kancamu Project"
             },
@@ -253,6 +253,7 @@
             "categories": ["directory", "tools"]
         },
         {
+            "id": "deckcraft",
             "name": {
                 "en-US": "DeckCraft"
             },
@@ -271,6 +272,7 @@
             "categories": ["office", "design", "productivity"]
         },
         {
+            "id": "effectcraft",
             "name": {
                 "en-US": "EffectCraft"
             },
@@ -289,6 +291,7 @@
             "categories": ["video", "creative"]
         },
         {
+            "id": "filmcraft",
             "name": {
                 "en-US": "FilmCraft"
             },
@@ -307,6 +310,7 @@
             "categories": ["video", "creative"]
         },
         {
+            "id": "gridcraft",
             "name": {
                 "en-US": "GridCraft"
             },
@@ -325,6 +329,7 @@
             "categories": ["office", "productivity"]
         },
         {
+            "id": "photocraft",
             "name": {
                 "en-US": "PhotoCraft"
             },
@@ -343,6 +348,7 @@
             "categories": ["design", "creative"]
         },
         {
+            "id": "vectorcraft",
             "name": {
                 "en-US": "VectorCraft"
             },
@@ -361,6 +367,7 @@
             "categories": ["design", "creative"]
         },
         {
+            "id": "wordcraft",
             "name": {
                 "en-US": "WordCraft"
             },
@@ -379,6 +386,7 @@
             "categories": ["office", "productivity"]
         },
         {
+            "id": "tracedraw",
             "name": {
                 "en-US": "TraceDraw"
             },
