@@ -39,5 +39,12 @@ Buat variable yang bisa dipakai oleh lebih dari satu elemen, maka penamaannya ha
 #### 4. Jarak
 Memberi jarak pakai padding dan gap, jangan pakai margin.
 
+### OTHER
+
+#### 1. Struktur
+/favicon.png - icon web, biarkan dari saya.
+/icons - berisi kumpulan icon svg untuk GUI, jangan pakai Emoji.
+/fonts - berisi kumpulan font.
+
 # NOTE
 Currently, only humans are permitted to modify this file.

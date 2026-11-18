@@ -2,141 +2,181 @@
     "name": {
         "en-US": "Kancamu Project"
     },
+    "highlight": {
+        "en-US": "mu"
+    },
+    "color": "#339afc",
+    "icon": "favicon.png",
     "languages": [
         { "code": "en-US", "name": "English", "dir": "ltr" },
         { "code": "zh-CN", "name": "简体中文", "dir": "ltr" },
-        { "code": "ar", "name": "العربية", "dir": "rtl" }
+        { "code": "ar-SA", "name": "العربية", "dir": "rtl" }
     ],
     "ui": {
         "copyright": {
             "en-US": "© Kancamu Project"
         },
+        "reset": {
+            "en-US": "Reset",
+            "zh-CN": "重置",
+            "ar-SA": "إعادة تعيين"
+        },
         "sortAsc": {
             "en-US": "Name (A-Z)",
             "zh-CN": "名称 (A-Z)",
-            "ar": "الاسم (أ-ي)"
+            "ar-SA": "الاسم (أ-ي)"
         },
         "sortDesc": {
             "en-US": "Name (Z-A)",
             "zh-CN": "名称 (Z-A)",
-            "ar": "الاسم (ي-أ)"
+            "ar-SA": "الاسم (ي-أ)"
         },
         "search": {
             "en-US": "Search projects",
             "zh-CN": "搜索项目",
-            "ar": "ابحث عن مشروع"
+            "ar-SA": "ابحث عن مشروع"
         },
         "grid": {
             "en-US": "Grid",
             "zh-CN": "网格",
-            "ar": "شبكة"
+            "ar-SA": "شبكة"
         },
         "list": {
             "en-US": "List",
             "zh-CN": "列表",
-            "ar": "قائمة"
+            "ar-SA": "قائمة"
         },
         "theme": {
             "en-US": "Toggle theme",
             "zh-CN": "切换主题",
-            "ar": "تبديل المظهر"
+            "ar-SA": "تبديل المظهر"
         },
         "language": {
             "en-US": "Language",
             "zh-CN": "语言",
-            "ar": "اللغة"
+            "ar-SA": "اللغة"
         },
         "all": {
             "en-US": "All",
             "zh-CN": "全部",
-            "ar": "الكل"
+            "ar-SA": "الكل"
         },
         "project": {
             "en-US": "Project",
             "zh-CN": "项目",
-            "ar": "المشروع"
+            "ar-SA": "المشروع"
         },
         "category": {
             "en-US": "Category",
             "zh-CN": "分类",
-            "ar": "الفئة"
+            "ar-SA": "الفئة"
         },
         "website": {
             "en-US": "Website",
             "zh-CN": "网站",
-            "ar": "الموقع"
+            "ar-SA": "الموقع"
         },
         "publisher": {
             "en-US": "Publisher",
             "zh-CN": "发布者",
-            "ar": "الناشر"
+            "ar-SA": "الناشر"
+        },
+        "allPublishers": {
+            "en-US": "All publishers",
+            "zh-CN": "所有发布者",
+            "ar-SA": "جميع الناشرين"
         },
         "open": {
             "en-US": "Open",
             "zh-CN": "打开",
-            "ar": "فتح"
+            "ar-SA": "فتح"
         },
         "more": {
             "en-US": "More",
             "zh-CN": "更多",
-            "ar": "المزيد"
+            "ar-SA": "المزيد"
         },
         "copyLink": {
             "en-US": "Copy link",
             "zh-CN": "复制链接",
-            "ar": "نسخ الرابط"
+            "ar-SA": "نسخ الرابط"
         },
         "copied": {
             "en-US": "Copied",
             "zh-CN": "已复制",
-            "ar": "تم النسخ"
+            "ar-SA": "تم النسخ"
         },
         "copyFailed": {
             "en-US": "Failed to copy",
             "zh-CN": "复制失败",
-            "ar": "فشل النسخ"
+            "ar-SA": "فشل النسخ"
         },
         "openHere": {
             "en-US": "Open in this tab",
             "zh-CN": "在当前标签页打开",
-            "ar": "فتح في هذا التبويب"
+            "ar-SA": "فتح في هذا التبويب"
         },
         "empty": {
             "en-US": "No projects found.",
             "zh-CN": "未找到项目。",
-            "ar": "لم يتم العثور على مشاريع."
+            "ar-SA": "لم يتم العثور على مشاريع."
         },
         "errorLoad": {
             "en-US": "Failed to load data.json",
             "zh-CN": "无法加载 data.json",
-            "ar": "تعذر تحميل data.json"
+            "ar-SA": "تعذر تحميل data.json"
         }
     },
     "categories": {
+        "ai": {
+            "en-US": "AI",
+            "zh-CN": "人工智能",
+            "ar-SA": "الذكاء الاصطناعي"
+        },
+        "tools": {
+            "en-US": "Tools",
+            "zh-CN": "工具",
+            "ar-SA": "الأدوات"
+        },
+        "productivity": {
+            "en-US": "Productivity",
+            "zh-CN": "效率",
+            "ar-SA": "الإنتاجية"
+        },
         "system": {
             "en-US": "System",
             "zh-CN": "系统",
-            "ar": "النظام"
+            "ar-SA": "النظام"
         },
         "office": {
             "en-US": "Office",
             "zh-CN": "办公",
-            "ar": "المكتب"
+            "ar-SA": "المكتب"
         },
         "design": {
             "en-US": "Design",
             "zh-CN": "设计",
-            "ar": "التصميم"
+            "ar-SA": "التصميم"
         },
         "video": {
             "en-US": "Video",
             "zh-CN": "视频",
-            "ar": "الفيديو"
+            "ar-SA": "الفيديو"
         },
         "creative": {
             "en-US": "Creative",
             "zh-CN": "创意",
-            "ar": "إبداعي"
+            "ar-SA": "إبداعي"
+        },
+        "directory": {
+            "en-US": "Directory",
+            "zh-CN": "目录",
+            "ar-SA": "الدليل"
+        },
+        "storage": {
+            "en-US": "Storage",
+            "zh-CN": "存储",
+            "ar-SA": "التخزين"
         }
     },
     "projects": [
@@ -147,7 +187,7 @@
             "description": {
                 "en-US": "Web-Based Operating System.",
                 "zh-CN": "基于网页的操作系统。",
-                "ar": "نظام تشغيل قائم على الويب."
+                "ar-SA": "نظام تشغيل قائم على الويب."
             },
             "highlight": {
                 "en-US": "mu"
@@ -155,8 +195,62 @@
             "publisher": "Kancamu Project",
             "url": "https://muos.kancamu.site",
             "icon": "https://muos.kancamu.site/favicon.png",
-            "color": "#1782db",
-            "categories": ["system"]
+            "color": "#339afc",
+            "categories": ["system", "tools"]
+        },
+        {
+            "name": {
+                "en-US": "Drivemu"
+            },
+            "description": {
+                "en-US": "File storage powered by your own GitHub.",
+                "zh-CN": "由你自己的 GitHub 驱动的文件存储。",
+                "ar-SA": "تخزين الملفات مدعوم بحساب GitHub الخاص بك."
+            },
+            "highlight": {
+                "en-US": "mu"
+            },
+            "publisher": "Kancamu Project",
+            "url": "https://drivemu.kancamu.site/",
+            "icon": "https://drivemu.kancamu.site/favicon.png",
+            "color": "#f89520",
+            "categories": ["storage", "tools"]
+        },
+        {
+            "name": {
+                "en-US": "muAI"
+            },
+            "description": {
+                "en-US": "AI models running directly in your browser.",
+                "zh-CN": "直接在浏览器中运行的 AI 模型。",
+                "ar-SA": "نماذج ذكاء اصطناعي تعمل مباشرة في متصفحك."
+            },
+            "highlight": {
+                "en-US": "mu"
+            },
+            "publisher": "Kancamu Project",
+            "url": "https://muai.kancamu.site/",
+            "icon": "https://muai.kancamu.site/favicon.png",
+            "color": "#ff5774",
+            "categories": ["ai", "tools"]
+        },
+        {
+            "name": {
+                "en-US": "Kancamu Project"
+            },
+            "description": {
+                "en-US": "Directory of apps and tools.",
+                "zh-CN": "应用与工具目录。",
+                "ar-SA": "دليل التطبيقات والأدوات."
+            },
+            "highlight": {
+                "en-US": "mu"
+            },
+            "publisher": "Kancamu Project",
+            "url": "https://kancamu.site/",
+            "icon": "favicon.png",
+            "color": "#339afc",
+            "categories": ["directory", "tools"]
         },
         {
             "name": {
@@ -165,7 +259,7 @@
             "description": {
                 "en-US": "Presentation and slide design.",
                 "zh-CN": "演示文稿与幻灯片设计。",
-                "ar": "تصميم العروض التقديمية والشرائح."
+                "ar-SA": "تصميم العروض التقديمية والشرائح."
             },
             "highlight": {
                 "en-US": "Craft"
@@ -174,7 +268,7 @@
             "url": "https://appmu.kancamu.site/apps/deckcraft/",
             "icon": "https://appmu.kancamu.site/apps/deckcraft/deckcraft-b8fcbb36ecec0385.ico",
             "color": "#f59e0b",
-            "categories": ["office"]
+            "categories": ["office", "design", "productivity"]
         },
         {
             "name": {
@@ -183,7 +277,7 @@
             "description": {
                 "en-US": "Motion graphics and visual effects.",
                 "zh-CN": "动态图形与视觉特效。",
-                "ar": "الرسوم المتحركة والمؤثرات البصرية."
+                "ar-SA": "الرسوم المتحركة والمؤثرات البصرية."
             },
             "highlight": {
                 "en-US": "Craft"
@@ -201,7 +295,7 @@
             "description": {
                 "en-US": "Video editing, color and sound.",
                 "zh-CN": "视频剪辑、调色与音频。",
-                "ar": "مونتاج الفيديو والألوان والصوت."
+                "ar-SA": "مونتاج الفيديو والألوان والصوت."
             },
             "highlight": {
                 "en-US": "Craft"
@@ -219,7 +313,7 @@
             "description": {
                 "en-US": "Spreadsheets for data and calculation.",
                 "zh-CN": "用于数据与计算的电子表格。",
-                "ar": "جداول بيانات للبيانات والحسابات."
+                "ar-SA": "جداول بيانات للبيانات والحسابات."
             },
             "highlight": {
                 "en-US": "Craft"
@@ -228,7 +322,7 @@
             "url": "https://appmu.kancamu.site/apps/gridcraft/",
             "icon": "https://appmu.kancamu.site/apps/gridcraft/gridcraft-45f84b7721cb79a9.ico",
             "color": "#22c55e",
-            "categories": ["office"]
+            "categories": ["office", "productivity"]
         },
         {
             "name": {
@@ -237,7 +331,7 @@
             "description": {
                 "en-US": "Image editing and photo retouching.",
                 "zh-CN": "图像编辑与照片修饰。",
-                "ar": "تحرير الصور وتنقيحها."
+                "ar-SA": "تحرير الصور وتنقيحها."
             },
             "highlight": {
                 "en-US": "Craft"
@@ -255,7 +349,7 @@
             "description": {
                 "en-US": "Vector illustration and graphic design.",
                 "zh-CN": "矢量插画与平面设计。",
-                "ar": "الرسم المتجه والتصميم الجرافيكي."
+                "ar-SA": "الرسم المتجه والتصميم الجرافيكي."
             },
             "highlight": {
                 "en-US": "Craft"
@@ -273,7 +367,7 @@
             "description": {
                 "en-US": "Word processing and document writing.",
                 "zh-CN": "文字处理与文档写作。",
-                "ar": "معالجة النصوص وكتابة المستندات."
+                "ar-SA": "معالجة النصوص وكتابة المستندات."
             },
             "highlight": {
                 "en-US": "Craft"
@@ -282,7 +376,25 @@
             "url": "https://appmu.kancamu.site/apps/wordcraft/",
             "icon": "https://appmu.kancamu.site/apps/wordcraft/wordcraft-fa59e09a3f921e03.ico",
             "color": "#3b82f6",
-            "categories": ["office"]
+            "categories": ["office", "productivity"]
+        },
+        {
+            "name": {
+                "en-US": "TraceDraw"
+            },
+            "description": {
+                "en-US": "Open-source vector editor that opens .cdr files.",
+                "zh-CN": "可打开 .cdr 文件的开源矢量编辑器。",
+                "ar-SA": "محرر متجهات مفتوح المصدر يفتح ملفات .cdr."
+            },
+            "highlight": {
+                "en-US": "Draw"
+            },
+            "publisher": "TraceDraw",
+            "url": "https://tracedraw.github.io/tracedraw/",
+            "icon": "https://tracedraw.github.io/tracedraw/icon-256.png",
+            "color": "#60a5fa",
+            "categories": ["design", "creative"]
         }
     ]
 }

@@ -4,14 +4,49 @@ const state = {
     lang: null,
     languages: [],
     siteName: {},
+    siteHighlight: null,
+    siteColor: null,
     ui: {},
     categories: {},
     projects: [],
     category: "all",
+    publisher: "all",
     sort: "asc",
     query: "",
     view: "grid",
 };
+
+function saveFilters() {
+    const params = new URLSearchParams();
+    if (state.query) params.set("q", state.query);
+    if (state.category !== "all") params.set("category", state.category);
+    if (state.publisher !== "all") params.set("publisher", state.publisher);
+    if (state.sort !== "asc") params.set("sort", state.sort);
+    if (state.view !== "grid") params.set("view", state.view);
+    const search = params.toString();
+    history.replaceState(null, "", location.pathname + (search ? `?${search}` : "") + location.hash);
+    syncControls();
+}
+
+function restoreFilters() {
+    const params = new URLSearchParams(location.search);
+    const category = params.get("category");
+    if (category && state.categories[category]) state.category = category;
+    state.publisher = params.get("publisher") || "all";
+    if (["asc", "desc"].includes(params.get("sort"))) state.sort = params.get("sort");
+    state.query = params.get("q") || "";
+    if (["grid", "list"].includes(params.get("view"))) state.view = params.get("view");
+}
+
+function syncControls() {
+    document.getElementById("reset").hidden =
+        !state.query && state.category === "all" && state.publisher === "all";
+    document.getElementById("search").value = state.query;
+    document.getElementById("sort").value = state.sort;
+    document.querySelectorAll("#view-toggle button").forEach((button) =>
+        button.classList.toggle("active", button.dataset.view === state.view)
+    );
+}
 
 function findSameBase(codes, lang) {
     const base = lang.split("-")[0];
@@ -55,9 +90,17 @@ function renderAll() {
 
     const siteName = pickText(state.siteName);
     document.title = siteName;
-    document.getElementById("site-name").textContent = siteName;
+    const siteElement = document.getElementById("site-name");
+    siteElement.style.setProperty("--color", state.siteColor);
+    siteElement.replaceChildren(
+        ...createNameElement(
+            siteName,
+            state.siteHighlight && pickText(state.siteHighlight)
+        ).childNodes
+    );
 
     applyUi();
+    renderPublisherSelect();
     renderCategoryFilter();
     renderProjects();
 }
@@ -214,6 +257,22 @@ function categoryLabel(key) {
     return state.categories[key] ? pickText(state.categories[key]) : key;
 }
 
+function renderPublisherSelect() {
+    const select = document.getElementById("publisher");
+    const publishers = [...new Set(state.projects.map((project) => project.publisher).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, state.lang));
+    const options = [["all", t("allPublishers")], ...publishers.map((name) => [name, name])];
+    select.replaceChildren(
+        ...options.map(([value, label]) => {
+            const option = createElement("option", "", label);
+            option.value = value;
+            return option;
+        })
+    );
+    if (!publishers.includes(state.publisher)) state.publisher = "all";
+    select.value = state.publisher;
+}
+
 function renderCategoryFilter() {
     const filter = document.getElementById("category-filter");
     const sorted = Object.keys(state.categories).sort((a, b) =>
@@ -228,6 +287,7 @@ function renderCategoryFilter() {
             );
             button.addEventListener("click", () => {
                 state.category = key;
+                saveFilters();
                 renderCategoryFilter();
                 renderProjects();
             });
@@ -245,6 +305,9 @@ function renderProjects() {
     const projects = state.projects
         .filter((project) =>
             state.category === "all" || (project.categories || []).includes(state.category)
+        )
+        .filter((project) =>
+            state.publisher === "all" || project.publisher === state.publisher
         )
         .filter((project) =>
             `${pickText(project.name)} ${pickText(project.description)}`.toLowerCase().includes(query)
@@ -275,13 +338,18 @@ async function loadData() {
     const data = await response.json();
 
     state.siteName = data.name;
+    state.siteHighlight = data.highlight;
+    state.siteColor = data.color;
+    document.getElementById("site-logo").style.backgroundImage = `url(${JSON.stringify(data.icon)})`;
     state.languages = data.languages;
     state.ui = data.ui;
     state.categories = data.categories;
     state.projects = data.projects;
     state.lang = resolveLanguage();
+    restoreFilters();
     renderLanguageSelect();
     renderAll();
+    syncControls();
 }
 
 function load() {
@@ -310,19 +378,39 @@ document.getElementById("theme").addEventListener("click", () => {
     } catch {}
 });
 
+document.getElementById("publisher").addEventListener("change", (event) => {
+    state.publisher = event.target.value;
+    saveFilters();
+    renderProjects();
+});
+
 document.getElementById("sort").addEventListener("change", (event) => {
     state.sort = event.target.value;
+    saveFilters();
     renderProjects();
 });
 
 document.getElementById("search").addEventListener("input", (event) => {
     state.query = event.target.value;
+    saveFilters();
+    renderProjects();
+});
+
+document.getElementById("reset").addEventListener("click", () => {
+    state.query = "";
+    state.category = "all";
+    state.publisher = "all";
+    saveFilters();
+    document.getElementById("search").value = "";
+    document.getElementById("publisher").value = "all";
+    renderCategoryFilter();
     renderProjects();
 });
 
 document.querySelectorAll("#view-toggle button").forEach((button) => {
     button.addEventListener("click", () => {
         state.view = button.dataset.view;
+        saveFilters();
         document.querySelectorAll("#view-toggle button").forEach((other) =>
             other.classList.toggle("active", other === button)
         );

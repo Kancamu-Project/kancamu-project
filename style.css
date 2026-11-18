@@ -29,6 +29,7 @@
     --fg: #ffffff;
     --fg-1: #8d8d98;
     --fg-2: #c4c4cc;
+    --danger: #ff6b6b;
     --radius: 0.4rem;
     --font-sans: "Inter", system-ui, sans-serif;
     --font-mono: "JetBrains Mono", ui-monospace, Consolas, system-ui, monospace;
@@ -42,6 +43,7 @@
     --fg: #111115;
     --fg-1: #6a6a76;
     --fg-2: #3a3a44;
+    --danger: #d92d2d;
     color-scheme: light;
 }
 
@@ -139,9 +141,25 @@ body {
 
     & > .brand {
         flex: 1;
+        gap: 0.4rem;
         padding-inline-start: 1.6rem;
         font-size: 1.2rem;
         font-weight: 700;
+        letter-spacing: -1px;
+
+        & .highlight {
+            color: var(--color);
+        }
+
+        & > #site-logo {
+            width: 1.4rem;
+            height: 1.4rem;
+            flex-shrink: 0;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            image-rendering: pixelated;
+        }
     }
 
     & > .tools {
@@ -263,6 +281,21 @@ button {
     &:hover {
         background: var(--bg-1);
         border-color: var(--fg-1);
+    }
+}
+
+#reset {
+    color: var(--danger);
+    background: color-mix(in srgb, var(--danger) 10%, var(--bg));
+    border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
+
+    &:hover {
+        background: color-mix(in srgb, var(--danger) 20%, var(--bg));
+        border-color: var(--danger);
+    }
+
+    &[hidden] {
+        display: none;
     }
 }
 
@@ -511,7 +544,7 @@ button {
 }
 
 /* Letter-spacing breaks the joined letters of Arabic */
-:root[lang="ar"] * {
+:root:lang(ar) * {
     letter-spacing: 0 !important;
 }
 
