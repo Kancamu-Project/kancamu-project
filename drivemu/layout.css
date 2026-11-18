@@ -1,8 +1,8 @@
 
-/* Drivemu — mengikuti STYLE-RULES.md: rem kelipatan 0.2 (kecuali 0.1rem/1px/2px), tanpa em,
-   tinggi tetap hanya untuk elemen yang tingginya tak berubah, jarak antar anak lewat gap. */
+/* Drivemu follows RULES.md: rem in multiples of 0.2 (except 0.1rem/1px/2px), no em,
+   a fixed height only for elements whose height never changes, spacing between children through gap. */
 :root {
-  /* Token warna, font, dan tinggi kontrol ada di ../assets/style.css. Di sini hanya yang khusus Drivemu. */
+  /* Colour, font and control-height tokens live in ../assets/style.css. Only what is specific to Drivemu is here. */
   --accent-soft: var(--bg-1);
   --danger-soft: color-mix(in srgb, var(--danger) 10%, var(--bg));
   --shadow: none; --shadow-lg: none;
@@ -18,7 +18,7 @@ ul { list-style: none; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 button { font: inherit; color: inherit; }
 
-/* ---------- Ikon (mask dari folder icons/, warna = currentColor) ---------- */
+/* ---------- Icons (masks from assets/icons/, colour = currentColor) ---------- */
 .icon { display: block; flex: none; width: var(--is, 1.2rem); height: var(--is, 1.2rem); background: currentColor;
   -webkit-mask: var(--src) center / contain no-repeat; mask: var(--src) center / contain no-repeat; }
 .i-logo { --src: url(../assets/icons/logo-drivemu.svg); }
@@ -60,14 +60,14 @@ button { font: inherit; color: inherit; }
 .i-chevron-down { --src: url(../assets/icons/chevron-down.svg); }
 .i-chevron-left { --src: url(../assets/icons/chevron-left.svg); }
 
-/* Warna per jenis file (--tc), dipakai oleh .tile dan ikon kecil */
+/* Colour per file type (--tc), used by .tile and the small icons */
 .k-folder { --tc: var(--yellow); } .k-image { --tc: var(--green); } .k-video { --tc: var(--blue); } .k-audio { --tc: var(--red); }
 .k-pdf { --tc: var(--red); } .k-text { --tc: var(--blue); } .k-archive { --tc: var(--yellow); } .k-file { --tc: var(--gray); }
 .tile { display: flex; align-items: center; justify-content: center; flex: none; width: 2.4rem; height: 2.4rem;
   border-radius: var(--r-s); color: var(--tc); background: color-mix(in srgb, var(--tc) 14%, transparent); }
 .tile.lg { --is: 1.8rem; width: 4rem; height: 4rem; border-radius: var(--r-m); }
 
-/* ---------- Tombol & input: tinggi tetap, padding kiri-kanan saja ---------- */
+/* ---------- Buttons and inputs: fixed height, horizontal padding only ---------- */
 .btn {
   display: flex; align-items: center; justify-content: center; gap: 0.8rem;
   height: var(--height); padding: 0 1.4rem;
@@ -85,7 +85,7 @@ button { font: inherit; color: inherit; }
 .btn.ghost { border-color: transparent; background: transparent; padding: 0 1rem; color: var(--fg-1); }
 .btn.ghost:hover { background: var(--bg-1); color: var(--fg); }
 .btn:disabled { opacity: .55; cursor: not-allowed; }
-/* pengecualian: tombol aksi utama lebih tinggi (3rem) agar jadi titik fokus */
+/* exception: the main action button is taller (3rem) so it becomes the focal point */
 .cta { height: 3rem; font-size: 1rem; }
 .cta .icon { --is: 1.2rem; }
 input[type=text], input[type=password], input[type=search] {
@@ -97,15 +97,15 @@ input::placeholder { color: var(--fg-1); }
 input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--accent) 22%, transparent); }
 
 .logo { display: flex; align-items: center; gap: 1rem; font-weight: 700; font-size: 1.4rem; }
-/* Logo = favicon.png (16x16 piksel). Ditampilkan 2rem (tepat 2x lipat) dengan pixelated agar piksel tetap tajam. */
+/* Logo = favicon.png (16x16 pixels). Shown at 2rem (exactly 2x) with pixelated rendering so the pixels stay sharp. */
 .logo-mark { display: block; flex: none; width: 2rem; height: 2rem; }
 .logo-mark img { display: block; width: 100%; height: 100%; image-rendering: crisp-edges; image-rendering: pixelated; }
 .logo.light { color: var(--accent-ink); }
-/* di panel ikon oranye butuh latar gelap agar kontras; ubin = 2rem ikon + padding 0.6rem */
+/* on the panel the orange icon needs a dark background for contrast; tile = 2rem icon + 0.6rem padding */
 .logo.light .logo-mark { box-sizing: content-box; padding: 0.6rem; border-radius: var(--r-s); background: var(--accent-ink); }
 .mobile-only { display: none !important; }
 
-/* ---------- Halaman masuk ---------- */
+/* ---------- Sign-in page ---------- */
 .login { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); min-height: 100%; }
 .brand {
   display: flex; flex-direction: column; justify-content: space-between; gap: 3.2rem; padding: 3.2rem 4rem; color: var(--accent-ink);
@@ -133,7 +133,7 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 0.2r
 .login-card summary { cursor: pointer; }
 .login-card details p { padding-top: 0.8rem; }
 
-/* ---------- Pemilih drive ---------- */
+/* ---------- Drive picker ---------- */
 .tile.accent { --tc: var(--accent-text); }
 .drives { height: 100%; display: flex; flex-direction: column; }
 .drives-top { display: flex; align-items: center; gap: 1rem; height: 4.8rem; flex: none; padding: 0 3.2rem; border-bottom: 1px solid var(--border); background: var(--bg); }
@@ -160,8 +160,8 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 0.2r
 select { width: 100%; height: var(--height); padding: 0 1.2rem; font: inherit; color: var(--fg); border: 1px solid var(--border); border-radius: var(--r-s); background: var(--bg); cursor: pointer; }
 select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--accent) 22%, transparent); }
 
-/* ---------- Pengaturan ---------- */
-/* .dlg.settings (2 kelas) agar menang atas .dlg yang didefinisikan lebih bawah */
+/* ---------- Settings ---------- */
+/* .dlg.settings (2 classes) so it wins over .dlg defined further down */
 .dlg.settings { width: min(52rem, 94vw); max-height: 90vh; padding: 0; overflow: hidden; }
 .dlg.settings[open] { display: flex; flex-direction: column; }
 .settings .preview-head { flex: none; }
@@ -184,7 +184,7 @@ select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 0.2
 .inline .btn { flex: none; }
 @media (max-width: 56rem) { .drives-top { padding: 0 1.2rem; } .drives-body { padding: 2.4rem 1.6rem; } }
 
-/* ---------- Kerangka aplikasi ---------- */
+/* ---------- App frame ---------- */
 .app { height: 100%; display: grid; grid-template-columns: 15.6rem minmax(0, 1fr); gap: 0.8rem; padding: 0.8rem; }
 .side { display: flex; flex-direction: column; gap: 2rem; padding: 1.2rem 0.4rem 0.4rem 0.8rem; min-height: 0; }
 .side .cta { width: 100%; justify-content: flex-start; padding: 0 1.6rem; }
@@ -205,7 +205,7 @@ select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 0.2
 .searchbox input { padding-left: 3.6rem; background: var(--bg-1); border-color: transparent; }
 .searchbox input:focus { background: var(--bg); }
 .seg { display: flex; align-items: center; gap: 0.2rem; height: var(--height); padding: 0.2rem; border-radius: var(--r-s); background: var(--bg-1); }
-/* pengecualian: tombol di dalam .seg 2rem agar muat dalam padding 0.2rem */
+/* exception: buttons inside .seg are 2rem so they fit within the 0.2rem padding */
 .seg button { display: flex; align-items: center; justify-content: center; width: 2.4rem; height: 2rem; border: 0; border-radius: 0.4rem; background: none; color: var(--fg-1); cursor: pointer; }
 .seg button .icon { --is: 1rem; }
 .seg button.on { background: var(--bg); color: var(--accent-text); box-shadow: var(--shadow); }
@@ -235,7 +235,7 @@ select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 0.2
 .selbar { display: flex; align-items: center; gap: 1rem; flex: 1; height: 3.6rem; padding: 0 0.8rem; border-radius: var(--r-m); background: var(--accent-soft); color: var(--accent-text); }
 .statusbar { padding: 0.8rem 2rem; font-size: 0.8rem; color: var(--fg-1); border-top: 1px solid var(--border); }
 
-/* ---------- Daftar: tabel ---------- */
+/* ---------- List: table ---------- */
 .sec { padding: 1.2rem 0 0.8rem; font-size: 0.8rem; font-weight: 600; color: var(--fg-1); text-transform: uppercase; letter-spacing: 0.1rem; }
 .list.list .table { border: 1px solid var(--border); border-radius: var(--r-m); overflow: hidden; }
 .row { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr) 8rem 7.2rem 7.2rem; align-items: center; gap: 1rem; height: 3.8rem; padding: 0 1.2rem; border-bottom: 1px solid var(--border); }
@@ -252,23 +252,23 @@ select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 0.2
 .cell { font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .num-r { text-align: left; font-variant-numeric: tabular-nums; }
 
-/* checkbox kustom */
+/* custom checkbox */
 .chk { appearance: none; -webkit-appearance: none; position: relative; flex: none; width: 1.4rem; height: 1.4rem; margin: 0; border: 2px solid var(--fg-1); border-radius: 0.4rem; background: var(--bg); cursor: pointer; opacity: 0; transition: opacity .12s, background .12s, border-color .12s; }
 .chk:checked { opacity: 1; background: var(--accent); border-color: var(--accent); }
 .chk:checked::after { content: ""; position: absolute; inset: 0; background: var(--accent-ink); -webkit-mask: url(../assets/icons/check.svg) center / 1rem no-repeat; mask: url(../assets/icons/check.svg) center / 1rem no-repeat; }
 .chk.always { opacity: 1; }
 .item:hover .chk, .selecting .chk { opacity: 1; }
 
-/* tombol aksi per item */
+/* per-item action buttons */
 .acts { display: flex; align-items: center; justify-content: flex-end; gap: 0.2rem; opacity: 0; transition: opacity .12s; }
 .item:hover .acts, .item:focus-within .acts { opacity: 1; }
-/* pengecualian: tombol ikon kecil 2.2rem agar muat di dalam baris dan kartu */
+/* exception: small icon buttons are 2.2rem so they fit inside rows and cards */
 .ibtn { display: flex; align-items: center; justify-content: center; width: 2.2rem; height: 2.2rem; padding: 0; border: 0; border-radius: var(--r-s); background: none; color: var(--fg-1); cursor: pointer; }
 .ibtn .icon { --is: 1.2rem; }
 .ibtn:hover { background: color-mix(in srgb, var(--fg) 10%, transparent); color: var(--fg); }
 .ibtn.del:hover { color: var(--danger); background: var(--danger-soft); }
 
-/* ---------- Daftar: grid ---------- */
+/* ---------- List: grid ---------- */
 .folders { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.6rem, 1fr)); gap: 1.2rem; }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(16.6rem, 1fr)); gap: 1.6rem; }
 .fchip { display: flex; align-items: center; gap: 1.2rem; height: 4.2rem; padding: 0 0.8rem 0 1.2rem; border: 1px solid var(--border); border-radius: var(--r-m); background: var(--bg); cursor: pointer; transition: background .12s, box-shadow .15s, border-color .12s; }
@@ -292,7 +292,7 @@ select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 0.2
 .foot .txt { display: flex; flex-direction: column; min-width: 0; }
 .foot .meta { font-size: 0.8rem; color: var(--fg-1); }
 
-/* ---------- State kosong, loading, drop ---------- */
+/* ---------- Empty state, loading, drop ---------- */
 .empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2rem; text-align: center; padding: 6rem 2rem; }
 .empty-art { --is: 3.2rem; display: flex; align-items: center; justify-content: center; width: 8rem; height: 8rem; border-radius: 50%; color: var(--accent-text); background: var(--accent-soft); }
 .empty h3 { font-size: 1.4rem; }
@@ -340,7 +340,7 @@ select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 0.2
 .toast .bar { grid-column: 1 / -1; height: 0.4rem; border-radius: 0.4rem; background: color-mix(in srgb, var(--bg) 25%, transparent); overflow: hidden; }
 .toast .bar i { display: block; height: 100%; width: 0; border-radius: 0.4rem; background: var(--green); transition: width .2s; }
 
-/* ---------- Responsif ---------- */
+/* ---------- Responsive ---------- */
 @media (max-width: 56rem) {
   .login { grid-template-columns: 1fr; }
   .brand { display: none; }
@@ -362,7 +362,7 @@ select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 0.2
   * { animation: none !important; transition: none !important; }
 }
 
-/* ---------- Tampilan situs utama: sudut siku, garis 1px, tombol mono huruf besar ---------- */
+/* ---------- Main-site look: square corners, 1px lines, uppercase mono buttons ---------- */
 .btn, .seg button, .sortbtn { font-family: var(--font-mono); font-weight: 700; letter-spacing: 0.1rem; text-transform: uppercase; }
 .btn { border-radius: 0; box-shadow: none; }
 .btn:hover { background: var(--bg-1); border-color: var(--fg-1); }

@@ -1,12 +1,11 @@
-/* Drivemu — penyimpanan file serverless di atas GitHub (repo milik user sendiri). */
+/* Drivemu — penyimpanan file serverless file storage on top of GitHub (the user's own repository). */
 (() => {
 'use strict';
 
-const ROOT = 'drive';                 // semua file disimpan di folder ini dalam repo
-const KEEP = '.gitkeep';              // penanda folder kosong
-const MAX_FILE = 100 * 1024 * 1024;   // batas keras GitHub per file (100 MB), bukan batas buatan
-const SOFT_LIMIT_KB = 5 * 1024 * 1024; // GitHub menyarankan repo di bawah ~5 GB
-const LS_KEY = 'drivemu.session.v1';
+const ROOT = 'drive';                 // every file is stored in this folder of the repository
+const KEEP = '.gitkeep';              // keeps an empty folder alive
+const MAX_FILE = 100 * 1024 * 1024;   // GitHub's hard limit per file (100 MB), not an artificial one
+const SOFT_LIMIT_KB = 5 * 1024 * 1024; // GitHub recommends repositories under ~5 GB
 
 const $ = (id) => document.getElementById(id);
 const S = {
@@ -16,7 +15,7 @@ const S = {
   accounts: [], activeId: null, screen: 'login', returnTo: null,
 };
 
-/* ---------- util ---------- */
+/* ---------- utilities ---------- */
 const h = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 const icon = (name) => h('span', 'icon i-' + name);
 const enc = (p) => p.split('/').map(encodeURIComponent).join('/');
@@ -66,7 +65,7 @@ function progressToast(text) {
   };
 }
 
-/* ---------- dialog ---------- */
+/* ---------- dialogs ---------- */
 function ask({ title, text = '', input = null, ok = 'OK' }) {
   return new Promise((resolve) => {
     const d = $('dlg'), inp = $('dlgInput');
@@ -89,7 +88,7 @@ function ask({ title, text = '', input = null, ok = 'OK' }) {
 /* ---------- GitHub API ---------- */
 async function api(path, opts = {}) {
   const res = await fetch(path.startsWith('http') ? path : 'https://api.github.com' + path, {
-    cache: 'no-store', // GitHub API membalas dengan max-age=60; tanpa ini browser menyajikan daftar lama
+    cache: 'no-store', // the GitHub API replies with max-age=60; without this the browser serves a stale list
     ...opts,
     headers: {
       Authorization: 'Bearer ' + S.token,
@@ -101,7 +100,7 @@ async function api(path, opts = {}) {
   });
   if (!res.ok) {
     let msg = res.statusText;
-    try { msg = (await res.json()).message || msg; } catch { /* abaikan */ }
+    try { msg = (await res.json()).message || msg; } catch { /* ignore */ }
     const err = new Error(msg); err.status = res.status; throw err;
   }
   if (opts.returnResponse) return res;
@@ -111,7 +110,7 @@ async function api(path, opts = {}) {
 }
 const repoApi = (p, opts) => api(`/repos/${S.owner}/${S.repo}${p}`, opts);
 
-// Satu commit untuk banyak perubahan (git data API)
+// One commit for many changes (git data API)
 async function commitTree(entries, message) {
   const ref = await repoApi(`/git/ref/heads/${S.branch}`);
   const parent = ref.object.sha;
@@ -119,16 +118,16 @@ async function commitTree(entries, message) {
   const tree = await repoApi('/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: commit.tree.sha, tree: entries }) });
   const nc = await repoApi('/git/commits', { method: 'POST', body: JSON.stringify({ message, tree: tree.sha, parents: [parent] }) });
   await repoApi(`/git/refs/heads/${S.branch}`, { method: 'PATCH', body: JSON.stringify({ sha: nc.sha }) });
-  S.head = nc.sha; // baca langsung dari commit ini: tidak terkena cache/jeda replikasi branch
+  S.head = nc.sha; // read straight from this commit: not affected by caching or branch replication lag
 }
-// Semua blob (file) di bawah sebuah folder
+// Every blob (file) under a folder
 async function blobsUnder(prefix) {
   const ref = await repoApi(`/git/ref/heads/${S.branch}`);
   const commit = await repoApi(`/git/commits/${ref.object.sha}`);
   const tree = await repoApi(`/git/trees/${commit.tree.sha}?recursive=1`);
   return tree.tree.filter((t) => t.type === 'blob' && t.path.startsWith(prefix + '/'));
 }
-// Daftar isi folder lewat git tree (tanpa batas 1000 item milik Contents API)
+// Folder listing through the git tree (no 1000-item cap like the Contents API)
 async function listViaTree(dir) {
   const sha = S.head || (await repoApi(`/git/ref/heads/${S.branch}`)).object.sha;
   const commit = await repoApi(`/git/commits/${sha}`);
@@ -139,7 +138,7 @@ async function listViaTree(dir) {
     .map((t) => ({ name: t.path.slice(prefix.length), path: t.path, type: t.type === 'tree' ? 'dir' : 'file', size: t.size || 0, sha: t.sha }));
 }
 function refreshUsage() {
-  repoApi('').then((i) => { S.repoSizeKB = i.size; updateUsage(); }).catch(() => { /* abaikan */ });
+  repoApi('').then((i) => { S.repoSizeKB = i.size; updateUsage(); }).catch(() => { /* ignore */ });
 }
 function updateUsage() {
   const pct = Math.min(100, (S.repoSizeKB / SOFT_LIMIT_KB) * 100);
@@ -147,7 +146,7 @@ function updateUsage() {
   $('usageText').textContent = `${fmtSize(S.repoSizeKB * 1024)} of the ~5 GB GitHub recommends`;
 }
 
-/* ---------- akun (beberapa token) & drive (satu repo, satu drive = satu branch) ---------- */
+/* ---------- accounts (several tokens) and drives (one repository, one drive = one branch) ---------- */
 const DEFAULT_REPO = 'drivemu-storage';
 const ACC_KEY = 'drivemu.accounts.v2';
 const screens = ['login', 'drives', 'app'];
@@ -156,25 +155,18 @@ const slug = (s) => s.toLowerCase().trim().replace(/[^a-z0-9._-]+/g, '-').replac
 const validRepo = (s) => /^[A-Za-z0-9._-]+$/.test(s) && s !== '.' && s !== '..';
 const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
 
-/* --- penyimpanan akun: tiap token = satu koneksi {id, token, login, avatar, repo, branch} --- */
+/* --- account storage: each token = one connection {id, token, login, avatar, repo, branch} --- */
 function persist() {
-  try { localStorage.setItem(ACC_KEY, JSON.stringify({ active: S.activeId, list: S.accounts })); } catch { /* abaikan */ }
+  try { localStorage.setItem(ACC_KEY, JSON.stringify({ active: S.activeId, list: S.accounts })); } catch { /* ignore */ }
 }
 function loadAccounts() {
   try {
     const a = JSON.parse(localStorage.getItem(ACC_KEY) || 'null');
     if (a && Array.isArray(a.list)) { S.accounts = a.list; S.activeId = a.active; return; }
-  } catch { /* abaikan */ }
-  try { // migrasi dari format lama (satu token)
-    const o = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
-    if (o && o.token) {
-      S.accounts = [{ id: uid(), token: o.token, login: '', avatar: '', repo: o.repo || DEFAULT_REPO, branch: o.branch || null }];
-      S.activeId = S.accounts[0].id; persist(); localStorage.removeItem(LS_KEY);
-    }
-  } catch { /* abaikan */ }
+  } catch { /* ignore */ }
 }
 const activeAcct = () => S.accounts.find((a) => a.id === S.activeId);
-// token yang sama tidak didaftarkan dua kali; token beda (akun sama atau beda) jadi koneksi baru
+// the same token is not added twice; a different token (same or different account) becomes a new connection
 function registerAccount(token) {
   let a = S.accounts.find((x) => x.token === token);
   if (!a) { a = { id: uid(), token, branch: null }; S.accounts.push(a); }
@@ -202,7 +194,7 @@ async function authenticate(token) {
   };
 }
 
-// Hubungkan ke repo penyimpanan; dibuat (private) kalau belum ada
+// Connect to the storage repository; it is created (private) if it does not exist yet
 async function connectRepo(name) {
   let info;
   try {
@@ -212,7 +204,7 @@ async function connectRepo(name) {
     info = await api('/user/repos', { method: 'POST', body: JSON.stringify({
       name, private: true, auto_init: true, description: 'Drivemu file storage',
     }) });
-    await new Promise((r) => setTimeout(r, 1500)); // beri waktu GitHub menyiapkan repo
+    await new Promise((r) => setTimeout(r, 1500)); // give GitHub time to set up the repository
   }
   if (!info.permissions || !info.permissions.push) throw new Error('The token has no write access to this repository.');
   S.repo = name;
@@ -228,14 +220,14 @@ async function fetchBranches() {
       names.push(...r.map((b) => b.name));
       if (r.length < 100) break;
     }
-  } catch (e) { if (e.status !== 404 && e.status !== 409) throw e; } // repo kosong
+  } catch (e) { if (e.status !== 404 && e.status !== 409) throw e; } // empty repository
   return names.sort((a, b) => (a === S.defaultBranch ? -1 : b === S.defaultBranch ? 1 : a.localeCompare(b)));
 }
 
 async function openDrive(branch) {
   S.branch = branch;
   S.head = null;
-  // pastikan folder root ada di branch ini
+  // make sure the root folder exists on this branch
   try { await repoApi(`/contents/${ROOT}?ref=${branch}`); }
   catch (e) {
     if (e.status !== 404) throw e;
@@ -244,11 +236,11 @@ async function openDrive(branch) {
   saveSession(branch);
   showApp();
 }
-// Drive baru = branch yatim (orphan): riwayat dan isinya terpisah dari drive lain
+// A new drive = an orphan branch: its history and contents are separate from other drives
 async function createDrive(label) {
   const name = slug(label);
   if (!name) throw new Error('Please use letters or numbers in the name.');
-  if (S.branches.length === 0) { // repo masih kosong: file pertama sekaligus membuat branch bawaan
+  if (S.branches.length === 0) { // the repository is still empty: the first file also creates the default branch
     await repoApi(`/contents/${ROOT}/${KEEP}`, { method: 'PUT', body: JSON.stringify({ message: 'Drivemu: initialize', content: '' }) });
     return S.defaultBranch;
   }
@@ -259,7 +251,7 @@ async function createDrive(label) {
   return name;
 }
 
-/* --- layar --- */
+/* --- screens --- */
 function renderAcctBtn(btn) {
   btn.replaceChildren();
   const img = h('img'); img.src = S.user.avatar_url; img.alt = '';
@@ -290,7 +282,7 @@ function addAccount() {
   showLogin();
 }
 
-/* --- ganti / hapus akun --- */
+/* --- switch / remove account --- */
 async function switchAccount(id) {
   const a = S.accounts.find((x) => x.id === id);
   if (!a) return;
@@ -363,7 +355,7 @@ function openAcctMenu(anchor) {
   m.style.left = Math.max(8, Math.min(r.right - m.offsetWidth, window.innerWidth - m.offsetWidth - 8)) + 'px';
 }
 
-/* --- pengaturan: profil, token, repositori, branch bawaan --- */
+/* --- settings: profile, token, repository, default branch --- */
 const row = (k, v) => {
   const r = h('div', 'srow'), val = h('span', 'sv');
   if (v instanceof Node) val.append(v); else val.textContent = v;
@@ -378,14 +370,14 @@ async function openSettings() {
   const d = $('settings'), body = $('settingsBody');
   body.replaceChildren(h('div', 'spinner'));
   if (!d.open) d.showModal();
-  try { // data terbaru; kalau gagal pakai yang sudah ada
+  try { // fresh data; if that fails, keep what we have
     const info = await repoApi('');
     S.repoSizeKB = info.size; S.repoPrivate = info.private; S.defaultBranch = info.default_branch;
-  } catch { /* abaikan */ }
-  try { S.branches = await fetchBranches(); } catch { /* abaikan */ }
+  } catch { /* ignore */ }
+  try { S.branches = await fetchBranches(); } catch { /* ignore */ }
   const u = S.user, ti = S.tokenInfo || {};
 
-  // profil
+  // profile
   const prof = h('div', 'profile');
   const img = h('img'); img.src = u.avatar_url || ''; img.alt = '';
   const who = h('div', 'who'); who.append(h('b', '', u.name || u.login), h('span', 'muted', '@' + u.login));
@@ -409,7 +401,7 @@ async function openSettings() {
   if (ti.remaining) add(tr, 'API requests left', `${ti.remaining} / ${ti.limit} this hour`);
   if (ti.expires) add(tr, 'Expires', fmtDate(ti.expires));
 
-  // repositori
+  // repository
   const rr = h('div', 'srows');
   add(rr, 'Repository', linkEl(`${S.owner}/${S.repo}`, `https://github.com/${S.owner}/${S.repo}`));
   add(rr, 'Visibility', h('span', 'badge', S.repoPrivate ? 'Private' : 'Public'));
@@ -429,7 +421,7 @@ async function openSettings() {
   };
   const repoForm = h('div', 'inline'); repoForm.append(repoIn, repoBtn);
 
-  // branch bawaan
+  // default branch
   const sel = h('select'); sel.setAttribute('aria-label', 'Default drive');
   S.branches.forEach((b) => { const o = h('option', '', b); o.value = b; sel.append(o); });
   sel.value = S.defaultBranch;
@@ -438,7 +430,7 @@ async function openSettings() {
   defBtn.onclick = async () => { if (await setDefault(sel.value)) openSettings(); };
   const defForm = h('div', 'inline'); defForm.append(sel, defBtn);
 
-  // hapus akun
+  // remove account
   const rm = h('button', 'btn danger', 'Remove this account'); rm.type = 'button';
   rm.onclick = () => { d.close(); if (a) removeAccount(a); };
 
@@ -452,7 +444,7 @@ async function openSettings() {
   );
 }
 
-/* --- pemilih drive --- */
+/* --- drive picker --- */
 async function enter(name) {
   const t = toast('Opening ' + name + '…', false, 0);
   try { await openDrive(name); }
@@ -467,7 +459,7 @@ async function newDrive() {
   catch (e) { toast(e.status === 422 ? 'A drive with that name already exists.' : 'Failed: ' + e.message, true, 6000); }
   t.remove();
 }
-// Ubah branch bawaan repo (yang dibuka GitHub lebih dulu dan di-checkout oleh git clone biasa)
+// Change the repository's default branch (the one GitHub opens first and a plain git clone checks out)
 async function setDefault(name) {
   const ok = await ask({ title: 'Make this the default drive?', text: `“${name}” becomes the default branch of ${S.owner}/${S.repo}. It is what GitHub shows first and what a plain git clone checks out.`, ok: 'Make default' });
   if (!ok) return false;
@@ -485,7 +477,7 @@ async function setDefault(name) {
   if (S.screen === 'drives') showDrives();
   return done;
 }
-// Hapus drive = hapus branch. Branch bawaan ditolak GitHub, jadi tidak ditawarkan.
+// Delete a drive = delete its branch. GitHub refuses to delete the default branch, so it is not offered.
 async function deleteDrive(name) {
   if (name === S.defaultBranch) return toast('The default drive can’t be deleted. Make another drive the default first.', true, 6000);
   let info = '';
@@ -493,7 +485,7 @@ async function deleteDrive(name) {
     const tr = await repoApi(`/git/trees/${encodeURIComponent(name)}?recursive=1`);
     const files = tr.tree.filter((x) => x.type === 'blob' && x.path.startsWith(ROOT + '/') && !x.path.endsWith('/' + KEEP));
     info = ` It contains ${files.length} file(s) (${fmtSize(files.reduce((s, f) => s + (f.size || 0), 0))}).`;
-  } catch { /* hitungan hanya informasi tambahan */ }
+  } catch { /* the count is only extra information */ }
   const typed = await ask({ title: 'Delete this drive?', text: `This permanently deletes the branch “${name}” and everything in it.${info} Type the drive name to confirm.`, input: '', ok: 'Delete drive' });
   if (typed === null) return;
   if (typed !== name) return toast('The name didn’t match, nothing was deleted.', true);
@@ -539,7 +531,7 @@ async function showDrives() {
 }
 
 
-/* ---------- daftar file ---------- */
+/* ---------- file list ---------- */
 async function load() {
   $('loading').replaceChildren(...Array.from({ length: 4 }, () => h('i')));
   $('loading').classList.remove('hidden'); $('empty').classList.add('hidden'); $('list').replaceChildren();
@@ -547,7 +539,7 @@ async function load() {
   try {
     const r = await repoApi(`/contents/${enc(fullPath())}?ref=${S.head || S.branch}`);
     let items = Array.isArray(r) ? r : [];
-    if (items.length >= 1000) items = await listViaTree(fullPath()); // Contents API berhenti di 1000 item
+    if (items.length >= 1000) items = await listViaTree(fullPath()); // the Contents API stops at 1000 items
     S.items = items.filter((i) => i.name !== KEEP);
   } catch (e) {
     if (e.status === 404) S.items = [];
@@ -582,7 +574,7 @@ function render() {
   } else if (items.length) {
     list.appendChild(listTable(items));
   }
-  // state kosong
+  // empty state
   const empty = items.length === 0;
   $('empty').classList.toggle('hidden', !empty);
   if (empty) {
@@ -610,7 +602,7 @@ function renderCrumbs() {
   S.path.forEach((p, i) => { const s = icon('chevron-right'); s.classList.add('sep'); c.append(s, mk(p, i + 1)); });
 }
 
-/* ----- blok pembangun item ----- */
+/* ----- item building blocks ----- */
 function chkEl(it, always = false) {
   const c = h('input', 'chk' + (always ? ' always' : '')); c.type = 'checkbox'; c.setAttribute('aria-label', 'Select ' + it.name);
   c.onclick = (e) => e.stopPropagation();
@@ -679,7 +671,7 @@ function listTable(items) {
   return t;
 }
 
-/* ----- seleksi ----- */
+/* ----- selection ----- */
 function toggleSel(name, on) {
   const next = on === undefined ? !S.selected.has(name) : on;
   next ? S.selected.add(name) : S.selected.delete(name);
@@ -700,7 +692,7 @@ function updateSelection() {
   if (all) all.checked = S.visible.length > 0 && S.visible.every((i) => S.selected.has(i.name));
 }
 
-/* ---------- aksi ---------- */
+/* ---------- actions ---------- */
 function open(it) {
   if (it.type === 'dir') { S.path.push(it.name); S.query = ''; $('search').value = ''; load(); }
   else previewFile(it);
@@ -752,7 +744,7 @@ const readB64 = (file) => new Promise((res, rej) => {
   r.readAsDataURL(file);
 });
 
-// Terima File atau { file, rel } (rel = path relatif, mis. "Foto/a.jpg" untuk unggah folder)
+// Accept a File or { file, rel } (rel = relative path, e.g. "Photos/a.jpg" when uploading a folder)
 async function upload(input) {
   let files = [...input].map((x) => (x instanceof File ? { file: x, rel: x.webkitRelativePath || x.name } : x));
   if (!files.length || S.busy) return;
@@ -858,7 +850,7 @@ $('newMenu').onclick = (e) => {
   ({ files: () => $('fileInput').click(), 'folder-upload': () => $('folderInput').click(), folder: newFolder })[b.dataset.act]();
 };
 
-/* ---------- event ---------- */
+/* ---------- events ---------- */
 $('loginForm').onsubmit = async (e) => {
   e.preventDefault();
   const btn = $('loginBtn'); btn.disabled = true; btn.textContent = 'Connecting…'; $('loginError').textContent = '';
@@ -872,7 +864,7 @@ $('loginForm').onsubmit = async (e) => {
     S.returnTo = null; $('tokenInput').value = '';
     await showDrives();
   } catch (err) {
-    restore(snap); // gagal menambah akun: tetap di akun sebelumnya
+    restore(snap); // adding the account failed: stay on the previous account
     $('loginError').textContent = err.status === 401 ? 'Invalid token.' : 'Failed: ' + err.message;
   }
   btn.disabled = false; btn.textContent = 'Connect';
@@ -885,9 +877,9 @@ $('settingsClose').onclick = () => $('settings').close();
 $('emptyCta').onclick = () => $('fileInput').click();
 $('fileInput').onchange = (e) => { upload(e.target.files); e.target.value = ''; };
 $('folderInput').onchange = (e) => { upload(e.target.files); e.target.value = ''; };
-$('refreshBtn').onclick = () => { S.head = null; load(); refreshUsage(); }; // baca ulang dari branch (perubahan dari luar Drivemu)
+$('refreshBtn').onclick = () => { S.head = null; load(); refreshUsage(); }; // re-read from the branch (changes made outside Drivemu)
 $('navDrive').onclick = () => { S.path = []; S.query = ''; $('search').value = ''; load(); };
-const setView = (v) => { S.view = v; try { localStorage.setItem('drivemu.view', v); } catch { /* abaikan */ } render(); };
+const setView = (v) => { S.view = v; try { localStorage.setItem('drivemu.view', v); } catch { /* ignore */ } render(); };
 $('viewGrid').onclick = () => setView('grid');
 $('viewList').onclick = () => setView('list');
 $('search').oninput = (e) => { S.query = e.target.value; render(); };
@@ -896,7 +888,7 @@ $('bulkDelete').onclick = () => remove(S.items.filter((i) => S.selected.has(i.na
 $('pvClose').onclick = () => $('preview').close();
 $('preview').onclose = () => { if (pvUrl) { URL.revokeObjectURL(pvUrl); pvUrl = null; } $('pvBody').replaceChildren(); };
 
-// seret & lepas
+// drag and drop
 let dragDepth = 0;
 const dz = $('dropzone');
 const hasFiles = (e) => e.dataTransfer && [...e.dataTransfer.types].includes('Files');
@@ -909,7 +901,7 @@ dz.addEventListener('drop', (e) => {
   collectDropped(e.dataTransfer).then(upload);
 });
 
-// Baca file hasil drop, termasuk isi folder (rekursif)
+// Read dropped files, including folder contents (recursive)
 async function collectDropped(dt) {
   const roots = [...(dt.items || [])].map((i) => (i.webkitGetAsEntry ? i.webkitGetAsEntry() : null)).filter(Boolean);
   if (!roots.length) return [...dt.files];
@@ -930,9 +922,9 @@ async function collectDropped(dt) {
   return out;
 }
 
-/* ---------- mulai ---------- */
+/* ---------- start ---------- */
 (async function init() {
-  try { S.view = localStorage.getItem('drivemu.view') || 'grid'; } catch { /* abaikan */ }
+  try { S.view = localStorage.getItem('drivemu.view') || 'grid'; } catch { /* ignore */ }
   loadAccounts();
   $('repoInput').value = DEFAULT_REPO;
   const a = activeAcct();

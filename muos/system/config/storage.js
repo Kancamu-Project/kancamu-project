@@ -11,7 +11,5 @@ export const STORAGE_KEYS = Object.freeze({
   settings: 'settings',
   clipboard: 'clipboard',
   clipboardHistory: 'clipboard.history',
-  widgetNotes: 'widgets.notes',
-  fsLegacy: 'fs',
-  fsLegacyRevision: 'fs.rev'
+  widgetNotes: 'widgets.notes'
 });

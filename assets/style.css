@@ -1,5 +1,5 @@
-/* Gaya bersama semua web (kecuali muOS): font, token warna, reset, dan dasar kontrol.
-   Setiap web memuat file ini lebih dulu, lalu layout.css miliknya sendiri. */
+/* Styles shared by every web except muOS: fonts, colour tokens, reset and control basics.
+   Each web loads this file first, then its own layout.css. */
 
 @font-face { font-family: "Inter"; font-weight: 400; font-display: swap; src: url("fonts/inter-latin-400-normal.woff2") format("woff2"); }
 @font-face { font-family: "Inter"; font-weight: 700; font-display: swap; src: url("fonts/inter-latin-700-normal.woff2") format("woff2"); }
@@ -7,8 +7,8 @@
 @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-display: swap; src: url("fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2"); }
 
 :root {
-    /* Palet: tujuh warna, dinamai dengan nama warnanya. Nilainya tetap di semua tema.
-       Hitam, abu-abu, dan putih untuk latar dan garis; merah, kuning, biru, dan hijau untuk sorotan. */
+    /* Palette: seven colours, named after the colour itself. Values are the same in every theme.
+       Black, gray and white for backgrounds and borders; red, yellow, blue and green for highlights. */
     --black: #111115;
     --gray: #8d8d98;
     --white: #ffffff;
@@ -17,7 +17,7 @@
     --blue: #3b82f6;
     --green: #22c55e;
 
-    /* Peran: berganti mengikuti tema dan diturunkan dari palet. Komponen memakai nama peran. */
+    /* Roles: they change with the theme and are derived from the palette. Components use role names. */
     --bg: var(--black);
     --bg-1: color-mix(in srgb, var(--gray) 8%, var(--black));
     --border: color-mix(in srgb, var(--gray) 20%, var(--black));
@@ -64,27 +64,6 @@
     font-size: inherit;
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
-}
-
-/* Fallback for browsers without scrollbar-color (older Safari) */
-@supports not (scrollbar-color: auto) {
-    ::-webkit-scrollbar {
-        width: 0.8rem;
-        height: 0.8rem;
-    }
-
-    ::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background: var(--border);
-        border: 0.2rem solid var(--bg);
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--fg-1);
-    }
 }
 
 html, body {

@@ -69,9 +69,9 @@ const els = {
   viewIcons: $('view-icons')
 };
 
-/** How the files are laid out, from the most compact to the biggest ("icons" was the old name of one size). */
+/** How the files are laid out, from the most compact to the biggest. */
 const VIEWS = ['details', 'list', 'small', 'medium', 'large', 'xl', 'tiles'];
-const normalizeView = (view) => (view === 'icons' ? 'medium' : VIEWS.includes(view) ? view : 'details');
+const normalizeView = (view) => (VIEWS.includes(view) ? view : 'details');
 
 /**
  * What the window shows right now. The fields up to `focus` belong to the open

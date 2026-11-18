@@ -12,7 +12,7 @@ body { display: grid; grid-template-columns: var(--side-width) 1fr; line-height:
 .note { color: var(--fg-1); }
 .mono { font-family: var(--font-mono); letter-spacing: 0.1rem; text-transform: uppercase; }
 
-/* Icon: file SVG di /icons dipakai sebagai mask supaya ikut warna teks */
+/* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
 .icon {
   width: var(--icon-size); height: var(--icon-size); flex: none; background: currentColor;
   -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;

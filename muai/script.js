@@ -42,7 +42,6 @@ const sizeLabel = (mb) => (mb >= 1000 ? (mb / 1000).toFixed(1) + " GB" : mb + " 
 let MODEL = MODELS.find((m) => m.id === lsGetEarly("muai.model")) || MODELS[2];   // default: Gemma 3 1B
 function lsGetEarly(k) { try { return localStorage.getItem(k); } catch { return null; } }
 
-const OLD_SYSTEM = "Kamu adalah muAI, asisten yang membantu. Jawab dalam bahasa yang dipakai pengguna, ringkas dan jelas.";
 const DEFAULTS = {
   system: "You are muAI, a helpful assistant. Reply in the language the user writes in, concisely and clearly.",
   maxTokens: 1024, temperature: 0.7, ctx: 30,
@@ -95,7 +94,6 @@ function download(name, text, type) {
 // ---------- Settings ----------
 let settings = { ...DEFAULTS };
 try { settings = { ...DEFAULTS, ...JSON.parse(lsGet("muai.settings") || "{}") }; } catch {}
-if (settings.system === OLD_SYSTEM) settings.system = DEFAULTS.system;   // migrate the old Indonesian default
 const saveSettings = () => lsSet("muai.settings", JSON.stringify(settings));
 
 // ---------- Storage (IndexedDB) ----------

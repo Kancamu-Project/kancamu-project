@@ -1,102 +1,106 @@
 # Kancamu Project
 
-Satu web berisi direktori dan semua web app serta tool buatan Kancamu Project. Halaman utama mendaftar semua project, bisa dicari, difilter, dan dibuka di tab di dalam halaman yang sama. Setiap project punya foldernya sendiri di root, jadi semuanya dilayani dari satu folder.
+One website that holds the directory and every web app and tool made by Kancamu Project. The main page lists all projects, and you can search, filter, and open them in tabs inside the same page. Each project has its own folder in the root, so everything is served from a single folder.
 
-Murni HTML, CSS, dan JavaScript. Tanpa framework, tanpa build, tanpa server khusus.
+Plain HTML, CSS, and JavaScript. No framework, no build step, no special server.
 
-## Isi
+## Features
 
-- Direktori project dalam tampilan grid atau daftar, dengan pencarian, filter kategori dan publisher, serta urutan A-Z atau Z-A.
-- Tab: project dibuka di dalam halaman, dan bisa disalin tautannya atau dibuka di jendela baru.
-- Filter tersimpan di URL, jadi hasil penyaringan bisa dibagikan.
-- Tema terang dan gelap, dengan pilihan tema dan bahasa yang diingat browser.
-- Tiga bahasa: English, 简体中文, dan العربية (kanan ke kiri).
+- A directory of projects in a grid or a list, with search, category and publisher filters, and A-Z or Z-A order.
+- Tabs: a project opens inside the page, and you can copy its link or open it in a new window.
+- The filters are kept in the URL, so a filtered view can be shared.
+- Dark and light themes. The chosen theme and language are remembered by the browser.
+- Three languages: English, 简体中文, and العربية (right to left).
 
-## Project
+## Projects
 
-| Project | Fungsi | Lokasi |
+| Project | What it is | Location |
 |---|---|---|
-| muOS | Desktop lengkap yang berjalan di browser | `muos/` |
-| Drivemu | Penyimpanan file yang menyimpan data di repo GitHub milik pengguna | `drivemu/` |
-| muAI | Model AI yang berjalan langsung di browser | `muai/` |
-| ArtCraft | Tujuh aplikasi kreatif dan produktivitas: DeckCraft, EffectCraft, FilmCraft, GridCraft, PhotoCraft, VectorCraft, WordCraft | `artcraft/<nama>/` |
+| muOS | A complete desktop that runs in the browser | `muos/` |
+| Drivemu | File storage that keeps its data in the user's own GitHub repository | `drivemu/` |
+| muAI | AI models that run directly in the browser | `muai/` |
+| ArtCraft | Seven creative and productivity apps: DeckCraft, EffectCraft, FilmCraft, GridCraft, PhotoCraft, VectorCraft, WordCraft | `artcraft/<name>/` |
 
-Direktori juga memuat TraceDraw, editor vektor open source dari publisher lain. TraceDraw adalah situs luar, jadi hanya ditautkan.
+The directory also lists TraceDraw, an open source vector editor from another publisher. TraceDraw is an outside site, so it is only linked.
 
-## Struktur folder
+## Folder structure
 
 ```
-index.html       Kerangka halaman
-layout.css       Tata letak dan gaya khusus halaman ini
-script.js        Logika: render daftar, filter, tab, bahasa, tema
-data.json        Semua data: project, kategori, bahasa, dan teks antarmuka
-assets/          Aset bersama
-  theme.js       Menerapkan tema tersimpan sebelum halaman tampil, agar tidak berkedip
-  style.css      Gaya bersama (font, token warna, reset, input dan select), dipakai semua web kecuali muOS
-  fonts/         Inter dan JetBrains Mono (woff2), dipakai semua project
-  icons/         Semua ikon SVG web utama, Drivemu, dan muAI (48 ikon, nama universal)
-favicon.png      Ikon situs
-STYLE-RULES.md   Aturan gaya project
-artcraft/        Tujuh aplikasi ArtCraft
-drivemu/         Penyimpanan file berbasis GitHub
-muai/            AI di browser
-muos/            Desktop di browser
-CNAME            Domain kancamu.site untuk GitHub Pages
+index.html       Page skeleton
+layout.css       Layout and styles specific to this page
+script.js        Logic: list rendering, filters, tabs, language, theme
+data.json        All data: projects, categories, languages, and interface text
+assets/          Shared assets
+  theme.js       Applies the saved theme before the page shows, to avoid a flash
+  style.css      Shared styles (fonts, colour tokens, reset, input and select), used by every web except muOS
+  fonts/         Inter and JetBrains Mono (woff2), used by every project
+  icons/         Every SVG icon of the main site, Drivemu, and muAI (universal names)
+favicon.png      Site icon
+RULES.md         Project rules
+artcraft/        The seven ArtCraft apps
+drivemu/         File storage on GitHub
+muai/            AI in the browser
+muos/            Desktop in the browser
+CNAME            The kancamu.site domain for GitHub Pages
 ```
 
-Setiap project adalah folder biasa dengan `index.html` sendiri. Tautannya di `data.json` berupa path relatif.
+Each project is a plain folder with its own `index.html`. Its link in `data.json` is a relative path.
 
-Gaya dibagi dua. `assets/style.css` dimuat semua web kecuali muOS dan berisi font, token warna dan tema, reset, serta dasar `input` dan `select`. Setiap web lalu memuat `layout.css` miliknya sendiri (`layout.css`, `drivemu/layout.css`, `muai/layout.css`) untuk tata letak dan komponen khusus. Urutan pemuatan: `assets/style.css` dulu, baru `layout.css`.
+Styles are split in two. `assets/style.css` is loaded by every web except muOS and holds fonts, colour and theme tokens, the reset, and the basics of `input` and `select`. Each web then loads its own `layout.css` (`layout.css`, `drivemu/layout.css`, `muai/layout.css`) for its layout and specific components. Load order: `assets/style.css` first, then `layout.css`.
 
-Warna ada dua lapis di `assets/style.css`. Lapis pertama adalah palet tujuh warna yang dinamai dengan nama warnanya: `--black`, `--gray`, `--white` untuk latar dan garis, serta `--red`, `--yellow`, `--blue`, `--green` untuk sorotan. Lapis kedua adalah peran (`--bg`, `--bg-1`, `--border`, `--fg`, `--danger`, `--ok`, ...) yang diturunkan dari palet dengan `color-mix` dan berganti antara tema gelap dan terang. Komponen memakai nama peran, atau nama warna untuk warna yang memang tetap.
+Colours have two layers in `assets/style.css`. The first is a palette of seven colours named after the colour itself: `--black`, `--gray`, and `--white` for backgrounds and borders, and `--red`, `--yellow`, `--blue`, and `--green` for highlights. The second is roles (`--bg`, `--bg-1`, `--border`, `--fg`, `--danger`, `--ok`, ...), which are derived from the palette with `color-mix` and change between the dark and light theme. Components use role names, or colour names for colours that never change.
 
-Warna sorotan tiap project di `data.json` (`"color"`) memakai nama palet, misalnya `"blue"`, untuk project buatan sendiri. Project dari pihak lain (ArtCraft, TraceDraw) boleh memakai warna aslinya dalam hex, misalnya `"#a78bfa"`.
+In `data.json`, a project's highlight colour (`"color"`) is a palette name such as `"blue"` for projects made here. Projects from other publishers (ArtCraft, TraceDraw) may keep their own colour as hex, for example `"#a78bfa"`.
 
-Setiap web punya tiga file dasar: `index.html`, `layout.css`, dan `script.js`. Di web utama, Drivemu, dan muAI, ketiganya ada di folder masing-masing. `assets/theme.js` dimuat paling awal oleh ketiga web itu dan dipakai bersama.
+Every web has three basic files: `index.html`, `layout.css`, and `script.js`. The main site, Drivemu, and muAI each keep them in their own folder. They all load `assets/theme.js` first.
 
-Ikon ada di satu tempat, `assets/icons/`, dan dipakai sebagai CSS mask sehingga warnanya mengikuti teks. Nama file bersifat universal (`close`, `plus`, `trash`), bukan nama khusus project. Hanya muOS yang punya ikon sendiri.
+Icons live in one place, `assets/icons/`, and are used as CSS masks so their colour follows the text. File names are universal (`close`, `plus`, `trash`), not specific to a project. Only muOS has icons of its own.
 
-## Menjalankan
+## Running
 
-Tidak ada yang perlu di-build. Layani folder ini dengan web server statis apa saja, lalu buka di browser.
+Nothing needs to be built. Serve this folder with a static web server and open it in the browser.
 
 ```powershell
-npx serve .
+npx http-server . -p 5173 -c-1
 ```
 
-Membuka `index.html` langsung dari disk tidak akan berfungsi, karena `data.json` dimuat lewat `fetch`.
+Avoid servers that remove `index.html` from addresses, such as `npx serve` with its defaults: a page like `muos/apps/store/index.html` is then opened as `muos/apps/store`, and its relative files are looked up in the wrong folder.
 
-## Menambah project
+Opening `index.html` straight from disk does not work, because `data.json` is loaded with `fetch`.
 
-Semua isi daftar ada di `data.json`. Tambahkan satu objek ke `projects`:
+## Adding a project
+
+Everything in the list comes from `data.json`. Add one object to `projects`:
 
 ```json
 {
-  "id": "contoh",
-  "name": { "en-US": "Contoh" },
+  "id": "example",
+  "name": { "en-US": "Example" },
   "description": {
-    "en-US": "Deskripsi singkat.",
+    "en-US": "A short description.",
     "zh-CN": "简短描述。",
     "ar-SA": "وصف قصير."
   },
-  "highlight": { "en-US": "co" },
+  "highlight": { "en-US": "ex" },
   "publisher": "Kancamu Project",
-  "url": "contoh/",
-  "icon": "contoh/favicon.png",
+  "url": "example/",
+  "icon": "example/favicon.png",
+  "color": "blue",
   "categories": ["tools"]
 }
 ```
 
-- `id` bersifat unik dan dipakai di URL.
-- `name` dan `description` ditulis per bahasa. Bahasa yang kosong memakai `en-US`.
-- `highlight` adalah potongan nama yang ditebalkan di kartu, misalnya `mu` pada "muOS".
-- `categories` harus memakai kunci yang ada di `categories` pada `data.json`: `ai`, `tools`, `productivity`, `system`, `office`, `design`, `video`, `creative`, `directory`, `storage`.
-- Teks antarmuka dan nama kategori baru juga ditulis untuk ketiga bahasa.
+- `id` is unique and used in the URL.
+- `name` and `description` are written per language. A missing language falls back to `en-US`.
+- `highlight` is the part of the name shown in bold on the card, for example `mu` in "muOS".
+- `color` is a palette name (`red`, `yellow`, `blue`, or `green`), or a hex value for a project from another publisher.
+- `categories` must use keys that exist under `categories` in `data.json`: `ai`, `tools`, `productivity`, `system`, `office`, `design`, `video`, `creative`, `directory`, `storage`.
+- New interface text and new category names are written in all three languages.
 
 ## Hosting
 
-Situs ini statis dan bisa dilayani oleh web server statis apa saja, di root domain maupun di sub-path, karena semua tautan bersifat relatif. Layani seluruh folder.
+The site is static and can be served by any static web server, at the root of a domain or under a sub-path, because every link is relative. Serve the whole folder.
 
-## Aturan
+## Rules
 
-Aturan gaya HTML dan CSS ada di [STYLE-RULES.md](STYLE-RULES.md). File itu hanya boleh diubah oleh manusia.
+The rules for language, HTML, CSS, colours, and file layout are in [RULES.md](RULES.md). Only humans may change that file.

@@ -1,5 +1,4 @@
 import { Emitter } from './events.js';
-import { readJSON, removeKey } from './store.js';
 import { url } from './paths.js';
 import { FS_VERSION as VERSION, SEP, ROOT_PATH, HOME, KNOWN_FOLDERS, TRASH, FALLBACK_CAPACITY, SAVE_DELAY, INVALID_NAME, WELCOME_TEXT as WELCOME, WELCOME_FILE, WELCOME_FOLDER, GUIDE_TEXT as GUIDE, GUIDE_FILE, DB_NAME } from '../config/fs.js';
 import { STORAGE_KEYS } from '../config/storage.js';
@@ -278,7 +277,7 @@ class FileSystem extends Emitter {
       }
       this.#collectGarbage();
     } else {
-      this.#data = this.#migrateLegacy() ?? seed();
+      this.#data = seed();
       for (const [id, data] of this.#blobs) this.#putBlob(id, data);
       await this.flush();
     }
@@ -354,26 +353,6 @@ class FileSystem extends Emitter {
       node.size = byteLength(text);
     }
     return node.content;
-  }
-
-  /** Version 1 kept everything in localStorage: move it over once. */
-  #migrateLegacy() {
-    const old = readJSON(STORAGE_KEYS.fsLegacy, null);
-    if (!old || !old.root || old.root.type !== 'dir') return null;
-    const data = { root: old.root, trash: Array.isArray(old.trash) ? old.trash : [] };
-    const lift = (node) => {
-      if (typeof node.url === 'string' && node.url.startsWith('data:')) {
-        const id = newId();
-        this.#blobs.set(id, node.url);
-        node.blob = id;
-        delete node.url;
-      }
-    };
-    eachNode(data.root, lift);
-    data.trash.forEach((item) => eachNode(item.node, lift));
-    removeKey(STORAGE_KEYS.fsLegacy);
-    removeKey(STORAGE_KEYS.fsLegacyRevision);
-    return data;
   }
 
   async #estimateCapacity() {
