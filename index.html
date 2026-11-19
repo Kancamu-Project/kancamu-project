@@ -14,12 +14,12 @@
         <div id="tabs-area">
             <div id="tabs"></div>
         </div>
-        <div class="tools">
+        <div class="header-tools">
             <select id="language" class="language" data-i18n-title="language"></select>
-            <button id="theme" data-i18n-title="theme">
+            <button id="theme-button" data-i18n-title="theme">
                 <div class="glyph theme"></div>
             </button>
-            <button id="account" class="account" data-i18n-title="account">
+            <button id="account-button" class="account" data-i18n-title="account">
                 <div class="glyph user"></div>
             </button>
         </div>
@@ -30,12 +30,12 @@
         <div id="toolbar">
             <label class="searchbox">
                 <div class="glyph search"></div>
-                <input id="search" type="search" data-i18n-placeholder="search">
+                <input id="project-search" type="search" data-i18n-placeholder="search">
             </label>
             <div class="spacer"></div>
-            <button id="reset"><span data-i18n="reset"></span></button>
-            <select id="publisher" data-i18n-title="publisher"></select>
-            <select id="sort">
+            <button id="reset-button"><span data-i18n="reset"></span></button>
+            <select id="publisher-filter" data-i18n-title="publisher"></select>
+            <select id="sort-order">
                 <option value="asc" data-i18n="sortAsc"></option>
                 <option value="desc" data-i18n="sortDesc"></option>
             </select>
@@ -53,7 +53,7 @@
     </div>
     </div>
     <div id="footer">
-        <span data-i18n="copyright"></span>
+        <a href="/" target="_top" data-i18n="copyright"></a>
     </div>
     <script src="assets/i18n.js"></script>
     <script src="assets/account.js"></script>

@@ -7,9 +7,9 @@
     mask: var(--icon) center / contain no-repeat;
     -webkit-mask: var(--icon) center / contain no-repeat;
 
-    &.close { --icon: url("../assets/icons/close.svg"); }
-    &.logout { --icon: url("../assets/icons/logout.svg"); }
-    &.external { --icon: url("../assets/icons/external.svg"); }
+    &.icon-close { --icon: url("../assets/icons/close.svg"); }
+    &.icon-logout { --icon: url("../assets/icons/logout.svg"); }
+    &.icon-external { --icon: url("../assets/icons/external.svg"); }
 }
 
 button {
@@ -61,7 +61,7 @@ button {
     flex-direction: column;
 }
 
-.head {
+.page-header {
     box-sizing: content-box;
     position: sticky;
     top: 0;
@@ -76,7 +76,7 @@ button {
     padding-inline: var(--padding-extra-large) 0;
     border-bottom: var(--border-width) solid var(--border);
 
-    & > .title {
+    & > .page-title {
         font-weight: 700;
     }
 
@@ -88,7 +88,7 @@ button {
     }
 }
 
-#form, #profile {
+#token-form, #account-profile {
     display: flex;
     flex-direction: column;
     gap: var(--gap-medium);
@@ -99,11 +99,11 @@ button {
     color: var(--fg-1);
 }
 
-#token {
+#token-input {
     width: 100%;
 }
 
-.error {
+.token-error-message {
     color: var(--danger);
 
     &:empty {
@@ -111,7 +111,7 @@ button {
     }
 }
 
-.actions {
+.form-actions {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -119,7 +119,7 @@ button {
     gap: var(--gap-small);
 }
 
-.bio {
+.account-bio {
     color: var(--fg-1);
 
     &:empty {
@@ -127,7 +127,7 @@ button {
     }
 }
 
-#details {
+#account-details {
     display: flex;
     flex-direction: column;
     gap: var(--gap-medium);
@@ -137,25 +137,25 @@ button {
     }
 }
 
-.section {
+.detail-section {
     display: flex;
     flex-direction: column;
     gap: var(--gap-small);
 
-    & > .section-title {
+    & > .detail-section-title {
         color: var(--fg-1);
         text-transform: uppercase;
     }
 }
 
-.rows {
+.detail-rows {
     border-radius: var(--border-radius-medium);
     overflow: hidden;
     display: flex;
     flex-direction: column;
     border: var(--border-width) solid var(--border);
 
-    & > .row {
+    & > .detail-row {
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -169,7 +169,7 @@ button {
             border-bottom: 0;
         }
 
-        & > .key {
+        & > .detail-key {
             flex: none;
             color: var(--fg-1);
         }
@@ -186,32 +186,32 @@ button {
     }
 }
 
-.chips {
+.scope-chips {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: var(--gap-small);
 
-    & > .chip {
+    & > .scope-chip {
         padding: 0 var(--padding-small);
         border: var(--border-width) solid var(--border);
     }
 }
 
-.who {
+.account-owner {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: var(--gap-small);
 
-    & > .avatar {
+    & > .account-avatar {
         width: calc(var(--unit) * 20);
         height: calc(var(--unit) * 20);
         flex: none;
         background: var(--bg-1) center / cover no-repeat;
     }
 
-    & > .names {
+    & > .account-names {
         display: flex;
         flex-direction: column;
         min-width: 0;
@@ -222,7 +222,7 @@ button {
             white-space: nowrap;
         }
 
-        & > .login {
+        & > .account-login {
             color: var(--fg-1);
         }
     }
@@ -235,6 +235,6 @@ button {
     font-size: var(--font-size-extra-small);
 }
 
-#out {
+#sign-out-button {
     justify-content: center;
 }

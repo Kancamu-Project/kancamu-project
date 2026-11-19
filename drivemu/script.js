@@ -17,7 +17,7 @@ const S = {
 
 /* ---------- utilities ---------- */
 const h = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-const icon = (name) => h('span', 'icon i-' + name);
+const icon = (name) => h('span', 'icon icon-' + name);
 const enc = (p) => p.split('/').map(encodeURIComponent).join('/');
 const fullPath = (...parts) => [...S.path, ...parts].filter(Boolean).join('/');
 const contentsOf = (path) => `/contents${path ? '/' + enc(path) : ''}`;
@@ -45,7 +45,7 @@ const kind = (it) => {
 };
 const ICON_OF = { folder: 'folder', image: 'image', video: 'video', audio: 'audio', pdf: 'pdf', text: 'file-text', archive: 'archive', file: 'file' };
 const typeLabel = (it) => (it.type === 'dir' ? tr('type.folder') : ext(it.name) ? tr('type.fileExt', { ext: ext(it.name).toUpperCase() }) : tr('type.file'));
-const tile = (k, big = false) => { const t = h('span', 'tile k-' + k + (big ? ' lg' : '')); t.appendChild(icon(ICON_OF[k])); return t; };
+const tile = (k, big = false) => { const t = h('span', 'file-tile kind-' + k + (big ? ' large' : '')); t.appendChild(icon(ICON_OF[k])); return t; };
 const MIME = { svg: 'image/svg+xml', pdf: 'application/pdf', mp4: 'video/mp4', webm: 'video/webm', mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp' };
 
 function toast(msg, isErr = false, ms = 3500) {
@@ -57,7 +57,7 @@ function toast(msg, isErr = false, ms = 3500) {
 }
 function progressToast(text) {
   const el = h('div', 'toast');
-  const label = h('span', '', text), bar = h('div', 'bar'); bar.appendChild(h('i'));
+  const label = h('span', '', text), bar = h('div', 'progress-bar'); bar.appendChild(h('i'));
   el.append(icon('upload'), label, bar);
   $('toasts').appendChild(el);
   return {
@@ -69,17 +69,17 @@ function progressToast(text) {
 /* ---------- dialogs ---------- */
 function ask({ title, text = '', input = null, ok = tr('ok') }) {
   return new Promise((resolve) => {
-    const d = $('dlg'), inp = $('dlgInput');
-    $('dlgTitle').textContent = title;
-    $('dlgText').textContent = text;
-    $('dlgText').classList.toggle('hidden', !text);
-    $('dlgOk').textContent = ok;
+    const d = $('message-dialog'), inp = $('message-dialog-input');
+    $('message-dialog-title').textContent = title;
+    $('message-dialog-text').textContent = text;
+    $('message-dialog-text').classList.toggle('hidden', !text);
+    $('message-dialog-confirm').textContent = ok;
     inp.classList.toggle('hidden', input === null);
     if (input !== null) inp.value = input;
     let result = null;
     const finish = (v) => { result = v; d.close(); };
-    $('dlgForm').onsubmit = (e) => { e.preventDefault(); finish(input === null ? true : inp.value.trim()); };
-    $('dlgCancel').onclick = () => finish(null);
+    $('message-dialog-form').onsubmit = (e) => { e.preventDefault(); finish(input === null ? true : inp.value.trim()); };
+    $('message-dialog-cancel').onclick = () => finish(null);
     d.onclose = () => resolve(result);
     d.showModal();
     if (input !== null) { inp.focus(); inp.select(); }
@@ -185,7 +185,7 @@ account.onChange(async (acc) => {
 
 /* --- screens --- */
 function showApp() {
-  S.path = []; S.query = ''; $('search').value = ''; S.selected.clear(); load();
+  S.path = []; S.query = ''; $('file-search').value = ''; S.selected.clear(); load();
 }
 // Reset: every file and folder is deleted, and the default folders are made again, in one commit.
 async function resetDrive() {
@@ -203,13 +203,13 @@ async function resetDrive() {
     toast(tr('reset.done'));
   } catch (e) { toast(tr('failed', { message: e.message }), true, 6000); }
   t.remove();
-  S.path = []; S.query = ''; $('search').value = '';
+  S.path = []; S.query = ''; $('file-search').value = '';
   load(); refreshUsage();
 }
 
 // Not signed in: the files page is shown as it is, empty, with an invitation to sign in.
 function showSignedOut(err = '') {
-  S.path = []; S.query = ''; $('search').value = ''; S.selected.clear(); S.items = []; S.head = null;
+  S.path = []; S.query = ''; $('file-search').value = ''; S.selected.clear(); S.items = []; S.head = null;
   $('loading').classList.add('hidden');
   render();
   if (err) toast(err, true, 6000);
@@ -217,15 +217,15 @@ function showSignedOut(err = '') {
 
 /* --- settings: appearance, profile, token, repository --- */
 const row = (k, v) => {
-  const r = h('div', 'srow'), val = h('span', 'sv');
+  const r = h('div', 'settings-row'), val = h('span', 'settings-value');
   if (v instanceof Node) val.append(v); else val.textContent = v;
-  r.append(h('span', 'sk', k), val);
+  r.append(h('span', 'settings-key', k), val);
   return r;
 };
-const section = (title, ...kids) => { const s = h('section', 'ssec'); s.append(h('h4', '', title), ...kids); return s; };
+const section = (title, ...kids) => { const s = h('section', 'settings-section'); s.append(h('h4', '', title), ...kids); return s; };
 
 async function openSettings() {
-  const d = $('settings'), body = $('settingsBody');
+  const d = $('settings'), body = $('settings-content');
   body.replaceChildren(h('div', 'spinner'));
   if (!d.open) d.showModal();
   if (S.user) try { // fresh data; if that fails, keep what we have
@@ -236,22 +236,22 @@ async function openSettings() {
   const add = (rows, k, v) => { if (v !== null && v !== undefined && v !== '') rows.append(row(k, v)); };
 
   // storage
-  const rr = h('div', 'srows');
+  const rr = h('div', 'settings-rows');
   add(rr, tr('usage.title'), tr('usage.value', usageInfo().params));
-  const resetBtn = h('button', 'btn danger'); resetBtn.type = 'button';
+  const resetBtn = h('button', 'button danger'); resetBtn.type = 'button';
   resetBtn.append(icon('refresh'), h('span', '', tr('reset')));
   resetBtn.onclick = resetDrive;
 
   // appearance: language and theme, shared with every other web
   const lang = h('select', 'language'); lang.setAttribute('aria-label', tr('language'));
-  const themes = h('div', 'seg'); themes.setAttribute('role', 'group'); themes.setAttribute('aria-label', tr('theme'));
+  const themes = h('div', 'segmented-control'); themes.setAttribute('role', 'group'); themes.setAttribute('aria-label', tr('theme'));
   for (const [name, ico] of [['dark', 'moon'], ['light', 'sun']]) {
     const b = h('button'); b.type = 'button'; b.dataset.theme = name; b.title = tr('theme.' + name);
     b.setAttribute('aria-label', tr('theme.' + name)); b.append(icon(ico));
     b.onclick = () => { try { localStorage.setItem('theme', name); } catch { /* ignore */ } document.documentElement.dataset.theme = name; markTheme(); };
     themes.append(b);
   }
-  const look = h('div', 'srows'); look.append(row(tr('language'), lang), row(tr('theme'), themes));
+  const look = h('div', 'settings-rows'); look.append(row(tr('language'), lang), row(tr('theme'), themes));
 
   body.replaceChildren(...[
     section(tr('set.appearance'), look),
@@ -264,14 +264,14 @@ async function openSettings() {
 
 // Shows which theme is active in the settings (also when another web changed it).
 function markTheme() {
-  document.querySelectorAll('#settingsBody .seg button').forEach((b) => b.classList.toggle('on', b.dataset.theme === document.documentElement.dataset.theme));
+  document.querySelectorAll('#settings-content .segmented-control button').forEach((b) => b.classList.toggle('on', b.dataset.theme === document.documentElement.dataset.theme));
 }
 window.addEventListener('storage', (e) => { if (e.key === 'theme' || e.key === null) markTheme(); });
 
 /* ---------- file list ---------- */
 async function load() {
   $('loading').replaceChildren(...Array.from({ length: 4 }, () => h('i')));
-  $('loading').classList.remove('hidden'); $('empty').classList.add('hidden'); $('list').replaceChildren();
+  $('loading').classList.remove('hidden'); $('empty').classList.add('hidden'); $('file-list').replaceChildren();
   S.selected.clear();
   try {
     const r = await repoApi(`${contentsOf(fullPath())}?ref=${S.head || S.branch}`);
@@ -312,12 +312,12 @@ function refreshUsage() {
 
 // The sidebar: the folders at the root of the branch (the last list read at the root), and the root itself.
 function renderSide() {
-  const nav = $('folders'), box = $('usage');
+  const nav = $('folder-navigation'), box = $('usage');
   $('app').classList.toggle('plain', !S.user);   // signed out: only the name, settings, and profile show
   nav.replaceChildren(); box.replaceChildren();
   if (!S.user) return;
   const entry = (label, ico, path, on) => {
-    const b = h('button', 'btn'); b.type = 'button'; b.classList.toggle('on', on);
+    const b = h('button', 'button'); b.type = 'button'; b.classList.toggle('on', on);
     b.append(icon(ico), h('span', '', label));
     b.onclick = () => goTo(path);
     return b;
@@ -332,19 +332,19 @@ function renderSide() {
   meter.setAttribute('role', 'progressbar'); meter.setAttribute('aria-valuenow', Math.round(percent)); meter.setAttribute('aria-valuemin', 0); meter.setAttribute('aria-valuemax', 100);
   box.append(h('span', 'usage-percent', tr('usage.percent', params)), meter, h('span', 'usage-detail', tr('usage.detail', params)));
 }
-function goTo(path) { S.path = path; S.query = ''; $('search').value = ''; load(); }
+function goTo(path) { S.path = path; S.query = ''; $('file-search').value = ''; load(); }
 
 function render() {
   renderSide();
   renderCrumbs();
   const items = S.visible = visibleItems();
-  const list = $('list');
+  const list = $('file-list');
   list.className = 'list ' + S.view;
   list.replaceChildren();
   if (S.view === 'grid') {
     const dirs = items.filter((i) => i.type === 'dir'), files = items.filter((i) => i.type !== 'dir');
-    if (dirs.length) { list.appendChild(h('div', 'sec', tr('list.folders'))); const g = h('div', 'folders'); dirs.forEach((i) => g.appendChild(folderChip(i))); list.appendChild(g); }
-    if (files.length) { list.appendChild(h('div', 'sec', tr('list.files'))); const g = h('div', 'cards'); files.forEach((i) => g.appendChild(fileCard(i))); list.appendChild(g); }
+    if (dirs.length) { list.appendChild(h('div', 'list-section-title', tr('list.folders'))); const g = h('div', 'folder-grid'); dirs.forEach((i) => g.appendChild(folderChip(i))); list.appendChild(g); }
+    if (files.length) { list.appendChild(h('div', 'list-section-title', tr('list.files'))); const g = h('div', 'file-grid'); files.forEach((i) => g.appendChild(fileCard(i))); list.appendChild(g); }
   } else if (items.length) {
     list.appendChild(listTable(items));
   }
@@ -353,17 +353,17 @@ function render() {
   $('empty').classList.toggle('hidden', !empty);
   if (empty) {
     const searching = S.query && S.items.length > 0;
-    $('emptyTitle').textContent = tr(!S.user ? 'signedout.title' : searching ? 'empty.noMatches' : 'empty.title');
-    $('emptyText').textContent = !S.user ? tr('signedout.text') : searching ? tr('empty.noMatchesText', { query: S.query }) : tr('empty.text');
-    const cta = $('emptyCta');
+    $('empty-title').textContent = tr(!S.user ? 'signedout.title' : searching ? 'empty.noMatches' : 'empty.title');
+    $('empty-text').textContent = !S.user ? tr('signedout.text') : searching ? tr('empty.noMatchesText', { query: S.query }) : tr('empty.text');
+    const cta = $('empty-action-button');
     cta.replaceChildren(icon(S.user ? 'upload' : 'user'), h('span', '', tr(S.user ? 'menu.uploadFiles' : 'login.signIn')));
-    cta.onclick = S.user ? () => $('fileInput').click() : () => account.open();
+    cta.onclick = S.user ? () => $('file-input').click() : () => account.open();
     cta.classList.toggle('hidden', searching && !!S.user);
   }
-  $('viewGrid').classList.toggle('on', S.view === 'grid');
-  $('viewList').classList.toggle('on', S.view === 'list');
-  $('sort').value = `${S.sort}:${S.dir}`;
-  $('newBtn').disabled = !S.user;
+  $('view-grid-button').classList.toggle('on', S.view === 'grid');
+  $('view-list-button').classList.toggle('on', S.view === 'list');
+  $('sort-order').value = `${S.sort}:${S.dir}`;
+  $('new-button').disabled = !S.user;
   updateSelection();
   const files = S.items.filter((i) => i.type !== 'dir');
   const total = files.reduce((s, f) => s + f.size, 0);
@@ -371,43 +371,43 @@ function render() {
 }
 
 function renderCrumbs() {
-  const c = $('crumbs'); c.replaceChildren();
+  const c = $('breadcrumbs'); c.replaceChildren();
   const mk = (label, depth) => {
-    const b = h('span', 'crumb', label); b.tabIndex = 0; b.setAttribute('role', 'link');
+    const b = h('span', 'breadcrumb', label); b.tabIndex = 0; b.setAttribute('role', 'link');
     b.onclick = () => goTo(S.path.slice(0, depth));
     b.onkeydown = (e) => { if (e.key === 'Enter') b.click(); };
     return b;
   };
   c.appendChild(mk(tr('nav.myDrive'), 0));
-  S.path.forEach((p, i) => { const s = icon('chevron-right'); s.classList.add('sep'); c.append(s, mk(p, i + 1)); });
+  S.path.forEach((p, i) => { const s = icon('chevron-right'); s.classList.add('breadcrumb-separator'); c.append(s, mk(p, i + 1)); });
 }
 
 /* ----- item building blocks ----- */
 function chkEl(it, always = false) {
-  const c = h('input', 'chk' + (always ? ' always' : '')); c.type = 'checkbox'; c.setAttribute('aria-label', tr('sel.item', { name: it.name }));
+  const c = h('input', 'checkbox' + (always ? ' always' : '')); c.type = 'checkbox'; c.setAttribute('aria-label', tr('sel.item', { name: it.name }));
   c.onclick = (e) => e.stopPropagation();
   c.onchange = () => toggleSel(it.name, c.checked);
   return c;
 }
 function actsEl(it) {
-  const a = h('div', 'acts');
-  const btn = (ic, title, fn, cls = '') => { const b = h('button', 'ibtn ' + cls); b.append(icon(ic)); b.title = title; b.setAttribute('aria-label', title); b.onclick = (e) => { e.stopPropagation(); fn(); }; return b; };
+  const a = h('div', 'actions');
+  const btn = (ic, title, fn, cls = '') => { const b = h('button', 'icon-button ' + cls); b.append(icon(ic)); b.title = title; b.setAttribute('aria-label', title); b.onclick = (e) => { e.stopPropagation(); fn(); }; return b; };
   if (it.type !== 'dir') a.appendChild(btn('download', tr('download'), () => download(it)));
   a.appendChild(btn('pencil', tr('rename'), () => rename(it)));
-  a.appendChild(btn('trash', tr('delete'), () => remove([it]), 'del'));
+  a.appendChild(btn('trash', tr('delete'), () => remove([it]), 'delete'));
   return a;
 }
 function nameCell(it, k) {
-  const n = h('div', 'namecell'); n.append(tile(k), h('span', 'name', it.name)); return n;
+  const n = h('div', 'name-cell'); n.append(tile(k), h('span', 'file-name', it.name)); return n;
 }
 function base(it, cls) {
-  const el = h('div', 'item ' + cls); el.dataset.name = it.name; el.title = it.name;
+  const el = h('div', 'file-item ' + cls); el.dataset.name = it.name; el.title = it.name;
   el.onclick = () => (S.selected.size ? toggleSel(it.name) : open(it));
   // Keyboard: Tab reaches every item; arrows move between them, Enter opens, Space selects, F2 renames, Delete deletes.
   el.tabIndex = 0;
   el.onkeydown = (e) => {
     if (e.target !== el) return;
-    const move = (step) => { const all = [...$('list').querySelectorAll('.item')]; all[all.indexOf(el) + step]?.focus(); };
+    const move = (step) => { const all = [...$('file-list').querySelectorAll('.file-item')]; all[all.indexOf(el) + step]?.focus(); };
     const keys = {
       Enter: () => el.click(), ' ': () => toggleSel(it.name), F2: () => rename(it), Delete: () => remove([it]),
       ArrowDown: () => move(1), ArrowRight: () => move(1), ArrowUp: () => move(-1), ArrowLeft: () => move(-1),
@@ -417,14 +417,14 @@ function base(it, cls) {
   return el;
 }
 function folderChip(it) {
-  const el = base(it, 'fchip k-folder');
-  el.append(tile('folder'), h('span', 'name', it.name), actsEl(it), chkEl(it));
+  const el = base(it, 'file-chip kind-folder');
+  el.append(tile('folder'), h('span', 'file-name', it.name), actsEl(it), chkEl(it));
   return el;
 }
 function fileCard(it) {
   const k = kind(it);
-  const el = base(it, 'card k-' + k);
-  const th = h('div', 'thumb');
+  const el = base(it, 'file-card kind-' + k);
+  const th = h('div', 'file-thumbnail');
   th.appendChild(tile(k, true));
   if (it.download_url && THUMB_EXT.includes(ext(it.name)) && it.size > 0 && it.size < 8 * 1024 * 1024) {
     const img = h('img'); img.loading = 'lazy'; img.decoding = 'async'; img.alt = '';
@@ -434,24 +434,24 @@ function fileCard(it) {
     th.appendChild(img);
   }
   th.append(chkEl(it), actsEl(it));
-  const foot = h('div', 'foot');
-  const txt = h('div', 'txt'); txt.append(h('span', 'name', it.name), h('span', 'meta', `${typeLabel(it)} · ${fmtSize(it.size)}`));
+  const foot = h('div', 'card-footer');
+  const txt = h('div', 'card-text'); txt.append(h('span', 'file-name', it.name), h('span', 'file-meta', `${typeLabel(it)} · ${fmtSize(it.size)}`));
   foot.append(icon(ICON_OF[k]), txt);
   el.append(th, foot);
   return el;
 }
 function listTable(items) {
-  const t = h('div', 'table');
-  const head = h('div', 'row head');
-  const all = h('input', 'chk always'); all.type = 'checkbox'; all.id = 'selAll'; all.setAttribute('aria-label', tr('sel.all'));
+  const t = h('div', 'file-table');
+  const head = h('div', 'file-row table-header');
+  const all = h('input', 'checkbox always'); all.type = 'checkbox'; all.id = 'select-all-checkbox'; all.setAttribute('aria-label', tr('sel.all'));
   all.onchange = () => { S.visible.forEach((i) => (all.checked ? S.selected.add(i.name) : S.selected.delete(i.name))); updateSelection(); };
-  const hc = (key) => h('span', 'hcell', tr(key));
+  const hc = (key) => h('span', 'header-cell', tr(key));
   head.append(all, hc('list.name'), hc('list.type'), hc('list.size'), h('span'));
   t.appendChild(head);
   for (const it of items) {
     const k = kind(it);
-    const el = base(it, 'row');
-    el.append(chkEl(it), nameCell(it, k), h('div', 'cell muted', typeLabel(it)), h('div', 'cell muted num-r', it.type === 'dir' ? '—' : fmtSize(it.size)), actsEl(it));
+    const el = base(it, 'file-row');
+    el.append(chkEl(it), nameCell(it, k), h('div', 'file-cell muted', typeLabel(it)), h('div', 'file-cell muted numeric-cell', it.type === 'dir' ? '—' : fmtSize(it.size)), actsEl(it));
     t.appendChild(el);
   }
   return t;
@@ -464,23 +464,23 @@ function toggleSel(name, on) {
   updateSelection();
 }
 function updateSelection() {
-  document.querySelectorAll('#list .item').forEach((el) => {
+  document.querySelectorAll('#file-list .file-item').forEach((el) => {
     const on = S.selected.has(el.dataset.name);
     el.classList.toggle('selected', on);
-    const c = el.querySelector('.chk'); if (c) c.checked = on;
+    const c = el.querySelector('.checkbox'); if (c) c.checked = on;
   });
   const n = S.selected.size;
-  $('selbar').classList.toggle('hidden', n === 0);
-  $('crumbs').classList.toggle('hidden', n > 0);
-  $('selCount').textContent = tr('sel.count', { n });
+  $('selection-bar').classList.toggle('hidden', n === 0);
+  $('breadcrumbs').classList.toggle('hidden', n > 0);
+  $('selection-count').textContent = tr('sel.count', { n });
   document.body.classList.toggle('selecting', n > 0);
-  const all = $('selAll');
+  const all = $('select-all-checkbox');
   if (all) all.checked = S.visible.length > 0 && S.visible.every((i) => S.selected.has(i.name));
 }
 
 /* ---------- actions ---------- */
 function open(it) {
-  if (it.type === 'dir') { S.path.push(it.name); S.query = ''; $('search').value = ''; load(); }
+  if (it.type === 'dir') { S.path.push(it.name); S.query = ''; $('file-search').value = ''; load(); }
   else previewFile(it);
 }
 
@@ -503,10 +503,10 @@ async function download(it) {
 
 let pvUrl = null;
 async function previewFile(it) {
-  const k = kind(it), body = $('pvBody');
-  $('pvName').textContent = it.name;
+  const k = kind(it), body = $('preview-content');
+  $('preview-name').textContent = it.name;
   body.replaceChildren(h('div', 'spinner'));
-  $('pvDownload').onclick = () => download(it);
+  $('preview-download-button').onclick = () => download(it);
   const dlg = $('preview'); if (!dlg.open) dlg.showModal();
   try {
     if (!['image', 'video', 'audio', 'pdf', 'text'].includes(k)) { body.replaceChildren(h('p', 'muted', tr('preview.none'))); return; }
@@ -617,58 +617,58 @@ async function remove(list) {
 
 /* ---------- menu "New" ---------- */
 function openMenu(anchor) {
-  const m = $('newMenu');
+  const m = $('new-menu');
   m.classList.remove('hidden');
   const r = anchor.getBoundingClientRect();
   m.style.top = r.bottom + 6 + 'px';
   m.style.left = Math.max(8, Math.min(r.left, window.innerWidth - m.offsetWidth - 8)) + 'px';
   m.querySelector('button').focus();
 }
-const closeMenu = () => $('newMenu').classList.add('hidden');
+const closeMenu = () => $('new-menu').classList.add('hidden');
 // Keyboard in the menu: arrows move, Escape closes and gives the focus back, Tab leaves.
-$('newMenu').onkeydown = (e) => {
-  const buttons = [...$('newMenu').querySelectorAll('button')], i = buttons.indexOf(document.activeElement);
+$('new-menu').onkeydown = (e) => {
+  const buttons = [...$('new-menu').querySelectorAll('button')], i = buttons.indexOf(document.activeElement);
   if (e.key === 'ArrowDown') { e.preventDefault(); buttons[(i + 1) % buttons.length].focus(); }
   else if (e.key === 'ArrowUp') { e.preventDefault(); buttons[(i - 1 + buttons.length) % buttons.length].focus(); }
-  else if (e.key === 'Escape') { e.stopPropagation(); closeMenu(); $('newBtn').focus(); }
+  else if (e.key === 'Escape') { e.stopPropagation(); closeMenu(); $('new-button').focus(); }
   else if (e.key === 'Tab') closeMenu();
 };
-$('newBtn').onclick = (e) => { e.stopPropagation(); openMenu(e.currentTarget); };
+$('new-button').onclick = (e) => { e.stopPropagation(); openMenu(e.currentTarget); };
 document.addEventListener('click', closeMenu);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
-$('newMenu').onclick = (e) => {
+$('new-menu').onclick = (e) => {
   const b = e.target.closest('button'); if (!b) return;
   closeMenu();
-  ({ files: () => $('fileInput').click(), 'folder-upload': () => $('folderInput').click(), folder: newFolder })[b.dataset.act]();
+  ({ files: () => $('file-input').click(), 'folder-upload': () => $('folder-input').click(), folder: newFolder })[b.dataset.act]();
 };
 
 /* ---------- events ---------- */
 document.querySelectorAll('[data-act=account]').forEach((b) => account.bind(b));
 document.querySelectorAll('[data-act=settings]').forEach((b) => { b.onclick = openSettings; });
-$('settingsClose').onclick = () => $('settings').close();
-$('fileInput').onchange = (e) => { upload(e.target.files); e.target.value = ''; };
-$('folderInput').onchange = (e) => { upload(e.target.files); e.target.value = ''; };
-$('refreshBtn').onclick = () => { S.head = null; load(); refreshUsage(); }; // read the files again (changes made elsewhere)
-$('sort').onchange = (e) => { const [key, dir] = e.target.value.split(':'); S.sort = key; S.dir = +dir; render(); };
+$('settings-close-button').onclick = () => $('settings').close();
+$('file-input').onchange = (e) => { upload(e.target.files); e.target.value = ''; };
+$('folder-input').onchange = (e) => { upload(e.target.files); e.target.value = ''; };
+$('refresh-button').onclick = () => { S.head = null; load(); refreshUsage(); }; // read the files again (changes made elsewhere)
+$('sort-order').onchange = (e) => { const [key, dir] = e.target.value.split(':'); S.sort = key; S.dir = +dir; render(); };
 const setView = (v) => { S.view = v; try { localStorage.setItem('drivemu.view', v); } catch { /* ignore */ } render(); };
-$('viewGrid').onclick = () => setView('grid');
-$('viewList').onclick = () => setView('list');
-$('search').oninput = (e) => { S.query = e.target.value; render(); };
-$('selClear').onclick = () => { S.selected.clear(); updateSelection(); };
-$('bulkDelete').onclick = () => remove(S.items.filter((i) => S.selected.has(i.name)));
-$('pvClose').onclick = () => $('preview').close();
-$('preview').onclose = () => { if (pvUrl) { URL.revokeObjectURL(pvUrl); pvUrl = null; } $('pvBody').replaceChildren(); };
+$('view-grid-button').onclick = () => setView('grid');
+$('view-list-button').onclick = () => setView('list');
+$('file-search').oninput = (e) => { S.query = e.target.value; render(); };
+$('selection-clear-button').onclick = () => { S.selected.clear(); updateSelection(); };
+$('delete-selected-button').onclick = () => remove(S.items.filter((i) => S.selected.has(i.name)));
+$('preview-close-button').onclick = () => $('preview').close();
+$('preview').onclose = () => { if (pvUrl) { URL.revokeObjectURL(pvUrl); pvUrl = null; } $('preview-content').replaceChildren(); };
 
 // drag and drop
 let dragDepth = 0;
-const dz = $('dropzone');
+const dz = $('drop-zone');
 const hasFiles = (e) => e.dataTransfer && [...e.dataTransfer.types].includes('Files');
-dz.addEventListener('dragenter', (e) => { if (hasFiles(e)) { e.preventDefault(); dragDepth++; $('dropOverlay').classList.remove('hidden'); } });
+dz.addEventListener('dragenter', (e) => { if (hasFiles(e)) { e.preventDefault(); dragDepth++; $('drop-overlay').classList.remove('hidden'); } });
 dz.addEventListener('dragover', (e) => { if (hasFiles(e)) e.preventDefault(); });
-dz.addEventListener('dragleave', () => { if (--dragDepth <= 0) { dragDepth = 0; $('dropOverlay').classList.add('hidden'); } });
+dz.addEventListener('dragleave', () => { if (--dragDepth <= 0) { dragDepth = 0; $('drop-overlay').classList.add('hidden'); } });
 dz.addEventListener('drop', (e) => {
   if (!hasFiles(e)) return;
-  e.preventDefault(); dragDepth = 0; $('dropOverlay').classList.add('hidden');
+  e.preventDefault(); dragDepth = 0; $('drop-overlay').classList.add('hidden');
   collectDropped(e.dataTransfer).then(upload);
 });
 

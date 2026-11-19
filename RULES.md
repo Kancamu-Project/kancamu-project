@@ -78,6 +78,15 @@ If a name differs, make it the same.
 Do not wrap a single element in another element of exactly the same size, such as a div that holds only one child that fills it.
 Give the element the styles itself. A wrapper is only for something the element cannot do alone: grouping more than one element, positioning, scrolling, or a different size, background, or border.
 
+#### 7. Names
+An id and a class say what the element is or does, in full words. A longer name is fine; a name that needs a guess is not.
+Not .t, .acts, .sz, .grp, #el, but .chat-title, .chat-actions, .model-size, .date-group, #model-picker.
+No abbreviations, no one-letter names, no names that only describe the look (.big, .red, .left). Name the role: .primary, .danger, .on, not .blue.
+Write names in lowercase with hyphens, and give a part of a component the name of the component first: .project-name, .project-description.
+An icon element is the class icon plus icon-<name>, as in icon icon-trash. A file kind is kind-<name>.
+An id is written with hyphens (#new-chat-button); a script may keep its elements under the camelCase form of the id (els.newChatButton).
+When a name is renamed, rename it everywhere: index.html, layout.css, script.js.
+
 ## CSS
 
 #### 1. Units

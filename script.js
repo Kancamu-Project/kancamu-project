@@ -137,10 +137,10 @@ function syncViewer() {
 }
 
 function syncControls() {
-    document.getElementById("reset").hidden =
+    document.getElementById("reset-button").hidden =
         !state.query && state.category === "all" && state.publisher === "all";
-    document.getElementById("search").value = state.query;
-    document.getElementById("sort").value = state.sort;
+    document.getElementById("project-search").value = state.query;
+    document.getElementById("sort-order").value = state.sort;
     document.querySelectorAll("#view-toggle button").forEach((button) =>
         button.classList.toggle("active", button.dataset.view === state.view)
     );
@@ -185,7 +185,7 @@ function showMenu(anchor, project) {
     const menu = createElement("div", "menu");
     menu.owner = anchor;
 
-    const copy = createButton("item", t("copyLink"));
+    const copy = createButton("menu-item", t("copyLink"));
     copy.addEventListener("click", async () => {
         let message;
         try {
@@ -198,7 +198,7 @@ function showMenu(anchor, project) {
         setTimeout(closeMenu, 800);
     });
 
-    const here = createButton("item", t("openNew"));
+    const here = createButton("menu-item", t("openNew"));
     here.addEventListener("click", () => {
         window.open(project.url, "_blank", "noopener");
         closeMenu();
@@ -244,29 +244,29 @@ function createProjectCard(project) {
     const card = createElement("div", "project");
     card.style.setProperty("--color", projectColor(project));
 
-    const top = createElement("div", "top");
-    const link = createElement("a", "link");
+    const top = createElement("div", "project-header");
+    const link = createElement("a", "project-link");
     link.href = project.url;
     link.target = "_blank";
     link.rel = "noopener";
     link.append(createElement("span", "", project.id), createGlyph("external"));
-    top.append(createElement("span", "tag", project.publisher || ""), link);
+    top.append(createElement("span", "project-publisher", project.publisher || ""), link);
 
     const icon = createElement("div", "icon");
     icon.style.backgroundImage = `url(${JSON.stringify(project.icon)})`;
 
-    const text = createElement("div", "text");
+    const text = createElement("div", "project-text");
     text.append(
         createNameElement(name, project.highlight && pickText(project.highlight)),
         createElement("span", "description", pickText(project.description))
     );
-    const info = createElement("div", "info");
+    const info = createElement("div", "project-body");
     info.append(icon, text);
 
-    const open = createButton("open", t("open"));
+    const open = createButton("project-open-button", t("open"));
     open.addEventListener("click", () => openTab(project.id));
 
-    const more = createElement("button", "more");
+    const more = createElement("button", "project-more-button");
     more.title = t("more");
     more.appendChild(createGlyph("more"));
     more.addEventListener("click", (event) => {
@@ -276,10 +276,10 @@ function createProjectCard(project) {
         if (!wasOpenHere) showMenu(more, project);
     });
 
-    const actions = createElement("div", "actions");
+    const actions = createElement("div", "project-actions");
     actions.append(open, more);
 
-    const categories = createElement("div", "categories");
+    const categories = createElement("div", "project-categories");
     categories.append(
         ...(project.categories || []).map((key) =>
             createElement("span", "category", categoryLabel(key))
@@ -315,7 +315,7 @@ function categoryLabel(key) {
 }
 
 function renderPublisherSelect() {
-    const select = document.getElementById("publisher");
+    const select = document.getElementById("publisher-filter");
     const publishers = [...new Set(state.projects.map((project) => project.publisher).filter(Boolean))]
         .sort((a, b) => a.localeCompare(b, i18n.lang));
     const options = [["all", t("allPublishers")], ...publishers.map((name) => [name, name])];
@@ -440,7 +440,7 @@ i18n.onChange(() => {
     renderAll();
 });
 
-document.getElementById("theme").addEventListener("click", () => {
+document.getElementById("theme-button").addEventListener("click", () => {
     const root = document.documentElement;
     root.dataset.theme = root.dataset.theme === "light" ? "dark" : "light";
     try {
@@ -449,33 +449,33 @@ document.getElementById("theme").addEventListener("click", () => {
 });
 
 // Account: the sign-in is the account web, opened by assets/account.js.
-account.bind(document.getElementById("account"));
+account.bind(document.getElementById("account-button"));
 
-document.getElementById("publisher").addEventListener("change", (event) => {
+document.getElementById("publisher-filter").addEventListener("change", (event) => {
     state.publisher = event.target.value;
     saveFilters();
     renderProjects();
 });
 
-document.getElementById("sort").addEventListener("change", (event) => {
+document.getElementById("sort-order").addEventListener("change", (event) => {
     state.sort = event.target.value;
     saveFilters();
     renderProjects();
 });
 
-document.getElementById("search").addEventListener("input", (event) => {
+document.getElementById("project-search").addEventListener("input", (event) => {
     state.query = event.target.value;
     saveFilters();
     renderProjects();
 });
 
-document.getElementById("reset").addEventListener("click", () => {
+document.getElementById("reset-button").addEventListener("click", () => {
     state.query = "";
     state.category = "all";
     state.publisher = "all";
     saveFilters();
-    document.getElementById("search").value = "";
-    document.getElementById("publisher").value = "all";
+    document.getElementById("project-search").value = "";
+    document.getElementById("publisher-filter").value = "all";
     renderCategoryFilter();
     renderProjects();
 });

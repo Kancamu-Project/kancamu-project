@@ -123,6 +123,15 @@ body {
     font-size: var(--font-size-small);
 }
 
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
 .hidden {
     display: none !important;
 }

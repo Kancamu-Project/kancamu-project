@@ -11,36 +11,36 @@
 </head>
 <body>
 <div id="page">
-  <div class="head">
-    <span class="title"></span>
-    <button id="close" class="square" type="button" hidden data-i18n-title="close" data-i18n-label="close"><span class="icon close"></span></button>
+  <div class="page-header">
+    <span class="page-title"></span>
+    <button id="close-button" class="square" type="button" hidden data-i18n-title="close" data-i18n-label="close"><span class="icon icon-close"></span></button>
   </div>
 
-  <form id="form" autocomplete="off">
+  <form id="token-form" autocomplete="off">
     <span class="hint" data-i18n="hint"></span>
-    <input id="token" type="password" autocomplete="off" spellcheck="false" data-i18n-placeholder="token" data-i18n-label="token">
-    <span id="error" class="error" role="alert"></span>
-    <div class="actions">
-      <button id="create" type="button"><span class="icon external"></span><span data-i18n="create"></span></button>
+    <input id="token-input" type="password" autocomplete="off" spellcheck="false" data-i18n-placeholder="token" data-i18n-label="token">
+    <span id="token-error" class="token-error-message" role="alert"></span>
+    <div class="form-actions">
+      <button id="create-token-button" type="button"><span class="icon icon-external"></span><span data-i18n="create"></span></button>
       <button type="submit" class="primary"><span data-i18n="signIn"></span></button>
     </div>
   </form>
 
-  <div id="profile">
-    <div class="who">
-      <div class="avatar"></div>
-      <div class="names selectable">
-        <span class="name"></span>
-        <span class="login"></span>
+  <div id="account-profile">
+    <div class="account-owner">
+      <div class="account-avatar"></div>
+      <div class="account-names selectable">
+        <span class="account-name"></span>
+        <span class="account-login"></span>
       </div>
     </div>
-    <span class="bio"></span>
-    <div id="details" class="selectable"></div>
+    <span class="account-bio"></span>
+    <div id="account-details" class="selectable"></div>
     <span class="hint" data-i18n="signedIn"></span>
-    <button id="out" class="danger" type="button"><span class="icon logout"></span><span data-i18n="signOut"></span></button>
+    <button id="sign-out-button" class="danger" type="button"><span class="icon icon-logout"></span><span data-i18n="signOut"></span></button>
   </div>
 
-  <span class="copyright" data-i18n="copyright"></span>
+  <a class="copyright" href="/" target="_top" data-i18n="copyright"></a>
 </div>
 <script src="../assets/i18n.js"></script>
 <script src="../assets/account.js"></script>

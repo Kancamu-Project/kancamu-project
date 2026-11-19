@@ -42,8 +42,6 @@ const MODELS = [
   { id: "onnx-community/gemma-4-E4B-it-ONNX", name: "Gemma 4 E4B", family: "Gemma", by: "Google", kind: "multi", mb: 5180,
     key: "gemma-4-e4b", tagKey: "tag.newestHeavy" },
 ];
-const modelTag = (m) => tr(m.tagKey);
-const modelDesc = (m) => tr("m." + m.key);
 const sizeLabel = (mb) => (mb >= 1000 ? (mb / 1000).toFixed(1) + " GB" : mb + " MB");
 let MODEL = MODELS.find((m) => m.id === lsGetEarly("muai.model")) || MODELS[2];   // default: Gemma 3 1B
 function lsGetEarly(k) { try { return localStorage.getItem(k); } catch { return null; } }
@@ -52,19 +50,18 @@ const DEFAULTS = {
   system: "You are muAI, a helpful assistant. Reply in the language the user writes in, concisely and clearly.",
   maxTokens: 1024, temperature: 0.7, ctx: 30,
 };
-const SUGGESTIONS = ["s1", "s2", "s3", "s4"];
 
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
-  "gpuBadge","modelBadge","modelLabel","loadStatus","progressBox","barFill","progressText","loadErr","chat","input",
-  "sendBtn","stopBtn","main","attachBtn","file","preview","previewImg","previewName","removeImg","list","search",
-  "newBtn","title","exportBtn","exportAllBtn","importBtn","importFile","clearAllBtn","settingsBtn","settingsDlg",
-  "settingsForm","setSystem","setMax","setTemp","setCtx","tempVal","cancelSettings","resetSettings","menuBtn",
-  "overlay","chips","themeDark","themeLight","side","resizer","modelDlg","modelList","closeModelDlg","familyFilter",
-].map((k) => [k, $(k)]));
-const setModelLabel = (t) => { els.modelLabel.textContent = t; };
+  "gpu-status","model-picker","model-picker-label","load-status","progress-box","progress-fill","progress-text","load-error","chat","message-input",
+  "send-button","stop-button","chat-area","attach-button","image-file-input","attachment-preview","attachment-preview-image","attachment-preview-name","remove-attachment-button","chat-list","chat-search",
+  "new-chat-button","chat-title","export-button","export-all-button","import-button","import-file-input","clear-all-button","settings-button","settings-dialog",
+  "settings-form","setting-system-prompt","setting-max-tokens","setting-temperature","setting-context","temperature-value","cancel-settings-button","reset-settings-button","menu-button",
+  "side-overlay","chat-app","welcome-message","theme-dark-button","theme-light-button","side","side-resizer","model-dialog","model-list","model-sort","close-model-dialog-button","family-filter",
+].map((id) => [id.replace(/-([a-z])/g, (m, c) => c.toUpperCase()), $(id)]));   // els.modelPicker is the element with the id model-picker
+const setModelLabel = (t) => { els.modelPickerLabel.textContent = t; };
 function showSelected() {
-  els.attachBtn.classList.toggle("hidden", MODEL.kind !== "multi");
+  els.attachButton.classList.toggle("hidden", MODEL.kind !== "multi");
   if (!model) setModelLabel(MODEL.name);
 }
 
@@ -73,7 +70,7 @@ const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const lsGet = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
-const icon = (n) => `<span class="icon i-${n}"></span>`;
+const icon = (n) => `<span class="icon icon-${n}"></span>`;
 function toast(msg) {
   const t = document.createElement("span");
   t.textContent = msg;
@@ -233,14 +230,14 @@ const stopper = new InterruptableStoppingCriteria();
 // ---------- WebGPU ----------
 let gpuOk = false;
 try { if (navigator.gpu && (await navigator.gpu.requestAdapter())) gpuOk = true; } catch {}
-els.gpuBadge.classList.add(gpuOk ? "ok" : "bad");
+els.gpuStatus.classList.add(gpuOk ? "ok" : "bad");
 function renderGpu() {
-  els.gpuBadge.textContent = tr(gpuOk ? "gpu.active" : "gpu.unavailable");
-  if (!gpuOk) els.loadErr.textContent = tr("gpu.unsupported");
+  els.gpuStatus.textContent = tr(gpuOk ? "gpu.active" : "gpu.unavailable");
+  if (!gpuOk) els.loadError.textContent = tr("gpu.unsupported");
 }
 if (!gpuOk) {
   els.loadStatus.classList.remove("hidden");
-  els.loadErr.classList.remove("hidden");
+  els.loadError.classList.remove("hidden");
 }
 renderGpu();
 
@@ -261,7 +258,7 @@ function md(src) {
     let m;
     if ((m = line.match(/^\u0000B(\d+)\u0000$/))) {
       flushP(); flushL(); const b = blocks[m[1]];
-      out.push(`<div class="code"><div class="codehead"><span>${esc(b.l || tr("code.label"))}</span><button class="ghost copycode" type="button">${icon("copy")}<span>${tr("msg.copy")}</span></button></div><pre><code>${esc(b.c)}</code></pre></div>`);
+      out.push(`<div class="code"><div class="code-header"><span>${esc(b.l || tr("code.label"))}</span><button class="ghost copy-code" type="button">${icon("copy")}<span>${tr("msg.copy")}</span></button></div><pre><code>${esc(b.c)}</code></pre></div>`);
     } else if ((m = line.match(/^(#{1,4})\s+(.*)$/))) {
       flushP(); flushL(); out.push(`<h${m[1].length}>${inl(m[2])}</h${m[1].length}>`);
     } else if (/^\s*([-*_])\1{2,}\s*$/.test(line)) {
@@ -287,36 +284,36 @@ function groupName(ts) {
   return tr(diff <= 0 ? "group.today" : diff === 1 ? "group.yesterday" : diff < 7 ? "group.week" : "group.older");
 }
 function renderList() {
-  const q = els.search.value.trim().toLowerCase();
+  const q = els.chatSearch.value.trim().toLowerCase();
   const shown = convs.filter((c) => !q || c.title.toLowerCase().includes(q) || c.messages.some((m) => m.text && m.text.toLowerCase().includes(q)));
-  els.list.innerHTML = "";
+  els.chatList.innerHTML = "";
   if (!shown.length) {
-    const e = document.createElement("span"); e.className = "empty-list";
+    const e = document.createElement("span"); e.className = "empty-chat-list";
     e.textContent = tr(q ? "list.noMatches" : "list.empty");
-    els.list.appendChild(e); return;
+    els.chatList.appendChild(e); return;
   }
   let last = "";
   for (const c of shown) {
     const g = groupName(c.updated);
-    if (g !== last) { const h = document.createElement("span"); h.className = "grp"; h.textContent = g; els.list.appendChild(h); last = g; }
+    if (g !== last) { const h = document.createElement("span"); h.className = "date-group"; h.textContent = g; els.chatList.appendChild(h); last = g; }
     const it = document.createElement("div");
-    it.className = "item" + (current && current.id === c.id ? " active" : "");
+    it.className = "chat-item" + (current && current.id === c.id ? " active" : "");
     it.dataset.id = c.id;
-    it.innerHTML = `<span class="t"></span><div class="acts"><button data-a="rename" type="button" title="${tr("chat.rename")}" aria-label="${tr("chat.rename")}">${icon("edit")}</button><button data-a="delete" type="button" title="${tr("chat.delete")}" aria-label="${tr("chat.delete")}">${icon("trash")}</button></div>`;
-    it.querySelector(".t").textContent = c.title;
+    it.innerHTML = `<span class="chat-list-title"></span><div class="actions"><button data-a="rename" type="button" title="${tr("chat.rename")}" aria-label="${tr("chat.rename")}">${icon("edit")}</button><button data-a="delete" type="button" title="${tr("chat.delete")}" aria-label="${tr("chat.delete")}">${icon("trash")}</button></div>`;
+    it.querySelector(".chat-list-title").textContent = c.title;
     it.title = new Date(c.updated).toLocaleString(i18n.lang);
     it.tabIndex = 0;   // Tab reaches every chat, Enter opens it
     it.addEventListener("keydown", (e) => { if (e.target === it && e.key === "Enter") it.click(); });
-    els.list.appendChild(it);
+    els.chatList.appendChild(it);
   }
 }
-els.list.addEventListener("click", async (e) => {
-  const it = e.target.closest(".item"); if (!it) return;
+els.chatList.addEventListener("click", async (e) => {
+  const it = e.target.closest(".chat-item"); if (!it) return;
   const c = convs.find((x) => x.id === it.dataset.id); if (!c) return;
   const a = e.target.closest("button")?.dataset.a;
   if (a === "rename") {
     const t = prompt(tr("prompt.name"), c.title);
-    if (t && t.trim()) { c.title = t.trim().slice(0, 80); await idb.put(c); renderList(); if (current === c) els.title.textContent = c.title; }
+    if (t && t.trim()) { c.title = t.trim().slice(0, 80); await idb.put(c); renderList(); if (current === c) els.chatTitle.textContent = c.title; }
   } else if (a === "delete") {
     if (busy && current === c) return toast(tr("toast.wait"));
     if (!confirm(tr("confirm.delete", { title: c.title }))) return;
@@ -324,59 +321,61 @@ els.list.addEventListener("click", async (e) => {
     if (current === c) newChat(); else renderList();
   } else openConv(c);
 });
-els.search.addEventListener("input", renderList);
+els.chatSearch.addEventListener("input", renderList);
+els.modelSort.addEventListener("change", renderModelList);
 
 // ---------- Chat view ----------
 function setTitle() {
-  els.title.textContent = current ? current.title : tr("title.new");
-  els.exportBtn.classList.toggle("hidden", !current);
+  els.chatTitle.textContent = current ? current.title : tr("title.new");
+  els.exportButton.classList.toggle("hidden", !current);
 }
 function makeMsgEl(m, idx) {
   const row = document.createElement("div");
-  row.className = "msg " + m.role; row.dataset.idx = idx;
+  row.className = "message " + m.role; row.dataset.idx = idx;
   const b = document.createElement("div"); b.className = "bubble selectable";
   if (m.image) {
-    const im = document.createElement("div"); im.className = "att";
+    const im = document.createElement("div"); im.className = "attachment";
     im.style.backgroundImage = `url("${m.image}")`; im.setAttribute("role", "img"); im.setAttribute("aria-label", tr("msg.attachment"));
     b.appendChild(im);
   }
   const body = document.createElement("div");
   if (m.role === "user") body.textContent = m.text;
-  else { body.className = "md" + (m.error ? " err" : ""); body.innerHTML = m.error ? esc(m.text) : md(m.text); }
+  else { body.className = "markdown" + (m.error ? " error" : ""); body.innerHTML = m.error ? esc(m.text) : md(m.text); }
   b.appendChild(body); row.appendChild(b);
-  const acts = document.createElement("div"); acts.className = "msg-actions";
+  const acts = document.createElement("div"); acts.className = "message-actions";
   acts.innerHTML = `<button class="ghost" type="button" data-a="copy">${icon("copy")}<span>${tr("msg.copy")}</span></button>` +
     (m.role === "user"
       ? `<button class="ghost" type="button" data-a="edit">${icon("edit")}<span>${tr("msg.edit")}</span></button>`
       : `<button class="ghost" type="button" data-a="regen">${icon("refresh")}<span>${tr("msg.regen")}</span></button>`) +
-    (m.tps ? `<span class="meta">${m.model ? esc(m.model) + " · " : ""}${tr("msg.tps", { n: m.tps.toFixed(1) })}</span>` : "");
+    (m.tps ? `<span class="model-meta">${m.model ? esc(m.model) + " · " : ""}${tr("msg.tps", { n: m.tps.toFixed(1) })}</span>` : "");
   row.appendChild(acts);
   return { row, body };
 }
 function renderChat() {
   els.chat.innerHTML = "";
   const empty = !current || !current.messages.length;
-  els.chips.classList.toggle("hidden", !empty);
+  els.welcomeMessage.classList.toggle("hidden", !empty);
+  els.chatApp.classList.toggle("welcoming", empty);   // no messages yet: the welcome and the message box sit in the middle
   els.chat.classList.toggle("hidden", empty);
   if (!empty) current.messages.forEach((m, i) => els.chat.appendChild(makeMsgEl(m, i).row));
-  els.main.scrollTop = els.main.scrollHeight;
+  els.chatArea.scrollTop = els.chatArea.scrollHeight;
   setTitle(); renderList();
 }
 els.chat.addEventListener("click", async (e) => {
   const btn = e.target.closest("button"); if (!btn) return;
-  if (btn.classList.contains("copycode")) {
+  if (btn.classList.contains("copy-code")) {
     await navigator.clipboard?.writeText(btn.closest(".code").querySelector("code").innerText).catch(() => {});
     const label = btn.querySelector("span:not(.icon)");
     label.textContent = tr("code.copied"); setTimeout(() => (label.textContent = tr("msg.copy")), 1200); return;
   }
   const a = btn.dataset.a; if (!a) return;
-  const idx = +btn.closest(".msg").dataset.idx, m = current.messages[idx];
+  const idx = +btn.closest(".message").dataset.idx, m = current.messages[idx];
   if (a === "copy") { await navigator.clipboard?.writeText(m.text).catch(() => {}); toast(tr("toast.copied")); return; }
   if (busy) return toast(tr("toast.wait"));
   if (a === "edit") {
     current.messages.splice(idx); current.updated = Date.now(); await idb.put(current);
-    els.input.value = m.text; pendingImage = m.image && loadedDef?.kind === "multi" ? m.image : null;
-    showPreview(); autosize(); renderChat(); els.input.focus();
+    els.messageInput.value = m.text; pendingImage = m.image && loadedDef?.kind === "multi" ? m.image : null;
+    showPreview(); autosize(); renderChat(); els.messageInput.focus();
   } else if (a === "regen") {
     if (!(await ensureModel())) return;
     current.messages.splice(idx); await runAssistant();
@@ -385,30 +384,20 @@ els.chat.addEventListener("click", async (e) => {
 
 function newChat() {
   if (busy) return;
-  current = null; renderChat(); closeSide(); els.input.focus();
+  current = null; renderChat(); closeSide(); els.messageInput.focus();
 }
 async function openConv(c) {
   if (busy) return toast(tr("toast.wait"));
   await loadChat(c);
   current = c; renderChat(); closeSide();
 }
-els.newBtn.addEventListener("click", newChat);
-function renderChips() {
-  els.chips.innerHTML = "";
-  for (const key of SUGGESTIONS) {
-    const text = tr(key);
-    const b = document.createElement("button"); b.type = "button"; b.innerHTML = "<span></span>"; b.firstChild.textContent = text;
-    b.addEventListener("click", () => { els.input.value = text; send(); });
-    els.chips.appendChild(b);
-  }
-}
-renderChips();
+els.newChatButton.addEventListener("click", newChat);
 
 // ---------- Loading the model ----------
 async function unloadModel() {
   try { await model?.dispose?.(); } catch (e) { console.warn("dispose failed", e); }
   model = null; processor = null; tokenizer = null; loadedDef = null;
-  els.modelBadge.classList.remove("ok");
+  els.modelPicker.classList.remove("ok");
 }
 
 // The chat works at once: the first message loads the chosen model if it is not loaded yet.
@@ -426,8 +415,8 @@ async function loadModel() {
   loading = true;
   const def = MODEL;
   els.loadStatus.classList.remove("hidden");
-  els.loadErr.classList.add("hidden"); els.progressBox.classList.remove("hidden");
-  els.barFill.style.width = "0%"; els.progressText.textContent = tr("progress.preparing");
+  els.loadError.classList.add("hidden"); els.progressBox.classList.remove("hidden");
+  els.progressFill.style.width = "0%"; els.progressText.textContent = tr("progress.preparing");
   setModelLabel(tr("load.loading", { name: def.name }));
   const files = new Map();
   const onProgress = (info) => {
@@ -435,7 +424,7 @@ async function loadModel() {
       files.set(info.file, { loaded: info.loaded, total: info.total });
       let l = 0, t = 0; for (const f of files.values()) { l += f.loaded; t += f.total; }
       const pct = t ? (l / t) * 100 : 0;
-      els.barFill.style.width = pct.toFixed(1) + "%";
+      els.progressFill.style.width = pct.toFixed(1) + "%";
       els.progressText.textContent = tr("load.progress", { loaded: (l / 1e6).toFixed(0), total: (t / 1e6).toFixed(0), pct: pct.toFixed(0) });
     } else if (info.status === "ready") els.progressText.textContent = tr("load.gpu");
   };
@@ -453,16 +442,16 @@ async function loadModel() {
     els.progressText.textContent = tr("load.warm");
     await generate([{ role: "user", content: def.kind === "multi" ? [{ type: "text", text: "Hi" }] : "Hi" }], [], { maxTokens: 1, temperature: 0 });
     lsSet("muai.model", def.id); lsSet("muai.autoload", "1");
-    setModelLabel(def.name); els.modelBadge.classList.add("ok");
+    setModelLabel(def.name); els.modelPicker.classList.add("ok");
     els.progressBox.classList.add("hidden"); els.loadStatus.classList.add("hidden");
-    renderChat(); els.input.focus();
+    renderChat(); els.messageInput.focus();
   } catch (e) {
     console.error(e);
     try { await model?.dispose?.(); } catch {}
     model = null; processor = null; tokenizer = null; loadedDef = null;
     setModelLabel(def.name);
-    els.loadErr.textContent = tr("load.failed", { name: def.name, message: e?.message || e });
-    els.loadErr.classList.remove("hidden");
+    els.loadError.textContent = tr("load.failed", { name: def.name, message: e?.message || e });
+    els.loadError.classList.remove("hidden");
     els.progressBox.classList.add("hidden");
   } finally {
     loading = false;
@@ -473,27 +462,35 @@ async function loadModel() {
 let familyPick = "All"; // "All" is the internal value of the first filter; it is shown translated
 function renderFamilyFilter() {
   els.familyFilter.innerHTML = "";
-  const fams = ["All", ...new Set(MODELS.map((m) => m.family))];
-  for (const f of fams) {
-    const n = f === "All" ? MODELS.length : MODELS.filter((m) => m.family === f).length;
-    const b = document.createElement("button");
-    b.type = "button"; b.innerHTML = "<span></span>"; b.firstChild.textContent = `${f === "All" ? tr("filter.all") : f} ${n}`;
-    b.classList.toggle("active", f === familyPick);
-    b.addEventListener("click", () => { familyPick = f; renderFamilyFilter(); renderModelList(); });
-    els.familyFilter.appendChild(b);
+  const families = ["All", ...new Set(MODELS.map((m) => m.family))];
+  for (const family of families) {
+    const count = family === "All" ? MODELS.length : MODELS.filter((m) => m.family === family).length;
+    const option = document.createElement("option");
+    option.value = family; option.textContent = `${family === "All" ? tr("filter.all") : family} (${count})`;
+    els.familyFilter.appendChild(option);
   }
+  els.familyFilter.value = familyPick;
 }
+els.familyFilter.addEventListener("change", () => { familyPick = els.familyFilter.value; renderModelList(); });
 function renderModelList() {
   els.modelList.innerHTML = "";
-  for (const m of MODELS.filter((x) => familyPick === "All" || x.family === familyPick)) {
+  const header = document.createElement("div"); header.className = "model-row table-header";
+  for (const key of ["model.col.name", "model.col.modality", "model.col.size"]) { const cell = document.createElement("span"); cell.textContent = tr(key); header.appendChild(cell); }
+  header.appendChild(document.createElement("span"));
+  els.modelList.appendChild(header);
+  const [by, direction] = els.modelSort.value.split("-");
+  const shown = MODELS.filter((x) => familyPick === "All" || x.family === familyPick);
+  shown.sort((a, b) => (by === "size" ? a.mb - b.mb : a.name.localeCompare(b.name, i18n.lang, { numeric: true })) * (direction === "desc" ? -1 : 1));
+  for (const m of shown) {
     const card = document.createElement("div");
     const isLoaded = loadedDef && loadedDef.id === m.id, isSel = MODEL.id === m.id;
-    card.className = "mcard" + (isSel ? " sel" : "");
-    card.innerHTML = `<div class="info"><div class="nm"><span></span><span class="tag"></span><span class="tag vis"></span></div><span class="ds"></span></div><span class="sz"></span><button type="button"><span></span></button>`;
-    const [nm, tag, vis] = card.querySelectorAll(".nm span");
-    nm.textContent = m.name; tag.textContent = modelTag(m); vis.textContent = tr(m.kind === "multi" ? "model.kind.multi" : "model.kind.text");
-    card.querySelector(".ds").textContent = `${m.by} · ${modelDesc(m)}`;
-    card.querySelector(".sz").textContent = "±" + sizeLabel(m.mb);
+    card.className = "model-row" + (isSel ? " selected" : "");
+    card.innerHTML = `<span class="model-name"></span><span class="model-modality"></span><span class="model-size"></span><button type="button"><span></span></button>`;
+    card.querySelector(".model-name").textContent = m.name;
+    const modality = card.querySelector(".model-modality");
+    modality.textContent = tr(m.kind === "multi" ? "model.kind.multi" : "model.kind.text");
+    modality.classList.toggle("multimodal", m.kind === "multi");
+    card.querySelector(".model-size").textContent = "±" + sizeLabel(m.mb);
     const btn = card.querySelector("button");
     btn.firstChild.textContent = tr(isLoaded ? "picker.inUse" : "picker.select");
     btn.disabled = isLoaded || busy; if (!isLoaded) btn.classList.add("outline");
@@ -505,15 +502,15 @@ async function chooseModel(m) {
   if (busy) return toast(tr("toast.wait"));
   const seen = lsGet("muai.seen." + m.id) === "1";
   if (!seen && m.mb >= 1000 && !confirm(tr("picker.confirm", { name: m.name, size: sizeLabel(m.mb) }))) return;
-  els.modelDlg.close();
+  els.modelDialog.close();
   if (model) await unloadModel();
   MODEL = m; lsSet("muai.model", m.id); showSelected(); renderChat();
   await loadModel();
   if (loadedDef && loadedDef.id === m.id) lsSet("muai.seen." + m.id, "1");
 }
-function openModelDlg() { renderFamilyFilter(); renderModelList(); els.modelDlg.showModal(); }
-els.modelBadge.addEventListener("click", openModelDlg);
-els.closeModelDlg.addEventListener("click", () => els.modelDlg.close());
+function openModelDlg() { renderFamilyFilter(); renderModelList(); els.modelDialog.showModal(); }
+els.modelPicker.addEventListener("click", openModelDlg);
+els.closeModelDialogButton.addEventListener("click", () => els.modelDialog.close());
 
 // ---------- Generate ----------
 async function generate(messages, imgs, opts, onText) {
@@ -564,8 +561,8 @@ function buildMessages() {
 
 function setBusy(v) {
   busy = v;
-  els.sendBtn.classList.toggle("hidden", v); els.stopBtn.classList.toggle("hidden", !v);
-  els.input.disabled = v; els.attachBtn.disabled = v;
+  els.sendButton.classList.toggle("hidden", v); els.stopButton.classList.toggle("hidden", !v);
+  els.messageInput.disabled = v; els.attachButton.disabled = v;
 }
 
 async function runAssistant() {
@@ -573,12 +570,12 @@ async function runAssistant() {
   const m = { role: "assistant", text: "" };
   const idx = current.messages.length;
   const { row, body } = makeMsgEl(m, idx);
-  row.querySelector(".msg-actions").classList.add("hidden");
+  row.querySelector(".message-actions").classList.add("hidden");
   body.classList.add("cursor"); els.chat.appendChild(row);
-  els.main.scrollTop = els.main.scrollHeight;
+  els.chatArea.scrollTop = els.chatArea.scrollHeight;
   setBusy(true);
   let acc = "", raf = 0;
-  const paint = () => { raf = 0; body.innerHTML = md(acc); body.classList.add("cursor"); els.main.scrollTop = els.main.scrollHeight; };
+  const paint = () => { raf = 0; body.innerHTML = md(acc); body.classList.add("cursor"); els.chatArea.scrollTop = els.chatArea.scrollHeight; };
   try {
     const { msgs, imgs } = buildMessages();
     const r = await generate(msgs, imgs, { maxTokens: settings.maxTokens, temperature: settings.temperature }, (t) => { acc += t; if (!raf) raf = requestAnimationFrame(paint); });
@@ -589,12 +586,12 @@ async function runAssistant() {
     cancelAnimationFrame(raf);
     current.messages.push(m); current.updated = Date.now();
     convs.sort((a, b) => b.updated - a.updated);
-    await idb.put(current); setBusy(false); renderChat(); els.input.focus();
+    await idb.put(current); setBusy(false); renderChat(); els.messageInput.focus();
   }
 }
 
 async function send() {
-  const text = els.input.value.trim();
+  const text = els.messageInput.value.trim();
   if (!text || busy) return;
   if (!(await ensureModel())) return;
   if (!current) {
@@ -603,7 +600,7 @@ async function send() {
   }
   const m = { role: "user", text }; if (pendingImage) m.image = pendingImage;
   current.messages.push(m); current.updated = Date.now();
-  els.input.value = ""; autosize(); clearImage();
+  els.messageInput.value = ""; autosize(); clearImage();
   await idb.put(current);
   await runAssistant();
 }
@@ -611,21 +608,21 @@ async function send() {
 // ---------- Input ----------
 // Textarea height is computed in rem (multiples of 0.2rem), from 2.4rem up to 10rem.
 function autosize() {
-  els.input.style.height = "auto";
-  const rem = Math.min(10, Math.max(2.4, Math.ceil((els.input.scrollHeight + 2) / 3.2) * 0.2));
-  els.input.style.height = rem.toFixed(1) + "rem";
+  els.messageInput.style.height = "auto";
+  const rem = Math.min(10, Math.max(2.4, Math.ceil((els.messageInput.scrollHeight + 2) / 3.2) * 0.2));
+  els.messageInput.style.height = rem.toFixed(1) + "rem";
 }
-els.input.addEventListener("input", autosize);
-els.input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(); } });
-els.sendBtn.addEventListener("click", send);
-els.stopBtn.addEventListener("click", () => stopper.interrupt());
+els.messageInput.addEventListener("input", autosize);
+els.messageInput.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(); } });
+els.sendButton.addEventListener("click", send);
+els.stopButton.addEventListener("click", () => stopper.interrupt());
 
 // ---------- Image attachment (downscaled so history does not balloon) ----------
 function showPreview() {
-  els.preview.classList.toggle("hidden", !pendingImage);
-  els.previewImg.style.backgroundImage = pendingImage ? `url("${pendingImage}")` : "";
+  els.attachmentPreview.classList.toggle("hidden", !pendingImage);
+  els.attachmentPreviewImage.style.backgroundImage = pendingImage ? `url("${pendingImage}")` : "";
 }
-function clearImage() { pendingImage = null; els.file.value = ""; showPreview(); }
+function clearImage() { pendingImage = null; els.imageFileInput.value = ""; showPreview(); }
 function shrink(file, max = 1024) {
   return new Promise((res, rej) => {
     const url = URL.createObjectURL(file), img = new Image();
@@ -639,21 +636,21 @@ function shrink(file, max = 1024) {
     img.src = url;
   });
 }
-els.attachBtn.addEventListener("click", () => els.file.click());
-els.removeImg.addEventListener("click", clearImage);
-els.file.addEventListener("change", async () => {
-  const f = els.file.files[0]; if (!f) return;
+els.attachButton.addEventListener("click", () => els.imageFileInput.click());
+els.removeAttachmentButton.addEventListener("click", clearImage);
+els.imageFileInput.addEventListener("change", async () => {
+  const f = els.imageFileInput.files[0]; if (!f) return;
   try { pendingImage = await shrink(f); showPreview(); } catch (e) { toast(e.message); }
 });
 
 // ---------- Export / import / delete ----------
 const toMarkdown = (c) => `# ${c.title}\n\n_${new Date(c.created).toLocaleString(i18n.lang)}_\n\n` +
   c.messages.map((m) => `**${m.role === "user" ? tr("export.you") : "muAI"}:**${m.image ? ` _${tr("export.imageAttached")}_` : ""}\n\n${m.text}`).join("\n\n---\n\n") + "\n";
-els.exportBtn.addEventListener("click", () => current && download(`${current.title.replace(/[^\w-]+/g, "_") || "muai"}.md`, toMarkdown(current), "text/markdown"));
-els.exportAllBtn.addEventListener("click", () => convs.length ? download("muai-history.json", JSON.stringify(convs), "application/json") : toast(tr("toast.noHistory")));
-els.importBtn.addEventListener("click", () => els.importFile.click());
-els.importFile.addEventListener("change", async () => {
-  const f = els.importFile.files[0]; els.importFile.value = ""; if (!f) return;
+els.exportButton.addEventListener("click", () => current && download(`${current.title.replace(/[^\w-]+/g, "_") || "muai"}.markdown`, toMarkdown(current), "text/markdown"));
+els.exportAllButton.addEventListener("click", () => convs.length ? download("muai-history.json", JSON.stringify(convs), "application/json") : toast(tr("toast.noHistory")));
+els.importButton.addEventListener("click", () => els.importFileInput.click());
+els.importFileInput.addEventListener("change", async () => {
+  const f = els.importFileInput.files[0]; els.importFileInput.value = ""; if (!f) return;
   try {
     const data = JSON.parse(await f.text()); if (!Array.isArray(data)) throw new Error();
     let n = 0;
@@ -669,32 +666,32 @@ els.importFile.addEventListener("change", async () => {
     convs.sort((a, b) => b.updated - a.updated); renderList(); toast(tr("toast.imported", { n }));
   } catch { toast(tr("toast.invalidImport")); }
 });
-els.clearAllBtn.addEventListener("click", async () => {
+els.clearAllButton.addEventListener("click", async () => {
   if (busy) return toast(tr("toast.wait"));
   if (!convs.length) return toast(tr("toast.noHistory"));
   if (!confirm(tr("confirm.deleteAll", { n: convs.length }))) return;
-  convs = []; await idb.clear(); els.settingsDlg.close(); newChat();
+  convs = []; await idb.clear(); els.settingsDialog.close(); newChat();
 });
 
 // ---------- Settings dialog ----------
 function fillSettings() {
-  els.setSystem.value = settings.system; els.setMax.value = settings.maxTokens;
-  els.setTemp.value = settings.temperature; els.tempVal.textContent = settings.temperature; els.setCtx.value = settings.ctx;
+  els.settingSystemPrompt.value = settings.system; els.settingMaxTokens.value = settings.maxTokens;
+  els.settingTemperature.value = settings.temperature; els.temperatureValue.textContent = settings.temperature; els.settingContext.value = settings.ctx;
 }
-els.settingsBtn.addEventListener("click", () => { fillSettings(); els.settingsDlg.showModal(); });
+els.settingsButton.addEventListener("click", () => { fillSettings(); els.settingsDialog.showModal(); });
 
 // The sign-in is the account web, opened by assets/account.js.
-account.bind($("accountBtn"));
-els.setTemp.addEventListener("input", () => (els.tempVal.textContent = els.setTemp.value));
-els.cancelSettings.addEventListener("click", () => els.settingsDlg.close());
-els.resetSettings.addEventListener("click", () => { settings = { ...DEFAULTS }; fillSettings(); });
+account.bind($("account-button"));
+els.settingTemperature.addEventListener("input", () => (els.temperatureValue.textContent = els.settingTemperature.value));
+els.cancelSettingsButton.addEventListener("click", () => els.settingsDialog.close());
+els.resetSettingsButton.addEventListener("click", () => { settings = { ...DEFAULTS }; fillSettings(); });
 els.settingsForm.addEventListener("submit", () => {
   const clamp = (v, a, b, d) => (Number.isFinite(+v) ? Math.min(b, Math.max(a, +v)) : d);
   settings = {
-    system: els.setSystem.value,
-    maxTokens: clamp(els.setMax.value, 64, 4096, DEFAULTS.maxTokens),
-    temperature: clamp(els.setTemp.value, 0, 1.5, DEFAULTS.temperature),
-    ctx: clamp(els.setCtx.value, 2, 60, DEFAULTS.ctx),
+    system: els.settingSystemPrompt.value,
+    maxTokens: clamp(els.settingMaxTokens.value, 64, 4096, DEFAULTS.maxTokens),
+    temperature: clamp(els.settingTemperature.value, 0, 1.5, DEFAULTS.temperature),
+    ctx: clamp(els.settingContext.value, 2, 60, DEFAULTS.ctx),
   };
   saveSettings(); toast(tr("toast.saved"));
 });
@@ -702,12 +699,12 @@ els.settingsForm.addEventListener("submit", () => {
 // ---------- Theme ----------
 function applyTheme(t, save) {
   document.documentElement.dataset.theme = t;
-  els.themeDark.classList.toggle("active", t === "dark");
-  els.themeLight.classList.toggle("active", t === "light");
+  els.themeDarkButton.classList.toggle("active", t === "dark");
+  els.themeLightButton.classList.toggle("active", t === "light");
   if (save) lsSet("theme", t);
 }
-els.themeDark.addEventListener("click", () => applyTheme("dark", true));
-els.themeLight.addEventListener("click", () => applyTheme("light", true));
+els.themeDarkButton.addEventListener("click", () => applyTheme("dark", true));
+els.themeLightButton.addEventListener("click", () => applyTheme("light", true));
 applyTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark", false);
 window.addEventListener("storage", (event) => {
   if (event.key === "theme" || event.key === null) applyTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark", false);
@@ -722,27 +719,27 @@ function setSideWidth(rem) {
   const max = Math.floor(Math.max(SIDE.min, Math.min(SIDE.max, (innerWidth / remPx()) * 0.6)) / 0.2 + 1e-6) * 0.2;
   sideRem = Math.round(Math.min(max, Math.max(SIDE.min, Math.round(rem / 0.2) * 0.2)) * 10) / 10;
   document.documentElement.style.setProperty("--side-width", sideRem.toFixed(1) + "rem");
-  els.resizer.setAttribute("aria-valuenow", sideRem.toFixed(1));
+  els.sideResizer.setAttribute("aria-valuenow", sideRem.toFixed(1));
 }
 const saveSideWidth = () => lsSet("muai.sideWidth", sideRem.toFixed(1));
-els.resizer.addEventListener("pointerdown", (e) => {
-  e.preventDefault(); els.resizer.setPointerCapture(e.pointerId);
-  document.body.classList.add("resizing"); els.resizer.classList.add("active");
+els.sideResizer.addEventListener("pointerdown", (e) => {
+  e.preventDefault(); els.sideResizer.setPointerCapture(e.pointerId);
+  document.body.classList.add("resizing"); els.sideResizer.classList.add("active");
 });
-els.resizer.addEventListener("pointermove", (e) => {
-  if (els.resizer.hasPointerCapture(e.pointerId)) {
+els.sideResizer.addEventListener("pointermove", (e) => {
+  if (els.sideResizer.hasPointerCapture(e.pointerId)) {
     const box = els.side.getBoundingClientRect();
     setSideWidth((document.documentElement.dir === "rtl" ? box.right - e.clientX : e.clientX - box.left) / remPx());
   }
 });
 const endResize = (e) => {
-  if (els.resizer.hasPointerCapture(e.pointerId)) els.resizer.releasePointerCapture(e.pointerId);
-  document.body.classList.remove("resizing"); els.resizer.classList.remove("active"); saveSideWidth();
+  if (els.sideResizer.hasPointerCapture(e.pointerId)) els.sideResizer.releasePointerCapture(e.pointerId);
+  document.body.classList.remove("resizing"); els.sideResizer.classList.remove("active"); saveSideWidth();
 };
-els.resizer.addEventListener("pointerup", endResize);
-els.resizer.addEventListener("pointercancel", endResize);
-els.resizer.addEventListener("dblclick", () => { setSideWidth(SIDE.def); saveSideWidth(); });
-els.resizer.addEventListener("keydown", (e) => {
+els.sideResizer.addEventListener("pointerup", endResize);
+els.sideResizer.addEventListener("pointercancel", endResize);
+els.sideResizer.addEventListener("dblclick", () => { setSideWidth(SIDE.def); saveSideWidth(); });
+els.sideResizer.addEventListener("keydown", (e) => {
   const flip = document.documentElement.dir === "rtl" ? -1 : 1;
   const to = { ArrowLeft: sideRem - flip, ArrowRight: sideRem + flip, Home: SIDE.min, End: SIDE.max }[e.key];
   if (to === undefined) return;
@@ -753,15 +750,15 @@ setSideWidth(sideRem);
 
 // ---------- Mobile sidebar ----------
 const closeSide = () => document.body.classList.remove("side-open");
-els.menuBtn.addEventListener("click", () => document.body.classList.toggle("side-open"));
-els.overlay.addEventListener("click", closeSide);
+els.menuButton.addEventListener("click", () => document.body.classList.toggle("side-open"));
+els.sideOverlay.addEventListener("click", closeSide);
 
 // ---------- Language ----------
 i18n.onChange(() => {
-  renderGpu(); renderChips(); showSelected();
+  renderGpu(); showSelected();
   setModelLabel(model ? loadedDef.name : MODEL.name);
   renderChat();
-  if (els.modelDlg.open) { renderFamilyFilter(); renderModelList(); }
+  if (els.modelDialog.open) { renderFamilyFilter(); renderModelList(); }
 });
 
 // ---------- Start ----------

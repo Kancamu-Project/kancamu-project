@@ -161,7 +161,7 @@ body {
         }
     }
 
-    & > .tools {
+    & > .header-tools {
         flex-shrink: 0;
         align-items: stretch;
         padding: 0;
@@ -178,7 +178,7 @@ body {
             }
         }
 
-        & > :is(#theme, #account) {
+        & > :is(#theme-button, #account-button) {
             width: calc(var(--unit) * 14);
             padding: 0;
             border-inline-start: var(--border-width) solid var(--border);
@@ -308,7 +308,7 @@ button {
     transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
-#reset {
+#reset-button {
     color: var(--danger);
     background: color-mix(in srgb, var(--danger) 10%, var(--bg));
     border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
@@ -391,31 +391,31 @@ button {
                 box-shadow: inset var(--border-width-thick) 0 0 var(--color);
             }
 
-            & > .top {
+            & > .project-header {
                 display: contents;
 
-                & > .tag {
+                & > .project-publisher {
                     order: 2;
                 }
 
-                & > .link {
+                & > .project-link {
                     display: none;
                 }
             }
 
-            & > .info {
+            & > .project-body {
                 order: 1;
             }
 
-            & > .categories {
+            & > .project-categories {
                 order: 3;
             }
 
-            & > .actions {
+            & > .project-actions {
                 order: 4;
             }
 
-            & > :is(.info, .categories, .actions) {
+            & > :is(.project-body, .project-categories, .project-actions) {
                 padding-inline: 0;
             }
         }
@@ -443,7 +443,7 @@ button {
         box-shadow: inset 0 var(--border-width-thick) 0 var(--color);
     }
 
-    & > .top {
+    & > .project-header {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -454,11 +454,11 @@ button {
         font-weight: bold;
         text-transform: uppercase;
 
-        & > .tag {
+        & > .project-publisher {
             color: var(--color);
         }
 
-        & > .link {
+        & > .project-link {
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -472,7 +472,7 @@ button {
         }
     }
 
-    & > .info {
+    & > .project-body {
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -491,7 +491,7 @@ button {
             image-rendering: pixelated;
         }
 
-        & > .text {
+        & > .project-text {
             display: flex;
             flex-direction: column;
             gap: var(--gap-extra-small);
@@ -512,7 +512,7 @@ button {
         }
     }
 
-    & > .categories {
+    & > .project-categories {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
@@ -533,7 +533,7 @@ button {
         }
     }
 
-    & > .actions {
+    & > .project-actions {
         width: 100%;
         height: var(--height);
         display: grid;
@@ -546,7 +546,7 @@ button {
             padding: 0;
         }
 
-        & > .open {
+        & > .project-open-button {
             border-color: var(--fg);
 
             &:hover {
@@ -578,7 +578,7 @@ button {
     background: var(--bg);
     border: var(--border-width) solid var(--fg-1);
 
-    & > .item {
+    & > .menu-item {
         width: 100%;
         justify-content: flex-start;
         border: none;
@@ -605,12 +605,16 @@ button {
 }
 
 @media (max-width: 640px) {
+    #main {
+        padding: var(--padding-medium);
+    }
+
     #project-list.list {
         --list-columns: 1fr calc(var(--unit) * 50);
 
         & > .list-header > :is(.publisher, .category),
-        & > .project > .top > .tag,
-        & > .project > .categories {
+        & > .project > .project-header > .project-publisher,
+        & > .project > .project-categories {
             display: none;
         }
     }

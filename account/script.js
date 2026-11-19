@@ -39,29 +39,29 @@ const element = (tag, className, text) => {
 };
 
 function section(title, rows) {
-    const box = element("div", "section");
-    const list = element("div", "rows");
+    const box = element("div", "detail-section");
+    const list = element("div", "detail-rows");
     for (const [key, value] of rows) {
         if (value === null || value === undefined || value === "") continue;
-        const row = element("div", "row");
+        const row = element("div", "detail-row");
         const cell = element("span", "value");
         if (value instanceof Node) cell.append(value);
         else cell.textContent = value;
-        row.append(element("span", "key", key), cell);
+        row.append(element("span", "detail-key", key), cell);
         list.append(row);
     }
-    box.append(element("span", "section-title", title), list);
+    box.append(element("span", "detail-section-title", title), list);
     return box;
 }
 
 function renderDetails() {
-    const box = $("details");
+    const box = $("account-details");
     if (!details) return box.replaceChildren();
     const { user } = details;
     const link = user.html_url ? Object.assign(element("a", "", user.html_url.replace("https://", "")), { href: user.html_url, target: "_blank", rel: "noopener" }) : null;
     const date = (value) => (value ? i18n.date(value, { year: "numeric", month: "long", day: "numeric" }) : "");
-    const scopes = details.scopes.length ? element("span", "chips") : null;
-    details.scopes.forEach((scope) => scopes.append(element("span", "chip", scope)));
+    const scopes = details.scopes.length ? element("span", "scope-chips") : null;
+    details.scopes.forEach((scope) => scopes.append(element("span", "scope-chip", scope)));
     box.replaceChildren(
         section(t("profile"), [
             [t("githubProfile"), link],
@@ -83,18 +83,18 @@ function renderDetails() {
             [t("expires"), date(details.expires)],
         ])
     );
-    $("profile").querySelector(".bio").textContent = user.bio || "";
+    $("account-profile").querySelector(".account-bio").textContent = user.bio || "";
 }
 
 function render() {
     const user = account.get();
-    $("form").hidden = !!user;
-    $("profile").hidden = !user;
-    document.querySelector(".head .title").textContent = t(user ? "account" : "title");
+    $("token-form").hidden = !!user;
+    $("account-profile").hidden = !user;
+    document.querySelector(".page-header .page-title").textContent = t(user ? "account" : "title");
     if (user) {
-        $("profile").querySelector(".avatar").style.backgroundImage = `url("${user.avatar}")`;
-        $("profile").querySelector(".name").textContent = user.name;
-        $("profile").querySelector(".login").textContent = `@${user.login}`;
+        $("account-profile").querySelector(".account-avatar").style.backgroundImage = `url("${user.avatar}")`;
+        $("account-profile").querySelector(".account-name").textContent = user.name;
+        $("account-profile").querySelector(".account-login").textContent = `@${user.login}`;
         if (details?.token === user.token) renderDetails();
         else {
             details = null;
@@ -117,34 +117,34 @@ function reportSize() {
     if (embedded) window.parent.postMessage({ type: "account:size", height: Math.ceil($("page").getBoundingClientRect().height) }, location.origin);
 }
 
-$("form").addEventListener("submit", async (event) => {
+$("token-form").addEventListener("submit", async (event) => {
     event.preventDefault();
-    const submit = $("form").querySelector("[type=submit]");
-    $("error").textContent = "";
+    const submit = $("token-form").querySelector("[type=submit]");
+    $("token-error").textContent = "";
     submit.disabled = true;
     try {
-        await account.signIn($("token").value);
-        $("token").value = "";
+        await account.signIn($("token-input").value);
+        $("token-input").value = "";
     } catch (failure) {
-        $("error").textContent = t(`error.${failure.code || "failed"}`);
+        $("token-error").textContent = t(`error.${failure.code || "failed"}`);
     }
     submit.disabled = false;
     reportSize();
 });
 
-$("out").addEventListener("click", () => account.signOut());
+$("sign-out-button").addEventListener("click", () => account.signOut());
 
 // Opens GitHub with the "repo" scope already selected.
-$("create").addEventListener("click", () => window.open("https://github.com/settings/tokens/new?scopes=repo&description=" + encodeURIComponent(i18n.brand.name), "_blank", "noopener"));
+$("create-token-button").addEventListener("click", () => window.open("https://github.com/settings/tokens/new?scopes=repo&description=" + encodeURIComponent(i18n.brand.name), "_blank", "noopener"));
 
-$("close").hidden = !embedded;
-$("close").addEventListener("click", () => window.parent.postMessage({ type: "account:close" }, location.origin));
+$("close-button").hidden = !embedded;
+$("close-button").addEventListener("click", () => window.parent.postMessage({ type: "account:close" }, location.origin));
 document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && embedded) window.parent.postMessage({ type: "account:close" }, location.origin);
 });
 
 // The first control, so the keyboard works at once when the dialog opens.
-const focusFirst = () => (account.get() ? $("out") : $("token")).focus();
+const focusFirst = () => (account.get() ? $("sign-out-button") : $("token-input")).focus();
 window.addEventListener("message", (event) => {
     if (event.origin === location.origin && event.data?.type === "account:focus") focusFirst();
 });

@@ -14,123 +14,130 @@
 </head>
 <body>
 <div class="side" id="side">
-  <div class="side-top">
-    <div class="brand-row">
-      <div class="logo"><div class="mark"></div><div class="name" data-i18n-html="logo"></div></div>
-      <div class="brand-tools">
-        <button id="settingsBtn" class="ghost square" type="button" data-i18n-title="settings" data-i18n-label="settings"><span class="icon i-sliders"></span></button>
-        <button id="accountBtn" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon i-user"></span></button>
-      </div>
+  <div class="brand-row">
+    <div class="logo"><div class="logo-mark"></div><div class="logo-name" data-i18n-html="logo"></div></div>
+    <div class="brand-tools">
+      <button id="settings-button" class="ghost square" type="button" data-i18n-title="settings" data-i18n-label="settings"><span class="icon icon-sliders"></span></button>
+      <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
     </div>
-    <button id="newBtn" class="primary" type="button"><span class="icon i-plus"></span><span data-i18n="title.new"></span></button>
-    <input id="search" type="search" data-i18n-placeholder="search.placeholder" data-i18n-label="search.label">
   </div>
-  <div id="list"></div>
-  <div class="side-foot"><span data-i18n="copyright"></span></div>
-  <div id="resizer" class="resizer" role="separator" aria-orientation="vertical" data-i18n-label="resizer.label" aria-valuemin="16" aria-valuemax="40" tabindex="0" data-i18n-title="resizer.title"></div>
+  <div class="chat-controls">
+    <button id="new-chat-button" class="primary" type="button"><span class="icon icon-plus"></span><span data-i18n="title.new"></span></button>
+    <button id="model-picker" type="button" data-i18n-title="model.choose"><span class="icon icon-cpu"></span><span id="model-picker-label"></span><span class="icon icon-chevron"></span></button>
+    <input id="chat-search" type="search" data-i18n-placeholder="search.placeholder" data-i18n-label="search.label">
+  </div>
+  <div id="chat-list"></div>
+  <div class="side-footer"><a href="/" target="_top" data-i18n="copyright"></a></div>
+  <div id="side-resizer" class="side-resizer" role="separator" aria-orientation="vertical" data-i18n-label="resizer.label" aria-valuemin="16" aria-valuemax="40" tabindex="0" data-i18n-title="resizer.title"></div>
 </div>
-<div class="overlay" id="overlay"></div>
+<div class="side-overlay" id="side-overlay"></div>
 
-<div class="app">
+<div id="chat-app" class="app">
   <div class="topbar">
-    <button id="menuBtn" class="ghost square" type="button" data-i18n-label="menu"><span class="icon i-menu"></span></button>
-    <div id="title"></div>
-    <button id="exportBtn" class="ghost hidden" type="button"><span class="icon i-download"></span><span data-i18n="export.md"></span></button>
-    <button id="modelBadge" type="button" data-i18n-title="model.choose"><span class="icon i-cpu"></span><span id="modelLabel"></span><span class="icon i-chevron"></span></button>
+    <button id="menu-button" class="ghost square" type="button" data-i18n-label="menu"><span class="icon icon-menu"></span></button>
+    <div id="chat-title"></div>
+    <button id="export-button" class="ghost hidden" type="button"><span class="icon icon-download"></span><span data-i18n="export.md"></span></button>
   </div>
 
-  <div id="main" class="scroll">
-    <div class="wrap">
-      <div class="chips" id="chips"></div>
+  <div id="chat-area" class="scrollable-area">
+    <div class="chat-column">
+      <span id="welcome-message" class="welcome-message" data-i18n="welcome"></span>
       <div id="chat" class="hidden"></div>
     </div>
   </div>
 
-  <div class="bottom">
-    <div id="preview" class="hidden"><div id="previewImg" class="thumb" role="img" data-i18n-label="attached.image"></div><span id="previewName" class="note" data-i18n="attached.image"></span><button id="removeImg" class="ghost" type="button"><span class="icon i-x"></span><span data-i18n="remove"></span></button></div>
-    <div id="loadStatus" class="hidden">
-      <div id="progressBox" class="hidden">
-        <div class="bar"><div id="barFill"></div></div>
-        <span id="progressText" class="note"></span>
+  <div class="composer-area">
+    <div id="attachment-preview" class="hidden"><div id="attachment-preview-image" class="attachment-thumbnail" role="img" data-i18n-label="attached.image"></div><span id="attachment-preview-name" class="note" data-i18n="attached.image"></span><button id="remove-attachment-button" class="ghost" type="button"><span class="icon icon-x"></span><span data-i18n="remove"></span></button></div>
+    <div id="load-status" class="hidden">
+      <div id="progress-box" class="hidden">
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <span id="progress-text" class="note"></span>
       </div>
-      <span id="loadErr" class="note err hidden"></span>
+      <span id="load-error" class="note error hidden"></span>
     </div>
     <div class="composer">
-      <input type="file" id="file" accept="image/*" hidden>
-      <button id="attachBtn" class="square" type="button" data-i18n-title="attach.image" data-i18n-label="attach.image"><span class="icon i-image"></span></button>
-      <textarea id="input" rows="1" data-i18n-placeholder="composer.type"></textarea>
-      <button id="sendBtn" class="primary" type="button"><span class="icon i-send"></span><span data-i18n="send"></span></button>
-      <button id="stopBtn" class="hidden" type="button"><span class="icon i-stop"></span><span data-i18n="stop"></span></button>
+      <input type="file" id="image-file-input" accept="image/*" hidden>
+      <button id="attach-button" class="square" type="button" data-i18n-title="attach.image" data-i18n-label="attach.image"><span class="icon icon-image"></span></button>
+      <textarea id="message-input" rows="1" data-i18n-placeholder="composer.type"></textarea>
+      <button id="send-button" class="primary square" type="button" data-i18n-title="send" data-i18n-label="send"><span class="icon icon-send"></span></button>
+      <button id="stop-button" class="hidden" type="button"><span class="icon icon-stop"></span><span data-i18n="stop"></span></button>
     </div>
-    <span class="hint" data-i18n="hint"></span>
   </div>
 </div>
 
-<dialog id="modelDlg">
-  <div class="dlg-body">
+<dialog id="model-dialog">
+  <div class="dialog-body">
     <h2 data-i18n="model.choose"></h2>
-    <span class="note sub" data-i18n="dlg.models.text"></span>
-    <div id="familyFilter" class="filters"></div>
-    <div id="modelList"></div>
-    <div class="row"><button type="button" id="closeModelDlg"><span data-i18n="close"></span></button></div>
+    <span class="note dialog-subtitle" data-i18n="dlg.models.text"></span>
+    <div class="model-controls">
+      <select id="family-filter" data-i18n-label="model.filter.label"></select>
+      <select id="model-sort" data-i18n-label="model.sort.label">
+        <option value="size-asc" data-i18n="model.sort.sizeAsc"></option>
+        <option value="size-desc" data-i18n="model.sort.sizeDesc"></option>
+        <option value="name-asc" data-i18n="model.sort.nameAsc"></option>
+        <option value="name-desc" data-i18n="model.sort.nameDesc"></option>
+      </select>
+    </div>
+    <div id="model-list"></div>
+    <div class="button-row"><button type="button" id="close-model-dialog-button"><span data-i18n="close"></span></button></div>
   </div>
 </dialog>
 
-<dialog id="settingsDlg">
-  <form method="dialog" id="settingsForm">
+<dialog id="settings-dialog">
+  <form method="dialog" id="settings-form">
     <h2 data-i18n="settings"></h2>
     <div class="fields">
       <div class="field">
-        <span class="lbl" data-i18n="set.language"></span>
+        <span class="field-label" data-i18n="set.language"></span>
         <select class="language" data-i18n-label="set.language"></select>
       </div>
       <div class="field">
-        <span class="lbl" data-i18n="set.theme"></span>
-        <div class="seg">
-          <button id="themeDark" type="button"><span class="icon i-moon"></span><span data-i18n="theme.dark"></span></button>
-          <button id="themeLight" type="button"><span class="icon i-sun"></span><span data-i18n="theme.light"></span></button>
+        <span class="field-label" data-i18n="set.theme"></span>
+        <div class="segmented-control">
+          <button id="theme-dark-button" type="button"><span class="icon icon-moon"></span><span data-i18n="theme.dark"></span></button>
+          <button id="theme-light-button" type="button"><span class="icon icon-sun"></span><span data-i18n="theme.light"></span></button>
         </div>
       </div>
       <div class="field">
-        <span class="lbl">WebGPU</span>
-        <span id="gpuBadge" class="status"></span>
+        <span class="field-label">WebGPU</span>
+        <span id="gpu-status" class="status"></span>
       </div>
     </div>
     <label>
-      <span class="lbl" data-i18n="set.system.label"></span>
-      <span class="h" data-i18n="set.system.hint"></span>
-      <textarea id="setSystem"></textarea>
+      <span class="field-label" data-i18n="set.system.label"></span>
+      <span class="field-hint" data-i18n="set.system.hint"></span>
+      <textarea id="setting-system-prompt"></textarea>
     </label>
     <div class="fields">
     <label>
-      <span class="lbl" data-i18n="set.max.label"></span>
-      <span class="h" data-i18n="set.max.hint"></span>
-      <input id="setMax" type="number" min="64" max="4096" step="64">
+      <span class="field-label" data-i18n="set.max.label"></span>
+      <span class="field-hint" data-i18n="set.max.hint"></span>
+      <input id="setting-max-tokens" type="number" min="64" max="4096" step="64">
     </label>
     <label>
-      <span class="lbl"><span data-i18n="set.temp.label"></span>: <span id="tempVal"></span></span>
-      <span class="h" data-i18n="set.temp.hint"></span>
-      <input id="setTemp" type="range" min="0" max="1.5" step="0.1">
+      <span class="field-label"><span data-i18n="set.temp.label"></span>: <span id="temperature-value"></span></span>
+      <span class="field-hint" data-i18n="set.temp.hint"></span>
+      <input id="setting-temperature" type="range" min="0" max="1.5" step="0.1">
     </label>
     <label>
-      <span class="lbl" data-i18n="set.ctx.label"></span>
-      <span class="h" data-i18n="set.ctx.hint"></span>
-      <input id="setCtx" type="number" min="2" max="60" step="2">
+      <span class="field-label" data-i18n="set.ctx.label"></span>
+      <span class="field-hint" data-i18n="set.ctx.hint"></span>
+      <input id="setting-context" type="number" min="2" max="60" step="2">
     </label>
     </div>
-    <div class="data">
-      <span class="lbl" data-i18n="set.data.label"></span>
-      <span class="h" data-i18n="set.data.hint"></span>
-      <div class="row-start">
-        <button id="exportAllBtn" type="button"><span class="icon i-download"></span><span data-i18n="data.exportAll"></span></button>
-        <button id="importBtn" type="button"><span class="icon i-upload"></span><span data-i18n="data.import"></span></button>
-        <button id="clearAllBtn" class="danger" type="button"><span class="icon i-trash"></span><span data-i18n="data.deleteAll"></span></button>
-        <input type="file" id="importFile" accept="application/json" hidden>
+    <div class="data-section">
+      <span class="field-label" data-i18n="set.data.label"></span>
+      <span class="field-hint" data-i18n="set.data.hint"></span>
+      <div class="button-row-start">
+        <button id="export-all-button" type="button"><span class="icon icon-download"></span><span data-i18n="data.exportAll"></span></button>
+        <button id="import-button" type="button"><span class="icon icon-upload"></span><span data-i18n="data.import"></span></button>
+        <button id="clear-all-button" class="danger" type="button"><span class="icon icon-trash"></span><span data-i18n="data.deleteAll"></span></button>
+        <input type="file" id="import-file-input" accept="application/json" hidden>
       </div>
     </div>
-    <div class="row">
-      <button type="button" id="resetSettings"><span class="icon i-refresh"></span><span data-i18n="reset"></span></button>
-      <button type="button" id="cancelSettings"><span data-i18n="cancel"></span></button>
+    <div class="button-row">
+      <button type="button" id="reset-settings-button"><span class="icon icon-refresh"></span><span data-i18n="reset"></span></button>
+      <button type="button" id="cancel-settings-button"><span data-i18n="cancel"></span></button>
       <button type="submit" class="primary" value="save"><span data-i18n="save"></span></button>
     </div>
   </form>

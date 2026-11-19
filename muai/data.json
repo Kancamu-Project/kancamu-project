@@ -102,11 +102,6 @@
       "zh-CN": "停止",
       "ar-SA": "إيقاف"
     },
-    "hint": {
-      "en-US": "Enter to send · Shift+Enter for a new line · AI can be wrong, double-check important info.",
-      "zh-CN": "按 Enter 发送 · Shift+Enter 换行 · AI 可能出错，请核实重要信息。",
-      "ar-SA": "اضغط Enter للإرسال · Shift+Enter لسطر جديد · قد يخطئ الذكاء الاصطناعي، تحقق من المعلومات المهمة."
-    },
     "dlg.models.text": {
       "en-US": "All models run in your browser through WebGPU and are downloaded from Hugging Face once. Sizes are the approximate first download. Larger models are smarter but need more GPU and memory.",
       "zh-CN": "所有模型都通过 WebGPU 在浏览器中运行，并只需从 Hugging Face 下载一次。大小为首次下载的大致体积。模型越大越聪明，但需要更多 GPU 和内存。",
@@ -271,26 +266,6 @@
       "en-US": "Newest · heavy",
       "zh-CN": "最新 · 重量级",
       "ar-SA": "الأحدث · ثقيل"
-    },
-    "s1": {
-      "en-US": "Explain what WebGPU is with a simple example",
-      "zh-CN": "用一个简单的例子解释什么是 WebGPU",
-      "ar-SA": "اشرح ما هو WebGPU بمثال بسيط"
-    },
-    "s2": {
-      "en-US": "Write a JavaScript function that sorts an array of objects",
-      "zh-CN": "写一个对对象数组排序的 JavaScript 函数",
-      "ar-SA": "اكتب دالة JavaScript تفرز مصفوفة من الكائنات"
-    },
-    "s3": {
-      "en-US": "Give me 5 name ideas for a coffee shop",
-      "zh-CN": "给我 5 个咖啡店的名字创意",
-      "ar-SA": "أعطني 5 أفكار لاسم مقهى"
-    },
-    "s4": {
-      "en-US": "Summarize the difference between RAM and storage",
-      "zh-CN": "概括内存和存储的区别",
-      "ar-SA": "لخّص الفرق بين الذاكرة العشوائية والتخزين"
     },
     "toast.storage": {
       "en-US": "Browser storage is unavailable, history will not be saved",
@@ -541,6 +516,56 @@
       "en-US": "<span class=\"highlight\">{highlight}</span>AI",
       "zh-CN": "<span class=\"highlight\">{highlight}</span>AI",
       "ar-SA": "<span class=\"highlight\">{highlight}</span>AI"
+    },
+    "welcome": {
+      "en-US": "How can I help you today?",
+      "zh-CN": "今天我能帮你做什么？",
+      "ar-SA": "كيف يمكنني مساعدتك اليوم؟"
+    },
+    "model.col.name": {
+      "en-US": "Name",
+      "zh-CN": "名称",
+      "ar-SA": "الاسم"
+    },
+    "model.col.modality": {
+      "en-US": "Modality",
+      "zh-CN": "模态",
+      "ar-SA": "النمط"
+    },
+    "model.col.size": {
+      "en-US": "Size",
+      "zh-CN": "大小",
+      "ar-SA": "الحجم"
+    },
+    "model.sort.label": {
+      "en-US": "Sort models",
+      "zh-CN": "模型排序",
+      "ar-SA": "ترتيب النماذج"
+    },
+    "model.sort.sizeAsc": {
+      "en-US": "Size (small to large)",
+      "zh-CN": "大小（从小到大）",
+      "ar-SA": "الحجم (من الأصغر)"
+    },
+    "model.sort.sizeDesc": {
+      "en-US": "Size (large to small)",
+      "zh-CN": "大小（从大到小）",
+      "ar-SA": "الحجم (من الأكبر)"
+    },
+    "model.sort.nameAsc": {
+      "en-US": "Name (A–Z)",
+      "zh-CN": "名称（A–Z）",
+      "ar-SA": "الاسم (أ–ي)"
+    },
+    "model.sort.nameDesc": {
+      "en-US": "Name (Z–A)",
+      "zh-CN": "名称（Z–A）",
+      "ar-SA": "الاسم (ي–أ)"
+    },
+    "model.filter.label": {
+      "en-US": "Filter models by family",
+      "zh-CN": "按系列筛选模型",
+      "ar-SA": "تصفية النماذج حسب العائلة"
     }
   }
 }

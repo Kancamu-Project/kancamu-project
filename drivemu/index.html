@@ -14,30 +14,29 @@
 
 <!-- App -->
 <div id="app" class="app">
-  <aside class="side" id="side">
+  <aside class="sidebar" id="sidebar">
     <div class="brand-row">
       <div class="logo"><div class="logo-mark"></div><span class="wordmark" data-i18n-html="logo"></span></div>
       <div class="brand-tools">
-        <button class="btn ghost square" data-act="settings" data-i18n-title="settings" data-i18n-label="settings"><span class="icon i-sliders"></span></button>
-        <button class="btn ghost square account" data-act="account" data-i18n-title="account" data-i18n-label="account"><span class="icon i-user"></span></button>
+        <button class="button ghost square" data-act="settings" data-i18n-title="settings" data-i18n-label="settings"><span class="icon icon-sliders"></span></button>
+        <button class="button ghost square account" data-act="account" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
       </div>
     </div>
     <div class="side-actions">
-      <button class="btn primary" id="newBtn"><span class="icon i-plus"></span><span data-i18n="new"></span></button>
-      <button class="btn ghost square" id="refreshBtn" data-i18n-title="refresh" data-i18n-label="refresh"><span class="icon i-refresh"></span></button>
+      <button class="button primary" id="new-button"><span class="icon icon-plus"></span><span data-i18n="new"></span></button>
     </div>
-    <nav id="folders" class="folders-nav" data-i18n-label="list.folders"></nav>
+    <nav id="folder-navigation" class="folders-nav" data-i18n-label="list.folders"></nav>
     <div class="spacer"></div>
     <div id="usage" class="usage"></div>
   </aside>
 
-  <div class="panel">
+  <div class="content-panel">
   <header class="topbar">
     <label class="searchbox">
-      <span class="icon i-search"></span>
-      <input id="search" type="search" data-i18n-placeholder="search" data-i18n-label="search">
+      <span class="icon icon-search"></span>
+      <input id="file-search" type="search" data-i18n-placeholder="search" data-i18n-label="search">
     </label>
-    <select id="sort" data-i18n-label="sort.label">
+    <select id="sort-order" data-i18n-label="sort.label">
       <option value="name:1" data-i18n="sort.nameAsc"></option>
       <option value="name:-1" data-i18n="sort.nameDesc"></option>
       <option value="type:1" data-i18n="sort.typeAsc"></option>
@@ -45,81 +44,82 @@
       <option value="size:-1" data-i18n="sort.sizeDesc"></option>
     </select>
     <div class="spacer"></div>
-    <div class="seg" role="group" data-i18n-label="view">
-      <button id="viewList" data-i18n-title="view.list"><span class="icon i-list"></span></button>
-      <button id="viewGrid" data-i18n-title="view.grid"><span class="icon i-grid"></span></button>
+    <button class="button ghost square" id="refresh-button" data-i18n-title="refresh" data-i18n-label="refresh"><span class="icon icon-refresh"></span></button>
+    <div class="segmented-control" role="group" data-i18n-label="view">
+      <button id="view-list-button" data-i18n-title="view.list"><span class="icon icon-list"></span></button>
+      <button id="view-grid-button" data-i18n-title="view.grid"><span class="icon icon-grid"></span></button>
     </div>
   </header>
 
-  <main class="main" id="dropzone">
+  <main class="files-area" id="drop-zone">
     <div class="titlebar">
-      <nav id="crumbs" class="crumbs"></nav>
-      <div id="selbar" class="selbar hidden">
-        <button class="btn ghost square" id="selClear" data-i18n-title="sel.clear"><span class="icon i-close"></span></button>
-        <b id="selCount"></b>
+      <nav id="breadcrumbs" class="breadcrumbs"></nav>
+      <div id="selection-bar" class="selection-bar hidden">
+        <button class="button ghost square" id="selection-clear-button" data-i18n-title="sel.clear"><span class="icon icon-close"></span></button>
+        <b id="selection-count"></b>
         <div class="spacer"></div>
-        <button class="btn danger" id="bulkDelete"><span class="icon i-trash"></span><span data-i18n="delete"></span></button>
+        <button class="button danger" id="delete-selected-button"><span class="icon icon-trash"></span><span data-i18n="delete"></span></button>
       </div>
     </div>
 
-    <div id="list" class="list"></div>
+    <div id="file-list" class="list"></div>
 
     <div id="empty" class="empty hidden">
-      <div class="empty-art"><span class="icon i-folder-open"></span></div>
-      <h3 id="emptyTitle"></h3>
-      <p id="emptyText" class="muted"></p>
-      <button class="btn primary" id="emptyCta"></button>
+      <div class="empty-illustration"><span class="icon icon-folder-open"></span></div>
+      <h3 id="empty-title"></h3>
+      <p id="empty-text" class="muted"></p>
+      <button class="button primary" id="empty-action-button"></button>
     </div>
     <div id="loading" class="loading hidden"></div>
-    <div id="dropOverlay" class="drop-overlay hidden"><span class="icon i-upload"></span><span data-i18n="drop"></span></div>
+    <div id="drop-overlay" class="drop-overlay hidden"><span class="icon icon-upload"></span><span data-i18n="drop"></span></div>
   </main>
 
-  <footer class="statusbar"><span id="status"></span><span data-i18n="copyright"></span></footer>
+  <footer class="statusbar"><span id="status"></span><a href="/" target="_top" data-i18n="copyright"></a></footer>
   </div>
 </div>
 
 <!-- "New" menu -->
-<div id="newMenu" class="menu hidden" role="menu">
-  <button role="menuitem" data-act="files"><span class="icon i-upload"></span><span data-i18n="menu.uploadFiles"></span></button>
-  <button role="menuitem" data-act="folder-upload"><span class="icon i-folder-up"></span><span data-i18n="menu.uploadFolder"></span></button>
+<div id="new-menu" class="menu hidden" role="menu">
+  <button role="menuitem" data-act="files"><span class="icon icon-upload"></span><span data-i18n="menu.uploadFiles"></span></button>
+  <button role="menuitem" data-act="folder-upload"><span class="icon icon-folder-up"></span><span data-i18n="menu.uploadFolder"></span></button>
   <hr>
-  <button role="menuitem" data-act="folder"><span class="icon i-folder-plus"></span><span data-i18n="menu.newFolder"></span></button>
+  <button role="menuitem" data-act="folder"><span class="icon icon-folder-plus"></span><span data-i18n="menu.newFolder"></span></button>
 </div>
-<input type="file" id="fileInput" multiple hidden>
-<input type="file" id="folderInput" webkitdirectory hidden>
+<input type="file" id="file-input" multiple hidden>
+<input type="file" id="folder-input" webkitdirectory hidden>
 
 <!-- Generic dialog -->
-<dialog id="dlg" class="dlg">
-  <form method="dialog" id="dlgForm">
-    <h3 id="dlgTitle"></h3>
-    <p id="dlgText" class="muted"></p>
-    <input id="dlgInput" type="text" class="hidden">
-    <div class="dlg-actions">
-      <button class="btn" value="cancel" type="button" id="dlgCancel" data-i18n="cancel"></button>
-      <button class="btn primary" value="ok" id="dlgOk" data-i18n="ok"></button>
+<dialog id="message-dialog" class="message-dialog">
+  <form method="dialog" id="message-dialog-form">
+    <h3 id="message-dialog-title"></h3>
+    <p id="message-dialog-text" class="muted"></p>
+    <input id="message-dialog-input" type="text" class="hidden">
+    <div class="message-dialog-actions">
+      <button class="button" value="cancel" type="button" id="message-dialog-cancel" data-i18n="cancel"></button>
+      <button class="button primary" value="ok" id="message-dialog-confirm" data-i18n="ok"></button>
     </div>
   </form>
 </dialog>
 
 <!-- Settings -->
-<dialog id="settings" class="dlg settings">
-  <div class="preview-head">
+<dialog id="settings" class="message-dialog settings">
+  <div class="preview-header">
     <b data-i18n="settings"></b>
     <div class="spacer"></div>
-    <button class="btn ghost square" id="settingsClose" data-i18n-title="close"><span class="icon i-close"></span></button>
+    <button class="button ghost square" id="settings-close-button" data-i18n-title="close"><span class="icon icon-close"></span></button>
   </div>
-  <div id="settingsBody" class="settings-body"></div>
+  <div id="settings-content" class="settings-body"></div>
 </dialog>
 
 <!-- Preview -->
-<dialog id="preview" class="dlg preview">
-  <div class="preview-head">
-    <b id="pvName"></b>
+<dialog id="preview" class="message-dialog preview">
+  <div class="preview-header">
+    <b id="preview-name"></b>
     <div class="spacer"></div>
-    <button class="btn" id="pvDownload"><span class="icon i-download"></span><span data-i18n="download"></span></button>
-    <button class="btn ghost square" id="pvClose" data-i18n-title="close"><span class="icon i-close"></span></button>
+    <button class="button" id="preview-download-button"><span class="icon icon-download"></span><span data-i18n="download"></span></button>
+    <button class="button ghost square" id="preview-close-button" data-i18n-title="close"><span class="icon icon-close"></span></button>
   </div>
-  <div id="pvBody" class="preview-body"></div>
+  <div id="preview-content" class="preview-body"></div>
 </dialog>
 
 <div id="toasts" class="toasts" aria-live="polite"></div>
