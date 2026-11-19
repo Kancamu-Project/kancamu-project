@@ -204,8 +204,8 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 var(
 .ibtn.del:hover { color: var(--danger); background: var(--danger-soft); }
 
 /* ---------- List: grid ---------- */
-.folders { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 78), 1fr)); }
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 83), 1fr)); }
+.folders { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--unit) * 78)), 1fr)); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--unit) * 83)), 1fr)); }
 /* The items touch each other, and a line is drawn only where there is an item: every item draws its own top and start line inside, and its end and bottom line outside (where the next item draws its own). */
 .fchip { display: flex; align-items: center; gap: var(--gap-small); height: calc(var(--unit) * 21); padding-inline: var(--padding-large) var(--padding-medium); border: var(--border-width) solid var(--border); background: var(--bg); cursor: pointer; transition: background .12s, box-shadow .15s, border-color .12s; }
 .fchip .name { flex: 1; min-width: 0; }
