@@ -35,6 +35,8 @@ assets/          Shared assets
   i18n.js        Loads a web's data.json and applies the chosen language (en-US, zh-CN, ar-SA)
   brand.json     The id, the name, and the highlighted word of the brand, the one place they are written (texts say {brand} and {highlight})
   storage.js     The shared data storage: one private repository (<id>-data), one branch per app (drivemu, muai); muAI keeps conversations/ and files/ on its branch
+  dialog.js      The shared question and message dialog (dialogs.ask, dialogs.tell); its button texts are in dialog.json. No web uses alert, confirm, or prompt
+  autocomplete.js  The autocomplete of every search input (autocomplete.attach)
   account.js     The shared GitHub sign-in: get, onChange, and the dialog (open, bind) that embeds /account
   style.css      Shared styles (fonts, colour tokens, reset, input and select), used by every web except muOS
   fonts/         Inter (woff2), the only font, used by every project

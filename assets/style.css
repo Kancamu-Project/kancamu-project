@@ -132,6 +132,73 @@ a:hover {
     text-decoration: underline;
 }
 
+/* The suggestions under a search input (assets/autocomplete.js). */
+.autocomplete-list {
+    position: fixed;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--border-radius-large);
+    overflow: hidden;
+}
+
+.autocomplete-option {
+    height: var(--height);
+    padding: 0 var(--padding-medium);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.autocomplete-option.active {
+    background: var(--bg-1);
+}
+
+.autocomplete-match {
+    font-weight: 700;
+}
+
+/* The question and message dialog of every web (assets/dialog.js). */
+.shared-dialog {
+    width: min(26rem, calc(var(--vw) * 100 - 2.4rem));
+    padding: 0;
+    color: var(--fg);
+    background: var(--bg);
+    border: var(--border-width) solid var(--border);
+}
+
+.shared-dialog::backdrop {
+    background: color-mix(in srgb, var(--black) 60%, transparent);
+}
+
+.shared-dialog-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-medium);
+    padding: var(--padding-extra-large);
+}
+
+.shared-dialog-title {
+    font-size: var(--font-size-large);
+    font-weight: 700;
+}
+
+.shared-dialog-text {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.shared-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--gap-small);
+}
+
 .hidden {
     display: none !important;
 }

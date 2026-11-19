@@ -463,6 +463,9 @@ document.getElementById("sort-order").addEventListener("change", (event) => {
     renderProjects();
 });
 
+autocomplete.attach(document.getElementById("project-search"), {
+    suggestions: () => state.projects.map((project) => pickText(project.name)),
+});
 document.getElementById("project-search").addEventListener("input", (event) => {
     state.query = event.target.value;
     saveFilters();

@@ -1,0 +1,12 @@
+{
+  "ok": {
+    "en-US": "OK",
+    "zh-CN": "确定",
+    "ar-SA": "حسنًا"
+  },
+  "cancel": {
+    "en-US": "Cancel",
+    "zh-CN": "取消",
+    "ar-SA": "إلغاء"
+  }
+}

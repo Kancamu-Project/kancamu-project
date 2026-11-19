@@ -1,6 +1,7 @@
 // Language support shared by every web (except muOS and ArtCraft).
 // A web keeps its texts in its own data.json:
 //   { "name": { "en-US": "..." }, "languages": [{ "code", "name", "dir" }], "ui": { "key": { "en-US": "...", ... } } }
+// The rest of the data of the web is in the same file too (the projects of the main web, the models of muAI, the file types of Drivemu): script.js reads it from i18n.data.
 // Mark elements in the HTML with data-i18n (text), data-i18n-html (text with <b>/<i>, from our own data.json),
 // data-i18n-title, data-i18n-placeholder, or data-i18n-label (aria-label), then call i18n.load().
 (() => {

@@ -23,7 +23,7 @@
   </div>
   <div class="chat-controls">
     <button id="new-chat-button" class="primary" type="button"><span class="icon icon-plus"></span><span data-i18n="title.new"></span></button>
-    <button id="model-picker" type="button" data-i18n-title="model.choose"><span class="icon icon-cpu"></span><span id="model-picker-label"></span><span class="icon icon-chevron"></span></button>
+    <select id="model-picker" data-i18n-label="model.choose"></select>
     <input id="chat-search" type="search" data-i18n-placeholder="search.placeholder" data-i18n-label="search.label">
   </div>
   <div id="chat-list"></div>
@@ -64,24 +64,6 @@
     </div>
   </div>
 </div>
-
-<dialog id="model-dialog">
-  <div class="dialog-body">
-    <h2 data-i18n="model.choose"></h2>
-    <span class="note dialog-subtitle" data-i18n="dlg.models.text"></span>
-    <div class="model-controls">
-      <select id="family-filter" data-i18n-label="model.filter.label"></select>
-      <select id="model-sort" data-i18n-label="model.sort.label">
-        <option value="size-asc" data-i18n="model.sort.sizeAsc"></option>
-        <option value="size-desc" data-i18n="model.sort.sizeDesc"></option>
-        <option value="name-asc" data-i18n="model.sort.nameAsc"></option>
-        <option value="name-desc" data-i18n="model.sort.nameDesc"></option>
-      </select>
-    </div>
-    <div id="model-list"></div>
-    <div class="button-row"><button type="button" id="close-model-dialog-button"><span data-i18n="close"></span></button></div>
-  </div>
-</dialog>
 
 <dialog id="settings-dialog">
   <form method="dialog" id="settings-form">
@@ -144,6 +126,8 @@
 </dialog>
 
 <script src="../assets/i18n.js"></script>
+<script src="../assets/dialog.js"></script>
+<script src="../assets/autocomplete.js"></script>
 <script src="../assets/account.js"></script>
 <script src="../assets/storage.js"></script>
 <script type="module" src="script.js"></script>

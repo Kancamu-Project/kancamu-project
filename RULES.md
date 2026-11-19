@@ -52,6 +52,25 @@ Keyboard focus is always visible: assets/style.css draws a 2px blue outline, a l
 A control that appears on hover must also appear on focus (:focus-within).
 A menu opens with focus on its first item, moves with the arrow keys, and closes with Escape, giving the focus back to the button that opened it. A dialog takes the focus when it opens, closes with Escape, and gives the focus back.
 
+#### 10. Data
+Data is never written in the code. A list, a table, or a setting that describes something and that you could change without changing how the web works, such as the list of AI models, the projects, the default folders, the default settings, the file types and their icons, belongs in data.json. script.js reads it, and layout.css and index.html do not repeat it.
+The code holds only what the web does. When a new item is added to a list, only data.json changes.
+Every text that a person reads is in data.json too, in the supported languages (see Written Language).
+
+#### 11. Questions and Messages
+A web never uses alert, confirm, prompt, or any other box of the browser (a window.open popup for a message, a beforeunload question, and the like). They look different on every browser, cannot be styled, cannot be translated by us, and block the page.
+Every web asks and tells through the shared dialog, assets/dialog.js (loaded after assets/i18n.js), which draws the question in the page itself, in the style of the web, and in the language of the page:
+- await dialogs.ask({ text, title, ok, cancel }) gives true or false.
+- await dialogs.ask({ text, value }) asks for a text, starting from value, and gives the text, or null when the user cancels.
+- await dialogs.tell({ text, ok }) shows a message with one button.
+The texts of its two default buttons (OK and Cancel) are in assets/dialog.json, in every supported language. A web that needs other button texts passes them in ok and cancel, taken from its own data.json.
+The dialog has focus on its first control, closes with Escape, and Enter confirms. A web does not draw a question dialog of its own. A short message that needs no answer is a toast, not a dialog.
+
+#### 12. Search
+Every search input of every web has autocomplete: while the user types, the names that the search can find show in a list under the input (the names of the projects, the files of the open folder, the titles of the chats). A web gets it from the shared assets/autocomplete.js, loaded after assets/i18n.js:
+autocomplete.attach(input, { suggestions: () => [the names to offer] })
+The list is drawn by the page itself, like the dialogs, not by the datalist of the browser. The arrow keys move through it, Enter picks the marked name, and Escape closes it. A picked name is put in the input with an "input" event, so the search runs as if it was typed. A web does not build an autocomplete of its own.
+
 ## HTML
 
 #### 1. Container

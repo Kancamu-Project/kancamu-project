@@ -517,5 +517,125 @@
       "zh-CN": "Drivemu 已重置",
       "ar-SA": "تمت إعادة ضبط Drivemu"
     }
+  },
+  "drive": {
+    "storageLimitGB": 5,
+    "defaultFolders": [
+      "Documents",
+      "Images",
+      "Videos",
+      "Audio"
+    ],
+    "maxFileMB": 100,
+    "thumbnailMaxMB": 8
+  },
+  "fileTypes": {
+    "folder": {
+      "icon": "folder",
+      "extensions": []
+    },
+    "image": {
+      "icon": "image",
+      "extensions": [
+        "png",
+        "jpg",
+        "jpeg",
+        "gif",
+        "webp",
+        "svg",
+        "bmp",
+        "avif",
+        "ico"
+      ]
+    },
+    "video": {
+      "icon": "video",
+      "extensions": [
+        "mp4",
+        "webm",
+        "mov",
+        "ogv",
+        "m4v"
+      ]
+    },
+    "audio": {
+      "icon": "audio",
+      "extensions": [
+        "mp3",
+        "wav",
+        "ogg",
+        "m4a",
+        "flac",
+        "aac"
+      ]
+    },
+    "pdf": {
+      "icon": "pdf",
+      "extensions": [
+        "pdf"
+      ]
+    },
+    "text": {
+      "icon": "file-text",
+      "extensions": [
+        "txt",
+        "md",
+        "json",
+        "csv",
+        "js",
+        "ts",
+        "css",
+        "html",
+        "xml",
+        "yml",
+        "yaml",
+        "log",
+        "py",
+        "java",
+        "c",
+        "cpp",
+        "sh",
+        "ini",
+        "toml",
+        "sql"
+      ]
+    },
+    "archive": {
+      "icon": "archive",
+      "extensions": [
+        "zip",
+        "rar",
+        "7z",
+        "tar",
+        "gz"
+      ]
+    },
+    "file": {
+      "icon": "file",
+      "extensions": []
+    }
+  },
+  "thumbnailExtensions": [
+    "png",
+    "jpg",
+    "jpeg",
+    "gif",
+    "webp",
+    "avif",
+    "bmp"
+  ],
+  "mimeTypes": {
+    "svg": "image/svg+xml",
+    "pdf": "application/pdf",
+    "mp4": "video/mp4",
+    "webm": "video/webm",
+    "mp3": "audio/mpeg",
+    "wav": "audio/wav",
+    "ogg": "audio/ogg",
+    "png": "image/png",
+    "jpg": "image/jpeg",
+    "jpeg": "image/jpeg",
+    "gif": "image/gif",
+    "webp": "image/webp"
   }
 }

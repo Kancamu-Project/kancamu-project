@@ -9,6 +9,7 @@ import {
   AutoTokenizer,
   AutoModelForCausalLM,
   Gemma4ForConditionalGeneration,
+  Gemma4Processor,
   TextStreamer,
   InterruptableStoppingCriteria,
   load_image,
@@ -22,47 +23,45 @@ await i18n.load();
 i18n.selects();
 const tr = (key, params) => i18n.t(key, params);
 
-// Model catalog. kind "text" = AutoModelForCausalLM, "multi" = Gemma 4 (text + images).
-// Every repo below was checked to exist on Hugging Face with q4f16 files; size = total files downloaded.
-const MODELS = [
-  { id: "onnx-community/gemma-3-270m-it-ONNX", name: "Gemma 3 270M", family: "Gemma", by: "Google", kind: "text", mb: 273,
-    key: "gemma-3-270m", tagKey: "tag.tiny" },
-  { id: "onnx-community/Qwen3-0.6B-ONNX", name: "Qwen3 0.6B", family: "Qwen", by: "Alibaba", kind: "text", mb: 570,
-    key: "qwen3-0.6b", tagKey: "tag.light" },
-  { id: "onnx-community/gemma-3-1b-it-ONNX", name: "Gemma 3 1B", family: "Gemma", by: "Google", kind: "text", mb: 763,
-    key: "gemma-3-1b", tagKey: "tag.light" },
-  { id: "onnx-community/Llama-3.2-1B-Instruct-ONNX", name: "Llama 3.2 1B", family: "Llama", by: "Meta", kind: "text", mb: 1090,
-    key: "llama-3.2-1b", tagKey: "tag.light" },
-  { id: "onnx-community/Qwen3-1.7B-ONNX", name: "Qwen3 1.7B", family: "Qwen", by: "Alibaba", kind: "text", mb: 1426,
-    key: "qwen3-1.7b", tagKey: "tag.medium" },
-  { id: "onnx-community/Qwen3-4B-ONNX", name: "Qwen3 4B", family: "Qwen", by: "Alibaba", kind: "text", mb: 2830,
-    key: "qwen3-4b", tagKey: "tag.large" },
-  { id: "onnx-community/gemma-4-E2B-it-ONNX", name: "Gemma 4 E2B", family: "Gemma", by: "Google", kind: "multi", mb: 3380,
-    key: "gemma-4-e2b", tagKey: "tag.newest" },
-  { id: "onnx-community/gemma-4-E4B-it-ONNX", name: "Gemma 4 E4B", family: "Gemma", by: "Google", kind: "multi", mb: 5180,
-    key: "gemma-4-e4b", tagKey: "tag.newestHeavy" },
-];
+// The model list and the default settings are in data.json (models, defaults).
+// kind "text" = AutoModelForCausalLM, "multi" = Gemma 4 (text + images).
+const { models: MODELS, defaults: DEFAULTS } = i18n.data;
 const sizeLabel = (mb) => (mb >= 1000 ? (mb / 1000).toFixed(1) + " GB" : mb + " MB");
-let MODEL = MODELS.find((m) => m.id === lsGetEarly("muai.model")) || MODELS[2];   // default: Gemma 3 1B
+let MODEL = MODELS.find((m) => m.id === lsGetEarly("muai.model")) || null;   // null until the user chooses one
 function lsGetEarly(k) { try { return localStorage.getItem(k); } catch { return null; } }
 
-const DEFAULTS = {
-  system: "You are muAI, a helpful assistant. Reply in the language the user writes in, concisely and clearly.",
-  maxTokens: 1024, temperature: 0.7, ctx: 30,
-};
 
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
-  "gpu-status","model-picker","model-picker-label","load-status","progress-box","progress-fill","progress-text","load-error","chat","message-input",
+  "gpu-status","model-picker","load-status","progress-box","progress-fill","progress-text","load-error","chat","message-input",
   "send-button","stop-button","chat-area","attach-button","image-file-input","attachment-preview","attachment-preview-image","attachment-preview-name","remove-attachment-button","chat-list","chat-search",
   "new-chat-button","chat-title","export-button","export-all-button","import-button","import-file-input","clear-all-button","settings-button","settings-dialog",
   "settings-form","setting-system-prompt","setting-max-tokens","setting-temperature","setting-context","temperature-value","cancel-settings-button","reset-settings-button","menu-button",
-  "side-overlay","chat-app","welcome-message","theme-dark-button","theme-light-button","side","side-resizer","model-dialog","model-list","model-sort","close-model-dialog-button","family-filter",
+  "side-overlay","chat-app","welcome-message","theme-dark-button","theme-light-button","side","side-resizer",
 ].map((id) => [id.replace(/-([a-z])/g, (m, c) => c.toUpperCase()), $(id)]));   // els.modelPicker is the element with the id model-picker
-const setModelLabel = (t) => { els.modelPickerLabel.textContent = t; };
+// The model is chosen in a select. While a model loads, its option says so.
+function renderModelPicker(label) {
+  const options = MODELS.map((m) => {
+    const option = document.createElement("option");
+    option.value = m.id; option.textContent = `${m.name} (${sizeLabel(m.mb)})`;
+    return option;
+  });
+  if (!MODEL) {   // nothing chosen yet: the first option asks for a choice
+    const ask = document.createElement("option");
+    ask.value = ""; ask.textContent = tr("model.select");
+    options.unshift(ask);
+  }
+  els.modelPicker.replaceChildren(...options);
+  els.modelPicker.value = MODEL ? MODEL.id : "";
+  els.modelPicker.classList.toggle("unchosen", !MODEL);   // red until a model is chosen
+  els.modelPicker.classList.toggle("loading", loading);   // yellow while it loads
+  els.modelPicker.classList.toggle("loading-model", loading);   // yellow while it loads
+  if (label) els.modelPicker.selectedOptions[0].textContent = label;
+  els.modelPicker.disabled = busy || loading;
+}
 function showSelected() {
-  els.attachButton.classList.toggle("hidden", MODEL.kind !== "multi");
-  if (!model) setModelLabel(MODEL.name);
+  els.attachButton.classList.toggle("hidden", MODEL?.kind !== "multi");
+  renderModelPicker();
 }
 
 // ---------- Util ----------
@@ -71,6 +70,8 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, 
 const lsGet = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
 const icon = (n) => `<span class="icon icon-${n}"></span>`;
+// A question in the dialog shared by every web (assets/dialog.js): true or false, or the text the user typed (null when cancelled).
+const ask = (options) => dialogs.ask(options);
 function toast(msg) {
   const t = document.createElement("span");
   t.textContent = msg;
@@ -312,17 +313,17 @@ els.chatList.addEventListener("click", async (e) => {
   const c = convs.find((x) => x.id === it.dataset.id); if (!c) return;
   const a = e.target.closest("button")?.dataset.a;
   if (a === "rename") {
-    const t = prompt(tr("prompt.name"), c.title);
+    const t = await ask({ text: tr("prompt.name"), value: c.title, ok: tr("chat.rename") });
     if (t && t.trim()) { c.title = t.trim().slice(0, 80); await idb.put(c); renderList(); if (current === c) els.chatTitle.textContent = c.title; }
   } else if (a === "delete") {
     if (busy && current === c) return toast(tr("toast.wait"));
-    if (!confirm(tr("confirm.delete", { title: c.title }))) return;
+    if (!(await ask({ text: tr("confirm.delete", { title: c.title }), ok: tr("chat.delete") }))) return;
     convs = convs.filter((x) => x !== c); await idb.del(c.id);
     if (current === c) newChat(); else renderList();
   } else openConv(c);
 });
 els.chatSearch.addEventListener("input", renderList);
-els.modelSort.addEventListener("change", renderModelList);
+autocomplete.attach(els.chatSearch, { suggestions: () => convs.map((chat) => chat.title) });
 
 // ---------- Chat view ----------
 function setTitle() {
@@ -403,6 +404,7 @@ async function unloadModel() {
 // The chat works at once: the first message loads the chosen model if it is not loaded yet.
 async function ensureModel() {
   if (model) return true;
+  if (!MODEL) { toast(tr("model.none")); els.modelPicker.focus(); return false; }
   if (!gpuOk) { toast(tr("gpu.unsupported")); return false; }
   if (loading) { toast(tr("toast.wait")); return false; }
   await loadModel();
@@ -417,7 +419,7 @@ async function loadModel() {
   els.loadStatus.classList.remove("hidden");
   els.loadError.classList.add("hidden"); els.progressBox.classList.remove("hidden");
   els.progressFill.style.width = "0%"; els.progressText.textContent = tr("progress.preparing");
-  setModelLabel(tr("load.loading", { name: def.name }));
+  renderModelPicker(tr("load.loading", { name: def.name }));
   const files = new Map();
   const onProgress = (info) => {
     if (info.status === "progress" && info.file) {
@@ -429,9 +431,10 @@ async function loadModel() {
     } else if (info.status === "ready") els.progressText.textContent = tr("load.gpu");
   };
   try {
-    const opts = { dtype: "q4f16", device: "webgpu", progress_callback: onProgress };
+    const opts = { dtype: def.dtype ?? i18n.data.defaultDtype, device: "webgpu", progress_callback: onProgress };   // a model may name its own dtype in data.json
     if (def.kind === "multi") {
       processor = await AutoProcessor.from_pretrained(def.id);
+      if (!processor.tokenizer) processor = await Gemma4Processor.from_pretrained(def.id);   // the QAT repos do not name the processor class in preprocessor_config.json, so AutoProcessor makes one without a tokenizer
       tokenizer = processor.tokenizer;
       model = await Gemma4ForConditionalGeneration.from_pretrained(def.id, opts);
     } else {
@@ -442,75 +445,35 @@ async function loadModel() {
     els.progressText.textContent = tr("load.warm");
     await generate([{ role: "user", content: def.kind === "multi" ? [{ type: "text", text: "Hi" }] : "Hi" }], [], { maxTokens: 1, temperature: 0 });
     lsSet("muai.model", def.id); lsSet("muai.autoload", "1");
-    setModelLabel(def.name); els.modelPicker.classList.add("ok");
+    els.modelPicker.classList.add("ok");
     els.progressBox.classList.add("hidden"); els.loadStatus.classList.add("hidden");
     renderChat(); els.messageInput.focus();
   } catch (e) {
     console.error(e);
     try { await model?.dispose?.(); } catch {}
     model = null; processor = null; tokenizer = null; loadedDef = null;
-    setModelLabel(def.name);
     els.loadError.textContent = tr("load.failed", { name: def.name, message: e?.message || e });
     els.loadError.classList.remove("hidden");
     els.progressBox.classList.add("hidden");
   } finally {
-    loading = false;
+    loading = false; renderModelPicker();
   }
 }
 
 // ---------- Model picker ----------
-let familyPick = "All"; // "All" is the internal value of the first filter; it is shown translated
-function renderFamilyFilter() {
-  els.familyFilter.innerHTML = "";
-  const families = ["All", ...new Set(MODELS.map((m) => m.family))];
-  for (const family of families) {
-    const count = family === "All" ? MODELS.length : MODELS.filter((m) => m.family === family).length;
-    const option = document.createElement("option");
-    option.value = family; option.textContent = `${family === "All" ? tr("filter.all") : family} (${count})`;
-    els.familyFilter.appendChild(option);
-  }
-  els.familyFilter.value = familyPick;
-}
-els.familyFilter.addEventListener("change", () => { familyPick = els.familyFilter.value; renderModelList(); });
-function renderModelList() {
-  els.modelList.innerHTML = "";
-  const header = document.createElement("div"); header.className = "model-row table-header";
-  for (const key of ["model.col.name", "model.col.modality", "model.col.size"]) { const cell = document.createElement("span"); cell.textContent = tr(key); header.appendChild(cell); }
-  header.appendChild(document.createElement("span"));
-  els.modelList.appendChild(header);
-  const [by, direction] = els.modelSort.value.split("-");
-  const shown = MODELS.filter((x) => familyPick === "All" || x.family === familyPick);
-  shown.sort((a, b) => (by === "size" ? a.mb - b.mb : a.name.localeCompare(b.name, i18n.lang, { numeric: true })) * (direction === "desc" ? -1 : 1));
-  for (const m of shown) {
-    const card = document.createElement("div");
-    const isLoaded = loadedDef && loadedDef.id === m.id, isSel = MODEL.id === m.id;
-    card.className = "model-row" + (isSel ? " selected" : "");
-    card.innerHTML = `<span class="model-name"></span><span class="model-modality"></span><span class="model-size"></span><button type="button"><span></span></button>`;
-    card.querySelector(".model-name").textContent = m.name;
-    const modality = card.querySelector(".model-modality");
-    modality.textContent = tr(m.kind === "multi" ? "model.kind.multi" : "model.kind.text");
-    modality.classList.toggle("multimodal", m.kind === "multi");
-    card.querySelector(".model-size").textContent = "±" + sizeLabel(m.mb);
-    const btn = card.querySelector("button");
-    btn.firstChild.textContent = tr(isLoaded ? "picker.inUse" : "picker.select");
-    btn.disabled = isLoaded || busy; if (!isLoaded) btn.classList.add("outline");
-    btn.addEventListener("click", () => chooseModel(m));
-    els.modelList.appendChild(card);
-  }
-}
 async function chooseModel(m) {
-  if (busy) return toast(tr("toast.wait"));
+  if (busy) { renderModelPicker(); return toast(tr("toast.wait")); }
   const seen = lsGet("muai.seen." + m.id) === "1";
-  if (!seen && m.mb >= 1000 && !confirm(tr("picker.confirm", { name: m.name, size: sizeLabel(m.mb) }))) return;
-  els.modelDialog.close();
+  if (!seen && m.mb >= 1000 && !(await ask({ text: tr("picker.confirm", { name: m.name, size: sizeLabel(m.mb) }), ok: tr("picker.select") }))) { renderModelPicker(); return; }
   if (model) await unloadModel();
   MODEL = m; lsSet("muai.model", m.id); showSelected(); renderChat();
   await loadModel();
   if (loadedDef && loadedDef.id === m.id) lsSet("muai.seen." + m.id, "1");
 }
-function openModelDlg() { renderFamilyFilter(); renderModelList(); els.modelDialog.showModal(); }
-els.modelPicker.addEventListener("click", openModelDlg);
-els.closeModelDialogButton.addEventListener("click", () => els.modelDialog.close());
+els.modelPicker.addEventListener("change", () => {
+  const chosen = MODELS.find((m) => m.id === els.modelPicker.value);
+  if (chosen) chooseModel(chosen); else renderModelPicker();
+});
 
 // ---------- Generate ----------
 async function generate(messages, imgs, opts, onText) {
@@ -563,6 +526,7 @@ function setBusy(v) {
   busy = v;
   els.sendButton.classList.toggle("hidden", v); els.stopButton.classList.toggle("hidden", !v);
   els.messageInput.disabled = v; els.attachButton.disabled = v;
+  renderModelPicker();
 }
 
 async function runAssistant() {
@@ -669,7 +633,7 @@ els.importFileInput.addEventListener("change", async () => {
 els.clearAllButton.addEventListener("click", async () => {
   if (busy) return toast(tr("toast.wait"));
   if (!convs.length) return toast(tr("toast.noHistory"));
-  if (!confirm(tr("confirm.deleteAll", { n: convs.length }))) return;
+  if (!(await ask({ text: tr("confirm.deleteAll", { n: convs.length }), ok: tr("data.deleteAll") }))) return;
   convs = []; await idb.clear(); els.settingsDialog.close(); newChat();
 });
 
@@ -712,7 +676,7 @@ window.addEventListener("storage", (event) => {
 
 // ---------- Resizable sidebar ----------
 // Width is kept in rem (multiples of 0.2rem), clamped to 16rem-40rem and at most 60% of the window.
-const SIDE = { min: 16, max: 40, def: 24 };
+const SIDE = { min: i18n.data.sidebarWidth.min, max: i18n.data.sidebarWidth.max, def: i18n.data.sidebarWidth.default };
 let sideRem = parseFloat(lsGet("muai.sideWidth")) || SIDE.def;
 const remPx = () => parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
 function setSideWidth(rem) {
@@ -756,9 +720,7 @@ els.sideOverlay.addEventListener("click", closeSide);
 // ---------- Language ----------
 i18n.onChange(() => {
   renderGpu(); showSelected();
-  setModelLabel(model ? loadedDef.name : MODEL.name);
   renderChat();
-  if (els.modelDialog.open) { renderFamilyFilter(); renderModelList(); }
 });
 
 // ---------- Start ----------

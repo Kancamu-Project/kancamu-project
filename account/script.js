@@ -135,7 +135,7 @@ $("token-form").addEventListener("submit", async (event) => {
 $("sign-out-button").addEventListener("click", () => account.signOut());
 
 // Opens GitHub with the "repo" scope already selected.
-$("create-token-button").addEventListener("click", () => window.open("https://github.com/settings/tokens/new?scopes=repo&description=" + encodeURIComponent(i18n.brand.name), "_blank", "noopener"));
+$("create-token-button").addEventListener("click", () => window.open(`${i18n.data.token.createUrl}?scopes=${i18n.data.token.scopes}&description=${encodeURIComponent(i18n.brand.name)}`, "_blank", "noopener"));
 
 $("close-button").hidden = !embedded;
 $("close-button").addEventListener("click", () => window.parent.postMessage({ type: "account:close" }, location.origin));

@@ -192,5 +192,9 @@
       "zh-CN": "© {brand}",
       "ar-SA": "© {brand}"
     }
+  },
+  "token": {
+    "createUrl": "https://github.com/settings/tokens/new",
+    "scopes": "repo"
   }
 }

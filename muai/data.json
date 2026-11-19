@@ -102,11 +102,6 @@
       "zh-CN": "停止",
       "ar-SA": "إيقاف"
     },
-    "dlg.models.text": {
-      "en-US": "All models run in your browser through WebGPU and are downloaded from Hugging Face once. Sizes are the approximate first download. Larger models are smarter but need more GPU and memory.",
-      "zh-CN": "所有模型都通过 WebGPU 在浏览器中运行，并只需从 Hugging Face 下载一次。大小为首次下载的大致体积。模型越大越聪明，但需要更多 GPU 和内存。",
-      "ar-SA": "تعمل جميع النماذج في متصفحك عبر WebGPU وتُنزَّل من Hugging Face مرة واحدة. الأحجام تقريبية للتنزيل الأول. النماذج الأكبر أذكى لكنها تحتاج إلى مزيد من وحدة الرسوميات والذاكرة."
-    },
     "close": {
       "en-US": "Close",
       "zh-CN": "关闭",
@@ -226,46 +221,6 @@
       "en-US": "Save",
       "zh-CN": "保存",
       "ar-SA": "حفظ"
-    },
-    "model.kind.text": {
-      "en-US": "text",
-      "zh-CN": "文本",
-      "ar-SA": "نص"
-    },
-    "model.kind.multi": {
-      "en-US": "text + images",
-      "zh-CN": "文本 + 图片",
-      "ar-SA": "نص + صور"
-    },
-    "tag.tiny": {
-      "en-US": "Tiny",
-      "zh-CN": "微型",
-      "ar-SA": "صغير جدًا"
-    },
-    "tag.light": {
-      "en-US": "Light",
-      "zh-CN": "轻量",
-      "ar-SA": "خفيف"
-    },
-    "tag.medium": {
-      "en-US": "Medium",
-      "zh-CN": "中等",
-      "ar-SA": "متوسط"
-    },
-    "tag.large": {
-      "en-US": "Large",
-      "zh-CN": "大型",
-      "ar-SA": "كبير"
-    },
-    "tag.newest": {
-      "en-US": "Newest",
-      "zh-CN": "最新",
-      "ar-SA": "الأحدث"
-    },
-    "tag.newestHeavy": {
-      "en-US": "Newest · heavy",
-      "zh-CN": "最新 · 重量级",
-      "ar-SA": "الأحدث · ثقيل"
     },
     "toast.storage": {
       "en-US": "Browser storage is unavailable, history will not be saved",
@@ -427,16 +382,6 @@
       "zh-CN": "加载 {name} 失败：{message} — 请尝试更小的模型。",
       "ar-SA": "فشل تحميل {name}: {message} — جرّب نموذجًا أصغر."
     },
-    "filter.all": {
-      "en-US": "All",
-      "zh-CN": "全部",
-      "ar-SA": "الكل"
-    },
-    "picker.inUse": {
-      "en-US": "In use",
-      "zh-CN": "使用中",
-      "ar-SA": "قيد الاستخدام"
-    },
     "picker.select": {
       "en-US": "Select & load",
       "zh-CN": "选择并加载",
@@ -467,46 +412,6 @@
       "zh-CN": "账户",
       "ar-SA": "الحساب"
     },
-    "m.gemma-3-270m": {
-      "en-US": "Smallest and fastest. Good for testing and weak devices, basic answer quality.",
-      "zh-CN": "最小最快。适合测试和性能较弱的设备，回答质量一般。",
-      "ar-SA": "الأصغر والأسرع. مناسب للتجربة والأجهزة الضعيفة، وجودة الإجابات أساسية."
-    },
-    "m.qwen3-0.6b": {
-      "en-US": "Small but capable, supports many languages.",
-      "zh-CN": "体积小但能力不弱，支持多种语言。",
-      "ar-SA": "صغير لكنه كفء، ويدعم لغات كثيرة."
-    },
-    "m.gemma-3-1b": {
-      "en-US": "Balanced speed and quality for everyday chat.",
-      "zh-CN": "速度与质量均衡，适合日常对话。",
-      "ar-SA": "توازن بين السرعة والجودة للمحادثات اليومية."
-    },
-    "m.llama-3.2-1b": {
-      "en-US": "Meta's small model, strongest in English.",
-      "zh-CN": "Meta 的小型模型，英语表现最佳。",
-      "ar-SA": "نموذج Meta الصغير، وهو الأقوى في اللغة الإنجليزية."
-    },
-    "m.qwen3-1.7b": {
-      "en-US": "Smarter than 0.6B, still comfortable on a laptop with an ordinary GPU.",
-      "zh-CN": "比 0.6B 更聪明，在配备普通显卡的笔记本上仍然流畅。",
-      "ar-SA": "أذكى من 0.6B، ويعمل بسلاسة على حاسوب محمول ببطاقة رسوميات عادية."
-    },
-    "m.qwen3-4b": {
-      "en-US": "Strong at text and code. Needs a GPU with plenty of memory.",
-      "zh-CN": "擅长文本和代码。需要显存充足的 GPU。",
-      "ar-SA": "قوي في النصوص والبرمجة. يحتاج إلى وحدة رسوميات بذاكرة كبيرة."
-    },
-    "m.gemma-4-e2b": {
-      "en-US": "Google's newest model, can read images. Large download because of embeddings.",
-      "zh-CN": "Google 最新的模型，可以读取图片。因包含嵌入数据，下载体积较大。",
-      "ar-SA": "أحدث نماذج Google، ويستطيع قراءة الصور. حجم التنزيل كبير بسبب التضمينات."
-    },
-    "m.gemma-4-e4b": {
-      "en-US": "The smartest Gemma 4 in this catalog and can read images. Very heavy.",
-      "zh-CN": "本列表中最聪明的 Gemma 4，可以读取图片。非常占资源。",
-      "ar-SA": "أذكى Gemma 4 في هذه القائمة ويستطيع قراءة الصور. ثقيل جدًا."
-    },
     "copyright": {
       "en-US": "© {brand}",
       "zh-CN": "© {brand}",
@@ -522,50 +427,53 @@
       "zh-CN": "今天我能帮你做什么？",
       "ar-SA": "كيف يمكنني مساعدتك اليوم؟"
     },
-    "model.col.name": {
-      "en-US": "Name",
-      "zh-CN": "名称",
-      "ar-SA": "الاسم"
+    "model.select": {
+      "en-US": "Select model",
+      "zh-CN": "选择模型",
+      "ar-SA": "اختر نموذجًا"
     },
-    "model.col.modality": {
-      "en-US": "Modality",
-      "zh-CN": "模态",
-      "ar-SA": "النمط"
-    },
-    "model.col.size": {
-      "en-US": "Size",
-      "zh-CN": "大小",
-      "ar-SA": "الحجم"
-    },
-    "model.sort.label": {
-      "en-US": "Sort models",
-      "zh-CN": "模型排序",
-      "ar-SA": "ترتيب النماذج"
-    },
-    "model.sort.sizeAsc": {
-      "en-US": "Size (small to large)",
-      "zh-CN": "大小（从小到大）",
-      "ar-SA": "الحجم (من الأصغر)"
-    },
-    "model.sort.sizeDesc": {
-      "en-US": "Size (large to small)",
-      "zh-CN": "大小（从大到小）",
-      "ar-SA": "الحجم (من الأكبر)"
-    },
-    "model.sort.nameAsc": {
-      "en-US": "Name (A–Z)",
-      "zh-CN": "名称（A–Z）",
-      "ar-SA": "الاسم (أ–ي)"
-    },
-    "model.sort.nameDesc": {
-      "en-US": "Name (Z–A)",
-      "zh-CN": "名称（Z–A）",
-      "ar-SA": "الاسم (ي–أ)"
-    },
-    "model.filter.label": {
-      "en-US": "Filter models by family",
-      "zh-CN": "按系列筛选模型",
-      "ar-SA": "تصفية النماذج حسب العائلة"
+    "model.none": {
+      "en-US": "Select a model first",
+      "zh-CN": "请先选择模型",
+      "ar-SA": "اختر نموذجًا أولًا"
     }
-  }
+  },
+  "models": [
+    {
+      "id": "onnx-community/gemma-4-E2B-it-qat-mobile-ONNX",
+      "name": "Gemma 4 E2B QAT",
+      "kind": "multi",
+      "mb": 2570,
+      "dtype": {
+        "audio_encoder": "q2f16",
+        "decoder_model_merged": "q2f16",
+        "embed_tokens": "q2f16",
+        "vision_encoder": "fp16"
+      }
+    },
+    {
+      "id": "onnx-community/gemma-4-E4B-it-qat-mobile-ONNX",
+      "name": "Gemma 4 E4B QAT",
+      "kind": "multi",
+      "mb": 3610,
+      "dtype": {
+        "audio_encoder": "q2f16",
+        "decoder_model_merged": "q2f16",
+        "embed_tokens": "q2f16",
+        "vision_encoder": "fp16"
+      }
+    }
+  ],
+  "defaults": {
+    "system": "You are muAI, a helpful assistant. Reply in the language the user writes in, concisely and clearly.",
+    "maxTokens": 1024,
+    "temperature": 0.7,
+    "ctx": 30
+  },
+  "sidebarWidth": {
+    "min": 16,
+    "max": 40,
+    "default": 24
+  },
+  "defaultDtype": "q4f16"
 }

@@ -2,10 +2,9 @@
 (() => {
 'use strict';
 
-const STORAGE_LIMIT_KB = 5 * 1024 * 1024;   // the size the percentage of use is counted against (5 GB)
-const DEFAULT_FOLDERS = ['Documents', 'Images', 'Videos', 'Audio'];   // what a new drive starts with
+// The size limits, the default folders, and the file types are in data.json (drive, fileTypes, thumbnailExtensions, mimeTypes); init() fills these in.
+let STORAGE_LIMIT_KB, DEFAULT_FOLDERS, MAX_FILE, THUMB_MAX, TYPES, ICON_OF, THUMB_EXT, MIME;
 const KEEP = '.gitkeep';              // keeps an empty folder alive
-const MAX_FILE = 100 * 1024 * 1024;   // GitHub's hard limit per file (100 MB), not an artificial one
 
 const $ = (id) => document.getElementById(id);
 const tr = (key, params) => i18n.t(key, params);
@@ -28,25 +27,14 @@ const fmtSize = (n) => {
   return n.toFixed(n < 10 ? 1 : 0) + ' ' + u[i];
 };
 const ext = (name) => (name.includes('.') ? name.split('.').pop().toLowerCase() : '');
-const TYPES = {
-  image: ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'bmp', 'avif', 'ico'],
-  video: ['mp4', 'webm', 'mov', 'ogv', 'm4v'],
-  audio: ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac'],
-  pdf: ['pdf'],
-  text: ['txt', 'md', 'json', 'csv', 'js', 'ts', 'css', 'html', 'xml', 'yml', 'yaml', 'log', 'py', 'java', 'c', 'cpp', 'sh', 'ini', 'toml', 'sql'],
-  archive: ['zip', 'rar', '7z', 'tar', 'gz'],
-};
-const THUMB_EXT = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'avif', 'bmp'];
 const kind = (it) => {
   if (it.type === 'dir') return 'folder';
   const e = ext(it.name);
   for (const k in TYPES) if (TYPES[k].includes(e)) return k;
   return 'file';
 };
-const ICON_OF = { folder: 'folder', image: 'image', video: 'video', audio: 'audio', pdf: 'pdf', text: 'file-text', archive: 'archive', file: 'file' };
 const typeLabel = (it) => (it.type === 'dir' ? tr('type.folder') : ext(it.name) ? tr('type.fileExt', { ext: ext(it.name).toUpperCase() }) : tr('type.file'));
 const tile = (k, big = false) => { const t = h('span', 'file-tile kind-' + k + (big ? ' large' : '')); t.appendChild(icon(ICON_OF[k])); return t; };
-const MIME = { svg: 'image/svg+xml', pdf: 'application/pdf', mp4: 'video/mp4', webm: 'video/webm', mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp' };
 
 function toast(msg, isErr = false, ms = 3500) {
   const el = h('div', 'toast' + (isErr ? ' err' : ''));
@@ -67,23 +55,10 @@ function progressToast(text) {
 }
 
 /* ---------- dialogs ---------- */
-function ask({ title, text = '', input = null, ok = tr('ok') }) {
-  return new Promise((resolve) => {
-    const d = $('message-dialog'), inp = $('message-dialog-input');
-    $('message-dialog-title').textContent = title;
-    $('message-dialog-text').textContent = text;
-    $('message-dialog-text').classList.toggle('hidden', !text);
-    $('message-dialog-confirm').textContent = ok;
-    inp.classList.toggle('hidden', input === null);
-    if (input !== null) inp.value = input;
-    let result = null;
-    const finish = (v) => { result = v; d.close(); };
-    $('message-dialog-form').onsubmit = (e) => { e.preventDefault(); finish(input === null ? true : inp.value.trim()); };
-    $('message-dialog-cancel').onclick = () => finish(null);
-    d.onclose = () => resolve(result);
-    d.showModal();
-    if (input !== null) { inp.focus(); inp.select(); }
-  });
+// A question in the dialog shared by every web (assets/dialog.js). input: the text to start from; the answer is true, or the trimmed text (null when cancelled).
+async function ask({ title, text = '', input = null, ok }) {
+  const answer = await dialogs.ask({ title, text, value: input, ok });
+  return typeof answer === 'string' ? answer.trim() : answer || null;
 }
 
 /* ---------- GitHub API ---------- */
@@ -426,7 +401,7 @@ function fileCard(it) {
   const el = base(it, 'file-card kind-' + k);
   const th = h('div', 'file-thumbnail');
   th.appendChild(tile(k, true));
-  if (it.download_url && THUMB_EXT.includes(ext(it.name)) && it.size > 0 && it.size < 8 * 1024 * 1024) {
+  if (it.download_url && THUMB_EXT.includes(ext(it.name)) && it.size > 0 && it.size < THUMB_MAX) {
     const img = h('img'); img.loading = 'lazy'; img.decoding = 'async'; img.alt = '';
     img.onload = () => img.classList.add('ready');
     img.onerror = () => img.remove();
@@ -654,6 +629,7 @@ const setView = (v) => { S.view = v; try { localStorage.setItem('drivemu.view', 
 $('view-grid-button').onclick = () => setView('grid');
 $('view-list-button').onclick = () => setView('list');
 $('file-search').oninput = (e) => { S.query = e.target.value; render(); };
+autocomplete.attach($('file-search'), { suggestions: () => S.items.map((item) => item.name) });
 $('selection-clear-button').onclick = () => { S.selected.clear(); updateSelection(); };
 $('delete-selected-button').onclick = () => remove(S.items.filter((i) => S.selected.has(i.name)));
 $('preview-close-button').onclick = () => $('preview').close();
@@ -702,6 +678,15 @@ function refreshLanguage() {
 /* ---------- start ---------- */
 (async function init() {
   await i18n.load();
+  const { drive, fileTypes, thumbnailExtensions, mimeTypes } = i18n.data;
+  STORAGE_LIMIT_KB = drive.storageLimitGB * 1024 * 1024;
+  DEFAULT_FOLDERS = drive.defaultFolders;
+  MAX_FILE = drive.maxFileMB * 1024 * 1024;
+  THUMB_MAX = drive.thumbnailMaxMB * 1024 * 1024;
+  TYPES = Object.fromEntries(Object.entries(fileTypes).filter(([, type]) => type.extensions.length).map(([kind, type]) => [kind, type.extensions]));
+  ICON_OF = Object.fromEntries(Object.entries(fileTypes).map(([kind, type]) => [kind, type.icon]));
+  THUMB_EXT = thumbnailExtensions;
+  MIME = mimeTypes;
   i18n.selects();
   i18n.onChange(refreshLanguage);
   try { S.view = localStorage.getItem('drivemu.view') || 'grid'; } catch { /* ignore */ }
