@@ -4,6 +4,8 @@
 // Mark elements in the HTML with data-i18n (text), data-i18n-html (text with <b>/<i>, from our own data.json),
 // data-i18n-title, data-i18n-placeholder, or data-i18n-label (aria-label), then call i18n.load().
 (() => {
+    // assets/brand.json sits next to this script. The name of the brand and its highlighted word are written there and nowhere else.
+    const BRAND = new URL("brand.json", document.currentScript.src).href;
     const FALLBACK = "en-US";
     const KEY = "lang";
     const listeners = [];
@@ -13,17 +15,32 @@
         languages: [],
         ui: {},
         data: null,
+        brand: { name: "", highlight: "" },
 
         // Loads data.json, picks the language, and applies it to the page.
         async load(url = "data.json") {
             const response = await fetch(url, { cache: "no-store" });
             if (!response.ok) throw new Error(`${url}: ${response.status}`);
             this.data = await response.json();
+            await this.fillBrand();
             this.languages = this.data.languages || [];
             this.ui = this.data.ui || {};
             this.lang = this.resolve();
             this.apply();
             return this.data;
+        },
+
+        // Every text of data.json that says {brand} gets the name of the brand, and {highlight} its highlighted word.
+        async fillBrand() {
+            try {
+                this.brand = await (await fetch(BRAND, { cache: "no-store" })).json();
+            } catch {}
+            const escape = (text) => JSON.stringify(text || "").slice(1, -1);
+            this.data = JSON.parse(
+                JSON.stringify(this.data)
+                    .replaceAll("{highlight}", escape(this.brand.highlight))
+                    .replaceAll("{brand}", escape(this.brand.name))
+            );
         },
 
         sameBase(codes, lang) {

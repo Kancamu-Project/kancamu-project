@@ -1,8 +1,8 @@
 {
   "name": {
-    "en-US": "muAI — AI in your browser",
-    "zh-CN": "muAI — 浏览器中的 AI",
-    "ar-SA": "muAI — الذكاء الاصطناعي في متصفحك"
+    "en-US": "{highlight}AI — AI in your browser",
+    "zh-CN": "{highlight}AI — 浏览器中的 AI",
+    "ar-SA": "{highlight}AI — الذكاء الاصطناعي في متصفحك"
   },
   "languages": [
     {
@@ -67,26 +67,6 @@
       "zh-CN": "选择 AI 模型",
       "ar-SA": "اختر نموذج الذكاء الاصطناعي"
     },
-    "intro.title": {
-      "en-US": "AI that runs in your browser",
-      "zh-CN": "在浏览器中运行的 AI",
-      "ar-SA": "ذكاء اصطناعي يعمل في متصفحك"
-    },
-    "intro.sub": {
-      "en-US": "Models run directly on your device's GPU through WebGPU. No server, and your chats stay in this browser.",
-      "zh-CN": "模型通过 WebGPU 直接在你设备的 GPU 上运行。无需服务器，你的对话只保存在此浏览器中。",
-      "ar-SA": "تعمل النماذج مباشرة على وحدة معالجة الرسوميات في جهازك عبر WebGPU. بلا خادم، وتبقى محادثاتك في هذا المتصفح."
-    },
-    "model.load": {
-      "en-US": "Load model",
-      "zh-CN": "加载模型",
-      "ar-SA": "تحميل النموذج"
-    },
-    "model.change": {
-      "en-US": "Change model",
-      "zh-CN": "更换模型",
-      "ar-SA": "تغيير النموذج"
-    },
     "progress.preparing": {
       "en-US": "Preparing…",
       "zh-CN": "准备中…",
@@ -106,11 +86,6 @@
       "en-US": "Remove",
       "zh-CN": "移除",
       "ar-SA": "إزالة"
-    },
-    "composer.loadFirst": {
-      "en-US": "Load a model first…",
-      "zh-CN": "请先加载模型…",
-      "ar-SA": "حمّل نموذجًا أولًا…"
     },
     "composer.type": {
       "en-US": "Type a message…",
@@ -267,16 +242,6 @@
       "zh-CN": "文本 + 图片",
       "ar-SA": "نص + صور"
     },
-    "model.desc": {
-      "en-US": "{by} · {kind} · download ±{size}. {desc}",
-      "zh-CN": "{by} · {kind} · 下载约 {size}。{desc}",
-      "ar-SA": "{by} · {kind} · تنزيل ±{size}. {desc}"
-    },
-    "model.hint": {
-      "en-US": "Downloaded from Hugging Face the first time it loads, then kept in the browser cache.",
-      "zh-CN": "首次加载时从 Hugging Face 下载，之后保存在浏览器缓存中。",
-      "ar-SA": "يُنزَّل من Hugging Face عند أول تحميل، ثم يُحفظ في ذاكرة المتصفح المؤقتة."
-    },
     "tag.tiny": {
       "en-US": "Tiny",
       "zh-CN": "微型",
@@ -307,46 +272,6 @@
       "zh-CN": "最新 · 重量级",
       "ar-SA": "الأحدث · ثقيل"
     },
-    "m.gemma-3-270m": {
-      "en-US": "Smallest and fastest. Good for testing and weak devices, basic answer quality.",
-      "zh-CN": "最小最快。适合测试和性能较弱的设备，回答质量一般。",
-      "ar-SA": "الأصغر والأسرع. مناسب للتجربة والأجهزة الضعيفة، وجودة الإجابات أساسية."
-    },
-    "m.qwen3-0.6b": {
-      "en-US": "Small but capable, supports many languages.",
-      "zh-CN": "体积小但能力不弱，支持多种语言。",
-      "ar-SA": "صغير لكنه كفء، ويدعم لغات كثيرة."
-    },
-    "m.gemma-3-1b": {
-      "en-US": "Balanced speed and quality for everyday chat.",
-      "zh-CN": "速度与质量均衡，适合日常对话。",
-      "ar-SA": "توازن بين السرعة والجودة للمحادثات اليومية."
-    },
-    "m.llama-3.2-1b": {
-      "en-US": "Meta's small model, strongest in English.",
-      "zh-CN": "Meta 的小型模型，英语表现最佳。",
-      "ar-SA": "نموذج Meta الصغير، وهو الأقوى في اللغة الإنجليزية."
-    },
-    "m.qwen3-1.7b": {
-      "en-US": "Smarter than 0.6B, still comfortable on a laptop with an ordinary GPU.",
-      "zh-CN": "比 0.6B 更聪明，在配备普通显卡的笔记本上仍然流畅。",
-      "ar-SA": "أذكى من 0.6B، ويعمل بسلاسة على حاسوب محمول ببطاقة رسوميات عادية."
-    },
-    "m.qwen3-4b": {
-      "en-US": "Strong at text and code. Needs a GPU with plenty of memory.",
-      "zh-CN": "擅长文本和代码。需要显存充足的 GPU。",
-      "ar-SA": "قوي في النصوص والبرمجة. يحتاج إلى وحدة رسوميات بذاكرة كبيرة."
-    },
-    "m.gemma-4-e2b": {
-      "en-US": "Google's newest model, can read images. Large download because of embeddings.",
-      "zh-CN": "Google 最新的模型，可以读取图片。因包含嵌入数据，下载体积较大。",
-      "ar-SA": "أحدث نماذج Google، ويستطيع قراءة الصور. حجم التنزيل كبير بسبب التضمينات."
-    },
-    "m.gemma-4-e4b": {
-      "en-US": "The smartest Gemma 4 in this catalog and can read images. Very heavy.",
-      "zh-CN": "本列表中最聪明的 Gemma 4，可以读取图片。非常占资源。",
-      "ar-SA": "أذكى Gemma 4 في هذه القائمة ويستطيع قراءة الصور. ثقيل جدًا."
-    },
     "s1": {
       "en-US": "Explain what WebGPU is with a simple example",
       "zh-CN": "用一个简单的例子解释什么是 WebGPU",
@@ -376,11 +301,6 @@
       "en-US": "Wait for the reply to finish",
       "zh-CN": "请等待回复完成",
       "ar-SA": "انتظر حتى ينتهي الرد"
-    },
-    "toast.loadFirst": {
-      "en-US": "Load a model first",
-      "zh-CN": "请先加载模型",
-      "ar-SA": "حمّل نموذجًا أولًا"
     },
     "toast.copied": {
       "en-US": "Copied",
@@ -571,6 +491,56 @@
       "en-US": "Account",
       "zh-CN": "账户",
       "ar-SA": "الحساب"
+    },
+    "m.gemma-3-270m": {
+      "en-US": "Smallest and fastest. Good for testing and weak devices, basic answer quality.",
+      "zh-CN": "最小最快。适合测试和性能较弱的设备，回答质量一般。",
+      "ar-SA": "الأصغر والأسرع. مناسب للتجربة والأجهزة الضعيفة، وجودة الإجابات أساسية."
+    },
+    "m.qwen3-0.6b": {
+      "en-US": "Small but capable, supports many languages.",
+      "zh-CN": "体积小但能力不弱，支持多种语言。",
+      "ar-SA": "صغير لكنه كفء، ويدعم لغات كثيرة."
+    },
+    "m.gemma-3-1b": {
+      "en-US": "Balanced speed and quality for everyday chat.",
+      "zh-CN": "速度与质量均衡，适合日常对话。",
+      "ar-SA": "توازن بين السرعة والجودة للمحادثات اليومية."
+    },
+    "m.llama-3.2-1b": {
+      "en-US": "Meta's small model, strongest in English.",
+      "zh-CN": "Meta 的小型模型，英语表现最佳。",
+      "ar-SA": "نموذج Meta الصغير، وهو الأقوى في اللغة الإنجليزية."
+    },
+    "m.qwen3-1.7b": {
+      "en-US": "Smarter than 0.6B, still comfortable on a laptop with an ordinary GPU.",
+      "zh-CN": "比 0.6B 更聪明，在配备普通显卡的笔记本上仍然流畅。",
+      "ar-SA": "أذكى من 0.6B، ويعمل بسلاسة على حاسوب محمول ببطاقة رسوميات عادية."
+    },
+    "m.qwen3-4b": {
+      "en-US": "Strong at text and code. Needs a GPU with plenty of memory.",
+      "zh-CN": "擅长文本和代码。需要显存充足的 GPU。",
+      "ar-SA": "قوي في النصوص والبرمجة. يحتاج إلى وحدة رسوميات بذاكرة كبيرة."
+    },
+    "m.gemma-4-e2b": {
+      "en-US": "Google's newest model, can read images. Large download because of embeddings.",
+      "zh-CN": "Google 最新的模型，可以读取图片。因包含嵌入数据，下载体积较大。",
+      "ar-SA": "أحدث نماذج Google، ويستطيع قراءة الصور. حجم التنزيل كبير بسبب التضمينات."
+    },
+    "m.gemma-4-e4b": {
+      "en-US": "The smartest Gemma 4 in this catalog and can read images. Very heavy.",
+      "zh-CN": "本列表中最聪明的 Gemma 4，可以读取图片。非常占资源。",
+      "ar-SA": "أذكى Gemma 4 في هذه القائمة ويستطيع قراءة الصور. ثقيل جدًا."
+    },
+    "copyright": {
+      "en-US": "© {brand}",
+      "zh-CN": "© {brand}",
+      "ar-SA": "© {brand}"
+    },
+    "logo": {
+      "en-US": "<span class=\"highlight\">{highlight}</span>AI",
+      "zh-CN": "<span class=\"highlight\">{highlight}</span>AI",
+      "ar-SA": "<span class=\"highlight\">{highlight}</span>AI"
     }
   }
 }

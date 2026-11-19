@@ -2,7 +2,8 @@
 (() => {
 'use strict';
 
-const ROOT = 'drive';                 // every file is stored in this folder of the repository
+const STORAGE_LIMIT_KB = 5 * 1024 * 1024;   // the size the percentage of use is counted against (5 GB)
+const DEFAULT_FOLDERS = ['Documents', 'Images', 'Videos', 'Audio'];   // what a new drive starts with
 const KEEP = '.gitkeep';              // keeps an empty folder alive
 const MAX_FILE = 100 * 1024 * 1024;   // GitHub's hard limit per file (100 MB), not an artificial one
 
@@ -10,16 +11,16 @@ const $ = (id) => document.getElementById(id);
 const tr = (key, params) => i18n.t(key, params);
 const S = {
   token: '', user: null, owner: '', repo: '', branch: 'main', head: null,
-  path: [], items: [], visible: [], view: 'grid', sort: 'name', dir: 1, query: '',
-  selected: new Set(), busy: false, repoSizeKB: 0, repoPrivate: true, defaultBranch: 'main',
-  screen: 'login',
+  path: [], rootFolders: [], items: [], visible: [], view: 'grid', sort: 'name', dir: 1, query: '',
+  selected: new Set(), busy: false, repoSizeKB: 0, repoPrivate: true,
 };
 
 /* ---------- utilities ---------- */
 const h = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 const icon = (name) => h('span', 'icon i-' + name);
 const enc = (p) => p.split('/').map(encodeURIComponent).join('/');
-const fullPath = (...parts) => [ROOT, ...S.path, ...parts].filter(Boolean).join('/');
+const fullPath = (...parts) => [...S.path, ...parts].filter(Boolean).join('/');
+const contentsOf = (path) => `/contents${path ? '/' + enc(path) : ''}`;
 const fmtSize = (n) => {
   if (n < 1024) return n + ' B';
   const u = ['KB', 'MB', 'GB', 'TB']; let i = -1;
@@ -132,15 +133,12 @@ async function listViaTree(dir) {
   const sha = S.head || (await repoApi(`/git/ref/heads/${S.branch}`)).object.sha;
   const commit = await repoApi(`/git/commits/${sha}`);
   const tree = await repoApi(`/git/trees/${commit.tree.sha}?recursive=1`);
-  const prefix = dir + '/';
+  const prefix = dir ? dir + '/' : '';
   return tree.tree
     .filter((t) => t.path.startsWith(prefix) && !t.path.slice(prefix.length).includes('/'))
     .map((t) => ({ name: t.path.slice(prefix.length), path: t.path, type: t.type === 'tree' ? 'dir' : 'file', size: t.size || 0, sha: t.sha }));
 }
 /* ---------- the account: one sign-in, shared with the other webs (assets/account.js) ---------- */
-const DEFAULT_REPO = 'drivemu-storage';
-const screens = ['login', 'app'];
-const show = (name) => { S.screen = name; screens.forEach((s) => $(s).classList.toggle('hidden', s !== name)); };
 async function authenticate(token) {
   S.token = token;
   const res = await api('/user', { returnResponse: true });
@@ -148,73 +146,73 @@ async function authenticate(token) {
   S.owner = S.user.login;
 }
 
-// Connect to the storage repository; it is created (private) if it does not exist yet
-async function connectRepo(name) {
-  let info;
-  try {
-    info = await api(`/repos/${S.owner}/${name}`);
-  } catch (e) {
-    if (e.status !== 404) throw e;
-    info = await api('/user/repos', { method: 'POST', body: JSON.stringify({
-      name, private: true, auto_init: true, description: 'Drivemu file storage',
-    }) });
-    await new Promise((r) => setTimeout(r, 1500)); // give GitHub time to set up the repository
-  }
-  if (!info.permissions || !info.permissions.push) throw new Error(tr('error.noWrite'));
-  S.repo = name;
-  S.defaultBranch = info.default_branch || 'main';
-  S.branch = S.defaultBranch; // the files always live on the default branch
-  S.repoPrivate = info.private;
-  S.repoSizeKB = info.size || 0;
-}
-async function hasBranches() {
-  try { return (await repoApi('/branches?per_page=1')).length > 0; }
-  catch (e) { if (e.status !== 404 && e.status !== 409) throw e; return false; } // empty repository
+// The default folders, all empty (a folder is kept by an empty .gitkeep file).
+async function createDefaultFolders() {
+  const blob = await repoApi('/git/blobs', { method: 'POST', body: JSON.stringify({ content: '', encoding: 'utf-8' }) });
+  await commitTree(DEFAULT_FOLDERS.map((name) => ({ path: `${name}/${KEEP}`, mode: '100644', type: 'blob', sha: blob.sha })), 'Drivemu: create the default folders');
 }
 
-// Makes sure the root folder exists, then shows the files
+// Connects to the drivemu branch of the shared storage (assets/storage.js), then makes sure the root folder is there.
 async function openStorage() {
+  const store = await storage.connect('drivemu');
+  S.owner = store.owner; S.repo = store.repo; S.branch = store.branch;
+  S.repoPrivate = store.info.private; S.repoSizeKB = store.info.size || 0;
   S.head = null;
-  try { await repoApi(`/contents/${ROOT}?ref=${S.branch}`); }
-  catch (e) {
-    if (e.status !== 404) throw e;
-    const body = { message: 'Drivemu: initialize', content: '' };
-    if (await hasBranches()) body.branch = S.branch; // in an empty repository the first file creates the default branch
-    await repoApi(`/contents/${ROOT}/${KEEP}`, { method: 'PUT', body: JSON.stringify(body) });
-  }
+  let root = [];
+  try { root = await repoApi(`${contentsOf('')}?ref=${S.branch}`); } catch (e) { if (e.status !== 404) throw e; }
+  if (root.every((item) => item.name === KEEP)) await createDefaultFolders();   // a new, empty branch
   showApp();
 }
 
 // Connects with the shared account; shows the sign-in screen when there is none or it does not work.
 async function startFromAccount() {
   const acc = account.get();
-  if (!acc) { showLogin(); return; }
+  if (!acc) { showSignedOut(); return; }
   try {
     await authenticate(acc.token);
-    await connectRepo(DEFAULT_REPO);
     await openStorage();
   } catch (e) {
-    if (e.status === 401) { toast(tr('acct.tokenInvalid', { name: acc.login || tr('acct.anAccount') }), true, 6000); account.signOut(); showLogin(); }
-    else showLogin(tr('login.couldNotConnect', { message: e.message }));
+    if (e.status === 401) { toast(tr('acct.tokenInvalid', { name: acc.login || tr('acct.anAccount') }), true, 6000); account.signOut(); showSignedOut(); }
+    else showSignedOut(tr('login.couldNotConnect', { message: e.code === 'noWrite' ? tr('error.noWrite') : e.message }));
   }
 }
 // Back to the sign-in screen (the account was removed here or in another web).
-function resetSession() { S.token = ''; S.user = null; S.items = []; showLogin(); }
+function resetSession() { S.token = ''; S.user = null; S.items = []; S.rootFolders = []; showSignedOut(); }
 account.onChange(async (acc) => {
-  if (!acc) { if (S.screen !== 'login') resetSession(); return; }
-  if (S.screen === 'login' || acc.token !== S.token) await startFromAccount();
+  if (!acc) { if (S.user) resetSession(); return; }
+  if (!S.user || acc.token !== S.token) await startFromAccount();
 });
 
 /* --- screens --- */
 function showApp() {
-  show('app');
   S.path = []; S.query = ''; $('search').value = ''; S.selected.clear(); load();
 }
-function showLogin(err = '') {
-  show('login');
-  $('loginError').textContent = err;
-  $('loginTitle').textContent = tr('login.title');
-  $('loginSub').textContent = tr('login.sub');
+// Reset: every file and folder is deleted, and the default folders are made again, in one commit.
+async function resetDrive() {
+  if (!(await ask({ title: tr('reset.title'), text: tr('reset.text'), ok: tr('reset') }))) return;
+  $('settings').close();
+  const t = toast(tr('reset.doing'), false, 0);
+  try {
+    const ref = await repoApi(`/git/ref/heads/${S.branch}`);
+    const commit = await repoApi(`/git/commits/${ref.object.sha}`);
+    const tree = await repoApi(`/git/trees/${commit.tree.sha}?recursive=1`);
+    const empty = await repoApi('/git/blobs', { method: 'POST', body: JSON.stringify({ content: '', encoding: 'utf-8' }) });
+    const entries = tree.tree.filter((i) => i.type === 'blob' && i.path !== KEEP).map((i) => ({ path: i.path, mode: i.mode, type: 'blob', sha: null }));
+    entries.push(...DEFAULT_FOLDERS.map((name) => ({ path: `${name}/${KEEP}`, mode: '100644', type: 'blob', sha: empty.sha })));
+    await commitTree(entries, 'Drivemu: reset');
+    toast(tr('reset.done'));
+  } catch (e) { toast(tr('failed', { message: e.message }), true, 6000); }
+  t.remove();
+  S.path = []; S.query = ''; $('search').value = '';
+  load(); refreshUsage();
+}
+
+// Not signed in: the files page is shown as it is, empty, with an invitation to sign in.
+function showSignedOut(err = '') {
+  S.path = []; S.query = ''; $('search').value = ''; S.selected.clear(); S.items = []; S.head = null;
+  $('loading').classList.add('hidden');
+  render();
+  if (err) toast(err, true, 6000);
 }
 
 /* --- settings: appearance, profile, token, repository --- */
@@ -230,16 +228,19 @@ async function openSettings() {
   const d = $('settings'), body = $('settingsBody');
   body.replaceChildren(h('div', 'spinner'));
   if (!d.open) d.showModal();
-  try { // fresh data; if that fails, keep what we have
+  if (S.user) try { // fresh data; if that fails, keep what we have
     const info = await repoApi('');
-    S.repoSizeKB = info.size; S.repoPrivate = info.private; S.defaultBranch = info.default_branch;
+    S.repoSizeKB = info.size; S.repoPrivate = info.private;
   } catch { /* ignore */ }
 
   const add = (rows, k, v) => { if (v !== null && v !== undefined && v !== '') rows.append(row(k, v)); };
 
   // storage
   const rr = h('div', 'srows');
-  add(rr, tr('usage.title'), fmtSize(S.repoSizeKB * 1024));
+  add(rr, tr('usage.title'), tr('usage.value', usageInfo().params));
+  const resetBtn = h('button', 'btn danger'); resetBtn.type = 'button';
+  resetBtn.append(icon('refresh'), h('span', '', tr('reset')));
+  resetBtn.onclick = resetDrive;
 
   // appearance: language and theme, shared with every other web
   const lang = h('select', 'language'); lang.setAttribute('aria-label', tr('language'));
@@ -252,10 +253,11 @@ async function openSettings() {
   }
   const look = h('div', 'srows'); look.append(row(tr('language'), lang), row(tr('theme'), themes));
 
-  body.replaceChildren(
+  body.replaceChildren(...[
     section(tr('set.appearance'), look),
-    section(tr('set.storage'), rr),
-  );
+    S.user && section(tr('set.storage'), rr),
+    S.user && section(tr('reset.title'), h('p', 'hint', tr('reset.hint')), resetBtn),
+  ].filter(Boolean));
   i18n.selects();
   markTheme();
 }
@@ -272,10 +274,11 @@ async function load() {
   $('loading').classList.remove('hidden'); $('empty').classList.add('hidden'); $('list').replaceChildren();
   S.selected.clear();
   try {
-    const r = await repoApi(`/contents/${enc(fullPath())}?ref=${S.head || S.branch}`);
+    const r = await repoApi(`${contentsOf(fullPath())}?ref=${S.head || S.branch}`);
     let items = Array.isArray(r) ? r : [];
     if (items.length >= 1000) items = await listViaTree(fullPath()); // the Contents API stops at 1000 items
     S.items = items.filter((i) => i.name !== KEEP);
+    if (!S.path.length) S.rootFolders = S.items.filter((i) => i.type === 'dir').map((i) => i.name);
   } catch (e) {
     if (e.status === 404) S.items = [];
     else { toast(tr('load.failed', { message: e.message }), true); S.items = []; }
@@ -296,7 +299,43 @@ function visibleItems() {
   return items;
 }
 
+// How much of the storage is used: the percentage, and the text with sizes.
+function usageInfo() {
+  const used = S.repoSizeKB * 1024, limit = STORAGE_LIMIT_KB * 1024;
+  const percent = Math.min(100, (used / limit) * 100);
+  const params = { percent: i18n.number(percent, { maximumFractionDigits: percent < 10 ? 1 : 0 }), used: fmtSize(used), limit: fmtSize(limit) };
+  return { percent, params };
+}
+function refreshUsage() {
+  repoApi('').then((info) => { S.repoSizeKB = info.size; renderSide(); }).catch(() => { /* ignore */ });
+}
+
+// The sidebar: the folders at the root of the branch (the last list read at the root), and the root itself.
+function renderSide() {
+  const nav = $('folders'), box = $('usage');
+  $('app').classList.toggle('plain', !S.user);   // signed out: only the name, settings, and profile show
+  nav.replaceChildren(); box.replaceChildren();
+  if (!S.user) return;
+  const entry = (label, ico, path, on) => {
+    const b = h('button', 'btn'); b.type = 'button'; b.classList.toggle('on', on);
+    b.append(icon(ico), h('span', '', label));
+    b.onclick = () => goTo(path);
+    return b;
+  };
+  nav.append(entry(tr('nav.myDrive'), 'hard-drive', [], S.path.length === 0));
+  for (const name of S.rootFolders) nav.append(entry(name, 'folder', [name], S.path[0] === name));
+  // the indicator of the storage used, at the bottom
+  const { percent, params } = usageInfo();
+  const meter = h('div', 'meter'), fill = h('i');
+  fill.style.width = `${percent > 0 ? Math.max(percent, 1) : 0}%`;
+  meter.append(fill);
+  meter.setAttribute('role', 'progressbar'); meter.setAttribute('aria-valuenow', Math.round(percent)); meter.setAttribute('aria-valuemin', 0); meter.setAttribute('aria-valuemax', 100);
+  box.append(h('span', 'usage-percent', tr('usage.percent', params)), meter, h('span', 'usage-detail', tr('usage.detail', params)));
+}
+function goTo(path) { S.path = path; S.query = ''; $('search').value = ''; load(); }
+
 function render() {
+  renderSide();
   renderCrumbs();
   const items = S.visible = visibleItems();
   const list = $('list');
@@ -314,24 +353,28 @@ function render() {
   $('empty').classList.toggle('hidden', !empty);
   if (empty) {
     const searching = S.query && S.items.length > 0;
-    $('emptyTitle').textContent = tr(searching ? 'empty.noMatches' : 'empty.title');
-    $('emptyText').textContent = searching ? tr('empty.noMatchesText', { query: S.query }) : tr('empty.text');
-    $('emptyCta').classList.toggle('hidden', searching);
+    $('emptyTitle').textContent = tr(!S.user ? 'signedout.title' : searching ? 'empty.noMatches' : 'empty.title');
+    $('emptyText').textContent = !S.user ? tr('signedout.text') : searching ? tr('empty.noMatchesText', { query: S.query }) : tr('empty.text');
+    const cta = $('emptyCta');
+    cta.replaceChildren(icon(S.user ? 'upload' : 'user'), h('span', '', tr(S.user ? 'menu.uploadFiles' : 'login.signIn')));
+    cta.onclick = S.user ? () => $('fileInput').click() : () => account.open();
+    cta.classList.toggle('hidden', searching && !!S.user);
   }
   $('viewGrid').classList.toggle('on', S.view === 'grid');
   $('viewList').classList.toggle('on', S.view === 'list');
   $('sort').value = `${S.sort}:${S.dir}`;
+  $('newBtn').disabled = !S.user;
   updateSelection();
   const files = S.items.filter((i) => i.type !== 'dir');
   const total = files.reduce((s, f) => s + f.size, 0);
-  $('status').textContent = tr('status', { folders: S.items.length - files.length, files: files.length, size: fmtSize(total), });
+  $('status').textContent = !S.user ? '' : tr('status', { folders: S.items.length - files.length, files: files.length, size: fmtSize(total), });
 }
 
 function renderCrumbs() {
   const c = $('crumbs'); c.replaceChildren();
   const mk = (label, depth) => {
     const b = h('span', 'crumb', label); b.tabIndex = 0; b.setAttribute('role', 'link');
-    b.onclick = () => { S.path = S.path.slice(0, depth); S.query = ''; $('search').value = ''; load(); };
+    b.onclick = () => goTo(S.path.slice(0, depth));
     b.onkeydown = (e) => { if (e.key === 'Enter') b.click(); };
     return b;
   };
@@ -360,6 +403,17 @@ function nameCell(it, k) {
 function base(it, cls) {
   const el = h('div', 'item ' + cls); el.dataset.name = it.name; el.title = it.name;
   el.onclick = () => (S.selected.size ? toggleSel(it.name) : open(it));
+  // Keyboard: Tab reaches every item; arrows move between them, Enter opens, Space selects, F2 renames, Delete deletes.
+  el.tabIndex = 0;
+  el.onkeydown = (e) => {
+    if (e.target !== el) return;
+    const move = (step) => { const all = [...$('list').querySelectorAll('.item')]; all[all.indexOf(el) + step]?.focus(); };
+    const keys = {
+      Enter: () => el.click(), ' ': () => toggleSel(it.name), F2: () => rename(it), Delete: () => remove([it]),
+      ArrowDown: () => move(1), ArrowRight: () => move(1), ArrowUp: () => move(-1), ArrowLeft: () => move(-1),
+    };
+    if (keys[e.key]) { e.preventDefault(); keys[e.key](); }
+  };
   return el;
 }
 function folderChip(it) {
@@ -460,7 +514,7 @@ async function previewFile(it) {
     if (!dlg.open) return;
     if (pvUrl) URL.revokeObjectURL(pvUrl);
     body.replaceChildren();
-    if (k === 'text') { const pre = h('pre'); pre.textContent = await blob.text(); body.appendChild(pre); return; }
+    if (k === 'text') { const pre = h('pre', 'selectable'); pre.textContent = await blob.text(); body.appendChild(pre); return; }
     pvUrl = URL.createObjectURL(blob);
     const tag = { image: 'img', video: 'video', audio: 'audio', pdf: 'iframe' }[k];
     const el = document.createElement(tag); el.src = pvUrl;
@@ -478,6 +532,7 @@ const readB64 = (file) => new Promise((res, rej) => {
 
 // Accept a File or { file, rel } (rel = relative path, e.g. "Photos/a.jpg" when uploading a folder)
 async function upload(input) {
+  if (!S.user) return account.open();
   let files = [...input].map((x) => (x instanceof File ? { file: x, rel: x.webkitRelativePath || x.name } : x));
   if (!files.length || S.busy) return;
   const tooBig = files.filter((f) => f.file.size > MAX_FILE);
@@ -505,7 +560,7 @@ async function upload(input) {
     await commitTree(entries, `Drivemu: upload ${files.length} file(s)`);
     toast(tr('upload.done', { count: files.length }));
   } catch (e) { toast(tr('upload.failed', { message: e.message }), true, 7000); }
-  pt.done(); S.busy = false; load();
+  pt.done(); S.busy = false; load(); refreshUsage();
 }
 
 async function newFolder() {
@@ -528,15 +583,14 @@ async function rename(it) {
   if (S.items.some((i) => i.name === name)) return toast(tr('name.inUse'), true);
   const t = toast(tr('rename.renaming'), false, 0);
   try {
-    const dir = fullPath();
     const entries = [];
     if (it.type === 'dir') {
       for (const b of await blobsUnder(it.path)) {
-        entries.push({ path: `${dir}/${name}/${b.path.slice(it.path.length + 1)}`, mode: b.mode, type: 'blob', sha: b.sha });
+        entries.push({ path: fullPath(name, b.path.slice(it.path.length + 1)), mode: b.mode, type: 'blob', sha: b.sha });
         entries.push({ path: b.path, mode: b.mode, type: 'blob', sha: null });
       }
     } else {
-      entries.push({ path: `${dir}/${name}`, mode: '100644', type: 'blob', sha: it.sha });
+      entries.push({ path: fullPath(name), mode: '100644', type: 'blob', sha: it.sha });
       entries.push({ path: it.path, mode: '100644', type: 'blob', sha: null });
     }
     await commitTree(entries, `Drivemu: rename ${it.name} to ${name}`);
@@ -558,7 +612,7 @@ async function remove(list) {
     if (entries.length) await commitTree(entries, `Drivemu: delete ${label}`);
     toast(tr('delete.done'));
   } catch (e) { toast(tr('failed', { message: e.message }), true); }
-  t.remove(); load();
+  t.remove(); load(); refreshUsage();
 }
 
 /* ---------- menu "New" ---------- */
@@ -568,8 +622,17 @@ function openMenu(anchor) {
   const r = anchor.getBoundingClientRect();
   m.style.top = r.bottom + 6 + 'px';
   m.style.left = Math.max(8, Math.min(r.left, window.innerWidth - m.offsetWidth - 8)) + 'px';
+  m.querySelector('button').focus();
 }
 const closeMenu = () => $('newMenu').classList.add('hidden');
+// Keyboard in the menu: arrows move, Escape closes and gives the focus back, Tab leaves.
+$('newMenu').onkeydown = (e) => {
+  const buttons = [...$('newMenu').querySelectorAll('button')], i = buttons.indexOf(document.activeElement);
+  if (e.key === 'ArrowDown') { e.preventDefault(); buttons[(i + 1) % buttons.length].focus(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); buttons[(i - 1 + buttons.length) % buttons.length].focus(); }
+  else if (e.key === 'Escape') { e.stopPropagation(); closeMenu(); $('newBtn').focus(); }
+  else if (e.key === 'Tab') closeMenu();
+};
 $('newBtn').onclick = (e) => { e.stopPropagation(); openMenu(e.currentTarget); };
 document.addEventListener('click', closeMenu);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
@@ -580,14 +643,12 @@ $('newMenu').onclick = (e) => {
 };
 
 /* ---------- events ---------- */
-$('loginBtn').onclick = () => account.open();
 document.querySelectorAll('[data-act=account]').forEach((b) => account.bind(b));
 document.querySelectorAll('[data-act=settings]').forEach((b) => { b.onclick = openSettings; });
 $('settingsClose').onclick = () => $('settings').close();
-$('emptyCta').onclick = () => $('fileInput').click();
 $('fileInput').onchange = (e) => { upload(e.target.files); e.target.value = ''; };
 $('folderInput').onchange = (e) => { upload(e.target.files); e.target.value = ''; };
-$('refreshBtn').onclick = () => { S.head = null; load(); }; // read the files again (changes made elsewhere)
+$('refreshBtn').onclick = () => { S.head = null; load(); refreshUsage(); }; // read the files again (changes made elsewhere)
 $('sort').onchange = (e) => { const [key, dir] = e.target.value.split(':'); S.sort = key; S.dir = +dir; render(); };
 const setView = (v) => { S.view = v; try { localStorage.setItem('drivemu.view', v); } catch { /* ignore */ } render(); };
 $('viewGrid').onclick = () => setView('grid');
@@ -634,8 +695,7 @@ async function collectDropped(dt) {
 
 /* ---------- language ---------- */
 function refreshLanguage() {
-  if (S.screen === 'login') showLogin();
-  else if (S.screen === 'app') render();
+  render();
   if ($('settings').open) openSettings();
 }
 

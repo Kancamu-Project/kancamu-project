@@ -3,6 +3,7 @@ import { i18n } from './i18n.js';
 import { FALLBACK_LANGUAGE } from '../config/i18n.js';
 import { settings } from './settings.js';
 import { DEFAULT_WINDOW } from '../config/apps.js';
+import { brandName } from './osinfo.js';
 
 /**
  * Registry of installed apps.
@@ -14,7 +15,7 @@ import { DEFAULT_WINDOW } from '../config/apps.js';
  *     "id": "file-explorer",            short name, used in settings and commands
  *     "name": { "en-US": "File Explorer", "zh-CN": "文件资源管理器", "ar-SA": "مستكشف الملفات" },
  *     "description": { "en-US": "...", ... },
- *     "publisher": { "en-US": "Kancamu Project", ... },
+ *     "publisher": { "en-US": "{brand}", ... },   {brand} is the name written in /assets/brand.json
  *     "version": "1.0.0",
  *     "entry": "apps/file-explorer/index.html",   page loaded inside the window: an address, or a path relative to the OS root
  *     "icon": "apps/file-explorer/favicon.png",   an address, or a path relative to the OS root (like entry)
@@ -65,7 +66,10 @@ class AppRegistry {
   async #load() {
     let list = [];
     try {
-      const index = await fetchJSON(`${ROOT}apps.json`);
+      let index = await fetchJSON(`${ROOT}apps.json`);
+      // a text that says {brand} gets the name of the brand
+      const brand = await brandName();
+      if (brand) index = JSON.parse(JSON.stringify(index).replaceAll('{brand}', JSON.stringify(brand).slice(1, -1)));
       list = Array.isArray(index) ? index : index.apps ?? [];
     } catch (err) {
       console.warn('[apps] apps.json could not be loaded', err);

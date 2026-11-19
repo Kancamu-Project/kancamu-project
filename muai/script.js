@@ -56,17 +56,14 @@ const SUGGESTIONS = ["s1", "s2", "s3", "s4"];
 
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
-  "gpuBadge","modelBadge","modelLabel","loadBtn","progressBox","barFill","progressText","loadErr","intro","chat","input",
+  "gpuBadge","modelBadge","modelLabel","loadStatus","progressBox","barFill","progressText","loadErr","chat","input",
   "sendBtn","stopBtn","main","attachBtn","file","preview","previewImg","previewName","removeImg","list","search",
   "newBtn","title","exportBtn","exportAllBtn","importBtn","importFile","clearAllBtn","settingsBtn","settingsDlg",
   "settingsForm","setSystem","setMax","setTemp","setCtx","tempVal","cancelSettings","resetSettings","menuBtn",
-  "overlay","chips","loadHint","themeDark","themeLight","side","resizer","changeModelBtn","modelDlg","modelList","closeModelDlg","familyFilter",
+  "overlay","chips","themeDark","themeLight","side","resizer","modelDlg","modelList","closeModelDlg","familyFilter",
 ].map((k) => [k, $(k)]));
 const setModelLabel = (t) => { els.modelLabel.textContent = t; };
 function showSelected() {
-  $("modelName").textContent = MODEL.name;
-  $("modelDesc").textContent = tr("model.desc", { by: MODEL.by, kind: tr(MODEL.kind === "multi" ? "model.kind.multi" : "model.kind.text"), size: sizeLabel(MODEL.mb), desc: modelDesc(MODEL) });
-  els.loadHint.textContent = tr("model.hint");
   els.attachBtn.classList.toggle("hidden", MODEL.kind !== "multi");
   if (!model) setModelLabel(MODEL.name);
 }
@@ -106,13 +103,124 @@ const db = await new Promise((res) => {
   } catch { res(null); }
 });
 const tx = (mode) => db.transaction("convs", mode).objectStore("convs");
+const put = (c) => db ? new Promise((res) => { const r = tx("readwrite").put(c); r.onsuccess = r.onerror = () => res(); }) : Promise.resolve();
+const del = (id) => db ? new Promise((res) => { const r = tx("readwrite").delete(id); r.onsuccess = r.onerror = () => res(); }) : Promise.resolve();
 const idb = {
   all: () => db ? new Promise((res) => { const r = tx("readonly").getAll(); r.onsuccess = () => res(r.result); r.onerror = () => res([]); }) : Promise.resolve([]),
-  put: (c) => db ? new Promise((res) => { const r = tx("readwrite").put(c); r.onsuccess = r.onerror = () => res(); }) : Promise.resolve(),
-  del: (id) => db ? new Promise((res) => { const r = tx("readwrite").delete(id); r.onsuccess = r.onerror = () => res(); }) : Promise.resolve(),
-  clear: () => db ? new Promise((res) => { const r = tx("readwrite").clear(); r.onsuccess = r.onerror = () => res(); }) : Promise.resolve(),
+  save: put,   // saved here only: the sync does not hear of it
+  drop: del,
+  put: async (c) => { await put(c); changed(c.id); },
+  del: async (id) => { await del(id); removedChat(id); },
+  clear: async () => { for (const c of await idb.all()) removedChat(c.id); if (db) await new Promise((res) => { const r = tx("readwrite").clear(); r.onsuccess = r.onerror = () => res(); }); },
 };
 if (!db) toast(tr("toast.storage"));
+
+// ---------- Sync: signed in, the chats are also kept on the muai branch of the user's storage (assets/storage.js) ----------
+// conversations/<id>.json  one file per chat, loaded when the chat is opened
+// files/<sha256>           the files attached to the chats, named by their hash, so a file is kept once whatever chat it came from
+const CHATS = "conversations", FILES = "files";
+let store = null, syncTimer = 0, knownFiles = new Set();
+const dirty = new Set(), removed = new Set();
+function changed(id) { dirty.add(id); removed.delete(id); scheduleSync(); }
+function removedChat(id) { removed.add(id); dirty.delete(id); scheduleSync(); }
+function scheduleSync() {
+  if (!window.account?.get()) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(flush, 2500);
+}
+const sha256 = async (bytes) => [...new Uint8Array(await crypto.subtle.digest("SHA-256", bytes))].map((b) => b.toString(16).padStart(2, "0")).join("");
+
+// A chat as it is kept in the storage: the attached images become files named by their hash.
+async function toRemote(c) {
+  const messages = [];
+  for (const { image, ...message } of c.messages) {
+    if (typeof image === "string" && image.startsWith("data:")) {
+      const [head, data] = image.split(",");
+      const bytes = Uint8Array.from(atob(data), (ch) => ch.charCodeAt(0));
+      const hash = await sha256(bytes);
+      if (!knownFiles.has(hash)) { await storage.writeBinary(store, `${FILES}/${hash}`, bytes, "muAI: save a file"); knownFiles.add(hash); }
+      message.file = { sha256: hash, type: head.slice(5).split(";")[0] };
+    }
+    messages.push(message);
+  }
+  const { sha, remoteSha, unloaded, stale, ...chat } = c;
+  return { ...chat, messages };
+}
+
+async function flush() {
+  if (!window.account?.get()) return;
+  try {
+    store ??= await storage.connect("muai");
+    for (const id of [...dirty]) {
+      dirty.delete(id);
+      const c = convs.find((x) => x.id === id);
+      if (!c || c.unloaded) continue;
+      try {
+        c.sha = await storage.writeFile(store, `${CHATS}/${id}.json`, JSON.stringify(await toRemote(c)), "muAI: save a chat");
+        await idb.save(c);
+      } catch (error) { dirty.add(id); throw error; }
+    }
+    for (const id of [...removed]) {
+      removed.delete(id);
+      try { await storage.removeFile(store, `${CHATS}/${id}.json`, "muAI: delete a chat"); } catch (error) { removed.add(id); throw error; }
+    }
+  } catch (error) { console.warn("[sync]", error); }
+}
+
+// The chats of the storage show in the list (only the names of the files are read). A chat is read when it is opened.
+async function pullChats() {
+  if (!window.account?.get()) return;
+  try {
+    store = await storage.connect("muai");
+    const [chatFiles, files] = await Promise.all([storage.list(store, CHATS), storage.list(store, FILES)]);
+    knownFiles = new Set(files.map((file) => file.name));
+    const remoteIds = new Set();
+    let listChanged = false;
+    for (const file of chatFiles) {
+      if (!file.name.endsWith(".json")) continue;
+      const id = file.name.slice(0, -5);
+      remoteIds.add(id);
+      const local = convs.find((c) => c.id === id);
+      if (!local) {
+        const created = parseInt(id.slice(0, 8), 36) || Date.now();   // the id starts with the time the chat was made
+        const chat = { id, title: new Date(created).toLocaleString(i18n.lang), created, updated: created, messages: [], unloaded: true, sha: null, remoteSha: file.sha };
+        convs.push(chat); await idb.save(chat); listChanged = true;
+      } else if (file.sha !== local.sha && !dirty.has(id)) {
+        local.stale = true; local.remoteSha = file.sha; await idb.save(local);   // changed elsewhere: read again when opened
+      }
+    }
+    for (const c of [...convs]) {
+      if (c.sha && !remoteIds.has(c.id) && !dirty.has(c.id)) {   // deleted elsewhere
+        convs = convs.filter((x) => x !== c); await idb.drop(c.id);
+        if (current === c) current = null;
+        listChanged = true;
+      } else if (!c.sha && !c.unloaded && !remoteIds.has(c.id)) dirty.add(c.id);   // never saved to the storage yet
+    }
+    if (listChanged) { convs.sort((a, b) => b.updated - a.updated); renderList(); renderChat(); }
+    scheduleSync();
+  } catch (error) { console.warn("[sync]", error); }
+}
+
+// Reads a chat from the storage (and its files), when it was only named in the list or was changed elsewhere.
+async function loadChat(c) {
+  if (!(c.unloaded || c.stale) || !window.account?.get()) return;
+  try {
+    store ??= await storage.connect("muai");
+    const text = await storage.readFile(store, `${CHATS}/${c.id}.json`);
+    if (!text) return;
+    const remote = JSON.parse(text);
+    await Promise.all((remote.messages || []).map(async (message) => {
+      if (!message.file) return;
+      const bytes = await storage.readBinary(store, `${FILES}/${message.file.sha256}`);
+      if (!bytes) return;
+      message.image = await new Promise((res) => { const reader = new FileReader(); reader.onload = () => res(reader.result); reader.readAsDataURL(new Blob([bytes], { type: message.file.type })); });
+      delete message.file;
+    }));
+    Object.assign(c, { title: remote.title, created: remote.created, updated: remote.updated, messages: remote.messages || [], sha: c.remoteSha, unloaded: false, stale: false });
+    await idb.save(c);
+    renderList();
+  } catch (error) { console.warn("[sync]", error); }
+}
 
 let convs = (await idb.all()).sort((a, b) => b.updated - a.updated);
 let current = null;          // active chat (null = not created yet)
@@ -131,7 +239,7 @@ function renderGpu() {
   if (!gpuOk) els.loadErr.textContent = tr("gpu.unsupported");
 }
 if (!gpuOk) {
-  els.loadBtn.disabled = true;
+  els.loadStatus.classList.remove("hidden");
   els.loadErr.classList.remove("hidden");
 }
 renderGpu();
@@ -197,6 +305,8 @@ function renderList() {
     it.innerHTML = `<span class="t"></span><div class="acts"><button data-a="rename" type="button" title="${tr("chat.rename")}" aria-label="${tr("chat.rename")}">${icon("edit")}</button><button data-a="delete" type="button" title="${tr("chat.delete")}" aria-label="${tr("chat.delete")}">${icon("trash")}</button></div>`;
     it.querySelector(".t").textContent = c.title;
     it.title = new Date(c.updated).toLocaleString(i18n.lang);
+    it.tabIndex = 0;   // Tab reaches every chat, Enter opens it
+    it.addEventListener("keydown", (e) => { if (e.target === it && e.key === "Enter") it.click(); });
     els.list.appendChild(it);
   }
 }
@@ -224,7 +334,7 @@ function setTitle() {
 function makeMsgEl(m, idx) {
   const row = document.createElement("div");
   row.className = "msg " + m.role; row.dataset.idx = idx;
-  const b = document.createElement("div"); b.className = "bubble";
+  const b = document.createElement("div"); b.className = "bubble selectable";
   if (m.image) {
     const im = document.createElement("div"); im.className = "att";
     im.style.backgroundImage = `url("${m.image}")`; im.setAttribute("role", "img"); im.setAttribute("aria-label", tr("msg.attachment"));
@@ -246,9 +356,8 @@ function makeMsgEl(m, idx) {
 function renderChat() {
   els.chat.innerHTML = "";
   const empty = !current || !current.messages.length;
-  els.intro.classList.toggle("hidden", !empty);
+  els.chips.classList.toggle("hidden", !empty);
   els.chat.classList.toggle("hidden", empty);
-  els.loadHint.parentElement.classList.toggle("hidden", !!model);
   if (!empty) current.messages.forEach((m, i) => els.chat.appendChild(makeMsgEl(m, i).row));
   els.main.scrollTop = els.main.scrollHeight;
   setTitle(); renderList();
@@ -269,7 +378,7 @@ els.chat.addEventListener("click", async (e) => {
     els.input.value = m.text; pendingImage = m.image && loadedDef?.kind === "multi" ? m.image : null;
     showPreview(); autosize(); renderChat(); els.input.focus();
   } else if (a === "regen") {
-    if (!model) return toast(tr("toast.loadFirst"));
+    if (!(await ensureModel())) return;
     current.messages.splice(idx); await runAssistant();
   }
 });
@@ -278,8 +387,9 @@ function newChat() {
   if (busy) return;
   current = null; renderChat(); closeSide(); els.input.focus();
 }
-function openConv(c) {
+async function openConv(c) {
   if (busy) return toast(tr("toast.wait"));
+  await loadChat(c);
   current = c; renderChat(); closeSide();
 }
 els.newBtn.addEventListener("click", newChat);
@@ -288,7 +398,7 @@ function renderChips() {
   for (const key of SUGGESTIONS) {
     const text = tr(key);
     const b = document.createElement("button"); b.type = "button"; b.innerHTML = "<span></span>"; b.firstChild.textContent = text;
-    b.addEventListener("click", () => { if (!model) return toast(tr("toast.loadFirst")); els.input.value = text; send(); });
+    b.addEventListener("click", () => { els.input.value = text; send(); });
     els.chips.appendChild(b);
   }
 }
@@ -299,14 +409,23 @@ async function unloadModel() {
   try { await model?.dispose?.(); } catch (e) { console.warn("dispose failed", e); }
   model = null; processor = null; tokenizer = null; loadedDef = null;
   els.modelBadge.classList.remove("ok");
-  els.input.disabled = true; els.sendBtn.disabled = true; els.input.placeholder = tr("composer.loadFirst");
-  els.loadBtn.classList.remove("hidden");
 }
 
+// The chat works at once: the first message loads the chosen model if it is not loaded yet.
+async function ensureModel() {
+  if (model) return true;
+  if (!gpuOk) { toast(tr("gpu.unsupported")); return false; }
+  if (loading) { toast(tr("toast.wait")); return false; }
+  await loadModel();
+  return !!model;
+}
+
+let loading = false;
 async function loadModel() {
-  if (busy) return;
+  if (busy || loading) return;
+  loading = true;
   const def = MODEL;
-  els.loadBtn.disabled = true; els.changeModelBtn.disabled = true;
+  els.loadStatus.classList.remove("hidden");
   els.loadErr.classList.add("hidden"); els.progressBox.classList.remove("hidden");
   els.barFill.style.width = "0%"; els.progressText.textContent = tr("progress.preparing");
   setModelLabel(tr("load.loading", { name: def.name }));
@@ -335,8 +454,7 @@ async function loadModel() {
     await generate([{ role: "user", content: def.kind === "multi" ? [{ type: "text", text: "Hi" }] : "Hi" }], [], { maxTokens: 1, temperature: 0 });
     lsSet("muai.model", def.id); lsSet("muai.autoload", "1");
     setModelLabel(def.name); els.modelBadge.classList.add("ok");
-    els.progressBox.classList.add("hidden"); els.loadBtn.classList.add("hidden");
-    els.input.disabled = false; els.sendBtn.disabled = false; els.input.placeholder = tr("composer.type");
+    els.progressBox.classList.add("hidden"); els.loadStatus.classList.add("hidden");
     renderChat(); els.input.focus();
   } catch (e) {
     console.error(e);
@@ -345,12 +463,11 @@ async function loadModel() {
     setModelLabel(def.name);
     els.loadErr.textContent = tr("load.failed", { name: def.name, message: e?.message || e });
     els.loadErr.classList.remove("hidden");
-    els.loadBtn.disabled = false; els.progressBox.classList.add("hidden");
+    els.progressBox.classList.add("hidden");
   } finally {
-    els.changeModelBtn.disabled = false;
+    loading = false;
   }
 }
-els.loadBtn.addEventListener("click", loadModel);
 
 // ---------- Model picker ----------
 let familyPick = "All"; // "All" is the internal value of the first filter; it is shown translated
@@ -396,7 +513,6 @@ async function chooseModel(m) {
 }
 function openModelDlg() { renderFamilyFilter(); renderModelList(); els.modelDlg.showModal(); }
 els.modelBadge.addEventListener("click", openModelDlg);
-els.changeModelBtn.addEventListener("click", openModelDlg);
 els.closeModelDlg.addEventListener("click", () => els.modelDlg.close());
 
 // ---------- Generate ----------
@@ -449,7 +565,7 @@ function buildMessages() {
 function setBusy(v) {
   busy = v;
   els.sendBtn.classList.toggle("hidden", v); els.stopBtn.classList.toggle("hidden", !v);
-  els.input.disabled = v || !model; els.attachBtn.disabled = v;
+  els.input.disabled = v; els.attachBtn.disabled = v;
 }
 
 async function runAssistant() {
@@ -479,7 +595,8 @@ async function runAssistant() {
 
 async function send() {
   const text = els.input.value.trim();
-  if (!text || busy || !model) return;
+  if (!text || busy) return;
+  if (!(await ensureModel())) return;
   if (!current) {
     current = { id: uid(), title: text.replace(/\s+/g, " ").slice(0, 48), created: Date.now(), updated: Date.now(), messages: [] };
     convs.unshift(current);
@@ -643,7 +760,6 @@ els.overlay.addEventListener("click", closeSide);
 i18n.onChange(() => {
   renderGpu(); renderChips(); showSelected();
   setModelLabel(model ? loadedDef.name : MODEL.name);
-  els.input.placeholder = tr(model ? "composer.type" : "composer.loadFirst");
   renderChat();
   if (els.modelDlg.open) { renderFamilyFilter(); renderModelList(); }
 });
@@ -652,3 +768,7 @@ i18n.onChange(() => {
 showSelected(); renderChat();
 // Auto-load only the last model that loaded successfully.
 if (gpuOk && lsGet("muai.autoload") === "1" && lsGet("muai.model")) loadModel();
+
+// Signed in (now or later): bring the chats of the storage here.
+pullChats();
+account.onChange((signedIn) => { store = null; if (signedIn) pullChats(); });

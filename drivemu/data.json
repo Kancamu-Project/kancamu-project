@@ -1,8 +1,8 @@
 {
   "name": {
-    "en-US": "Drivemu",
-    "zh-CN": "Drivemu",
-    "ar-SA": "Drivemu"
+    "en-US": "Drive{highlight}",
+    "zh-CN": "Drive{highlight}",
+    "ar-SA": "Drive{highlight}"
   },
   "languages": [
     {
@@ -22,56 +22,6 @@
     }
   ],
   "ui": {
-    "brand.title": {
-      "en-US": "Your files, always with you.",
-      "zh-CN": "你的文件，随时随地。",
-      "ar-SA": "ملفاتك معك أينما كنت."
-    },
-    "brand.text": {
-      "en-US": "Store, organise and preview your files. No subscriptions, nothing to maintain.",
-      "zh-CN": "存储、整理和预览你的文件。无需订阅，无需维护。",
-      "ar-SA": "خزّن ملفاتك ونظّمها واعرضها. بلا اشتراكات وبلا صيانة."
-    },
-    "brand.private.title": {
-      "en-US": "Private by default",
-      "zh-CN": "默认私有",
-      "ar-SA": "خاص افتراضيًا"
-    },
-    "brand.private.text": {
-      "en-US": "Your files are visible only to you.",
-      "zh-CN": "只有你能看到你的文件。",
-      "ar-SA": "ملفاتك مرئية لك وحدك."
-    },
-    "brand.backend.title": {
-      "en-US": "Nothing to install",
-      "zh-CN": "无需安装",
-      "ar-SA": "لا حاجة للتثبيت"
-    },
-    "brand.backend.text": {
-      "en-US": "Runs in your browser, ready whenever you are.",
-      "zh-CN": "在浏览器中运行，随时可用。",
-      "ar-SA": "يعمل في متصفحك وجاهز في أي وقت."
-    },
-    "brand.history.title": {
-      "en-US": "Full history",
-      "zh-CN": "完整历史记录",
-      "ar-SA": "سجل كامل"
-    },
-    "brand.history.text": {
-      "en-US": "Every change is saved, so you can always go back.",
-      "zh-CN": "每次更改都会保存，你可以随时回退。",
-      "ar-SA": "تُحفظ كل التغييرات، فيمكنك العودة إليها دائمًا."
-    },
-    "login.title": {
-      "en-US": "Sign in",
-      "zh-CN": "登录",
-      "ar-SA": "تسجيل الدخول"
-    },
-    "login.sub": {
-      "en-US": "Sign in once and every Kancamu web knows it. Your token never leaves your browser.",
-      "zh-CN": "登录一次，所有 Kancamu 网站都会自动识别。你的令牌不会离开浏览器。",
-      "ar-SA": "سجّل الدخول مرة واحدة لتتعرف عليه كل مواقع Kancamu. لا يغادر رمزك متصفحك أبدًا."
-    },
     "login.couldNotConnect": {
       "en-US": "Could not connect: {message}",
       "zh-CN": "无法连接：{message}",
@@ -501,6 +451,71 @@
       "en-US": "Size (largest)",
       "zh-CN": "大小（从大到小）",
       "ar-SA": "الحجم (الأكبر)"
+    },
+    "signedout.title": {
+      "en-US": "Sign in to see your files",
+      "zh-CN": "登录后查看你的文件",
+      "ar-SA": "سجّل الدخول لترى ملفاتك"
+    },
+    "signedout.text": {
+      "en-US": "Your files will appear here once you sign in.",
+      "zh-CN": "登录后，你的文件会显示在这里。",
+      "ar-SA": "ستظهر ملفاتك هنا بعد تسجيل الدخول."
+    },
+    "copyright": {
+      "en-US": "© {brand}",
+      "zh-CN": "© {brand}",
+      "ar-SA": "© {brand}"
+    },
+    "logo": {
+      "en-US": "Drive<span class=\"highlight\">{highlight}</span>",
+      "zh-CN": "Drive<span class=\"highlight\">{highlight}</span>",
+      "ar-SA": "Drive<span class=\"highlight\">{highlight}</span>"
+    },
+    "usage.percent": {
+      "en-US": "{percent}% used",
+      "zh-CN": "已用 {percent}%",
+      "ar-SA": "تم استخدام {percent}%"
+    },
+    "usage.detail": {
+      "en-US": "{used} of {limit}",
+      "zh-CN": "{used} / {limit}",
+      "ar-SA": "{used} من {limit}"
+    },
+    "usage.value": {
+      "en-US": "{percent}% ({used} of {limit})",
+      "zh-CN": "{percent}%（{used} / {limit}）",
+      "ar-SA": "{percent}% ({used} من {limit})"
+    },
+    "reset": {
+      "en-US": "Reset",
+      "zh-CN": "重置",
+      "ar-SA": "إعادة الضبط"
+    },
+    "reset.title": {
+      "en-US": "Reset Drivemu",
+      "zh-CN": "重置 Drivemu",
+      "ar-SA": "إعادة ضبط Drivemu"
+    },
+    "reset.hint": {
+      "en-US": "Deletes every file and folder and starts again with the default folders.",
+      "zh-CN": "删除所有文件和文件夹，并重新从默认文件夹开始。",
+      "ar-SA": "يحذف كل الملفات والمجلدات ويبدأ من جديد بالمجلدات الافتراضية."
+    },
+    "reset.text": {
+      "en-US": "Every file and folder will be deleted and the default folders created again. This cannot be undone.",
+      "zh-CN": "所有文件和文件夹都将被删除，并重新创建默认文件夹。此操作无法撤销。",
+      "ar-SA": "سيتم حذف كل الملفات والمجلدات وإنشاء المجلدات الافتراضية من جديد. لا يمكن التراجع عن هذا."
+    },
+    "reset.doing": {
+      "en-US": "Resetting…",
+      "zh-CN": "正在重置…",
+      "ar-SA": "جارٍ إعادة الضبط…"
+    },
+    "reset.done": {
+      "en-US": "Drivemu was reset",
+      "zh-CN": "Drivemu 已重置",
+      "ar-SA": "تمت إعادة ضبط Drivemu"
     }
   }
 }

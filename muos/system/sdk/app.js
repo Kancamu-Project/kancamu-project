@@ -91,7 +91,7 @@ export * from '../core/system.js';
 export { describeError } from '../core/errors.js';
 export { transfer, setDragPaths, prepareDragFiles, hasDragPaths, getDragPaths, dropInto } from '../core/clipboard.js';
 export { attachMarquee } from '../ui/marquee.js';
-export { OS_INFO } from '../core/osinfo.js';
+export { OS_INFO, brandName } from '../core/osinfo.js';
 export { usedSpace, clearAll, persistent, readJSON, writeJSON, removeKey, onExternalChange } from '../core/store.js';
 export { ROOT, url } from '../core/paths.js';
 export { playSound } from '../core/sound.js';

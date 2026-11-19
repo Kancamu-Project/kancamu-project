@@ -25,6 +25,7 @@ import {
   DEFAULT_WALLPAPERS,
   resolveTheme,
   OS_INFO,
+  brandName,
   clearAll,
   playSound,
   url,
@@ -496,6 +497,8 @@ function renderAbout(body) {
   const brand = ua?.brands?.filter((entry) => !/not.?a.?brand/i.test(entry.brand)).pop();
   const unknown = t('settings.about.unknown');
   const row = (label, value) => [h('dt', null, label), h('dd', null, value)];
+  const copyright = h('span', null, OS_INFO.copyright.replace('{brand}', ''));
+  brandName().then((name) => (copyright.textContent = OS_INFO.copyright.replace('{brand}', name)));
   const language = () => i18n.available.find((entry) => entry.code === i18n.lang)?.name ?? i18n.lang;
   body.append(
     group(
@@ -522,6 +525,7 @@ function renderAbout(body) {
           row(t('settings.about.edition'), OS_INFO.name),
           row(t('settings.about.version'), OS_INFO.version),
           row(t('settings.about.build'), OS_INFO.build),
+          row(t('settings.about.copyright'), copyright),
           row(t('settings.pages.language.title'), language())
         )
       )

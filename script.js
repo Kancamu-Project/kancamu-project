@@ -206,6 +206,22 @@ function showMenu(anchor, project) {
 
     menu.append(copy, here);
     document.body.appendChild(menu);
+    copy.focus();
+    // Keyboard in the menu: arrows move, Escape closes and gives the focus back, Tab leaves.
+    menu.addEventListener("keydown", (event) => {
+        const buttons = [...menu.querySelectorAll("button")], i = buttons.indexOf(document.activeElement);
+        if (event.key === "ArrowDown") {
+            event.preventDefault();
+            buttons[(i + 1) % buttons.length].focus();
+        } else if (event.key === "ArrowUp") {
+            event.preventDefault();
+            buttons[(i - 1 + buttons.length) % buttons.length].focus();
+        } else if (event.key === "Escape") {
+            event.stopPropagation();
+            closeMenu();
+            anchor.focus();
+        } else if (event.key === "Tab") closeMenu();
+    });
 
     const rect = anchor.getBoundingClientRect();
     const fitsBelow = rect.bottom + menu.offsetHeight < window.innerHeight;

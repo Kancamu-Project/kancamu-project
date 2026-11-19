@@ -1,7 +1,7 @@
 .icon {
     display: block;
-    width: 1rem;
-    height: 1rem;
+    width: var(--icon-size-small);
+    height: var(--icon-size-small);
     flex: none;
     background: currentColor;
     mask: var(--icon) center / contain no-repeat;
@@ -18,14 +18,11 @@ button {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 0.4rem;
-    padding: 0 0.8rem;
+    gap: var(--gap-small);
     cursor: pointer;
     white-space: nowrap;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: var(--font-size-small);
     font-weight: bold;
-    letter-spacing: 0.1rem;
     text-transform: uppercase;
     transition: background 0.2s, color 0.2s, border-color 0.2s;
 
@@ -49,20 +46,10 @@ button {
         border-color: var(--danger);
     }
 
-    &:focus-visible {
-        outline: 1px solid var(--fg);
-        outline-offset: 1px;
-    }
-
     &:disabled {
         opacity: 0.4;
         cursor: not-allowed;
     }
-}
-
-/* Letter-spacing breaks the joined letters of Arabic */
-:root:lang(ar) * {
-    letter-spacing: 0 !important;
 }
 
 [hidden] {
@@ -75,6 +62,7 @@ button {
 }
 
 .head {
+    box-sizing: content-box;
     position: sticky;
     top: 0;
     z-index: 1;
@@ -83,10 +71,10 @@ button {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 1.2rem;
+    gap: var(--gap-small);
     height: var(--height);
-    padding-inline: 1.6rem 0;
-    border-bottom: 1px solid var(--border);
+    padding-inline: var(--padding-extra-large) 0;
+    border-bottom: var(--border-width) solid var(--border);
 
     & > .title {
         font-weight: 700;
@@ -95,15 +83,16 @@ button {
     & > button {
         height: 100%;
         border-width: 0;
-        border-inline-start-width: 1px;
+        border-inline-start-width: var(--border-width);
+        border-radius: 0;
     }
 }
 
 #form, #profile {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
-    padding: 1.6rem;
+    gap: var(--gap-medium);
+    padding: var(--padding-extra-large);
 }
 
 .hint {
@@ -127,7 +116,7 @@ button {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 1.2rem;
+    gap: var(--gap-small);
 }
 
 .bio {
@@ -141,7 +130,7 @@ button {
 #details {
     display: flex;
     flex-direction: column;
-    gap: 1.6rem;
+    gap: var(--gap-medium);
 
     &:empty {
         display: none;
@@ -151,30 +140,30 @@ button {
 .section {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: var(--gap-small);
 
     & > .section-title {
         color: var(--fg-1);
-        font-family: var(--font-mono);
-        letter-spacing: 0.1rem;
         text-transform: uppercase;
     }
 }
 
 .rows {
+    border-radius: var(--border-radius-medium);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    border: 1px solid var(--border);
+    border: var(--border-width) solid var(--border);
 
     & > .row {
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        gap: 1.6rem;
+        gap: var(--gap-small);
         min-height: var(--height);
-        padding: 0.4rem 1.2rem;
-        border-bottom: 1px solid var(--border);
+        padding: var(--padding-small) var(--padding-large);
+        border-bottom: var(--border-width) solid var(--border);
 
         &:last-child {
             border-bottom: 0;
@@ -201,12 +190,11 @@ button {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
-    gap: 0.4rem;
+    gap: var(--gap-small);
 
     & > .chip {
-        padding: 0 0.6rem;
-        border: 1px solid var(--border);
-        font-family: var(--font-mono);
+        padding: 0 var(--padding-small);
+        border: var(--border-width) solid var(--border);
     }
 }
 
@@ -214,11 +202,11 @@ button {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 1.2rem;
+    gap: var(--gap-small);
 
     & > .avatar {
-        width: 4rem;
-        height: 4rem;
+        width: calc(var(--unit) * 20);
+        height: calc(var(--unit) * 20);
         flex: none;
         background: var(--bg-1) center / cover no-repeat;
     }
@@ -238,6 +226,13 @@ button {
             color: var(--fg-1);
         }
     }
+}
+
+.copyright {
+    padding: var(--padding-large) var(--padding-extra-large);
+    border-top: var(--border-width) solid var(--border);
+    color: var(--fg-1);
+    font-size: var(--font-size-extra-small);
 }
 
 #out {

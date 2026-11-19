@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#111115">
 <link rel="icon" type="image/png" href="favicon.png">
 <script src="../assets/theme.js"></script>
-<title>muAI — AI in your browser</title>
+<title></title>
 <meta name="description" content="muAI runs AI models directly in your browser with WebGPU. No server, no data sent.">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="stylesheet" href="layout.css">
@@ -16,7 +16,7 @@
 <div class="side" id="side">
   <div class="side-top">
     <div class="brand-row">
-      <div class="logo"><div class="mark"></div><div class="name"><span class="highlight">mu</span><span>AI</span></div></div>
+      <div class="logo"><div class="mark"></div><div class="name" data-i18n-html="logo"></div></div>
       <div class="brand-tools">
         <button id="settingsBtn" class="ghost square" type="button" data-i18n-title="settings" data-i18n-label="settings"><span class="icon i-sliders"></span></button>
         <button id="accountBtn" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon i-user"></span></button>
@@ -26,7 +26,7 @@
     <input id="search" type="search" data-i18n-placeholder="search.placeholder" data-i18n-label="search.label">
   </div>
   <div id="list"></div>
-  <div class="side-foot"><span>&copy; Kancamu Project</span></div>
+  <div class="side-foot"><span data-i18n="copyright"></span></div>
   <div id="resizer" class="resizer" role="separator" aria-orientation="vertical" data-i18n-label="resizer.label" aria-valuemin="16" aria-valuemax="40" tabindex="0" data-i18n-title="resizer.title"></div>
 </div>
 <div class="overlay" id="overlay"></div>
@@ -41,36 +41,25 @@
 
   <div id="main" class="scroll">
     <div class="wrap">
-      <div id="intro" class="intro">
-        <h1 data-i18n="intro.title"></h1>
-        <span class="sub" data-i18n="intro.sub"></span>
-        <div class="card" id="loadCard">
-          <h2 id="modelName"></h2>
-          <span id="modelDesc" class="note"></span>
-          <div class="row-start">
-            <button id="loadBtn" class="primary" type="button"><span data-i18n="model.load"></span></button>
-            <button id="changeModelBtn" type="button"><span data-i18n="model.change"></span></button>
-          </div>
-          <div id="progressBox" class="hidden">
-            <div class="bar"><div id="barFill"></div></div>
-            <span id="progressText" class="note"></span>
-          </div>
-          <span id="loadHint" class="note"></span>
-          <span id="loadErr" class="note err hidden"></span>
-        </div>
-        <div class="chips" id="chips"></div>
-      </div>
+      <div class="chips" id="chips"></div>
       <div id="chat" class="hidden"></div>
     </div>
   </div>
 
   <div class="bottom">
     <div id="preview" class="hidden"><div id="previewImg" class="thumb" role="img" data-i18n-label="attached.image"></div><span id="previewName" class="note" data-i18n="attached.image"></span><button id="removeImg" class="ghost" type="button"><span class="icon i-x"></span><span data-i18n="remove"></span></button></div>
+    <div id="loadStatus" class="hidden">
+      <div id="progressBox" class="hidden">
+        <div class="bar"><div id="barFill"></div></div>
+        <span id="progressText" class="note"></span>
+      </div>
+      <span id="loadErr" class="note err hidden"></span>
+    </div>
     <div class="composer">
       <input type="file" id="file" accept="image/*" hidden>
       <button id="attachBtn" class="square" type="button" data-i18n-title="attach.image" data-i18n-label="attach.image"><span class="icon i-image"></span></button>
-      <textarea id="input" rows="1" data-i18n-placeholder="composer.loadFirst" disabled></textarea>
-      <button id="sendBtn" class="primary" type="button" disabled><span class="icon i-send"></span><span data-i18n="send"></span></button>
+      <textarea id="input" rows="1" data-i18n-placeholder="composer.type"></textarea>
+      <button id="sendBtn" class="primary" type="button"><span class="icon i-send"></span><span data-i18n="send"></span></button>
       <button id="stopBtn" class="hidden" type="button"><span class="icon i-stop"></span><span data-i18n="stop"></span></button>
     </div>
     <span class="hint" data-i18n="hint"></span>
@@ -149,6 +138,7 @@
 
 <script src="../assets/i18n.js"></script>
 <script src="../assets/account.js"></script>
+<script src="../assets/storage.js"></script>
 <script type="module" src="script.js"></script>
 </body>
 </html>

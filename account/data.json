@@ -33,9 +33,9 @@
       "ar-SA": "تسجيل الدخول"
     },
     "hint": {
-      "en-US": "Sign in once with a GitHub personal access token (classic). Every web of Kancamu Project will know it, so you do not have to sign in again.",
-      "zh-CN": "使用 GitHub 个人访问令牌（经典）登录一次。Kancamu Project 的所有网站都会自动识别，无需再次登录。",
-      "ar-SA": "سجّل الدخول مرة واحدة برمز وصول شخصي (classic) من GitHub. ستتعرف عليه كل مواقع Kancamu Project، فلا تحتاج إلى تسجيل الدخول مرة أخرى."
+      "en-US": "Sign in once with a GitHub personal access token (classic). Every web of {brand} will know it, so you do not have to sign in again.",
+      "zh-CN": "使用 GitHub 个人访问令牌（经典）登录一次。{brand} 的所有网站都会自动识别，无需再次登录。",
+      "ar-SA": "سجّل الدخول مرة واحدة برمز وصول شخصي (classic) من GitHub. ستتعرف عليه كل مواقع {brand}، فلا تحتاج إلى تسجيل الدخول مرة أخرى."
     },
     "token": {
       "en-US": "Personal access token (classic)",
@@ -58,9 +58,9 @@
       "ar-SA": "تسجيل الخروج"
     },
     "signedIn": {
-      "en-US": "Every web of Kancamu Project uses this sign-in.",
-      "zh-CN": "Kancamu Project 的所有网站都使用此登录。",
-      "ar-SA": "تستخدم كل مواقع Kancamu Project تسجيل الدخول هذا."
+      "en-US": "Every web of {brand} uses this sign-in.",
+      "zh-CN": "{brand} 的所有网站都使用此登录。",
+      "ar-SA": "تستخدم كل مواقع {brand} تسجيل الدخول هذا."
     },
     "close": {
       "en-US": "Close tab",
@@ -186,6 +186,11 @@
       "en-US": "Access token",
       "zh-CN": "访问令牌",
       "ar-SA": "رمز الوصول"
+    },
+    "copyright": {
+      "en-US": "© {brand}",
+      "zh-CN": "© {brand}",
+      "ar-SA": "© {brand}"
     }
   }
 }

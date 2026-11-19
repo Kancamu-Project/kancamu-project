@@ -1,6 +1,6 @@
 {
     "name": {
-        "en-US": "Kancamu Project"
+        "en-US": "{brand}"
     },
     "home": "kancamu",
     "languages": [
@@ -10,7 +10,7 @@
     ],
     "ui": {
         "copyright": {
-            "en-US": "© Kancamu Project"
+            "en-US": "© {brand}"
         },
         "reset": {
             "en-US": "Reset",
@@ -184,7 +184,7 @@
         {
             "id": "muos",
             "name": {
-                "en-US": "muOS"
+                "en-US": "{highlight}OS"
             },
             "description": {
                 "en-US": "Web-Based Operating System.",
@@ -192,9 +192,9 @@
                 "ar-SA": "نظام تشغيل قائم على الويب."
             },
             "highlight": {
-                "en-US": "mu"
+                "en-US": "{highlight}"
             },
-            "publisher": "Kancamu Project",
+            "publisher": "{brand}",
             "url": "muos/",
             "icon": "muos/favicon.png",
             "color": "blue",
@@ -203,7 +203,7 @@
         {
             "id": "drivemu",
             "name": {
-                "en-US": "Drivemu"
+                "en-US": "Drive{highlight}"
             },
             "description": {
                 "en-US": "Simple file storage for everyone.",
@@ -211,9 +211,9 @@
                 "ar-SA": "تخزين ملفات بسيط للجميع."
             },
             "highlight": {
-                "en-US": "mu"
+                "en-US": "{highlight}"
             },
-            "publisher": "Kancamu Project",
+            "publisher": "{brand}",
             "url": "drivemu/",
             "icon": "drivemu/favicon.png",
             "color": "yellow",
@@ -222,7 +222,7 @@
         {
             "id": "muai",
             "name": {
-                "en-US": "muAI"
+                "en-US": "{highlight}AI"
             },
             "description": {
                 "en-US": "AI models running directly in your browser.",
@@ -230,9 +230,9 @@
                 "ar-SA": "نماذج ذكاء اصطناعي تعمل مباشرة في متصفحك."
             },
             "highlight": {
-                "en-US": "mu"
+                "en-US": "{highlight}"
             },
-            "publisher": "Kancamu Project",
+            "publisher": "{brand}",
             "url": "muai/",
             "icon": "muai/favicon.png",
             "color": "red",
@@ -241,7 +241,7 @@
         {
             "id": "kancamu",
             "name": {
-                "en-US": "Kancamu Project"
+                "en-US": "{brand}"
             },
             "description": {
                 "en-US": "Directory of apps and tools.",
@@ -249,9 +249,9 @@
                 "ar-SA": "دليل التطبيقات والأدوات."
             },
             "highlight": {
-                "en-US": "mu"
+                "en-US": "{highlight}"
             },
-            "publisher": "Kancamu Project",
+            "publisher": "{brand}",
             "url": "./",
             "icon": "favicon.png",
             "color": "blue",

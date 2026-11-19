@@ -257,6 +257,7 @@
       "edition": "Edition",
       "version": "Version",
       "build": "Build",
+      "copyright": "Copyright",
       "rename": "Rename this PC",
       "renameMessage": "Use up to 15 letters, numbers and hyphens.",
       "renameConfirm": "Rename",

@@ -3,47 +3,76 @@
 
 @font-face { font-family: "Inter"; font-weight: 400; font-display: swap; src: url("fonts/inter-latin-400-normal.woff2") format("woff2"); }
 @font-face { font-family: "Inter"; font-weight: 700; font-display: swap; src: url("fonts/inter-latin-700-normal.woff2") format("woff2"); }
-@font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: swap; src: url("fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2"); }
-@font-face { font-family: "JetBrains Mono"; font-weight: 700; font-display: swap; src: url("fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2"); }
 
 :root {
-    /* Palette: seven colours, named after the colour itself. Values are the same in every theme.
-       Black, gray and white for backgrounds and borders; red, yellow, blue and green for highlights. */
+    /* Palette: six colours, named after the colour itself. Values are the same in every theme.
+       Black (not truly black, just dark) and white for backgrounds and text; red, yellow, blue and green for highlights. */
     --black: #111115;
-    --gray: #8d8d98;
     --white: #ffffff;
     --red: #ef4444;
     --yellow: #f59e0b;
     --blue: #3b82f6;
     --green: #22c55e;
 
-    /* Roles: they change with the theme and are derived from the palette. Components use role names. */
+    /* Roles: they change with the theme and are derived from the palette. Components use role names.
+       Each theme has two grays, mixes of white and black: --neutral for secondary text, --neutral-soft for lines and the second background. */
+    --neutral: color-mix(in srgb, var(--white) 60%, var(--black));
+    --neutral-soft: color-mix(in srgb, var(--white) 15%, var(--black));
     --bg: var(--black);
-    --bg-1: color-mix(in srgb, var(--gray) 8%, var(--black));
-    --border: color-mix(in srgb, var(--gray) 20%, var(--black));
+    --bg-1: var(--neutral-soft);
+    --border: var(--neutral-soft);
     --fg: var(--white);
-    --fg-1: var(--gray);
-    --fg-2: color-mix(in srgb, var(--gray) 50%, var(--white));
+    --fg-1: var(--neutral);
     --accent: var(--white);
     --accent-ink: var(--black);
     --accent-text: var(--white);
     --danger: var(--red);
     --ok: var(--green);
 
-    --radius: 0.4rem;
+    /* The units. A layout.css writes no unit (rem, px, vh, vw): it writes calc(var(--unit) * n), a line as --border-width,
+       and a viewport length as calc(var(--vw) * n) or calc(var(--vh) * n). */
+    --unit: 0.2rem;
+    --border-width: 1px;
+    --border-width-thick: 2px;
+    --vw: 1vw;
+    --vh: 1vh;
     --height: 2.4rem;
+    /* The scales. A web uses these, and does not write a size of its own where one of them fits. */
+    --border-radius-small: 0.2rem;   /* small things: a tag, a thumbnail */
+    --border-radius-medium: 0.3rem;  /* what stands alone: a button, an input, a select, a card */
+    --border-radius-large: 0.4rem;   /* what floats above the page: a dialog, a menu, a toast */
+    --gap-extra-small: 0.2rem;
+    --gap-small: 0.4rem;             /* the default gap, between the items of a row, a list, or a card */
+    --gap-medium: 0.8rem;            /* between areas: the blocks of a page or of a dialog */
+    --gap-large: 1.2rem;
+    --gap-extra-large: 1.6rem;       /* between big parts of a page */
+    --padding-extra-small: 0.2rem;
+    --padding-small: 0.4rem;
+    --padding-medium: 0.8rem;        /* the default padding at the start and end of a button, input, and select */
+    --padding-large: 1.2rem;         /* the inside of a card or a bar */
+    --padding-extra-large: 1.6rem;   /* the inside of a dialog or a panel */
+    --icon-size-extra-small: 0.8rem;
+    --icon-size-small: 1rem;         /* an icon in a button or a line of text */
+    --icon-size-medium: 1.2rem;
+    --icon-size-large: 1.6rem;       /* the mark of a logo */
+    --icon-size-extra-large: 3.2rem; /* the icon of a project, a big icon */
+    --font-size-extra-small: 0.6rem; /* labels, hints, tags */
+    --font-size-small: 0.8rem;       /* the text of the page */
+    --font-size-medium: 1rem;
+    --font-size-large: 1.2rem;       /* names and headings */
+    --font-size-extra-large: 1.4rem;
     --font-sans: "Inter", system-ui, sans-serif;
-    --font-mono: "JetBrains Mono", ui-monospace, Consolas, system-ui, monospace;
     color-scheme: dark;
 }
 
 :root[data-theme="light"] {
+    --neutral: color-mix(in srgb, var(--black) 60%, var(--white));
+    --neutral-soft: color-mix(in srgb, var(--black) 15%, var(--white));
     --bg: var(--white);
-    --bg-1: color-mix(in srgb, var(--gray) 12%, var(--white));
-    --border: color-mix(in srgb, var(--gray) 30%, var(--white));
+    --bg-1: var(--neutral-soft);
+    --border: var(--neutral-soft);
     --fg: var(--black);
-    --fg-1: color-mix(in srgb, var(--gray) 60%, var(--black));
-    --fg-2: color-mix(in srgb, var(--gray) 20%, var(--black));
+    --fg-1: var(--neutral);
     --accent: var(--black);
     --accent-ink: var(--white);
     --accent-text: var(--black);
@@ -64,6 +93,18 @@
     font-size: inherit;
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Text cannot be selected, except in an input, a textarea, and an area with the class "selectable". */
+input,
+textarea,
+[contenteditable],
+.selectable,
+.selectable * {
+    -webkit-user-select: text;
+    user-select: text;
 }
 
 html, body {
@@ -79,7 +120,7 @@ html {
 }
 
 body {
-    font-size: 0.8rem;
+    font-size: var(--font-size-small);
 }
 
 .hidden {
@@ -90,10 +131,37 @@ dialog {
     margin: auto;
 }
 
+/* Corners. An element that stands alone is rounded with --radius: a button, an input, a select, a textarea, a dialog, a menu.
+   An element that touches another one (a bar, a group of buttons, a row of a table) is square: its web sets border-radius: 0 on it. */
+button,
+input,
+select,
+textarea {
+    border-radius: var(--border-radius-medium);
+}
+
+dialog,
+.menu {
+    border-radius: var(--border-radius-large);
+}
+
+dialog,
+.menu {
+    overflow: hidden;
+}
+
+input[type="checkbox"],
+input[type="radio"],
+input[type="range"],
+input[type="file"],
+input[type="color"] {
+    border-radius: 0;
+}
+
 select, input {
-    background: var(--bg);
+    background: transparent;
     height: var(--height);
-    padding: 0 0.8rem;
+    padding: 0 var(--padding-medium);
     border: 1px solid var(--border);
 
     &:focus {
@@ -126,13 +194,19 @@ input::placeholder {
     color: var(--fg-1);
 }
 
-/* The default look of button, input, select and textarea: the background of the page and a gray border.
+/* Keyboard focus: a 2px blue line a little outside the element, the same everywhere. The reset above removes the browser's own. */
+:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 0.2rem;
+}
+
+/* The default look of button, input, select and textarea: no colour of their own (text and background follow the parent) and a gray border.
    Hovering turns the background gray (and the border a little lighter). Checkboxes, radios, ranges, file and
    color inputs keep their own look, and so do buttons that are selected (.active, .on, .invert) or that have
    their own look (.primary, .danger). A layout.css may still give any of them a look of its own. */
 button,
 textarea {
-    background-color: var(--bg);
+    background-color: transparent;
     border: 1px solid var(--border);
 }
 
@@ -178,9 +252,14 @@ button.account.signed-in {
     }
 }
 
-/* A button that holds only an icon has the class "square": its width follows its height. */
+/* A button has 0.8rem of padding at its start and end. A button that holds only an icon has the class "square":
+   no padding, and a width equal to its height, so it is a perfect square. */
+button {
+    padding: 0 var(--padding-medium);
+}
+
 button.square {
-    aspect-ratio: 1;
+    width: var(--height);
     padding: 0;
     flex: none;
 }

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Drivemu</title>
+<title></title>
 <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
 <meta name="theme-color" content="#111115">
 <link rel="stylesheet" href="../assets/style.css">
@@ -12,45 +12,31 @@
 </head>
 <body>
 
-<!-- Sign-in -->
-<section id="login" class="login hidden">
-  <aside class="brand">
-    <div class="logo light"><div class="logo-mark"></div><span class="wordmark">Drive<span class="highlight">mu</span></span></div>
-    <div class="brand-copy">
-      <h1 data-i18n="brand.title"></h1>
-      <p data-i18n="brand.text"></p>
-      <ul class="feats">
-        <li><span class="feat-ico"><span class="icon i-lock"></span></span><div><b data-i18n="brand.private.title"></b><span data-i18n="brand.private.text"></span></div></li>
-        <li><span class="feat-ico"><span class="icon i-zap"></span></span><div><b data-i18n="brand.backend.title"></b><span data-i18n="brand.backend.text"></span></div></li>
-        <li><span class="feat-ico"><span class="icon i-git-branch"></span></span><div><b data-i18n="brand.history.title"></b><span data-i18n="brand.history.text"></span></div></li>
-      </ul>
+<!-- App -->
+<div id="app" class="app">
+  <aside class="side" id="side">
+    <div class="brand-row">
+      <div class="logo"><div class="logo-mark"></div><span class="wordmark" data-i18n-html="logo"></span></div>
+      <div class="brand-tools">
+        <button class="btn ghost square" data-act="settings" data-i18n-title="settings" data-i18n-label="settings"><span class="icon i-sliders"></span></button>
+        <button class="btn ghost square account" data-act="account" data-i18n-title="account" data-i18n-label="account"><span class="icon i-user"></span></button>
+      </div>
     </div>
+    <div class="side-actions">
+      <button class="btn primary" id="newBtn"><span class="icon i-plus"></span><span data-i18n="new"></span></button>
+      <button class="btn ghost square" id="refreshBtn" data-i18n-title="refresh" data-i18n-label="refresh"><span class="icon i-refresh"></span></button>
+    </div>
+    <nav id="folders" class="folders-nav" data-i18n-label="list.folders"></nav>
+    <div class="spacer"></div>
+    <div id="usage" class="usage"></div>
   </aside>
 
-  <div class="login-pane">
-    <select class="language" data-i18n-label="language"></select>
-    <div class="login-card">
-      <div class="logo mobile-only"><div class="logo-mark"></div><span class="wordmark">Drive<span class="highlight">mu</span></span></div>
-      <div class="login-head">
-        <h2 id="loginTitle"></h2>
-        <p class="muted" id="loginSub"></p>
-      </div>
-      <button class="btn primary cta" id="loginBtn" type="button" data-i18n="login.signIn"></button>
-      <p id="loginError" class="error" role="alert"></p>
-    </div>
-  </div>
-</section>
-
-<!-- App -->
-<div id="app" class="app hidden">
-  <div class="content">
-    <header class="topbar">
-      <div class="logo"><div class="logo-mark"></div><span class="wordmark">Drive<span class="highlight">mu</span></span></div>
-      <button class="btn primary" id="newBtn"><span class="icon i-plus"></span><span data-i18n="new"></span></button>
-      <label class="searchbox">
-        <span class="icon i-search"></span>
-        <input id="search" type="search" data-i18n-placeholder="search" data-i18n-label="search">
-      </label>
+  <div class="panel">
+  <header class="topbar">
+    <label class="searchbox">
+      <span class="icon i-search"></span>
+      <input id="search" type="search" data-i18n-placeholder="search" data-i18n-label="search">
+    </label>
     <select id="sort" data-i18n-label="sort.label">
       <option value="name:1" data-i18n="sort.nameAsc"></option>
       <option value="name:-1" data-i18n="sort.nameDesc"></option>
@@ -58,42 +44,37 @@
       <option value="size:1" data-i18n="sort.sizeAsc"></option>
       <option value="size:-1" data-i18n="sort.sizeDesc"></option>
     </select>
-      <div class="spacer"></div>
-      <div class="tools">
-        <button class="btn ghost square" id="refreshBtn" data-i18n-title="refresh"><span class="icon i-refresh"></span></button>
-        <div class="seg" role="group" data-i18n-label="view">
-          <button id="viewList" data-i18n-title="view.list"><span class="icon i-list"></span></button>
-          <button id="viewGrid" data-i18n-title="view.grid"><span class="icon i-grid"></span></button>
-        </div>
-        <button class="btn ghost square" data-act="settings" data-i18n-title="settings" data-i18n-label="settings"><span class="icon i-sliders"></span></button>
-        <button class="btn ghost square account" data-act="account" data-i18n-title="account" data-i18n-label="account"><span class="icon i-user"></span></button>
+    <div class="spacer"></div>
+    <div class="seg" role="group" data-i18n-label="view">
+      <button id="viewList" data-i18n-title="view.list"><span class="icon i-list"></span></button>
+      <button id="viewGrid" data-i18n-title="view.grid"><span class="icon i-grid"></span></button>
+    </div>
+  </header>
+
+  <main class="main" id="dropzone">
+    <div class="titlebar">
+      <nav id="crumbs" class="crumbs"></nav>
+      <div id="selbar" class="selbar hidden">
+        <button class="btn ghost square" id="selClear" data-i18n-title="sel.clear"><span class="icon i-close"></span></button>
+        <b id="selCount"></b>
+        <div class="spacer"></div>
+        <button class="btn danger" id="bulkDelete"><span class="icon i-trash"></span><span data-i18n="delete"></span></button>
       </div>
-    </header>
+    </div>
 
-    <main class="main" id="dropzone">
-      <div class="titlebar">
-        <nav id="crumbs" class="crumbs"></nav>
-        <div id="selbar" class="selbar hidden">
-          <button class="btn ghost square" id="selClear" data-i18n-title="sel.clear"><span class="icon i-close"></span></button>
-          <b id="selCount"></b>
-          <div class="spacer"></div>
-          <button class="btn danger" id="bulkDelete"><span class="icon i-trash"></span><span data-i18n="delete"></span></button>
-        </div>
-      </div>
+    <div id="list" class="list"></div>
 
-      <div id="list" class="list"></div>
+    <div id="empty" class="empty hidden">
+      <div class="empty-art"><span class="icon i-folder-open"></span></div>
+      <h3 id="emptyTitle"></h3>
+      <p id="emptyText" class="muted"></p>
+      <button class="btn primary" id="emptyCta"></button>
+    </div>
+    <div id="loading" class="loading hidden"></div>
+    <div id="dropOverlay" class="drop-overlay hidden"><span class="icon i-upload"></span><span data-i18n="drop"></span></div>
+  </main>
 
-      <div id="empty" class="empty hidden">
-        <div class="empty-art"><span class="icon i-folder-open"></span></div>
-        <h3 id="emptyTitle"></h3>
-        <p id="emptyText" class="muted"></p>
-        <button class="btn primary" id="emptyCta"><span class="icon i-upload"></span><span data-i18n="menu.uploadFiles"></span></button>
-      </div>
-      <div id="loading" class="loading hidden"></div>
-      <div id="dropOverlay" class="drop-overlay hidden"><span class="icon i-upload"></span><span data-i18n="drop"></span></div>
-    </main>
-
-    <footer class="statusbar" id="status"></footer>
+  <footer class="statusbar"><span id="status"></span><span data-i18n="copyright"></span></footer>
   </div>
 </div>
 
@@ -145,6 +126,7 @@
 
 <script src="../assets/i18n.js"></script>
 <script src="../assets/account.js"></script>
+<script src="../assets/storage.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

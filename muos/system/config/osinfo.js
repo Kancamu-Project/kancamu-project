@@ -7,5 +7,9 @@
 export const OS_INFO = Object.freeze({
   name: 'muOS',
   version: '1.0.0',
-  build: '2026.11'
+  build: '2026.11',
+  copyright: '© {brand}'
 });
+
+/** Where the name of the brand is written (relative to the OS root): the one place, shared by every web. */
+export const BRAND_FILE = '../assets/brand.json';

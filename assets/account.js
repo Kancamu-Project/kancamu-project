@@ -83,6 +83,7 @@
                 document.body.append(dialog);
             }
             dialog.showModal();
+            dialog.querySelector("iframe").contentWindow?.postMessage({ type: "account:focus" }, location.origin);
         },
 
         // A button with the class "account": it opens the dialog and shows the avatar once signed in.

@@ -1,6 +1,6 @@
 .glyph {
-    width: 1rem;
-    height: 1rem;
+    width: var(--icon-size-small);
+    height: var(--icon-size-small);
     flex-shrink: 0;
     background: currentColor;
     mask: var(--icon) center / contain no-repeat;
@@ -28,18 +28,19 @@ body {
 /* Header */
 
 #header {
+    box-sizing: content-box;
     width: 100%;
-    height: 2.8rem;
+    height: calc(var(--unit) * 14);
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    border-bottom: 1px solid var(--border);
+    border-bottom: var(--border-width) solid var(--border);
 
     & > div {
         display: flex;
         flex-direction: row;
         align-items: center;
-        padding: 0 1.2rem;
+        padding: 0 var(--padding-large);
     }
 
     & > #tabs-area {
@@ -47,7 +48,7 @@ body {
         min-width: 0;
         position: relative;
         padding: 0;
-        --fade-size: 6.4rem;
+        --fade-size: calc(var(--unit) * 32);
         --fade-direction: to right;
 
         &::before,
@@ -90,15 +91,14 @@ body {
         scrollbar-width: none;
 
         & > .tab {
-            height: 2.8rem;
+            height: 100%;
             flex-shrink: 0;
             display: flex;
             flex-direction: row;
             align-items: center;
-            border-inline-end: 1px solid var(--border);
-            font-size: 1rem;
+            border-inline-end: var(--border-width) solid var(--border);
+            font-size: var(--font-size-medium);
             font-weight: 700;
-            letter-spacing: -1px;
             transition: background 0.2s;
 
             &:hover {
@@ -107,7 +107,7 @@ body {
 
             &.active {
                 background: var(--bg-1);
-                box-shadow: inset 0 -0.2rem 0 var(--color);
+                box-shadow: inset 0 calc(var(--border-width-thick) * -1) 0 var(--color);
             }
 
             & .highlight {
@@ -115,24 +115,21 @@ body {
             }
 
             &:has(> .close) {
-                padding-inline-end: 0.6rem;
+                padding-inline-end: var(--padding-small);
 
                 & > .select {
-                    padding-inline-end: 0.6rem;
+                    padding-inline-end: var(--padding-small);
                 }
             }
 
             & > .select {
                 height: 100%;
-                max-width: 16rem;
-                padding: 0 1rem;
-                gap: 0.4rem;
+                max-width: calc(var(--unit) * 80);
+                gap: var(--gap-small);
                 border: none;
                 background: none;
-                font-family: var(--font-sans);
                 font-size: inherit;
                 font-weight: inherit;
-                letter-spacing: inherit;
                 text-transform: none;
 
                 &:hover {
@@ -140,8 +137,8 @@ body {
                 }
 
                 & > .icon {
-                    width: 1.2rem;
-                    height: 1.2rem;
+                    width: var(--icon-size-medium);
+                    height: var(--icon-size-medium);
                     flex-shrink: 0;
                     background-size: contain;
                     background-position: center;
@@ -157,8 +154,8 @@ body {
             }
 
             & > .close {
-                width: 1.6rem;
-                height: 1.6rem;
+                width: var(--icon-size-large);
+                height: var(--icon-size-large);
                 padding: 0;
             }
         }
@@ -168,7 +165,7 @@ body {
         flex-shrink: 0;
         align-items: stretch;
         padding: 0;
-        border-inline-start: 1px solid var(--border);
+        border-inline-start: var(--border-width) solid var(--border);
 
         & > :is(select, button) {
             height: 100%;
@@ -182,9 +179,9 @@ body {
         }
 
         & > :is(#theme, #account) {
-            aspect-ratio: 1;
+            width: calc(var(--unit) * 14);
             padding: 0;
-            border-inline-start: 1px solid var(--border);
+            border-inline-start: var(--border-width) solid var(--border);
         }
     }
 }
@@ -230,19 +227,19 @@ body {
     min-height: 0;
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
-    padding: 1.2rem 1.6rem;
+    gap: var(--gap-medium);
+    padding: var(--padding-large) var(--padding-extra-large);
     overflow-y: auto;
 }
 
 #toolbar {
     width: 100%;
-    height: 2.4rem;
+    height: var(--height);
     flex-shrink: 0;
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0.4rem;
+    gap: var(--gap-small);
 
     & > .spacer {
         flex: 1;
@@ -250,20 +247,27 @@ body {
 }
 
 select {
-    width: 9rem;
+    width: calc(var(--unit) * 45);
 }
 
 input {
-    width: 14rem;
+    width: calc(var(--unit) * 70);
+}
+
+/* What touches another element is square. */
+#header :is(button, select),
+#view-toggle button,
+.menu button {
+    border-radius: 0;
 }
 
 #view-toggle {
-    height: 2.4rem;
+    height: var(--height);
     display: flex;
     flex-direction: row;
 
     & > button {
-        width: 2.4rem;
+        width: var(--height);
         padding: 0;
 
         &.active {
@@ -280,29 +284,26 @@ input {
 
     & > .glyph {
         position: absolute;
-        inset-inline-start: 0.8rem;
+        inset-inline-start: calc(var(--unit) * 4);
         color: var(--fg-1);
         pointer-events: none;
     }
 
     & > input {
-        padding-inline-start: 2.8rem;
+        padding-inline-start: calc(var(--unit) * 14);
     }
 }
 
 button {
-    height: 2.4rem;
+    height: var(--height);
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0 0.8rem;
+    gap: var(--gap-small);
     cursor: pointer;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: var(--font-size-small);
     font-weight: bold;
-    letter-spacing: 0.1rem;
     text-transform: uppercase;
     transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
@@ -330,13 +331,13 @@ button {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: var(--gap-small);
 
     & > button {
         width: auto;
-        height: 2rem;
-        color: var(--fg-2);
-        font-size: 0.6rem;
+        height: calc(var(--unit) * 10);
+        color: var(--fg);
+        font-size: var(--font-size-extra-small);
 
         &.active {
             background: var(--fg);
@@ -351,33 +352,31 @@ button {
     width: 100%;
     height: auto;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 100), 1fr));
     align-items: stretch;
-    border-block-start: 1px solid var(--border);
-    border-inline-start: 1px solid var(--border);
+    border-block-start: var(--border-width) solid var(--border);
+    border-inline-start: var(--border-width) solid var(--border);
 
     &:has(> .empty) {
         border: none;
     }
 
     &.list {
-        --list-columns: 1fr 12rem 16rem 10rem;
+        --list-columns: 1fr calc(var(--unit) * 60) calc(var(--unit) * 80) calc(var(--unit) * 50);
         grid-template-columns: 1fr;
 
         & > .list-header {
             width: 100%;
-            height: 2.4rem;
+            height: var(--height);
             display: grid;
             grid-template-columns: var(--list-columns);
             align-items: center;
-            gap: 1.2rem;
-            padding: 0 1.2rem;
-            border-inline-end: 1px solid var(--border);
-            border-block-end: 1px solid var(--border);
+            gap: var(--gap-small);
+            padding: 0 var(--padding-large);
+            border-inline-end: var(--border-width) solid var(--border);
+            border-block-end: var(--border-width) solid var(--border);
             color: var(--fg-1);
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            letter-spacing: 0.1rem;
+            font-size: var(--font-size-small);
             text-transform: uppercase;
         }
 
@@ -385,11 +384,11 @@ button {
             display: grid;
             grid-template-columns: var(--list-columns);
             align-items: center;
-            gap: 1.2rem;
-            padding: 0.8rem 1.2rem;
+            gap: var(--gap-small);
+            padding: var(--padding-medium) var(--padding-large);
 
             &:hover {
-                box-shadow: inset 0.2rem 0 0 var(--color);
+                box-shadow: inset var(--border-width-thick) 0 0 var(--color);
             }
 
             & > .top {
@@ -433,15 +432,15 @@ button {
     height: auto;
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
-    padding: 0 0 1.2rem;
-    border-inline-end: 1px solid var(--border);
-    border-block-end: 1px solid var(--border);
+    gap: var(--gap-medium);
+    padding: 0 0 var(--padding-large);
+    border-inline-end: var(--border-width) solid var(--border);
+    border-block-end: var(--border-width) solid var(--border);
     transition: background 0.2s, box-shadow 0.2s;
 
     &:hover {
         background: color-mix(in srgb, var(--color) 8%, transparent);
-        box-shadow: inset 0 2px 0 var(--color);
+        box-shadow: inset 0 var(--border-width-thick) 0 var(--color);
     }
 
     & > .top {
@@ -449,12 +448,10 @@ button {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        padding: 0.8rem 1.2rem;
-        border-bottom: 1px solid var(--border);
-        font-family: var(--font-mono);
-        font-size: 0.8rem;
+        padding: var(--padding-medium) var(--padding-large);
+        border-bottom: var(--border-width) solid var(--border);
+        font-size: var(--font-size-small);
         font-weight: bold;
-        letter-spacing: 0.1rem;
         text-transform: uppercase;
 
         & > .tag {
@@ -465,7 +462,7 @@ button {
             display: flex;
             flex-direction: row;
             align-items: center;
-            gap: 0.4rem;
+            gap: var(--gap-small);
             color: var(--fg-1);
             text-decoration: none;
 
@@ -479,15 +476,15 @@ button {
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: 1rem;
-        padding: 0 1.2rem;
+        gap: var(--gap-small);
+        padding: 0 var(--padding-large);
         flex: 1;
 
         & > .icon {
-            width: 3.2rem;
-            height: 3.2rem;
+            width: var(--icon-size-extra-large);
+            height: var(--icon-size-extra-large);
             flex-shrink: 0;
-            border-radius: var(--radius);
+            border-radius: var(--border-radius-medium);
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
@@ -497,10 +494,10 @@ button {
         & > .text {
             display: flex;
             flex-direction: column;
-            gap: 0.2rem;
+            gap: var(--gap-extra-small);
 
             & > .name {
-                font-size: 1.2rem;
+                font-size: var(--font-size-large);
                 font-weight: 700;
 
                 & > .highlight {
@@ -510,7 +507,7 @@ button {
 
             & > .description {
                 color: var(--fg-1);
-                font-size: 0.8rem;
+                font-size: var(--font-size-small);
             }
         }
     }
@@ -519,31 +516,30 @@ button {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        gap: 0.4rem;
-        padding: 0 1.2rem;
+        gap: var(--gap-small);
+        padding: 0 var(--padding-large);
 
         &:empty {
             display: none;
         }
 
         & > .category {
-            padding: 0.2rem 0.4rem;
-            border: 1px solid var(--border);
+            padding: var(--padding-extra-small) var(--padding-small);
+            border: var(--border-width) solid var(--border);
+            border-radius: var(--border-radius-small);
             color: var(--fg-1);
-            font-family: var(--font-mono);
-            font-size: 0.6rem;
-            letter-spacing: 0.1rem;
-            text-transform: uppercase;
+            font-size: var(--font-size-extra-small);
+            text-transform: none;
         }
     }
 
     & > .actions {
         width: 100%;
-        height: 2.4rem;
+        height: var(--height);
         display: grid;
-        grid-template-columns: 1fr 2.4rem;
-        gap: 0.4rem;
-        padding: 0 1.2rem;
+        grid-template-columns: 1fr var(--height);
+        gap: var(--gap-small);
+        padding: 0 var(--padding-large);
 
         & > button {
             width: 100%;
@@ -568,12 +564,7 @@ button {
 }
 
 :root[dir="rtl"] #project-list.list > .project:hover {
-    box-shadow: inset -0.2rem 0 0 var(--color);
-}
-
-/* Letter-spacing breaks the joined letters of Arabic */
-:root:lang(ar) * {
-    letter-spacing: 0 !important;
+    box-shadow: inset calc(var(--border-width-thick) * -1) 0 0 var(--color);
 }
 
 /* Menu */
@@ -581,17 +572,17 @@ button {
 .menu {
     position: fixed;
     z-index: 10;
-    width: 16rem;
+    width: calc(var(--unit) * 80);
     display: flex;
     flex-direction: column;
     background: var(--bg);
-    border: 1px solid var(--fg-1);
+    border: var(--border-width) solid var(--fg-1);
 
     & > .item {
         width: 100%;
         justify-content: flex-start;
         border: none;
-        border-bottom: 1px solid var(--border);
+        border-bottom: var(--border-width) solid var(--border);
 
         &:last-child {
             border-bottom: none;
@@ -603,22 +594,19 @@ button {
 
 #footer {
     width: 100%;
-    height: 2.4rem;
+    height: var(--height);
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0 1.6rem;
-    border-top: 1px solid var(--border);
+    padding: 0 var(--padding-extra-large);
+    border-top: var(--border-width) solid var(--border);
     color: var(--fg-1);
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.1rem;
-    text-transform: uppercase;
+    font-size: var(--font-size-small);
 }
 
 @media (max-width: 640px) {
     #project-list.list {
-        --list-columns: 1fr 10rem;
+        --list-columns: 1fr calc(var(--unit) * 50);
 
         & > .list-header > :is(.publisher, .category),
         & > .project > .top > .tag,

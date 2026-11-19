@@ -135,7 +135,7 @@ $("form").addEventListener("submit", async (event) => {
 $("out").addEventListener("click", () => account.signOut());
 
 // Opens GitHub with the "repo" scope already selected.
-$("create").addEventListener("click", () => window.open("https://github.com/settings/tokens/new?scopes=repo&description=Kancamu%20Project", "_blank", "noopener"));
+$("create").addEventListener("click", () => window.open("https://github.com/settings/tokens/new?scopes=repo&description=" + encodeURIComponent(i18n.brand.name), "_blank", "noopener"));
 
 $("close").hidden = !embedded;
 $("close").addEventListener("click", () => window.parent.postMessage({ type: "account:close" }, location.origin));
@@ -143,8 +143,15 @@ document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && embedded) window.parent.postMessage({ type: "account:close" }, location.origin);
 });
 
+// The first control, so the keyboard works at once when the dialog opens.
+const focusFirst = () => (account.get() ? $("out") : $("token")).focus();
+window.addEventListener("message", (event) => {
+    if (event.origin === location.origin && event.data?.type === "account:focus") focusFirst();
+});
+
 await i18n.load();
 account.onChange(render);
 i18n.onChange(render);
 render();
 new ResizeObserver(reportSize).observe($("page"));
+if (embedded) focusFirst();
