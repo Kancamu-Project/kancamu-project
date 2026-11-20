@@ -671,10 +671,11 @@ els.fileInput.addEventListener("change", () => handleFile(els.fileInput.files[0]
 els.anotherButton.addEventListener("click", startOver);
 document.addEventListener("dragover", (event) => { event.preventDefault(); els.dropZone.classList.add("over"); });
 document.addEventListener("dragleave", (event) => { if (!event.relatedTarget) els.dropZone.classList.remove("over"); });
-document.addEventListener("drop", (event) => {
+document.addEventListener("drop", async (event) => {
   event.preventDefault();
   els.dropZone.classList.remove("over");
-  const file = [...event.dataTransfer.files].find((candidate) => /^(image|video)\//.test(candidate.type)) || event.dataTransfer.files[0];
+  const files = await transfer.take(event);   // the ones of the computer, or a file of the Drive
+  const file = files.find((candidate) => /^(image|video)\//.test(candidate.type)) || files[0];
   if (file && !state.busy) { if (!els.dropZone.classList.contains("hidden")) handleFile(file); else { startOver(); handleFile(file); } }
 });
 document.addEventListener("paste", (event) => {

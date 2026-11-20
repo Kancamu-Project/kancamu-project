@@ -523,6 +523,68 @@ i18n.onChange(() => {
     renderAll();
 });
 
+/* ---------- a file of the Drive dragged to any web ---------- */
+// TODO: this is a workaround (see TODO.md, "Retest"); retest from time to time whether a plain drag with the file works, and delete this then.
+// A page cannot put a file in a drag (the browser keeps only a picture), but the webs run in frames of this page, and this page is the one that knows what is dragged:
+// the web that drags a file says it (assets/transfer.js), and every drag event that goes into the frame of another web, with no file in it, is given again with the real
+// file in it, as if it came from the file explorer. So the drop area of any web (ours or somebody else's) gets the file, whatever its kind.
+let carried = null;   // { name, file }: the file that a web is dragging now
+window.addEventListener("message", (event) => {
+    if (event.origin !== location.origin || event.data?.type !== "kancamu:drag") return;
+    if (!event.data.on) { carried = null; return; }
+    const entry = { name: event.data.name, file: null };
+    carried = entry;
+    fetch(event.data.url).then((response) => response.blob()).then((blob) => { entry.file = new File([blob], entry.name, { type: blob.type }); }).catch(() => { if (carried === entry) carried = null; });
+});
+const bridged = new WeakSet();
+function bridge(frame) {
+    let doc;
+    try { doc = frame.contentDocument; } catch { return; }
+    if (!doc || bridged.has(doc)) return;
+    bridged.add(doc);
+    for (const type of ["dragenter", "dragover", "drop"]) {
+        doc.addEventListener(type, (event) => {
+            if (!event.isTrusted || !carried?.file || event.dataTransfer.types.includes("Files")) return;
+            event.stopImmediatePropagation();
+            const transfer = new DataTransfer();
+            transfer.items.add(carried.file);
+            transfer.effectAllowed = "copy";
+            const copy = new DragEvent(type, { bubbles: true, cancelable: true, composed: true, dataTransfer: transfer, view: event.view, clientX: event.clientX, clientY: event.clientY, screenX: event.screenX, screenY: event.screenY, relatedTarget: event.relatedTarget });
+            event.target.dispatchEvent(copy);
+            if (copy.defaultPrevented) event.preventDefault();
+            if (type !== "drop") event.dataTransfer.dropEffect = "copy";
+        }, true);
+    }
+}
+document.getElementById("viewer").addEventListener("load", (event) => { if (event.target.tagName === "IFRAME") bridge(event.target); }, true);
+
+/* ---------- a dragged file opens the web that takes it ---------- */
+// A file (of the Drive, dragged from Drivemu or Gallemu, or of the computer) that waits over the tab of any web opens that web; the file is then dropped
+// in the drop area of the page. The tab itself does not take the drop.
+const isFile = (event) => ["Files", "text/uri-list"].some((type) => event.dataTransfer.types.includes(type));
+const projectOfTab = (event) => {
+    const tab = event.target.closest?.(".tab");
+    return tab && tab.dataset.id !== state.home ? { tab, project: findProject(tab.dataset.id) } : {};
+};
+const clearDropTargets = () => document.querySelectorAll("#tabs .tab.drop-target").forEach((tab) => tab.classList.remove("drop-target"));
+const tabStrip = document.getElementById("tabs");
+let waitingOver = "", waitingTimer = 0;
+const stopWaiting = () => { clearTimeout(waitingTimer); waitingOver = ""; };
+tabStrip.addEventListener("dragover", (event) => {
+    const { tab, project } = projectOfTab(event);
+    clearDropTargets();
+    if (!project || !isFile(event)) { stopWaiting(); return; }
+    tab.classList.add("drop-target");
+    if (waitingOver !== project.id) {
+        stopWaiting();
+        waitingOver = project.id;
+        waitingTimer = setTimeout(() => { waitingOver = ""; if (state.active !== project.id) selectTab(project.id); }, 500);
+    }
+});
+tabStrip.addEventListener("dragleave", (event) => { if (!tabStrip.contains(event.relatedTarget)) { clearDropTargets(); stopWaiting(); } });
+document.addEventListener("dragend", () => { clearDropTargets(); stopWaiting(); });
+document.addEventListener("drop", () => { clearDropTargets(); stopWaiting(); });
+
 document.getElementById("theme-button").addEventListener("click", () => {
     const root = document.documentElement;
     root.dataset.theme = root.dataset.theme === "light" ? "dark" : "light";

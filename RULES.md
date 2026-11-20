@@ -197,6 +197,7 @@ Do not make a button, input, or select borderless. A variant (primary, danger, a
 /assets/theme.js - applies the saved theme before the page shows.
 /assets/i18n.js - loads data.json, applies the chosen language, and follows changes from other webs.
 /assets/account.js - the shared GitHub sign-in (get, signIn, signOut, onChange, open, bind).
+/assets/transfer.js - files dragged from a web to the tab of another one (drag, receive).
 /assets/settings.js - the settings of every web (get, set, onChange, listen); the account web and the controls of a web write them.
 /assets/storage.js - the shared data storage: one repository, one branch per app (connect, readFile, writeFile).
 /assets/brand.json - the id, the name, and the highlighted word of the brand.
@@ -246,6 +247,10 @@ Everything of a web that the user can adjust is one of its settings, and every s
 A web describes its settings in its data.json: "settings": { "defaults": { ... }, "fields": [ { id, type, label, hint, min, max, step } ], "panels": [ ... ] }. The type of a field is textarea, number, range, select, checkbox, or color; a select takes its options from "options", or from a list of the data.json of the web ("optionsFrom": { "list", "value", "label", "labelPrefix" }). A field is saved at once, kept between its min and max, in localStorage under "<app>.settings". A panel does what a field cannot, on the data of the web (the downloaded models of muAI, muRMBG, and Transmu, which can be deleted; the chats of muAI; the usage and the reset of Drivemu): its code is in youmu/panels.js, not in the web.
 A web has no settings dialog and no settings button. It reads its settings with settings.get and follows a change with settings.onChange (assets/settings.js). A web may keep a control for a setting in its page (the model picker, the volume slider, the background switch) as well: the control and the account web write the same settings with settings.set, and each follows the other. When the account web did something to the data of a web (deleted its chats, reset its drive), the web shows what is left by listening with settings.listen.
 What the user is doing is not a setting: the open folder, the text of a search, the file that is shown.
+
+#### 9. Files Between Webs
+A file can be dragged from a web to the tab of another web in the main web, and dropped on it: a file of the Drive (Drivemu, Gallemu) or a file of the computer. A file of the Drive travels by its name (the branch, the path, and the type), never by its bytes: the web that gets it reads it from the Drive itself. A web makes a file draggable with transfer.drag (assets/transfer.js), and a web that takes files calls transfer.receive.
+A tab takes a drop only when its project says so, in the "accepts" of its project in the main data.json (the beginnings of the types it takes, such as ["image/", "video/"]); the main web shows the tab that takes it, and hands the file over once the web says it is ready.
 
 # NOTE
 Currently, only humans are permitted to modify this file.

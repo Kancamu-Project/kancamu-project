@@ -135,6 +135,7 @@ function makeTile(item, index) {
     else observer.observe(tile);
   }
   tile.addEventListener("click", () => openViewer(index));
+  transfer.drag(tile, () => fileOf(item));   // the picture can be dragged out of the page, as a file
   return tile;
 }
 const showThumbnail = (tile, url) => { tile.style.backgroundImage = `url("${url}")`; tile.classList.add("loaded"); };
@@ -175,6 +176,8 @@ async function makeThumbnail({ tile, generation: made }) {
     if (made === generation) showThumbnail(tile, url);
   } catch { /* the tile keeps its icon */ }
 }
+// What transfer.drag needs to drag a file of the Drive out of the page
+const fileOf = (item) => ({ id: item.path, name: item.name, size: item.size, image: item.kind === "image", load: () => readBlob(item) });
 async function readBlob(item) {
   const bytes = await storage.readBinary(state.store, item.path);
   if (!bytes) throw new Error("not found");
@@ -227,6 +230,13 @@ async function wholeFileUrl(item) {
     }
   }
   return opened.get(item.path);
+}
+// What the viewer shows can be dragged out of the page too (a picture as a picture, a video as a link)
+for (const media of [els.viewerImage, els.viewerVideo]) {
+  transfer.drag(media, () => {
+    const item = state.shown[state.viewIndex];
+    return item && fileOf(item);
+  });
 }
 function stopVideo() { els.viewerVideo.pause(); els.viewerVideo.removeAttribute("src"); els.viewerVideo.load(); }
 function step(by) {

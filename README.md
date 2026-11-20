@@ -44,6 +44,7 @@ assets/          Shared assets
   dialog.js      The shared question and message dialog (dialogs.ask, dialogs.tell); its button texts are in dialog.json. No web uses alert, confirm, or prompt
   autocomplete.js  The autocomplete of every search input (autocomplete.attach)
   account.js     The shared GitHub sign-in: get, onChange, and the dialog (open, bind) that embeds /youmu
+  transfer.js    Files of the Drive dragged out of a web: pictures as real pictures (any web takes them), other files as a link (the webs of Kancamu take them)
   settings.js    The settings of every web (get, set, onChange, listen): written by the account web and by the controls of a web
   style.css      Shared styles (fonts, colour tokens, reset, input and select), used by every web except muOS
   fonts/         Inter (woff2), used by every web, and JetBrains Mono (woff2), used by muOS

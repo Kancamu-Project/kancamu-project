@@ -110,6 +110,12 @@ body {
                 background: var(--bg-1);
             }
 
+            /* A file is over the tab, and the web of the tab takes it */
+            &.drop-target {
+                background: var(--bg-1);
+                box-shadow: inset 0 0 0 var(--border-width-thick) var(--color);
+            }
+
             /* The Kancamu tab does not scroll with the others, and cannot be dragged */
             &.home {
                 position: sticky;

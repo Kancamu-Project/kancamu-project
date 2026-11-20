@@ -609,6 +609,16 @@ function shrink(file, max = 1024) {
 }
 els.attachButton.addEventListener("click", () => els.imageFileInput.click());
 els.removeAttachmentButton.addEventListener("click", clearImage);
+// An image dropped on the page is attached, like the one the attach button chooses
+document.addEventListener("dragover", (event) => { if (!els.attachButton.classList.contains("hidden")) event.preventDefault(); });
+document.addEventListener("drop", async (event) => {
+  event.preventDefault();
+  if (els.attachButton.classList.contains("hidden") || els.attachButton.disabled) return;
+  try {
+    const file = event.dataTransfer.files[0];
+    if (file && file.type.startsWith("image/")) { pendingImage = await shrink(file); showPreview(); }
+  } catch (e) { toast(e.message); }
+});
 els.imageFileInput.addEventListener("change", async () => {
   const f = els.imageFileInput.files[0]; if (!f) return;
   try { pendingImage = await shrink(f); showPreview(); } catch (e) { toast(e.message); }

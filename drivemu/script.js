@@ -311,6 +311,7 @@ function nameCell(it, k) {
 function base(it, cls) {
   const el = h('div', 'file-item ' + cls); el.dataset.name = it.name; el.title = it.name;
   el.onclick = () => (S.selected.size ? toggleSel(it.name) : open(it));
+  if (it.type !== 'dir') transfer.drag(el, { id: it.path, name: it.name, size: it.size, image: kind(it) === 'image', load: () => fetchBlob(it) }, () => el.querySelector('.file-thumbnail, .file-tile'));   // the picture can be dragged out of the page, as a file
   // Keyboard: Tab reaches every item; arrows move between them, Enter opens, Space selects, F2 renames, Delete deletes.
   el.tabIndex = 0;
   el.onkeydown = (e) => {
@@ -396,7 +397,7 @@ async function fetchBlob(it) {
   const res = await repoApi(`/contents/${enc(it.path)}?ref=${S.head || S.branch}`, { headers: { Accept: 'application/vnd.github.raw+json' } });
   const b = await res.blob();
   const m = MIME[ext(it.name)];
-  return m ? new Blob([b], { type: m }) : b;
+  return new Blob([b], { type: m || 'application/octet-stream' });   // the type of the answer (a JSON of GitHub) is not the type of the file
 }
 function saveBlob(blob, name) {
   const url = URL.createObjectURL(blob);
@@ -569,13 +570,14 @@ $('preview').onclose = () => { if (pvUrl) { URL.revokeObjectURL(pvUrl); pvUrl = 
 // drag and drop
 let dragDepth = 0;
 const dz = $('drop-zone');
-const hasFiles = (e) => e.dataTransfer && [...e.dataTransfer.types].includes('Files');
+const hasFiles = (e) => e.dataTransfer && ['Files', 'text/uri-list'].some((t) => e.dataTransfer.types.includes(t)) && !transfer.dragging;   // not a file of this page
 dz.addEventListener('dragenter', (e) => { if (hasFiles(e)) { e.preventDefault(); dragDepth++; $('drop-overlay').classList.remove('hidden'); } });
 dz.addEventListener('dragover', (e) => { if (hasFiles(e)) e.preventDefault(); });
 dz.addEventListener('dragleave', () => { if (--dragDepth <= 0) { dragDepth = 0; $('drop-overlay').classList.add('hidden'); } });
 dz.addEventListener('drop', (e) => {
   if (!hasFiles(e)) return;
   e.preventDefault(); dragDepth = 0; $('drop-overlay').classList.add('hidden');
+  if (![...e.dataTransfer.types].includes('Files')) return transfer.take(e).then(upload);   // a file of the Drive that came as a link
   collectDropped(e.dataTransfer).then(upload);
 });
 
