@@ -527,7 +527,8 @@
       "Audio"
     ],
     "maxFileMB": 100,
-    "thumbnailMaxMB": 8
+    "thumbnailMaxMB": 8,
+    "keepFile": ".gitkeep"
   },
   "fileTypes": {
     "folder": {
@@ -637,5 +638,11 @@
     "jpeg": "image/jpeg",
     "gif": "image/gif",
     "webp": "image/webp"
+  },
+  "settings": {
+    "panels": [
+      "driveUsage",
+      "driveReset"
+    ]
   }
 }

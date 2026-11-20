@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+<meta name="theme-color" content="#111115">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="layout.css">
+<script src="../assets/theme.js"></script>
+</head>
+<body>
+
+<div id="remover-app" class="remover-app">
+  <div class="header">
+    <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
+    <div class="header-tools">
+      <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
+    </div>
+  </div>
+
+  <div class="model-bar">
+    <label class="model-field model-field-main">
+      <span class="model-label" data-i18n="model.label"></span>
+      <select id="model-select" data-i18n-label="model.label"></select>
+    </label>
+    <label class="model-field">
+      <span class="model-label" data-i18n="video.fpsShort"></span>
+      <select id="frame-rate-select" data-i18n-label="video.fps"></select>
+    </label>
+  </div>
+
+  <div id="workspace" class="workspace">
+    <div id="drop-zone" class="drop-zone">
+      <div class="drop-illustration"><span class="icon icon-image"></span></div>
+      <span class="drop-title" data-i18n="drop.title"></span>
+      <span class="drop-text" data-i18n="drop.text"></span>
+      <div class="drop-actions">
+        <button id="choose-button" class="primary" type="button"><span class="icon icon-upload"></span><span data-i18n="choose"></span></button>
+        <button id="drive-button" type="button"><span class="icon icon-hard-drive"></span><span data-i18n="drive.choose"></span></button>
+      </div>
+      <input id="file-input" type="file" accept="image/*,video/*" hidden>
+    </div>
+
+    <div id="result-area" class="result-area hidden">
+      <div class="result-toolbar">
+        <div id="background-switch" class="segmented-control" role="group" data-i18n-label="background.label"></div>
+        <input id="colour-input" class="visually-hidden" type="color" data-i18n-label="background.custom">
+        <div class="spacer"></div>
+        <button id="stop-button" class="hidden" type="button"><span class="icon icon-close"></span><span data-i18n="stop"></span></button>
+        <button id="another-button" type="button"><span class="icon icon-refresh"></span><span data-i18n="another"></span></button>
+        <button id="save-button" type="button" disabled><span class="icon icon-hard-drive"></span><span data-i18n="drive.save"></span></button>
+        <select id="format-select" class="hidden" data-i18n-label="format.label"></select>
+        <button id="zip-button" class="hidden" type="button" disabled><span class="icon icon-download"></span><span data-i18n="download.frames"></span></button>
+        <button id="download-button" class="primary" type="button" disabled><span class="icon icon-download"></span><span id="download-label"></span></button>
+      </div>
+      <div class="panes">
+        <div class="pane">
+          <span class="pane-title" data-i18n="original"></span>
+          <div id="original-picture" class="picture" role="img"></div>
+        </div>
+        <div class="pane">
+          <span class="pane-title" data-i18n="result"></span>
+          <div id="result-picture" class="picture transparent" role="img"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress hidden" id="progress"><div id="progress-fill" class="progress-fill"></div></div>
+
+  <div class="statusbar">
+    <span id="status"></span>
+    <a href="/" target="_top" data-i18n="copyright"></a>
+  </div>
+</div>
+
+<dialog id="drive-dialog" class="drive-dialog">
+  <div class="drive-bar">
+    <span class="drive-title" data-i18n="drive.title"></span>
+    <button id="drive-close-button" class="square" type="button" data-i18n-title="close" data-i18n-label="close"><span class="icon icon-close"></span></button>
+  </div>
+  <label class="searchbox">
+    <span class="icon icon-search"></span>
+    <input id="drive-search" type="search" data-i18n-placeholder="drive.search" data-i18n-label="drive.searchLabel">
+  </label>
+  <div id="drive-list" class="drive-list"></div>
+  <span id="drive-message" class="drive-message hidden"></span>
+</dialog>
+
+<script src="../assets/i18n.js"></script>
+<script src="../assets/dialog.js"></script>
+<script src="../assets/autocomplete.js"></script>
+<script src="../assets/account.js"></script>
+<script src="../assets/settings.js"></script>
+<script src="../assets/storage.js"></script>
+<script type="module" src="script.js"></script>
+</body>
+</html>

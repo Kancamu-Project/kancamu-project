@@ -12,6 +12,7 @@ body { line-height: 1.5; -webkit-font-smoothing: antialiased; text-rendering: op
 .spacer { flex: 1; }
 .muted { color: var(--fg-1); }
 a { color: var(--accent-text); }
+.statusbar a { color: inherit; }   /* the copyright is gray like the rest of the status bar */
 p, h1, h2, h3, ul { margin: 0; padding: 0; }
 ul { list-style: none; }
 button { font: inherit; color: inherit; }
@@ -54,7 +55,6 @@ button { font: inherit; color: inherit; }
 .icon-zap { --src: url(../assets/icons/zap.svg); }
 .icon-git-branch { --src: url(../assets/icons/git-branch.svg); }
 .icon-star { --src: url(../assets/icons/star.svg); }
-.icon-sliders { --src: url(../assets/icons/sliders.svg); }
 .icon-moon { --src: url(../assets/icons/moon.svg); }
 .icon-sun { --src: url(../assets/icons/sun.svg); }
 .icon-chevron-down { --src: url(../assets/icons/chevron-down.svg); }
@@ -102,30 +102,16 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 var(
 .logo.light { color: var(--accent-ink); }
 /* on the panel the orange icon needs a dark background for contrast; tile = 2rem icon + 0.6rem padding */
 .logo.light .logo-mark { box-sizing: content-box; padding: var(--padding-small); background-color: var(--accent-ink); background-origin: content-box; }
-/* ---------- Settings ---------- */
-/* .message-dialog.settings (2 classes) so it wins over .message-dialog defined further down */
-.message-dialog.settings { width: min(calc(var(--unit) * 260), calc(var(--vw) * 94)); max-height: calc(var(--vh) * 90); padding: 0; overflow: hidden; }
-.message-dialog.settings[open] { display: flex; flex-direction: column; }
-.settings .preview-header { flex: none; }
-.settings-body { display: flex; flex-direction: column; gap: var(--gap-medium); padding: var(--padding-extra-large); overflow: auto; }
-.settings-body > .spinner { align-self: center; }
-.settings-section { display: flex; flex-direction: column; gap: var(--gap-small); }
-.settings-section h4 { margin: 0; font-size: var(--font-size-small); font-weight: 600;text-transform: uppercase; color: var(--fg-1); }
 .account-profile { display: flex; align-items: center; gap: var(--gap-small); }
 .account-owner { display: flex; flex-direction: column; min-width: 0; }
 .account-owner b { font-size: var(--font-size-large); line-height: 1.3; }
 .account-owner .bio { padding-top: var(--padding-small); font-size: var(--font-size-small); color: var(--fg-1); }
-.settings-rows { display: flex; flex-direction: column; border: var(--border-width) solid var(--border); overflow: hidden; }
-.settings-row { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); padding: var(--padding-medium) var(--padding-large); border-bottom: var(--border-width) solid var(--border); }
-.settings-row:last-child { border-bottom: 0; }
-.settings-key { flex: none; font-size: var(--font-size-small); color: var(--fg-1); }
-.settings-value { min-width: 0; text-align: end; overflow-wrap: break-word; }
 .chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--gap-small); }
 .inline { display: flex; gap: var(--gap-small); }
 .inline .button { flex: none; }
 
 /* ---------- App frame ---------- */
-.app { height: 100%; display: grid; grid-template-columns: calc(var(--unit) * 78) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); padding-inline-end: var(--padding-medium); min-width: 0; min-height: 0; background: var(--bg); overflow: hidden; }
+.app { height: 100%; display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); padding-inline-end: var(--padding-medium); min-width: 0; min-height: 0; background: var(--bg); overflow: hidden; }
 /* The right part is one panel with a border and a padding around it. */
 /* The sidebar fills the height of the page; only this panel has a space above and below it. */
 .content-panel { align-self: center; height: calc(100% - var(--padding-medium) * 2); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-width: 0; min-height: 0; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); overflow: hidden; }
@@ -234,7 +220,7 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 var(
 .empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--gap-small); text-align: center; padding: calc(var(--unit) * 30) var(--padding-extra-large); }
 .empty-illustration { --is: var(--icon-size-extra-large); display: flex; align-items: center; justify-content: center; width: calc(var(--unit) * 40); height: calc(var(--unit) * 40); color: var(--accent-text); background: var(--accent-soft); }
 .empty h3 { font-size: var(--font-size-extra-large); }
-.empty p { max-width: calc(var(--unit) * 120); }
+.empty #empty-text { max-width: calc(var(--unit) * 120); }
 .loading { display: flex; flex-direction: column; gap: var(--gap-small); padding-top: var(--padding-medium); }
 .loading::before, .loading::after, .loading i { content: ""; display: block; height: calc(var(--unit) * 19); background: var(--bg-1); animation: pulse 1.4s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: .45; } }

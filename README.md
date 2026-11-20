@@ -18,6 +18,11 @@ Plain HTML, CSS, and JavaScript. No framework, no build step, no special server.
 |---|---|---|
 | muOS | A complete desktop that runs in the browser | `muos/` |
 | Drivemu | File storage that keeps its data in the user's own GitHub repository | `drivemu/` |
+| Gallemu | A gallery of the photos and videos in the user's Drive | `gallemu/` |
+| Spotimu | A music player for the audio files in the user's Drive | `spotimu/` |
+| muRMBG | Removes the background of an image or a video with a model that runs on the graphics card (WebGPU) | `murmbg/` |
+| Transmu | Translates text between eight languages with AI models that run in the browser (Opus-MT, NLLB-200, M2M100) | `transmu/` |
+| Account | The sign-in, the profile, and the settings of every web | `accountmu/` |
 | muAI | AI models that run directly in the browser | `muai/` |
 | ArtCraft | Seven creative and productivity apps: DeckCraft, EffectCraft, FilmCraft, GridCraft, PhotoCraft, VectorCraft, WordCraft | `artcraft/<name>/` |
 
@@ -37,15 +42,20 @@ assets/          Shared assets
   storage.js     The shared data storage: one private repository (<id>-data), one branch per app (drivemu, muai); muAI keeps conversations/ and files/ on its branch
   dialog.js      The shared question and message dialog (dialogs.ask, dialogs.tell); its button texts are in dialog.json. No web uses alert, confirm, or prompt
   autocomplete.js  The autocomplete of every search input (autocomplete.attach)
-  account.js     The shared GitHub sign-in: get, onChange, and the dialog (open, bind) that embeds /account
+  account.js     The shared GitHub sign-in: get, onChange, and the dialog (open, bind) that embeds /accountmu
+  settings.js    The settings of every web (get, set, onChange, listen): written by the account web and by the controls of a web
   style.css      Shared styles (fonts, colour tokens, reset, input and select), used by every web except muOS
   fonts/         Inter (woff2), the only font, used by every project
   icons/         Every SVG icon of the main site, Drivemu, and muAI (universal names)
 favicon.png      Site icon
 RULES.md         Project rules
-account/         The account web: GitHub sign-in shown in a dialog by every other web
+accountmu/       The account web, shown in a dialog by every other web; the query string picks the page: ?page=login, ?page=profile, ?page=settings&app=<app>. All settings of all webs (language, theme, and the settings, models, and data of each app) are set here
 artcraft/        The eight ArtCraft apps (downloaded by update.ps1)
 drivemu/         File storage on GitHub
+gallemu/        Gallery of the photos and videos of the Drive (reads the drivemu branch, read only)
+spotimu/        Music player for the audio files of the Drive (reads the drivemu branch, read only)
+murmbg/         Background remover in the browser (WebGPU, nothing is uploaded) with three models (RMBG 1.4, BiRefNet lite, MODNet); images and videos (frame by frame, saved as WebM, MP4, GIF or a ZIP of PNG frames; the background is transparent, white, black or any colour); can take a file from the Drive and save the result to it
+transmu/        Translator in the browser (Transformers.js; Opus-MT, NLLB-200 or M2M100, chosen in a select; nothing is uploaded); Opus-MT uses English as the bridge between two other languages
 muai/            AI in the browser
 muos/            Desktop in the browser
 CNAME            The kancamu.site domain for GitHub Pages

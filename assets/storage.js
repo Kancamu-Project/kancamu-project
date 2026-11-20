@@ -5,6 +5,7 @@
 //   const text = await storage.readFile(store, "a.json");  the text of a file of the branch, or null
 //   await storage.writeFile(store, "a.json", text);        saves a file of the branch, and gives its new sha
 //   await storage.list(store, "folder");                   [{ name, sha }] of a folder of the branch
+//   await storage.tree(store);                             { files: [{ path, size }], truncated } every file of the branch, in every folder
 //   await storage.readBinary(store, "a.jpg");              the bytes of a file (a Uint8Array), or null
 //   await storage.writeBinary(store, "a.jpg", bytes);      saves bytes
 //   await storage.removeFile(store, "a.json");             deletes a file
@@ -123,6 +124,13 @@
                 if (error.status === 404) return [];
                 throw error;
             }
+        },
+
+        // Every file of the branch, in every folder, in one call: { files: [{ path, size }], truncated }.
+        // truncated is true when the branch is too big for GitHub to list in one answer.
+        async tree(store) {
+            const tree = await json(store, `/repos/${store.owner}/${store.repo}/git/trees/${encodeURIComponent(store.branch)}?recursive=1`);
+            return { files: tree.tree.filter((item) => item.type === "blob").map(({ path, size }) => ({ path, size })), truncated: !!tree.truncated };
         },
 
         // The bytes of a file of the branch (a Uint8Array), or null when it is not there.

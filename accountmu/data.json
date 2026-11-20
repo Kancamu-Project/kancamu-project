@@ -1,9 +1,10 @@
 {
   "name": {
-    "en-US": "Account",
-    "zh-CN": "账户",
-    "ar-SA": "الحساب"
+    "en-US": "Account{highlight} — sign-in, profile, and settings",
+    "zh-CN": "Account{highlight} — 登录、个人资料和设置",
+    "ar-SA": "Account{highlight} — تسجيل الدخول والملف الشخصي والإعدادات"
   },
+  "brandColor": "#1cc93d",
   "languages": [
     {
       "code": "en-US",
@@ -191,6 +192,36 @@
       "en-US": "© {brand}",
       "zh-CN": "© {brand}",
       "ar-SA": "© {brand}"
+    },
+    "settings": {
+      "en-US": "Settings",
+      "zh-CN": "设置",
+      "ar-SA": "الإعدادات"
+    },
+    "language": {
+      "en-US": "Language",
+      "zh-CN": "语言",
+      "ar-SA": "اللغة"
+    },
+    "theme": {
+      "en-US": "Theme",
+      "zh-CN": "主题",
+      "ar-SA": "المظهر"
+    },
+    "settings.reset": {
+      "en-US": "Restore the defaults",
+      "zh-CN": "恢复默认值",
+      "ar-SA": "استعادة الإعدادات الافتراضية"
+    },
+    "logo": {
+      "en-US": "Account<span class=\"highlight\">{highlight}</span>",
+      "zh-CN": "Account<span class=\"highlight\">{highlight}</span>",
+      "ar-SA": "Account<span class=\"highlight\">{highlight}</span>"
+    },
+    "settings.empty": {
+      "en-US": "There is nothing to set here yet. Sign in to see the settings of this web.",
+      "zh-CN": "这里暂时没有可设置的内容。登录后可查看此网站的设置。",
+      "ar-SA": "لا يوجد ما يمكن ضبطه هنا بعد. سجّل الدخول لرؤية إعدادات هذا الموقع."
     }
   },
   "token": {

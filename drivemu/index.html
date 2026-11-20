@@ -14,24 +14,23 @@
 
 <!-- App -->
 <div id="app" class="app">
-  <aside class="sidebar" id="sidebar">
+  <div class="sidebar" id="sidebar">
     <div class="brand-row">
       <div class="logo"><div class="logo-mark"></div><span class="wordmark" data-i18n-html="logo"></span></div>
       <div class="brand-tools">
-        <button class="button ghost square" data-act="settings" data-i18n-title="settings" data-i18n-label="settings"><span class="icon icon-sliders"></span></button>
         <button class="button ghost square account" data-act="account" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
       </div>
     </div>
     <div class="side-actions">
       <button class="button primary" id="new-button"><span class="icon icon-plus"></span><span data-i18n="new"></span></button>
     </div>
-    <nav id="folder-navigation" class="folders-nav" data-i18n-label="list.folders"></nav>
+    <div id="folder-navigation" class="folders-nav" data-i18n-label="list.folders"></div>
     <div class="spacer"></div>
     <div id="usage" class="usage"></div>
-  </aside>
+  </div>
 
   <div class="content-panel">
-  <header class="topbar">
+  <div class="topbar">
     <label class="searchbox">
       <span class="icon icon-search"></span>
       <input id="file-search" type="search" data-i18n-placeholder="search" data-i18n-label="search">
@@ -46,14 +45,14 @@
     <div class="spacer"></div>
     <button class="button ghost square" id="refresh-button" data-i18n-title="refresh" data-i18n-label="refresh"><span class="icon icon-refresh"></span></button>
     <div class="segmented-control" role="group" data-i18n-label="view">
-      <button id="view-list-button" data-i18n-title="view.list"><span class="icon icon-list"></span></button>
-      <button id="view-grid-button" data-i18n-title="view.grid"><span class="icon icon-grid"></span></button>
+      <button id="view-list-button" class="square" data-i18n-title="view.list"><span class="icon icon-list"></span></button>
+      <button id="view-grid-button" class="square" data-i18n-title="view.grid"><span class="icon icon-grid"></span></button>
     </div>
-  </header>
+  </div>
 
-  <main class="files-area" id="drop-zone">
+  <div class="files-area" id="drop-zone">
     <div class="titlebar">
-      <nav id="breadcrumbs" class="breadcrumbs"></nav>
+      <div id="breadcrumbs" class="breadcrumbs"></div>
       <div id="selection-bar" class="selection-bar hidden">
         <button class="button ghost square" id="selection-clear-button" data-i18n-title="sel.clear"><span class="icon icon-close"></span></button>
         <b id="selection-count"></b>
@@ -67,14 +66,14 @@
     <div id="empty" class="empty hidden">
       <div class="empty-illustration"><span class="icon icon-folder-open"></span></div>
       <h3 id="empty-title"></h3>
-      <p id="empty-text" class="muted"></p>
+      <span id="empty-text" class="muted"></span>
       <button class="button primary" id="empty-action-button"></button>
     </div>
     <div id="loading" class="loading hidden"></div>
     <div id="drop-overlay" class="drop-overlay hidden"><span class="icon icon-upload"></span><span data-i18n="drop"></span></div>
-  </main>
+  </div>
 
-  <footer class="statusbar"><span id="status"></span><a href="/" target="_top" data-i18n="copyright"></a></footer>
+  <div class="statusbar"><span id="status"></span><a href="/" target="_top" data-i18n="copyright"></a></div>
   </div>
 </div>
 
@@ -89,16 +88,6 @@
 <input type="file" id="folder-input" webkitdirectory hidden>
 
 <!-- Generic dialog -->
-
-<!-- Settings -->
-<dialog id="settings" class="message-dialog settings">
-  <div class="preview-header">
-    <b data-i18n="settings"></b>
-    <div class="spacer"></div>
-    <button class="button ghost square" id="settings-close-button" data-i18n-title="close"><span class="icon icon-close"></span></button>
-  </div>
-  <div id="settings-content" class="settings-body"></div>
-</dialog>
 
 <!-- Preview -->
 <dialog id="preview" class="message-dialog preview">
@@ -117,6 +106,7 @@
 <script src="../assets/dialog.js"></script>
 <script src="../assets/autocomplete.js"></script>
 <script src="../assets/account.js"></script>
+<script src="../assets/settings.js"></script>
 <script src="../assets/storage.js"></script>
 <script src="script.js"></script>
 </body>

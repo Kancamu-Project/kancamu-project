@@ -21,19 +21,19 @@ muOS keeps its own language files in its languages folder, and ArtCraft is a thi
 #### 3. Shared Language and Theme
 The language ("lang") and the theme ("theme") are stored in localStorage under those keys and shared by every web, because all webs run on one origin.
 A change in one web is followed live by every other open web through the "storage" event: assets/i18n.js and assets/theme.js do it for the normal webs, and muOS does it through system/core/sync.js.
-Only the main website has the language and theme controls in its header. Every other web puts them inside its settings, and a page that has no settings yet (such as a login page) may show the language select.
+Only the main website and the account web have the language and theme controls, in their header (the theme is one button that toggles it). In every other web they are set in the account web (see Other 4), and a web has no language or theme control of its own.
 A new web gets this for free by loading the two shared scripts. Do not store the language or the theme under another key.
 muOS also has the theme "system" (follows the device), which stays inside muOS; only light and dark are shared.
 
 #### 4. First Page
 Every web opens straight onto its main content, with no landing, intro, or sign-in page in front: the main website shows the project list, muAI the chat, Drivemu the files page.
-What needs something first (a sign-in, a model download) asks for it in place, when the user does it: Drivemu shows its empty files page with a Sign in button, and muAI loads its model when the first message is sent.
+What needs something first (a sign-in, a model download) asks for it in place, when the user does it: Drivemu shows its empty files page with a Sign in button, and muAI loads a model when the user chooses one.
 #### 5. Reset
-Every app that keeps data has a reset button, in its settings, that returns the app to its first state: Drivemu deletes every file and folder and creates the default folders again, muAI deletes the chats and puts its settings back (Delete all, and Reset).
+Every app that keeps data has a reset, in its section of the settings of the account web (see Other 8), that returns the app to its first state: Drivemu deletes every file and folder and creates the default folders again, muAI deletes the chats and puts its settings back (Delete all, and Restore the defaults).
 A reset cannot be undone, so it asks first and says what it deletes.
 
 #### 6. Copyright
-Every web shows "© Kancamu" somewhere on its pages: the main website and muAI in their footer, Drivemu at the end of its status bar, the account web at the bottom, and muOS in Settings > About.
+Every web shows "© Kancamu" somewhere on its pages: the main website in its footer, muAI and the account web at the bottom of their sidebar (with a line above it), Drivemu at the end of its status bar, and muOS in Settings > About.
 It is written as it is, with normal capitals, and never turned into all capitals with text-transform. The text comes from the "copyright" key of the web's data.json (for muOS, from system/config/osinfo.js).
 
 #### 7. Brand Name
@@ -133,6 +133,7 @@ gap: --gap-extra-small 0.2rem, --gap-small 0.4rem (the default, between the item
 padding: --padding-extra-small 0.2rem, --padding-small 0.4rem, --padding-medium 0.8rem (the default at the start and end of a button, input, and select, set once in assets/style.css), --padding-large 1.2rem, --padding-extra-large 1.6rem
 font-size: --font-size-extra-small 0.6rem (labels, hints, tags), --font-size-small 0.8rem (the text of the page), --font-size-medium 1rem, --font-size-large 1.2rem (names and headings), --font-size-extra-large 1.4rem
 icon-size: --icon-size-extra-small 0.8rem, --icon-size-small 1rem (an icon in a button or a line of text), --icon-size-medium 1.2rem, --icon-size-large 1.6rem (the mark of a logo), --icon-size-extra-large 3.2rem (the icon of a project, a big icon)
+sidebar-width: --sidebar-width 16rem (the width of the sidebar of every web: Drivemu, muAI, and the account web; a web writes no width of its own for a sidebar, and one that can be dragged, such as muAI, starts from it)
 A web uses these variables, or 0 where elements must touch. Do not write another size where one of them fits.
 A button that holds only an icon has no padding: give it the class square and its width equals its height (var(--height)), so it is a perfect square. A bar that holds such buttons uses box-sizing: content-box, so its border does not make the buttons shorter than they are wide.
 
@@ -151,6 +152,7 @@ There is no gray in the palette. Each theme has two grays, both mixes of white a
 Every other colour is derived from the six with color-mix too, so do not write new hex codes.
 Components use role names (bg, fg, border, danger, and so on), which change with the dark and light theme.
 Colours that come from a third party, such as an app's own brand colour, may be used as they are.
+The brand colour of a web (the colour of its icon) is written once, as a hex, in a data.json: the "color" of its project in the main web (a hex, or the name of a colour of the palette, such as yellow or blue), and "brandColor" in its own data.json, which its script sets as --brand. A layout.css uses var(--brand), never the hex.
 
 #### 7. Theme
 Dark is the default, and light is set with data-theme="light" on html.
@@ -194,12 +196,13 @@ Do not make a button, input, or select borderless. A variant (primary, danger, a
 /assets/theme.js - applies the saved theme before the page shows.
 /assets/i18n.js - loads data.json, applies the chosen language, and follows changes from other webs.
 /assets/account.js - the shared GitHub sign-in (get, signIn, signOut, onChange, open, bind).
+/assets/settings.js - the settings of every web (get, set, onChange, listen); the account web and the controls of a web write them.
 /assets/storage.js - the shared data storage: one repository, one branch per app (connect, readFile, writeFile).
 /assets/brand.json - the id, the name, and the highlighted word of the brand.
 /assets/icons - holds every svg icon for the GUI, do not use emoji.
 /assets/fonts - holds the fonts.
 Each web has its own folder in the root with index.html, layout.css, script.js, and data.json (the root itself is the main website).
-/account - the account web: sign in and sign out, embedded by every other web in a dialog.
+/accountmu - the account web: the sign-in, the profile, and the settings of every web, embedded by every other web in a dialog. Its pages are chosen by the query string (see Other 4), and its panels.js holds the work on the data of the webs (see Other 8).
 /muos - the web OS, with its own design, languages, tests, and file index (run npm run index in it after adding or removing files).
 /artcraft - the official web builds of the ArtCraft apps, one folder per app, with data.json (the installed versions) and update.ps1.
 
@@ -212,16 +215,18 @@ Icons are used as CSS masks and their colour is currentColor.
 #### 3. Fonts
 Every web uses the fonts in /assets/fonts. Do not load fonts from outside and do not keep fonts in a web's own folder.
 
-#### 4. Shared Sign-in
-The GitHub sign-in is the account web (/account). No other web builds its own sign-in screen, login form, or profile panel.
+#### 4. Account
+The GitHub sign-in, the profile, and the settings of every web are pages of the account web (/accountmu), chosen by the query string: ?page=login, ?page=profile, and ?page=settings&app=<app>. With no page, it shows the profile, or the sign-in when there is no account.
+No other web builds its own sign-in screen, login form, profile panel, or settings dialog.
 The account is kept in localStorage under the key "account" ({ token, login, name, avatar }) and handled only by assets/account.js.
-A web adds a profile button (an icon-only square button with the class "account", right after its theme button or its settings button) and calls account.bind(button): it opens the account web in a dialog and shows the avatar once signed in.
+A web has one button for all of it, an icon-only square button with the class "account", placed after the other buttons of its header, and calls account.bind(button): it opens the account web in a dialog on the settings of that web (the profile or the sign-in when the web has no settings; the sidebar of the account web has the profile and the settings of every web) and shows the avatar once signed in. A web has no settings button.
 A web that needs GitHub reads account.get() and listens to account.onChange(); when there is no account it asks the user to sign in with account.open().
 For now only a personal access token (classic) is accepted.
 
 #### 5. Data Storage
 The data of a user is kept in one private GitHub repository named after the brand: <id>-data, with the "id" of assets/brand.json (today kancamu-data), in the account of the signed-in user.
 Every app keeps its data on its own branch, named after the app: Drivemu on drivemu, muAI on muai, and so on. An app only reads and writes its own branch, never another one, and never the default branch.
+One exception: some apps work on the files of the Drive, so they use the drivemu branch. Gallemu and Spotimu (whose content is the photos, videos, and audio of the Drive) only read it, with storage.tree and storage.readBinary. muRMBG reads images from it and saves its results into it with storage.writeBinary, as new files; it replaces a file only when the user agrees, and it never deletes. No other app reads or writes another branch.
 Drivemu uses the root of its branch as the root of the drive. A new drive starts with the folders Documents, Images, Videos, and Audio (each kept by an empty .gitkeep), and the sidebar lists the folders at the root.
 muAI keeps a chat per file in conversations/<id>.json, loaded when the chat is opened, and the files attached to chats in files/<sha256>, named by the hash of their content, so a file is stored once whatever chat it was attached in.
 A web gets its branch from assets/storage.js: storage.connect("<app>") creates the repository and the branch when they are not there yet, and storage.readFile, storage.writeFile, storage.list, storage.readBinary, storage.writeBinary, and storage.removeFile work with its files. It does not build its own repository name.
@@ -233,6 +238,12 @@ The colour, tagline, and translations of each app are kept in the main data.json
 
 #### 7. Folder Names
 A folder that holds many files of the same kind uses the plural form, such as assets, fonts, and icons.
+
+#### 8. Settings
+Everything of a web that the user can adjust is one of its settings, and every setting of every web is in the account web (/accountmu/?page=settings&app=<app>): the model of an AI, the volume of a player, the background of a result, the width of a sidebar. The only exceptions are how a list is shown (grid or list view) and how it is sorted. The language and the theme are the buttons of the header of the account web. Its sidebar lists the account and every web, and the button of a web that has no settings yet is disabled.
+A web describes its settings in its data.json: "settings": { "defaults": { ... }, "fields": [ { id, type, label, hint, min, max, step } ], "panels": [ ... ] }. The type of a field is textarea, number, range, select, checkbox, or color; a select takes its options from "options", or from a list of the data.json of the web ("optionsFrom": { "list", "value", "label", "labelPrefix" }). A field is saved at once, kept between its min and max, in localStorage under "<app>.settings". A panel does what a field cannot, on the data of the web (the downloaded models of muAI, muRMBG, and Transmu, which can be deleted; the chats of muAI; the usage and the reset of Drivemu): its code is in accountmu/panels.js, not in the web.
+A web has no settings dialog and no settings button. It reads its settings with settings.get and follows a change with settings.onChange (assets/settings.js). A web may keep a control for a setting in its page (the model picker, the volume slider, the background switch) as well: the control and the account web write the same settings with settings.set, and each follows the other. When the account web did something to the data of a web (deleted its chats, reset its drive), the web shows what is left by listening with settings.listen.
+What the user is doing is not a setting: the open folder, the text of a search, the file that is shown.
 
 # NOTE
 Currently, only humans are permitted to modify this file.

@@ -1,6 +1,6 @@
 // Saved sidebar width, applied as early as this script runs.
 try {
-  const w = parseFloat(localStorage.getItem("muai.sideWidth"));
+  const w = parseFloat(JSON.parse(localStorage.getItem("muai.settings")).sideWidth);
   if (w >= 16 && w <= 40) document.documentElement.style.setProperty("--side-width", w.toFixed(1) + "rem");
 } catch {}
 
@@ -20,24 +20,23 @@ import {
 env.allowLocalModels = false;
 
 await i18n.load();
+document.documentElement.style.setProperty("--brand", i18n.data.brandColor);   // the colour of muAI (from its icon), written in data.json
 i18n.selects();
 const tr = (key, params) => i18n.t(key, params);
 
-// The model list and the default settings are in data.json (models, defaults).
+// The model list and the default settings are in data.json (models, settings).
 // kind "text" = AutoModelForCausalLM, "multi" = Gemma 4 (text + images).
-const { models: MODELS, defaults: DEFAULTS } = i18n.data;
+const { models: MODELS, settings: { defaults: DEFAULTS } } = i18n.data;
 const sizeLabel = (mb) => (mb >= 1000 ? (mb / 1000).toFixed(1) + " GB" : mb + " MB");
-let MODEL = MODELS.find((m) => m.id === lsGetEarly("muai.model")) || null;   // null until the user chooses one
-function lsGetEarly(k) { try { return localStorage.getItem(k); } catch { return null; } }
+let MODEL = MODELS.find((m) => m.id === settings.get("muai", DEFAULTS).model) || null;   // null until the user chooses one (the choice is one of the settings)
 
 
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
-  "gpu-status","model-picker","load-status","progress-box","progress-fill","progress-text","load-error","chat","message-input",
+  "model-picker","load-status","progress-box","progress-fill","progress-text","load-error","chat","message-input",
   "send-button","stop-button","chat-area","attach-button","image-file-input","attachment-preview","attachment-preview-image","attachment-preview-name","remove-attachment-button","chat-list","chat-search",
-  "new-chat-button","chat-title","export-button","export-all-button","import-button","import-file-input","clear-all-button","settings-button","settings-dialog",
-  "settings-form","setting-system-prompt","setting-max-tokens","setting-temperature","setting-context","temperature-value","cancel-settings-button","reset-settings-button","menu-button",
-  "side-overlay","chat-app","welcome-message","theme-dark-button","theme-light-button","side","side-resizer",
+  "new-chat-button","chat-title","export-button","menu-button",
+  "side-overlay","chat-app","welcome-message","side","side-resizer",
 ].map((id) => [id.replace(/-([a-z])/g, (m, c) => c.toUpperCase()), $(id)]));   // els.modelPicker is the element with the id model-picker
 // The model is chosen in a select. While a model loads, its option says so.
 function renderModelPicker(label) {
@@ -88,9 +87,19 @@ function download(name, text, type) {
 }
 
 // ---------- Settings ----------
-let settings = { ...DEFAULTS };
-try { settings = { ...DEFAULTS, ...JSON.parse(lsGet("muai.settings") || "{}") }; } catch {}
-const saveSettings = () => lsSet("muai.settings", JSON.stringify(settings));
+// They are set in the account web (the settings button opens it); muAI only reads them, and follows a change.
+let preferences = settings.get("muai", DEFAULTS);
+// The page and the account web both set the model and the width of the sidebar: they write the same settings, and each follows the other.
+const savePreferences = (values) => { preferences = { ...preferences, ...values }; settings.set("muai", preferences); };
+settings.onChange("muai", DEFAULTS, (changed) => {
+  const modelChanged = changed.model !== preferences.model, widthChanged = changed.sideWidth !== preferences.sideWidth;
+  preferences = changed;
+  if (widthChanged) setSideWidth(changed.sideWidth);
+  if (modelChanged) {
+    const chosen = MODELS.find((m) => m.id === changed.model);
+    if (chosen) chooseModel(chosen); else if (!changed.model) { MODEL = null; showSelected(); renderChat(); }
+  }
+});
 
 // ---------- Storage (IndexedDB) ----------
 const db = await new Promise((res) => {
@@ -231,9 +240,7 @@ const stopper = new InterruptableStoppingCriteria();
 // ---------- WebGPU ----------
 let gpuOk = false;
 try { if (navigator.gpu && (await navigator.gpu.requestAdapter())) gpuOk = true; } catch {}
-els.gpuStatus.classList.add(gpuOk ? "ok" : "bad");
 function renderGpu() {
-  els.gpuStatus.textContent = tr(gpuOk ? "gpu.active" : "gpu.unavailable");
   if (!gpuOk) els.loadError.textContent = tr("gpu.unsupported");
 }
 if (!gpuOk) {
@@ -444,7 +451,7 @@ async function loadModel() {
     loadedDef = def;
     els.progressText.textContent = tr("load.warm");
     await generate([{ role: "user", content: def.kind === "multi" ? [{ type: "text", text: "Hi" }] : "Hi" }], [], { maxTokens: 1, temperature: 0 });
-    lsSet("muai.model", def.id); lsSet("muai.autoload", "1");
+    savePreferences({ model: def.id }); lsSet("muai.autoload", "1");
     els.modelPicker.classList.add("ok");
     els.progressBox.classList.add("hidden"); els.loadStatus.classList.add("hidden");
     renderChat(); els.messageInput.focus();
@@ -466,7 +473,7 @@ async function chooseModel(m) {
   const seen = lsGet("muai.seen." + m.id) === "1";
   if (!seen && m.mb >= 1000 && !(await ask({ text: tr("picker.confirm", { name: m.name, size: sizeLabel(m.mb) }), ok: tr("picker.select") }))) { renderModelPicker(); return; }
   if (model) await unloadModel();
-  MODEL = m; lsSet("muai.model", m.id); showSelected(); renderChat();
+  MODEL = m; savePreferences({ model: m.id }); showSelected(); renderChat();
   await loadModel();
   if (loadedDef && loadedDef.id === m.id) lsSet("muai.seen." + m.id, "1");
 }
@@ -506,9 +513,9 @@ async function generate(messages, imgs, opts, onText) {
 
 function buildMessages() {
   const msgs = [], imgs = [];
-  if (settings.system.trim()) msgs.push({ role: "system", content: settings.system.trim() });
+  if (preferences.system.trim()) msgs.push({ role: "system", content: preferences.system.trim() });
   let hist = current.messages.filter((m) => !m.error);
-  hist = hist.slice(-settings.ctx);
+  hist = hist.slice(-preferences.ctx);
   while (hist.length && hist[0].role !== "user") hist.shift();   // context must start with a user message
   const multi = loadedDef.kind === "multi";   // text-only models: message content is a string, images are ignored
   for (const m of hist) {
@@ -542,7 +549,7 @@ async function runAssistant() {
   const paint = () => { raf = 0; body.innerHTML = md(acc); body.classList.add("cursor"); els.chatArea.scrollTop = els.chatArea.scrollHeight; };
   try {
     const { msgs, imgs } = buildMessages();
-    const r = await generate(msgs, imgs, { maxTokens: settings.maxTokens, temperature: settings.temperature }, (t) => { acc += t; if (!raf) raf = requestAnimationFrame(paint); });
+    const r = await generate(msgs, imgs, { maxTokens: preferences.maxTokens, temperature: preferences.temperature }, (t) => { acc += t; if (!raf) raf = requestAnimationFrame(paint); });
     m.text = r.text.trim() || tr("msg.empty"); m.tps = r.tps; m.model = loadedDef.name;
   } catch (e) {
     console.error(e); m.text = tr("msg.error", { message: e?.message || e }); m.error = true;
@@ -570,11 +577,12 @@ async function send() {
 }
 
 // ---------- Input ----------
-// Textarea height is computed in rem (multiples of 0.2rem), from 2.4rem up to 10rem.
+// One line keeps the height of the CSS (var(--height), like the buttons beside it). Only a text of more lines makes the box taller,
+// in rem (multiples of 0.2rem); the CSS stops it at twice var(--height), and a longer text scrolls.
 function autosize() {
-  els.messageInput.style.height = "auto";
-  const rem = Math.min(10, Math.max(2.4, Math.ceil((els.messageInput.scrollHeight + 2) / 3.2) * 0.2));
-  els.messageInput.style.height = rem.toFixed(1) + "rem";
+  const input = els.messageInput;
+  input.style.height = "";   // back to the height of one line
+  if (input.scrollHeight > input.clientHeight + 1) input.style.height = (Math.ceil(input.scrollHeight / 3.2) * 0.2).toFixed(1) + "rem";
 }
 els.messageInput.addEventListener("input", autosize);
 els.messageInput.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(); } });
@@ -611,73 +619,29 @@ els.imageFileInput.addEventListener("change", async () => {
 const toMarkdown = (c) => `# ${c.title}\n\n_${new Date(c.created).toLocaleString(i18n.lang)}_\n\n` +
   c.messages.map((m) => `**${m.role === "user" ? tr("export.you") : "muAI"}:**${m.image ? ` _${tr("export.imageAttached")}_` : ""}\n\n${m.text}`).join("\n\n---\n\n") + "\n";
 els.exportButton.addEventListener("click", () => current && download(`${current.title.replace(/[^\w-]+/g, "_") || "muai"}.markdown`, toMarkdown(current), "text/markdown"));
-els.exportAllButton.addEventListener("click", () => convs.length ? download("muai-history.json", JSON.stringify(convs), "application/json") : toast(tr("toast.noHistory")));
-els.importButton.addEventListener("click", () => els.importFileInput.click());
-els.importFileInput.addEventListener("change", async () => {
-  const f = els.importFileInput.files[0]; els.importFileInput.value = ""; if (!f) return;
-  try {
-    const data = JSON.parse(await f.text()); if (!Array.isArray(data)) throw new Error();
-    let n = 0;
-    for (const c of data) {
-      if (!c || !Array.isArray(c.messages) || typeof c.title !== "string") continue;
-      const clean = {
-        id: uid(), title: c.title.slice(0, 80), created: +c.created || Date.now(), updated: +c.updated || Date.now(),
-        messages: c.messages.filter((m) => m && (m.role === "user" || m.role === "assistant") && typeof m.text === "string")
-          .map((m) => ({ role: m.role, text: m.text, ...(typeof m.image === "string" && m.image.startsWith("data:image/") ? { image: m.image } : {}), ...(m.error ? { error: true } : {}) })),
-      };
-      convs.push(clean); await idb.put(clean); n++;
-    }
-    convs.sort((a, b) => b.updated - a.updated); renderList(); toast(tr("toast.imported", { n }));
-  } catch { toast(tr("toast.invalidImport")); }
-});
-els.clearAllButton.addEventListener("click", async () => {
-  if (busy) return toast(tr("toast.wait"));
-  if (!convs.length) return toast(tr("toast.noHistory"));
-  if (!(await ask({ text: tr("confirm.deleteAll", { n: convs.length }), ok: tr("data.deleteAll") }))) return;
-  convs = []; await idb.clear(); els.settingsDialog.close(); newChat();
-});
-
-// ---------- Settings dialog ----------
-function fillSettings() {
-  els.settingSystemPrompt.value = settings.system; els.settingMaxTokens.value = settings.maxTokens;
-  els.settingTemperature.value = settings.temperature; els.temperatureValue.textContent = settings.temperature; els.settingContext.value = settings.ctx;
-}
-els.settingsButton.addEventListener("click", () => { fillSettings(); els.settingsDialog.showModal(); });
-
+// ---------- Settings ----------
+// The settings, the downloaded models, and the data are managed in the account web (the account button opens it). muAI shows what is left after it did something.
 // The sign-in is the account web, opened by assets/account.js.
 account.bind($("account-button"));
-els.settingTemperature.addEventListener("input", () => (els.temperatureValue.textContent = els.settingTemperature.value));
-els.cancelSettingsButton.addEventListener("click", () => els.settingsDialog.close());
-els.resetSettingsButton.addEventListener("click", () => { settings = { ...DEFAULTS }; fillSettings(); });
-els.settingsForm.addEventListener("submit", () => {
-  const clamp = (v, a, b, d) => (Number.isFinite(+v) ? Math.min(b, Math.max(a, +v)) : d);
-  settings = {
-    system: els.settingSystemPrompt.value,
-    maxTokens: clamp(els.settingMaxTokens.value, 64, 4096, DEFAULTS.maxTokens),
-    temperature: clamp(els.settingTemperature.value, 0, 1.5, DEFAULTS.temperature),
-    ctx: clamp(els.settingContext.value, 2, 60, DEFAULTS.ctx),
-  };
-  saveSettings(); toast(tr("toast.saved"));
-});
-
-// ---------- Theme ----------
-function applyTheme(t, save) {
-  document.documentElement.dataset.theme = t;
-  els.themeDarkButton.classList.toggle("active", t === "dark");
-  els.themeLightButton.classList.toggle("active", t === "light");
-  if (save) lsSet("theme", t);
-}
-els.themeDarkButton.addEventListener("click", () => applyTheme("dark", true));
-els.themeLightButton.addEventListener("click", () => applyTheme("light", true));
-applyTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark", false);
-window.addEventListener("storage", (event) => {
-  if (event.key === "theme" || event.key === null) applyTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark", false);
+settings.listen("muai", async (message) => {
+  if (message.type === "modelDeleted") {
+    if (loadedDef?.id === message.id && !busy) await unloadModel();   // the files are gone, so the model in use is let go
+    if (MODEL?.id === message.id) { MODEL = null; showSelected(); renderChat(); }
+  } else if (message.type === "imported") {
+    convs = (await idb.all()).sort((a, b) => b.updated - a.updated);
+    for (const id of message.ids) changed(id);   // the imported chats go to the storage too
+    renderList();
+  } else if (message.type === "chatsDeleted") {
+    convs = []; dirty.clear(); removed.clear(); current = null;
+    newChat(); renderList();
+  }
 });
 
 // ---------- Resizable sidebar ----------
 // Width is kept in rem (multiples of 0.2rem), clamped to 16rem-40rem and at most 60% of the window.
-const SIDE = { min: i18n.data.sidebarWidth.min, max: i18n.data.sidebarWidth.max, def: i18n.data.sidebarWidth.default };
-let sideRem = parseFloat(lsGet("muai.sideWidth")) || SIDE.def;
+const sideField = i18n.data.settings.fields.find((definition) => definition.id === "sideWidth");   // its limits are in data.json
+const SIDE = { min: sideField.min, max: sideField.max, def: DEFAULTS.sideWidth };
+let sideRem = preferences.sideWidth || SIDE.def;
 const remPx = () => parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
 function setSideWidth(rem) {
   const max = Math.floor(Math.max(SIDE.min, Math.min(SIDE.max, (innerWidth / remPx()) * 0.6)) / 0.2 + 1e-6) * 0.2;
@@ -685,7 +649,7 @@ function setSideWidth(rem) {
   document.documentElement.style.setProperty("--side-width", sideRem.toFixed(1) + "rem");
   els.sideResizer.setAttribute("aria-valuenow", sideRem.toFixed(1));
 }
-const saveSideWidth = () => lsSet("muai.sideWidth", sideRem.toFixed(1));
+const saveSideWidth = () => savePreferences({ sideWidth: Number(sideRem.toFixed(1)) });
 els.sideResizer.addEventListener("pointerdown", (e) => {
   e.preventDefault(); els.sideResizer.setPointerCapture(e.pointerId);
   document.body.classList.add("resizing"); els.sideResizer.classList.add("active");
@@ -726,7 +690,7 @@ i18n.onChange(() => {
 // ---------- Start ----------
 showSelected(); renderChat();
 // Auto-load only the last model that loaded successfully.
-if (gpuOk && lsGet("muai.autoload") === "1" && lsGet("muai.model")) loadModel();
+if (gpuOk && lsGet("muai.autoload") === "1" && preferences.model) loadModel();
 
 // Signed in (now or later): bring the chats of the storage here.
 pullChats();

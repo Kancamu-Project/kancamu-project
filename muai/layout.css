@@ -2,7 +2,7 @@
   --height-s: calc(var(--unit) * 10);
   --content-width: calc(var(--unit) * 220);
   --input-width: calc(var(--unit) * 200);
-  --side-width: calc(var(--unit) * 120);
+  --side-width: var(--sidebar-width);
 }
 
 body { display: grid; grid-template-columns: var(--side-width) 1fr; grid-template-rows: minmax(0, 1fr); padding-inline-end: var(--padding-medium); line-height: 1.55; overflow: hidden; }
@@ -25,7 +25,6 @@ body { display: grid; grid-template-columns: var(--side-width) 1fr; grid-templat
 .icon-refresh { --icon: url("../assets/icons/refresh.svg"); }
 .icon-download { --icon: url("../assets/icons/download.svg"); }
 .icon-upload { --icon: url("../assets/icons/upload.svg"); }
-.icon-sliders { --icon: url("../assets/icons/sliders.svg"); }
 .icon-user { --icon: url("../assets/icons/user.svg"); }
 .icon-send { --icon: url("../assets/icons/send.svg"); }
 .icon-stop { --icon: url("../assets/icons/stop.svg"); }
@@ -65,7 +64,7 @@ input[type=range] { height: var(--height); padding: 0; border: none; accent-colo
 .brand-tools > button { height: 100%; }
 .logo { display: flex; align-items: center; gap: var(--gap-small); height: var(--height); font-size: var(--font-size-large); font-weight: 700;}
 .logo .logo-name { display: flex; }
-.logo .highlight { color: var(--red); }
+.logo .highlight { color: var(--brand, var(--red)); }
 .logo-mark { width: var(--icon-size-large); height: var(--icon-size-large); flex: none; background: url("favicon.png") center / contain no-repeat; image-rendering: pixelated; }
 #chat-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; padding: 0 0 var(--padding-large); }
 .date-group { padding: var(--padding-medium) var(--padding-medium) var(--padding-small);font-size: var(--font-size-extra-small);text-transform: uppercase; color: var(--fg-1); }
@@ -97,7 +96,7 @@ body.resizing .side { transition: none; }
 .topbar > button { height: 100%; }
 /* What touches another element is square: the bar, the buttons of a row, the theme switch, the head of a code block. */
 .topbar > button, .chat-item .actions button, .markdown .code-header > button, .segmented-control button { border-radius: 0; }
-.bubble, .markdown .code, .status { border-radius: var(--border-radius-medium); }
+.bubble, .markdown .code { border-radius: var(--border-radius-medium); }
 .attachment-thumbnail { border-radius: var(--border-radius-small); }
 #chat-title { flex: 1; min-width: 0; font-weight: 700; font-size: var(--font-size-large);overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #menu-button { display: none; }
@@ -105,9 +104,6 @@ body.resizing .side { transition: none; }
 #model-picker.ok { color: var(--ok); border-color: var(--ok); }
 #model-picker.unchosen { color: var(--danger); border-color: var(--danger); }
 #model-picker.loading { color: var(--yellow); border-color: var(--yellow); }
-.status { display: flex; align-items: center; height: var(--height); padding: 0 var(--padding-medium); border: var(--border-width) solid var(--border);font-size: var(--font-size-small);text-transform: uppercase; color: var(--fg-1); }
-.status.ok { color: var(--ok); border-color: var(--ok); }
-.status.bad { color: var(--danger); border-color: var(--danger); }
 .segmented-control { display: flex; }
 .segmented-control button + button { border-inline-start: none; }
 .scrollable-area { flex: 1; min-height: 0; overflow-y: auto; display: flex; justify-content: center; align-items: flex-start; padding: var(--padding-large) var(--padding-extra-large); }
@@ -119,7 +115,6 @@ body.resizing .side { transition: none; }
 .chat-column { flex: 1; min-width: 0; max-width: var(--content-width); display: flex; flex-direction: column; }
 
 #load-status { display: flex; flex-direction: column; gap: var(--gap-small); width: 100%; max-width: var(--content-width); }
-.button-row-start { display: flex; flex-wrap: wrap; gap: var(--gap-small); }
 #progress-box { display: flex; flex-direction: column; gap: var(--gap-small); }
 .progress-bar { width: 100%; height: calc(var(--unit) * 2); overflow: hidden; background: var(--border); }
 #progress-fill { width: 0; height: 100%; background: var(--accent); transition: width 0.2s; }
@@ -163,7 +158,7 @@ font-size: var(--font-size-extra-small);text-transform: uppercase; color: var(--
 #attachment-preview { display: flex; align-items: center; gap: var(--gap-small); }
 .attachment-thumbnail { width: var(--icon-size-extra-large); height: var(--icon-size-extra-large); flex: none; border: var(--border-width) solid var(--border); background-size: cover; background-position: center; image-rendering: pixelated; }
 .composer { display: flex; align-items: flex-end; gap: var(--gap-small); }
-#message-input { flex: 1; min-width: 0; height: var(--height); min-height: var(--height); max-height: calc(var(--unit) * 50); padding: var(--padding-small) var(--padding-medium); resize: none; line-height: calc(var(--unit) * 5); overflow-y: auto; }
+#message-input { flex: 1; min-width: 0; height: var(--height); min-height: var(--height); max-height: calc(var(--height) * 2); padding: var(--padding-small) var(--padding-medium); resize: none; line-height: calc(var(--unit) * 5); overflow-y: auto; }
 
 /* Dialog */
 dialog {
@@ -176,14 +171,7 @@ dialog::backdrop { background: color-mix(in srgb, var(--black) 60%, transparent)
 dialog form, .dialog-body { display: flex; flex-direction: column; gap: var(--gap-medium); padding: var(--padding-extra-large); }
 dialog h2 { font-size: var(--font-size-large); font-weight: 700;}
 dialog label { display: flex; flex-direction: column; gap: var(--gap-small); }
-dialog .field-label { font-weight: 700; }
-dialog .field-hint { color: var(--fg-1); }
 dialog textarea { min-height: calc(var(--unit) * 30); padding: var(--padding-medium); line-height: 1.5; resize: vertical; }
-.button-row { display: flex; justify-content: flex-end; gap: var(--gap-small); }
-.field-pair { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: var(--gap-small); }
-.field { display: flex; flex-direction: column; gap: var(--gap-small); }
-.fields { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: var(--gap-small); }
-dialog .data-section { display: flex; flex-direction: column; gap: var(--gap-small); padding-top: var(--padding-medium); border-top: var(--border-width) solid var(--border); }
 
 
 .side-overlay { display: none; }
@@ -200,7 +188,6 @@ dialog .data-section { display: flex; flex-direction: column; gap: var(--gap-sma
 }
 @media (max-width: 35rem) {
   .topbar #export-button > span:not(.icon) { display: none; }
-  .fields, .field-pair { grid-template-columns: 1fr; }
 }
 
 /* ---------- Language and right-to-left ---------- */

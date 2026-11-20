@@ -73,6 +73,10 @@ body {
             background: linear-gradient(var(--fade-direction), transparent, var(--bg));
         }
 
+        &::before {
+            inset-inline-start: var(--home-width, 0);   /* the Kancamu tab stays where it is, so the fade starts after it */
+        }
+
         &:has(> #tabs.fade-start)::before,
         &:has(> #tabs.fade-end)::after {
             opacity: 1;
@@ -89,6 +93,7 @@ body {
         overflow-x: auto;
         overflow-y: hidden;
         scrollbar-width: none;
+        scroll-padding-inline-start: var(--home-width, 0);   /* a tab that is brought into view does not stay under the Kancamu tab */
 
         & > .tab {
             height: 100%;
@@ -99,10 +104,38 @@ body {
             border-inline-end: var(--border-width) solid var(--border);
             font-size: var(--font-size-medium);
             font-weight: 700;
-            transition: background 0.2s;
+            transition: background 0.2s, padding-inline-end 0.2s;
 
             &:hover {
                 background: var(--bg-1);
+            }
+
+            /* The Kancamu tab does not scroll with the others, and cannot be dragged */
+            &.home {
+                position: sticky;
+                inset-inline-start: 0;
+                z-index: 2;
+                background: var(--bg);
+
+                &:hover {
+                    background: var(--bg-1);
+                }
+            }
+
+            &:not(.home) > .select {
+                cursor: grab;
+            }
+
+            /* The tab that is being dragged follows the pointer */
+            &.dragging {
+                z-index: 3;
+                background: var(--bg-1);
+                cursor: grabbing;
+                transition: none;
+
+                & > .select {
+                    cursor: grabbing;
+                }
             }
 
             &.active {
@@ -114,7 +147,7 @@ body {
                 color: var(--color);
             }
 
-            &:has(> .close) {
+            &:is(:hover, :focus-within, .active):has(> .close) {
                 padding-inline-end: var(--padding-small);
 
                 & > .select {
@@ -123,6 +156,7 @@ body {
             }
 
             & > .select {
+                transition: padding-inline-end 0.2s;
                 height: 100%;
                 max-width: calc(var(--unit) * 80);
                 gap: var(--gap-small);
@@ -153,10 +187,20 @@ body {
                 }
             }
 
+            /* The close button shows on hover, on keyboard focus, and on the tab that is active; otherwise it has no width, so the tab is narrower. The width changes smoothly. */
             & > .close {
-                width: var(--icon-size-large);
+                width: 0;
                 height: var(--icon-size-large);
                 padding: 0;
+                border-width: 0;
+                overflow: hidden;
+                opacity: 0;
+                transition: width 0.2s, opacity 0.2s;
+            }
+
+            &:is(:hover, :focus-within, .active) > .close {
+                width: var(--icon-size-large);
+                opacity: 1;
             }
         }
     }
@@ -342,6 +386,27 @@ button {
         &.active {
             background: var(--fg);
             color: var(--bg);
+        }
+
+        &[data-category="official"] {
+            border-color: var(--yellow);
+
+            color: var(--yellow);
+
+            &.active {
+                background: var(--yellow);
+                color: var(--black);
+            }
+        }
+
+        &[data-category="mobile"] {
+            border-color: var(--blue);
+            color: var(--blue);
+
+            &.active {
+                background: var(--blue);
+                color: var(--white);
+            }
         }
     }
 }
@@ -530,6 +595,16 @@ button {
             color: var(--fg-1);
             font-size: var(--font-size-extra-small);
             text-transform: none;
+
+            &[data-category="official"] {
+                border-color: var(--yellow);
+                color: var(--yellow);
+            }
+
+            &[data-category="mobile"] {
+                border-color: var(--blue);
+                color: var(--blue);
+            }
         }
     }
 

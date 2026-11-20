@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+<meta name="theme-color" content="#111115">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="layout.css">
+<script src="../assets/theme.js"></script>
+</head>
+<body>
+
+<div id="translator-app" class="translator-app">
+  <div class="header">
+    <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
+    <div class="header-tools">
+      <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
+    </div>
+  </div>
+
+  <label class="model-bar">
+    <span class="model-label" data-i18n="model.label"></span>
+    <select id="model-select" data-i18n-label="model.label"></select>
+  </label>
+
+  <div class="language-bar">
+    <select id="source-language" data-i18n-label="from.label"></select>
+    <button id="swap-button" class="square" type="button" data-i18n-title="swap" data-i18n-label="swap"><span class="icon icon-swap"></span></button>
+    <select id="target-language" data-i18n-label="to.label"></select>
+  </div>
+
+  <div class="panes">
+    <div class="pane">
+      <div class="pane-bar">
+        <span class="pane-title" data-i18n="source.title"></span>
+        <span id="source-count" class="pane-count"></span>
+        <button id="clear-button" class="ghost square" type="button" data-i18n-title="clear" data-i18n-label="clear"><span class="icon icon-close"></span></button>
+      </div>
+      <textarea id="source-text" class="pane-text" dir="auto" data-i18n-placeholder="source.placeholder" data-i18n-label="source.title"></textarea>
+    </div>
+    <div class="pane">
+      <div class="pane-bar">
+        <span class="pane-title" data-i18n="target.title"></span>
+        <button id="copy-button" class="ghost square" type="button" disabled data-i18n-title="copy" data-i18n-label="copy"><span class="icon icon-copy"></span></button>
+      </div>
+      <div id="target-text" class="pane-text selectable" role="textbox" aria-readonly="true" tabindex="0" data-i18n-label="target.title"></div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="translate-button" class="primary" type="button"><span class="icon icon-send"></span><span data-i18n="translate"></span></button>
+    <button id="stop-button" class="hidden" type="button"><span class="icon icon-stop"></span><span data-i18n="stop"></span></button>
+  </div>
+
+  <div class="progress hidden" id="progress"><div id="progress-fill" class="progress-fill"></div></div>
+
+  <div class="statusbar">
+    <span id="status"></span>
+    <a href="/" target="_top" data-i18n="copyright"></a>
+  </div>
+</div>
+
+<script src="../assets/i18n.js"></script>
+<script src="../assets/account.js"></script>
+<script src="../assets/settings.js"></script>
+<script type="module" src="script.js"></script>
+</body>
+</html>

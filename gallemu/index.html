@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+<meta name="theme-color" content="#111115">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="layout.css">
+<script src="../assets/theme.js"></script>
+</head>
+<body>
+
+<div id="gallery-app" class="gallery-app">
+  <div class="header">
+    <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
+    <div class="header-tools">
+      <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <label class="searchbox">
+      <span class="icon icon-search"></span>
+      <input id="gallery-search" type="search" data-i18n-placeholder="search" data-i18n-label="search.label">
+    </label>
+    <select id="album-select" data-i18n-label="album.label"></select>
+    <select id="sort-order" data-i18n-label="sort.label">
+      <option value="name-asc" data-i18n="sort.nameAsc"></option>
+      <option value="name-desc" data-i18n="sort.nameDesc"></option>
+      <option value="size-asc" data-i18n="sort.sizeAsc"></option>
+      <option value="size-desc" data-i18n="sort.sizeDesc"></option>
+    </select>
+    <button id="refresh-button" class="square" type="button" data-i18n-title="refresh" data-i18n-label="refresh"><span class="icon icon-refresh"></span></button>
+  </div>
+
+  <div id="gallery" class="gallery">
+    <div id="gallery-grid" class="gallery-grid hidden"></div>
+    <div id="empty-state" class="empty-state hidden">
+      <div class="empty-illustration"><span class="icon icon-image"></span></div>
+      <span id="empty-title" class="empty-title"></span>
+      <span id="empty-text" class="empty-text"></span>
+      <button id="empty-action-button" class="primary hidden" type="button"><span class="icon icon-user"></span><span data-i18n="login.signIn"></span></button>
+    </div>
+  </div>
+
+  <div class="statusbar">
+    <span id="status"></span>
+    <a href="/" target="_top" data-i18n="copyright"></a>
+  </div>
+</div>
+
+<dialog id="viewer-dialog" class="viewer-dialog">
+  <div class="viewer-bar">
+    <span id="viewer-name" class="viewer-name"></span>
+    <span id="viewer-counter" class="viewer-counter"></span>
+    <button id="viewer-download-button" class="square" type="button" data-i18n-title="viewer.download" data-i18n-label="viewer.download"><span class="icon icon-download"></span></button>
+    <button id="viewer-close-button" class="square" type="button" data-i18n-title="close" data-i18n-label="close"><span class="icon icon-close"></span></button>
+  </div>
+  <div class="viewer-stage">
+    <div id="viewer-image" class="viewer-image" role="img"></div>
+    <video id="viewer-video" class="viewer-video hidden" controls></video>
+    <span id="viewer-message" class="viewer-message hidden"></span>
+    <button id="viewer-previous-button" class="square viewer-previous" type="button" data-i18n-title="viewer.previous" data-i18n-label="viewer.previous"><span class="icon icon-chevron-left"></span></button>
+    <button id="viewer-next-button" class="square viewer-next" type="button" data-i18n-title="viewer.next" data-i18n-label="viewer.next"><span class="icon icon-chevron-right"></span></button>
+  </div>
+</dialog>
+
+<script src="../assets/i18n.js"></script>
+<script src="../assets/dialog.js"></script>
+<script src="../assets/autocomplete.js"></script>
+<script src="../assets/account.js"></script>
+<script src="../assets/storage.js"></script>
+<script type="module" src="script.js"></script>
+</body>
+</html>

@@ -56,6 +56,7 @@
     --icon-size-medium: 1.2rem;
     --icon-size-large: 1.6rem;       /* the mark of a logo */
     --icon-size-extra-large: 3.2rem; /* the icon of a project, a big icon */
+    --sidebar-width: 16rem;          /* the width of the sidebar of every web (a web whose sidebar can be dragged starts from it) */
     --font-size-extra-small: 0.6rem; /* labels, hints, tags */
     --font-size-small: 0.8rem;       /* the text of the page */
     --font-size-medium: 1rem;
@@ -229,8 +230,31 @@ dialog,
 input[type="checkbox"],
 input[type="radio"],
 input[type="range"],
-input[type="file"],
+input[type="file"] {
+    border-radius: 0;
+}
+
+/* A colour input is rounded like the other inputs, as wide as it is high, and its colour fills the whole box, with no gap around it. */
 input[type="color"] {
+    width: var(--height);
+    padding: 0;
+    border: var(--border-width) solid var(--fg-1);
+    border-radius: var(--border-radius-medium);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+    border: 0;
+    border-radius: 0;
+}
+
+input[type="color"]::-moz-color-swatch {
+    border: 0;
     border-radius: 0;
 }
 
@@ -248,6 +272,7 @@ select, input {
 select {
     appearance: none;
     cursor: pointer;
+    padding-inline-end: calc(var(--padding-medium) + var(--icon-size-small) + var(--gap-small));   /* room for the arrow, so a select as wide as its text does not put the text under it */
     background-image: url("icons/chevron-down-white.svg");
     background-size: 1rem;
     background-repeat: no-repeat;
@@ -296,7 +321,7 @@ button:hover:not(:disabled, .active, .on, .invert, .primary, .danger) {
 
 /* The account web is shown in this dialog (assets/account.js). */
 dialog.account-dialog {
-    width: min(32rem, calc(100vw - 2.4rem));
+    width: min(56rem, calc(100vw - 2.4rem));
     padding: 0;
     overflow: hidden;
     background: var(--bg);
@@ -310,8 +335,7 @@ dialog.account-dialog {
     & > iframe {
         display: block;
         width: 100%;
-        height: 20rem;
-        max-height: calc(100vh - 3.2rem);
+        height: min(40rem, calc(100vh - 3.2rem));
         border: 0;
         background: var(--bg);
     }

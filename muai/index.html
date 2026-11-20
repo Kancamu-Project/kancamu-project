@@ -17,7 +17,6 @@
   <div class="brand-row">
     <div class="logo"><div class="logo-mark"></div><div class="logo-name" data-i18n-html="logo"></div></div>
     <div class="brand-tools">
-      <button id="settings-button" class="ghost square" type="button" data-i18n-title="settings" data-i18n-label="settings"><span class="icon icon-sliders"></span></button>
       <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
     </div>
   </div>
@@ -65,70 +64,11 @@
   </div>
 </div>
 
-<dialog id="settings-dialog">
-  <form method="dialog" id="settings-form">
-    <h2 data-i18n="settings"></h2>
-    <div class="fields">
-      <div class="field">
-        <span class="field-label" data-i18n="set.language"></span>
-        <select class="language" data-i18n-label="set.language"></select>
-      </div>
-      <div class="field">
-        <span class="field-label" data-i18n="set.theme"></span>
-        <div class="segmented-control">
-          <button id="theme-dark-button" type="button"><span class="icon icon-moon"></span><span data-i18n="theme.dark"></span></button>
-          <button id="theme-light-button" type="button"><span class="icon icon-sun"></span><span data-i18n="theme.light"></span></button>
-        </div>
-      </div>
-      <div class="field">
-        <span class="field-label">WebGPU</span>
-        <span id="gpu-status" class="status"></span>
-      </div>
-    </div>
-    <label>
-      <span class="field-label" data-i18n="set.system.label"></span>
-      <span class="field-hint" data-i18n="set.system.hint"></span>
-      <textarea id="setting-system-prompt"></textarea>
-    </label>
-    <div class="fields">
-    <label>
-      <span class="field-label" data-i18n="set.max.label"></span>
-      <span class="field-hint" data-i18n="set.max.hint"></span>
-      <input id="setting-max-tokens" type="number" min="64" max="4096" step="64">
-    </label>
-    <label>
-      <span class="field-label"><span data-i18n="set.temp.label"></span>: <span id="temperature-value"></span></span>
-      <span class="field-hint" data-i18n="set.temp.hint"></span>
-      <input id="setting-temperature" type="range" min="0" max="1.5" step="0.1">
-    </label>
-    <label>
-      <span class="field-label" data-i18n="set.ctx.label"></span>
-      <span class="field-hint" data-i18n="set.ctx.hint"></span>
-      <input id="setting-context" type="number" min="2" max="60" step="2">
-    </label>
-    </div>
-    <div class="data-section">
-      <span class="field-label" data-i18n="set.data.label"></span>
-      <span class="field-hint" data-i18n="set.data.hint"></span>
-      <div class="button-row-start">
-        <button id="export-all-button" type="button"><span class="icon icon-download"></span><span data-i18n="data.exportAll"></span></button>
-        <button id="import-button" type="button"><span class="icon icon-upload"></span><span data-i18n="data.import"></span></button>
-        <button id="clear-all-button" class="danger" type="button"><span class="icon icon-trash"></span><span data-i18n="data.deleteAll"></span></button>
-        <input type="file" id="import-file-input" accept="application/json" hidden>
-      </div>
-    </div>
-    <div class="button-row">
-      <button type="button" id="reset-settings-button"><span class="icon icon-refresh"></span><span data-i18n="reset"></span></button>
-      <button type="button" id="cancel-settings-button"><span data-i18n="cancel"></span></button>
-      <button type="submit" class="primary" value="save"><span data-i18n="save"></span></button>
-    </div>
-  </form>
-</dialog>
-
 <script src="../assets/i18n.js"></script>
 <script src="../assets/dialog.js"></script>
 <script src="../assets/autocomplete.js"></script>
 <script src="../assets/account.js"></script>
+<script src="../assets/settings.js"></script>
 <script src="../assets/storage.js"></script>
 <script type="module" src="script.js"></script>
 </body>

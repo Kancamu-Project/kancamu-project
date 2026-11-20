@@ -3,8 +3,7 @@
 'use strict';
 
 // The size limits, the default folders, and the file types are in data.json (drive, fileTypes, thumbnailExtensions, mimeTypes); init() fills these in.
-let STORAGE_LIMIT_KB, DEFAULT_FOLDERS, MAX_FILE, THUMB_MAX, TYPES, ICON_OF, THUMB_EXT, MIME;
-const KEEP = '.gitkeep';              // keeps an empty folder alive
+let STORAGE_LIMIT_KB, DEFAULT_FOLDERS, KEEP, MAX_FILE, THUMB_MAX, TYPES, ICON_OF, THUMB_EXT, MIME;   // KEEP: the file that keeps an empty folder alive
 
 const $ = (id) => document.getElementById(id);
 const tr = (key, params) => i18n.t(key, params);
@@ -162,26 +161,6 @@ account.onChange(async (acc) => {
 function showApp() {
   S.path = []; S.query = ''; $('file-search').value = ''; S.selected.clear(); load();
 }
-// Reset: every file and folder is deleted, and the default folders are made again, in one commit.
-async function resetDrive() {
-  if (!(await ask({ title: tr('reset.title'), text: tr('reset.text'), ok: tr('reset') }))) return;
-  $('settings').close();
-  const t = toast(tr('reset.doing'), false, 0);
-  try {
-    const ref = await repoApi(`/git/ref/heads/${S.branch}`);
-    const commit = await repoApi(`/git/commits/${ref.object.sha}`);
-    const tree = await repoApi(`/git/trees/${commit.tree.sha}?recursive=1`);
-    const empty = await repoApi('/git/blobs', { method: 'POST', body: JSON.stringify({ content: '', encoding: 'utf-8' }) });
-    const entries = tree.tree.filter((i) => i.type === 'blob' && i.path !== KEEP).map((i) => ({ path: i.path, mode: i.mode, type: 'blob', sha: null }));
-    entries.push(...DEFAULT_FOLDERS.map((name) => ({ path: `${name}/${KEEP}`, mode: '100644', type: 'blob', sha: empty.sha })));
-    await commitTree(entries, 'Drivemu: reset');
-    toast(tr('reset.done'));
-  } catch (e) { toast(tr('failed', { message: e.message }), true, 6000); }
-  t.remove();
-  S.path = []; S.query = ''; $('file-search').value = '';
-  load(); refreshUsage();
-}
-
 // Not signed in: the files page is shown as it is, empty, with an invitation to sign in.
 function showSignedOut(err = '') {
   S.path = []; S.query = ''; $('file-search').value = ''; S.selected.clear(); S.items = []; S.head = null;
@@ -190,58 +169,12 @@ function showSignedOut(err = '') {
   if (err) toast(err, true, 6000);
 }
 
-/* --- settings: appearance, profile, token, repository --- */
-const row = (k, v) => {
-  const r = h('div', 'settings-row'), val = h('span', 'settings-value');
-  if (v instanceof Node) val.append(v); else val.textContent = v;
-  r.append(h('span', 'settings-key', k), val);
-  return r;
-};
-const section = (title, ...kids) => { const s = h('section', 'settings-section'); s.append(h('h4', '', title), ...kids); return s; };
-
-async function openSettings() {
-  const d = $('settings'), body = $('settings-content');
-  body.replaceChildren(h('div', 'spinner'));
-  if (!d.open) d.showModal();
-  if (S.user) try { // fresh data; if that fails, keep what we have
-    const info = await repoApi('');
-    S.repoSizeKB = info.size; S.repoPrivate = info.private;
-  } catch { /* ignore */ }
-
-  const add = (rows, k, v) => { if (v !== null && v !== undefined && v !== '') rows.append(row(k, v)); };
-
-  // storage
-  const rr = h('div', 'settings-rows');
-  add(rr, tr('usage.title'), tr('usage.value', usageInfo().params));
-  const resetBtn = h('button', 'button danger'); resetBtn.type = 'button';
-  resetBtn.append(icon('refresh'), h('span', '', tr('reset')));
-  resetBtn.onclick = resetDrive;
-
-  // appearance: language and theme, shared with every other web
-  const lang = h('select', 'language'); lang.setAttribute('aria-label', tr('language'));
-  const themes = h('div', 'segmented-control'); themes.setAttribute('role', 'group'); themes.setAttribute('aria-label', tr('theme'));
-  for (const [name, ico] of [['dark', 'moon'], ['light', 'sun']]) {
-    const b = h('button'); b.type = 'button'; b.dataset.theme = name; b.title = tr('theme.' + name);
-    b.setAttribute('aria-label', tr('theme.' + name)); b.append(icon(ico));
-    b.onclick = () => { try { localStorage.setItem('theme', name); } catch { /* ignore */ } document.documentElement.dataset.theme = name; markTheme(); };
-    themes.append(b);
-  }
-  const look = h('div', 'settings-rows'); look.append(row(tr('language'), lang), row(tr('theme'), themes));
-
-  body.replaceChildren(...[
-    section(tr('set.appearance'), look),
-    S.user && section(tr('set.storage'), rr),
-    S.user && section(tr('reset.title'), h('p', 'hint', tr('reset.hint')), resetBtn),
-  ].filter(Boolean));
-  i18n.selects();
-  markTheme();
-}
-
-// Shows which theme is active in the settings (also when another web changed it).
-function markTheme() {
-  document.querySelectorAll('#settings-content .segmented-control button').forEach((b) => b.classList.toggle('on', b.dataset.theme === document.documentElement.dataset.theme));
-}
-window.addEventListener('storage', (e) => { if (e.key === 'theme' || e.key === null) markTheme(); });
+/* --- settings: set in the account web; the reset it does shows here --- */
+settings.listen('drivemu', (message) => {
+  if (message.type !== 'reset') return;
+  S.head = message.head; S.path = []; S.query = ''; $('file-search').value = '';
+  load(); refreshUsage();
+});
 
 /* ---------- file list ---------- */
 async function load() {
@@ -484,7 +417,7 @@ async function previewFile(it) {
   $('preview-download-button').onclick = () => download(it);
   const dlg = $('preview'); if (!dlg.open) dlg.showModal();
   try {
-    if (!['image', 'video', 'audio', 'pdf', 'text'].includes(k)) { body.replaceChildren(h('p', 'muted', tr('preview.none'))); return; }
+    if (!['image', 'video', 'audio', 'pdf', 'text'].includes(k)) { body.replaceChildren(h('span', 'muted', tr('preview.none'))); return; }
     const blob = await fetchBlob(it);
     if (!dlg.open) return;
     if (pvUrl) URL.revokeObjectURL(pvUrl);
@@ -495,7 +428,7 @@ async function previewFile(it) {
     const el = document.createElement(tag); el.src = pvUrl;
     if (k === 'video' || k === 'audio') el.controls = true;
     body.appendChild(el);
-  } catch (e) { body.replaceChildren(h('p', 'error', tr('preview.failed', { message: e.message }))); }
+  } catch (e) { body.replaceChildren(h('span', 'error', tr('preview.failed', { message: e.message }))); }
 }
 
 const readB64 = (file) => new Promise((res, rej) => {
@@ -619,8 +552,6 @@ $('new-menu').onclick = (e) => {
 
 /* ---------- events ---------- */
 document.querySelectorAll('[data-act=account]').forEach((b) => account.bind(b));
-document.querySelectorAll('[data-act=settings]').forEach((b) => { b.onclick = openSettings; });
-$('settings-close-button').onclick = () => $('settings').close();
 $('file-input').onchange = (e) => { upload(e.target.files); e.target.value = ''; };
 $('folder-input').onchange = (e) => { upload(e.target.files); e.target.value = ''; };
 $('refresh-button').onclick = () => { S.head = null; load(); refreshUsage(); }; // read the files again (changes made elsewhere)
@@ -672,7 +603,6 @@ async function collectDropped(dt) {
 /* ---------- language ---------- */
 function refreshLanguage() {
   render();
-  if ($('settings').open) openSettings();
 }
 
 /* ---------- start ---------- */
@@ -681,6 +611,7 @@ function refreshLanguage() {
   const { drive, fileTypes, thumbnailExtensions, mimeTypes } = i18n.data;
   STORAGE_LIMIT_KB = drive.storageLimitGB * 1024 * 1024;
   DEFAULT_FOLDERS = drive.defaultFolders;
+  KEEP = drive.keepFile;
   MAX_FILE = drive.maxFileMB * 1024 * 1024;
   THUMB_MAX = drive.thumbnailMaxMB * 1024 * 1024;
   TYPES = Object.fromEntries(Object.entries(fileTypes).filter(([, type]) => type.extensions.length).map(([kind, type]) => [kind, type.extensions]));

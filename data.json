@@ -1,432 +1,622 @@
 {
-    "name": {
+  "name": {
+    "en-US": "{brand}"
+  },
+  "home": "kancamu",
+  "languages": [
+    {
+      "code": "en-US",
+      "name": "English",
+      "dir": "ltr"
+    },
+    {
+      "code": "zh-CN",
+      "name": "简体中文",
+      "dir": "ltr"
+    },
+    {
+      "code": "ar-SA",
+      "name": "العربية",
+      "dir": "rtl"
+    }
+  ],
+  "ui": {
+    "copyright": {
+      "en-US": "© {brand}",
+      "zh-CN": "© {brand}",
+      "ar-SA": "© {brand}"
+    },
+    "reset": {
+      "en-US": "Reset",
+      "zh-CN": "重置",
+      "ar-SA": "إعادة تعيين"
+    },
+    "sortAsc": {
+      "en-US": "Name (A-Z)",
+      "zh-CN": "名称 (A-Z)",
+      "ar-SA": "الاسم (أ-ي)"
+    },
+    "sortDesc": {
+      "en-US": "Name (Z-A)",
+      "zh-CN": "名称 (Z-A)",
+      "ar-SA": "الاسم (ي-أ)"
+    },
+    "search": {
+      "en-US": "Search projects",
+      "zh-CN": "搜索项目",
+      "ar-SA": "ابحث عن مشروع"
+    },
+    "grid": {
+      "en-US": "Grid",
+      "zh-CN": "网格",
+      "ar-SA": "شبكة"
+    },
+    "list": {
+      "en-US": "List",
+      "zh-CN": "列表",
+      "ar-SA": "قائمة"
+    },
+    "theme": {
+      "en-US": "Toggle theme",
+      "zh-CN": "切换主题",
+      "ar-SA": "تبديل المظهر"
+    },
+    "language": {
+      "en-US": "Language",
+      "zh-CN": "语言",
+      "ar-SA": "اللغة"
+    },
+    "all": {
+      "en-US": "All",
+      "zh-CN": "全部",
+      "ar-SA": "الكل"
+    },
+    "project": {
+      "en-US": "Project",
+      "zh-CN": "项目",
+      "ar-SA": "المشروع"
+    },
+    "category": {
+      "en-US": "Category",
+      "zh-CN": "分类",
+      "ar-SA": "الفئة"
+    },
+    "publisher": {
+      "en-US": "Publisher",
+      "zh-CN": "发布者",
+      "ar-SA": "الناشر"
+    },
+    "allPublishers": {
+      "en-US": "All publishers",
+      "zh-CN": "所有发布者",
+      "ar-SA": "جميع الناشرين"
+    },
+    "open": {
+      "en-US": "Open",
+      "zh-CN": "打开",
+      "ar-SA": "فتح"
+    },
+    "close": {
+      "en-US": "Close tab",
+      "zh-CN": "关闭标签页",
+      "ar-SA": "إغلاق التبويب"
+    },
+    "more": {
+      "en-US": "More",
+      "zh-CN": "更多",
+      "ar-SA": "المزيد"
+    },
+    "copyLink": {
+      "en-US": "Copy link",
+      "zh-CN": "复制链接",
+      "ar-SA": "نسخ الرابط"
+    },
+    "copied": {
+      "en-US": "Copied",
+      "zh-CN": "已复制",
+      "ar-SA": "تم النسخ"
+    },
+    "copyFailed": {
+      "en-US": "Failed to copy",
+      "zh-CN": "复制失败",
+      "ar-SA": "فشل النسخ"
+    },
+    "openNew": {
+      "en-US": "Open in new window",
+      "zh-CN": "在新窗口打开",
+      "ar-SA": "فتح في نافذة جديدة"
+    },
+    "empty": {
+      "en-US": "No projects found.",
+      "zh-CN": "未找到项目。",
+      "ar-SA": "لم يتم العثور على مشاريع."
+    },
+    "errorLoad": {
+      "en-US": "Failed to load data.json",
+      "zh-CN": "无法加载 data.json",
+      "ar-SA": "تعذر تحميل data.json"
+    },
+    "account": {
+      "en-US": "Account",
+      "zh-CN": "账户",
+      "ar-SA": "الحساب"
+    }
+  },
+  "categories": {
+    "ai": {
+      "en-US": "AI",
+      "zh-CN": "人工智能",
+      "ar-SA": "الذكاء الاصطناعي"
+    },
+    "tools": {
+      "en-US": "Tools",
+      "zh-CN": "工具",
+      "ar-SA": "الأدوات"
+    },
+    "productivity": {
+      "en-US": "Productivity",
+      "zh-CN": "效率",
+      "ar-SA": "الإنتاجية"
+    },
+    "system": {
+      "en-US": "System",
+      "zh-CN": "系统",
+      "ar-SA": "النظام"
+    },
+    "office": {
+      "en-US": "Office",
+      "zh-CN": "办公",
+      "ar-SA": "المكتب"
+    },
+    "design": {
+      "en-US": "Design",
+      "zh-CN": "设计",
+      "ar-SA": "التصميم"
+    },
+    "video": {
+      "en-US": "Video",
+      "zh-CN": "视频",
+      "ar-SA": "الفيديو"
+    },
+    "creative": {
+      "en-US": "Creative",
+      "zh-CN": "创意",
+      "ar-SA": "إبداعي"
+    },
+    "directory": {
+      "en-US": "Directory",
+      "zh-CN": "目录",
+      "ar-SA": "الدليل"
+    },
+    "storage": {
+      "en-US": "Storage",
+      "zh-CN": "存储",
+      "ar-SA": "التخزين"
+    },
+    "official": {
+      "en-US": "Official",
+      "zh-CN": "官方",
+      "ar-SA": "رسمي"
+    },
+    "mobile": {
+      "en-US": "Mobile",
+      "zh-CN": "移动端",
+      "ar-SA": "للجوال"
+    }
+  },
+  "projects": [
+    {
+      "id": "muos",
+      "name": {
+        "en-US": "{highlight}OS"
+      },
+      "description": {
+        "en-US": "Web-Based Operating System.",
+        "zh-CN": "基于网页的操作系统。",
+        "ar-SA": "نظام تشغيل قائم على الويب."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "muos/",
+      "icon": "muos/favicon.png",
+      "color": "blue",
+      "categories": [
+        "official",
+        "system",
+        "tools"
+      ]
+    },
+    {
+      "id": "drivemu",
+      "name": {
+        "en-US": "Drive{highlight}"
+      },
+      "description": {
+        "en-US": "Simple file storage for everyone.",
+        "zh-CN": "人人可用的简单文件存储。",
+        "ar-SA": "تخزين ملفات بسيط للجميع."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "drivemu/",
+      "icon": "drivemu/favicon.png",
+      "color": "yellow",
+      "categories": [
+        "official",
+        "mobile",
+        "storage",
+        "tools"
+      ]
+    },
+    {
+      "id": "gallemu",
+      "name": {
+        "en-US": "Galle{highlight}"
+      },
+      "description": {
+        "en-US": "Your photos and videos, in one gallery.",
+        "zh-CN": "你的照片和视频，集中在一个图库里。",
+        "ar-SA": "صورك ومقاطع الفيديو الخاصة بك في معرض واحد."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "gallemu/",
+      "icon": "gallemu/favicon.png",
+      "color": "#1782db",
+      "categories": [
+        "official",
+        "mobile",
+        "creative",
+        "storage"
+      ]
+    },
+    {
+      "id": "spotimu",
+      "name": {
+        "en-US": "Spoti{highlight}"
+      },
+      "description": {
+        "en-US": "Your music, played from your own Drive.",
+        "zh-CN": "播放你自己云盘里的音乐。",
+        "ar-SA": "استمع إلى موسيقاك من مساحتك الخاصة."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "spotimu/",
+      "icon": "spotimu/favicon.png",
+      "color": "#1cc93d",
+      "categories": [
+        "official",
+        "mobile",
+        "creative",
+        "storage"
+      ]
+    },
+    {
+      "id": "murmbg",
+      "name": {
+        "en-US": "{highlight}RMBG"
+      },
+      "description": {
+        "en-US": "Remove the background of an image or a video, right in your browser.",
+        "zh-CN": "直接在浏览器中移除图片或视频背景。",
+        "ar-SA": "أزل خلفية صورة أو فيديو مباشرة في متصفحك."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "murmbg/",
+      "icon": "murmbg/favicon.png",
+      "color": "#ef2142",
+      "categories": [
+        "official",
+        "mobile",
+        "creative",
+        "design"
+      ]
+    },
+    {
+      "id": "transmu",
+      "name": {
+        "en-US": "Trans{highlight}"
+      },
+      "description": {
+        "en-US": "Translate text with AI, right in your browser.",
+        "zh-CN": "直接在浏览器中用 AI 翻译文字。",
+        "ar-SA": "ترجم النصوص بالذكاء الاصطناعي مباشرة في متصفحك."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "transmu/",
+      "icon": "transmu/favicon.png",
+      "color": "#ef2142",
+      "categories": [
+        "official",
+        "mobile",
+        "creative",
+        "design"
+      ]
+    },
+    {
+      "id": "account",
+      "name": {
+        "en-US": "Account{highlight}"
+      },
+      "description": {
+        "en-US": "Your sign-in, your profile, and the settings of every web.",
+        "zh-CN": "你的登录、个人资料，以及每个网站的设置。",
+        "ar-SA": "تسجيل دخولك وملفك الشخصي وإعدادات كل المواقع."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "accountmu/",
+      "icon": "accountmu/favicon.png",
+      "color": "#1cc93d",
+      "categories": [
+        "official",
+        "mobile",
+        "tools"
+      ]
+    },
+    {
+      "id": "muai",
+      "name": {
+        "en-US": "{highlight}AI"
+      },
+      "description": {
+        "en-US": "AI models running directly in your browser.",
+        "zh-CN": "直接在浏览器中运行的 AI 模型。",
+        "ar-SA": "نماذج ذكاء اصطناعي تعمل مباشرة في متصفحك."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "muai/",
+      "icon": "muai/favicon.png",
+      "color": "#f89520",
+      "categories": [
+        "official",
+        "mobile",
+        "ai",
+        "tools"
+      ]
+    },
+    {
+      "id": "kancamu",
+      "name": {
         "en-US": "{brand}"
+      },
+      "description": {
+        "en-US": "Directory of apps and tools.",
+        "zh-CN": "应用与工具目录。",
+        "ar-SA": "دليل التطبيقات والأدوات."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "./",
+      "icon": "favicon.png",
+      "color": "blue",
+      "categories": [
+        "official",
+        "mobile",
+        "directory",
+        "tools"
+      ]
     },
-    "home": "kancamu",
-    "languages": [
-        { "code": "en-US", "name": "English", "dir": "ltr" },
-        { "code": "zh-CN", "name": "简体中文", "dir": "ltr" },
-        { "code": "ar-SA", "name": "العربية", "dir": "rtl" }
-    ],
-    "ui": {
-        "copyright": {
-            "en-US": "© {brand}"
-        },
-        "reset": {
-            "en-US": "Reset",
-            "zh-CN": "重置",
-            "ar-SA": "إعادة تعيين"
-        },
-        "sortAsc": {
-            "en-US": "Name (A-Z)",
-            "zh-CN": "名称 (A-Z)",
-            "ar-SA": "الاسم (أ-ي)"
-        },
-        "sortDesc": {
-            "en-US": "Name (Z-A)",
-            "zh-CN": "名称 (Z-A)",
-            "ar-SA": "الاسم (ي-أ)"
-        },
-        "search": {
-            "en-US": "Search projects",
-            "zh-CN": "搜索项目",
-            "ar-SA": "ابحث عن مشروع"
-        },
-        "grid": {
-            "en-US": "Grid",
-            "zh-CN": "网格",
-            "ar-SA": "شبكة"
-        },
-        "list": {
-            "en-US": "List",
-            "zh-CN": "列表",
-            "ar-SA": "قائمة"
-        },
-        "theme": {
-            "en-US": "Toggle theme",
-            "zh-CN": "切换主题",
-            "ar-SA": "تبديل المظهر"
-        },
-        "language": {
-            "en-US": "Language",
-            "zh-CN": "语言",
-            "ar-SA": "اللغة"
-        },
-        "all": {
-            "en-US": "All",
-            "zh-CN": "全部",
-            "ar-SA": "الكل"
-        },
-        "project": {
-            "en-US": "Project",
-            "zh-CN": "项目",
-            "ar-SA": "المشروع"
-        },
-        "category": {
-            "en-US": "Category",
-            "zh-CN": "分类",
-            "ar-SA": "الفئة"
-        },
-        "publisher": {
-            "en-US": "Publisher",
-            "zh-CN": "发布者",
-            "ar-SA": "الناشر"
-        },
-        "allPublishers": {
-            "en-US": "All publishers",
-            "zh-CN": "所有发布者",
-            "ar-SA": "جميع الناشرين"
-        },
-        "open": {
-            "en-US": "Open",
-            "zh-CN": "打开",
-            "ar-SA": "فتح"
-        },
-        "close": {
-            "en-US": "Close tab",
-            "zh-CN": "关闭标签页",
-            "ar-SA": "إغلاق التبويب"
-        },
-        "more": {
-            "en-US": "More",
-            "zh-CN": "更多",
-            "ar-SA": "المزيد"
-        },
-        "copyLink": {
-            "en-US": "Copy link",
-            "zh-CN": "复制链接",
-            "ar-SA": "نسخ الرابط"
-        },
-        "copied": {
-            "en-US": "Copied",
-            "zh-CN": "已复制",
-            "ar-SA": "تم النسخ"
-        },
-        "copyFailed": {
-            "en-US": "Failed to copy",
-            "zh-CN": "复制失败",
-            "ar-SA": "فشل النسخ"
-        },
-        "openNew": {
-            "en-US": "Open in new window",
-            "zh-CN": "在新窗口打开",
-            "ar-SA": "فتح في نافذة جديدة"
-        },
-        "empty": {
-            "en-US": "No projects found.",
-            "zh-CN": "未找到项目。",
-            "ar-SA": "لم يتم العثور على مشاريع."
-        },
-        "errorLoad": {
-            "en-US": "Failed to load data.json",
-            "zh-CN": "无法加载 data.json",
-            "ar-SA": "تعذر تحميل data.json"
-        },
-        "account": {
-            "en-US": "Account",
-            "zh-CN": "账户",
-            "ar-SA": "الحساب"
-        }
+    {
+      "id": "deckcraft",
+      "name": {
+        "en-US": "DeckCraft"
+      },
+      "description": {
+        "en-US": "Build and deliver dynamic slide presentations, in pure Rust.",
+        "zh-CN": "用纯 Rust 制作并演示动态幻灯片。",
+        "ar-SA": "أنشئ عروضًا تقديمية ديناميكية وقدّمها، بلغة Rust الخالصة."
+      },
+      "highlight": {
+        "en-US": "Craft"
+      },
+      "publisher": "ArtCraft",
+      "url": "artcraft/deckcraft/",
+      "icon": "artcraft/deckcraft/deckcraft-b8fcbb36ecec0385.ico",
+      "color": "#f26b1d",
+      "categories": [
+        "office",
+        "design",
+        "productivity"
+      ]
     },
-    "categories": {
-        "ai": {
-            "en-US": "AI",
-            "zh-CN": "人工智能",
-            "ar-SA": "الذكاء الاصطناعي"
-        },
-        "tools": {
-            "en-US": "Tools",
-            "zh-CN": "工具",
-            "ar-SA": "الأدوات"
-        },
-        "productivity": {
-            "en-US": "Productivity",
-            "zh-CN": "效率",
-            "ar-SA": "الإنتاجية"
-        },
-        "system": {
-            "en-US": "System",
-            "zh-CN": "系统",
-            "ar-SA": "النظام"
-        },
-        "office": {
-            "en-US": "Office",
-            "zh-CN": "办公",
-            "ar-SA": "المكتب"
-        },
-        "design": {
-            "en-US": "Design",
-            "zh-CN": "设计",
-            "ar-SA": "التصميم"
-        },
-        "video": {
-            "en-US": "Video",
-            "zh-CN": "视频",
-            "ar-SA": "الفيديو"
-        },
-        "creative": {
-            "en-US": "Creative",
-            "zh-CN": "创意",
-            "ar-SA": "إبداعي"
-        },
-        "directory": {
-            "en-US": "Directory",
-            "zh-CN": "目录",
-            "ar-SA": "الدليل"
-        },
-        "storage": {
-            "en-US": "Storage",
-            "zh-CN": "存储",
-            "ar-SA": "التخزين"
-        }
+    {
+      "id": "effectcraft",
+      "name": {
+        "en-US": "EffectCraft"
+      },
+      "description": {
+        "en-US": "Open-source motion graphics and visual effects, built in pure Rust.",
+        "zh-CN": "开源的动态图形与视觉特效软件，用纯 Rust 构建。",
+        "ar-SA": "رسوم متحركة ومؤثرات بصرية مفتوحة المصدر، مبنية بلغة Rust الخالصة."
+      },
+      "highlight": {
+        "en-US": "Craft"
+      },
+      "publisher": "ArtCraft",
+      "url": "artcraft/effectcraft/",
+      "icon": "artcraft/effectcraft/icon-256.png",
+      "color": "#e0368f",
+      "categories": [
+        "video",
+        "creative"
+      ]
     },
-    "projects": [
-        {
-            "id": "muos",
-            "name": {
-                "en-US": "{highlight}OS"
-            },
-            "description": {
-                "en-US": "Web-Based Operating System.",
-                "zh-CN": "基于网页的操作系统。",
-                "ar-SA": "نظام تشغيل قائم على الويب."
-            },
-            "highlight": {
-                "en-US": "{highlight}"
-            },
-            "publisher": "{brand}",
-            "url": "muos/",
-            "icon": "muos/favicon.png",
-            "color": "blue",
-            "categories": ["system", "tools"]
-        },
-        {
-            "id": "drivemu",
-            "name": {
-                "en-US": "Drive{highlight}"
-            },
-            "description": {
-                "en-US": "Simple file storage for everyone.",
-                "zh-CN": "人人可用的简单文件存储。",
-                "ar-SA": "تخزين ملفات بسيط للجميع."
-            },
-            "highlight": {
-                "en-US": "{highlight}"
-            },
-            "publisher": "{brand}",
-            "url": "drivemu/",
-            "icon": "drivemu/favicon.png",
-            "color": "yellow",
-            "categories": ["storage", "tools"]
-        },
-        {
-            "id": "muai",
-            "name": {
-                "en-US": "{highlight}AI"
-            },
-            "description": {
-                "en-US": "AI models running directly in your browser.",
-                "zh-CN": "直接在浏览器中运行的 AI 模型。",
-                "ar-SA": "نماذج ذكاء اصطناعي تعمل مباشرة في متصفحك."
-            },
-            "highlight": {
-                "en-US": "{highlight}"
-            },
-            "publisher": "{brand}",
-            "url": "muai/",
-            "icon": "muai/favicon.png",
-            "color": "red",
-            "categories": ["ai", "tools"]
-        },
-        {
-            "id": "kancamu",
-            "name": {
-                "en-US": "{brand}"
-            },
-            "description": {
-                "en-US": "Directory of apps and tools.",
-                "zh-CN": "应用与工具目录。",
-                "ar-SA": "دليل التطبيقات والأدوات."
-            },
-            "highlight": {
-                "en-US": "{highlight}"
-            },
-            "publisher": "{brand}",
-            "url": "./",
-            "icon": "favicon.png",
-            "color": "blue",
-            "categories": ["directory", "tools"]
-        },
-        {
-            "id": "deckcraft",
-            "name": {
-                "en-US": "DeckCraft"
-            },
-            "description": {
-                "en-US": "Build and deliver dynamic slide presentations, in pure Rust.",
-                "zh-CN": "用纯 Rust 制作并演示动态幻灯片。",
-                "ar-SA": "أنشئ عروضًا تقديمية ديناميكية وقدّمها، بلغة Rust الخالصة."
-            },
-            "highlight": {
-                "en-US": "Craft"
-            },
-            "publisher": "ArtCraft",
-            "url": "artcraft/deckcraft/",
-            "icon": "artcraft/deckcraft/deckcraft-b8fcbb36ecec0385.ico",
-            "color": "#f26b1d",
-            "categories": ["office", "design", "productivity"]
-        },
-        {
-            "id": "effectcraft",
-            "name": {
-                "en-US": "EffectCraft"
-            },
-            "description": {
-                "en-US": "Open-source motion graphics and visual effects, built in pure Rust.",
-                "zh-CN": "开源的动态图形与视觉特效软件，用纯 Rust 构建。",
-                "ar-SA": "رسوم متحركة ومؤثرات بصرية مفتوحة المصدر، مبنية بلغة Rust الخالصة."
-            },
-            "highlight": {
-                "en-US": "Craft"
-            },
-            "publisher": "ArtCraft",
-            "url": "artcraft/effectcraft/",
-            "icon": "artcraft/effectcraft/icon-256.png",
-            "color": "#e0368f",
-            "categories": ["video", "creative"]
-        },
-        {
-            "id": "filmcraft",
-            "name": {
-                "en-US": "FilmCraft"
-            },
-            "description": {
-                "en-US": "Professional, open-source video editing, rebuilt from scratch in Rust.",
-                "zh-CN": "专业的开源视频剪辑软件，用 Rust 从零重建。",
-                "ar-SA": "مونتاج فيديو احترافي ومفتوح المصدر، أُعيد بناؤه من الصفر بلغة Rust."
-            },
-            "highlight": {
-                "en-US": "Craft"
-            },
-            "publisher": "ArtCraft",
-            "url": "artcraft/filmcraft/",
-            "icon": "artcraft/filmcraft/favicon.png",
-            "color": "#8b5cf6",
-            "categories": ["video", "creative"]
-        },
-        {
-            "id": "gridcraft",
-            "name": {
-                "en-US": "GridCraft"
-            },
-            "description": {
-                "en-US": "Fast, open-source spreadsheets and data analysis, rebuilt in pure Rust.",
-                "zh-CN": "快速的开源电子表格与数据分析软件，用纯 Rust 重建。",
-                "ar-SA": "جداول بيانات وتحليل بيانات سريعة ومفتوحة المصدر، أُعيد بناؤها بلغة Rust الخالصة."
-            },
-            "highlight": {
-                "en-US": "Craft"
-            },
-            "publisher": "ArtCraft",
-            "url": "artcraft/gridcraft/",
-            "icon": "artcraft/gridcraft/gridcraft-45f84b7721cb79a9.ico",
-            "color": "#1f9d55",
-            "categories": ["office", "productivity"]
-        },
-        {
-            "id": "photocraft",
-            "name": {
-                "en-US": "PhotoCraft"
-            },
-            "description": {
-                "en-US": "The open-source image editor you already know how to use.",
-                "zh-CN": "你早已会用的开源图像编辑器。",
-                "ar-SA": "محرر الصور مفتوح المصدر الذي تعرف بالفعل كيف تستخدمه."
-            },
-            "highlight": {
-                "en-US": "Craft"
-            },
-            "publisher": "ArtCraft",
-            "url": "artcraft/photocraft/",
-            "icon": "artcraft/photocraft/icon-256.png",
-            "color": "#2f7bf5",
-            "categories": ["design", "creative"]
-        },
-        {
-            "id": "vectorcraft",
-            "name": {
-                "en-US": "VectorCraft"
-            },
-            "description": {
-                "en-US": "Fast, open-source vector illustration, reimagined in pure Rust.",
-                "zh-CN": "快速的开源矢量插画软件，用纯 Rust 重新构想。",
-                "ar-SA": "رسم متجه سريع ومفتوح المصدر، أُعيد تصوره بلغة Rust الخالصة."
-            },
-            "highlight": {
-                "en-US": "Craft"
-            },
-            "publisher": "ArtCraft",
-            "url": "artcraft/vectorcraft/",
-            "icon": "artcraft/vectorcraft/icons/256/ai.storyteller.vectorcraft.png",
-            "color": "#e8573f",
-            "categories": ["design", "creative"]
-        },
-        {
-            "id": "wordcraft",
-            "name": {
-                "en-US": "WordCraft"
-            },
-            "description": {
-                "en-US": "Fast, open-source word processing, rebuilt in pure Rust.",
-                "zh-CN": "快速的开源文字处理软件，用纯 Rust 重建。",
-                "ar-SA": "معالجة نصوص سريعة ومفتوحة المصدر، أُعيد بناؤها بلغة Rust الخالصة."
-            },
-            "highlight": {
-                "en-US": "Craft"
-            },
-            "publisher": "ArtCraft",
-            "url": "artcraft/wordcraft/",
-            "icon": "artcraft/wordcraft/wordcraft-fa59e09a3f921e03.ico",
-            "color": "#3b5bdb",
-            "categories": ["office", "productivity"]
-        },
-        {
-            "id": "tracedraw",
-            "name": {
-                "en-US": "TraceDraw"
-            },
-            "description": {
-                "en-US": "Open-source vector editor that opens .cdr files.",
-                "zh-CN": "可打开 .cdr 文件的开源矢量编辑器。",
-                "ar-SA": "محرر متجهات مفتوح المصدر يفتح ملفات .cdr."
-            },
-            "highlight": {
-                "en-US": "Draw"
-            },
-            "publisher": "TraceDraw",
-            "url": "https://tracedraw.github.io/tracedraw/",
-            "icon": "https://tracedraw.github.io/tracedraw/icon-256.png",
-            "color": "#60a5fa",
-            "categories": ["design", "creative"]
-        },
-        {
-            "id": "pdfcraft",
-            "name": {
-                "en-US": "PdfCraft"
-            },
-            "description": {
-                "en-US": "The open-source PDF workbench: read, organize, combine, split and secure.",
-                "zh-CN": "开源 PDF 工作台：阅读、整理、合并、拆分与保护。",
-                "ar-SA": "منصة عمل PDF مفتوحة المصدر: اقرأ ونظّم وادمج وقسّم وأمّن."
-            },
-            "highlight": {
-                "en-US": "Craft"
-            },
-            "publisher": "ArtCraft",
-            "url": "artcraft/pdfcraft/",
-            "icon": "artcraft/pdfcraft/icon-256.png",
-            "color": "#b70228",
-            "categories": ["office", "tools"]
-        }
-    ]
+    {
+      "id": "filmcraft",
+      "name": {
+        "en-US": "FilmCraft"
+      },
+      "description": {
+        "en-US": "Professional, open-source video editing, rebuilt from scratch in Rust.",
+        "zh-CN": "专业的开源视频剪辑软件，用 Rust 从零重建。",
+        "ar-SA": "مونتاج فيديو احترافي ومفتوح المصدر، أُعيد بناؤه من الصفر بلغة Rust."
+      },
+      "highlight": {
+        "en-US": "Craft"
+      },
+      "publisher": "ArtCraft",
+      "url": "artcraft/filmcraft/",
+      "icon": "artcraft/filmcraft/favicon.png",
+      "color": "#8b5cf6",
+      "categories": [
+        "video",
+        "creative"
+      ]
+    },
+    {
+      "id": "gridcraft",
+      "name": {
+        "en-US": "GridCraft"
+      },
+      "description": {
+        "en-US": "Fast, open-source spreadsheets and data analysis, rebuilt in pure Rust.",
+        "zh-CN": "快速的开源电子表格与数据分析软件，用纯 Rust 重建。",
+        "ar-SA": "جداول بيانات وتحليل بيانات سريعة ومفتوحة المصدر، أُعيد بناؤها بلغة Rust الخالصة."
+      },
+      "highlight": {
+        "en-US": "Craft"
+      },
+      "publisher": "ArtCraft",
+      "url": "artcraft/gridcraft/",
+      "icon": "artcraft/gridcraft/gridcraft-45f84b7721cb79a9.ico",
+      "color": "#1f9d55",
+      "categories": [
+        "office",
+        "productivity"
+      ]
+    },
+    {
+      "id": "photocraft",
+      "name": {
+        "en-US": "PhotoCraft"
+      },
+      "description": {
+        "en-US": "The open-source image editor you already know how to use.",
+        "zh-CN": "你早已会用的开源图像编辑器。",
+        "ar-SA": "محرر الصور مفتوح المصدر الذي تعرف بالفعل كيف تستخدمه."
+      },
+      "highlight": {
+        "en-US": "Craft"
+      },
+      "publisher": "ArtCraft",
+      "url": "artcraft/photocraft/",
+      "icon": "artcraft/photocraft/icon-256.png",
+      "color": "#2f7bf5",
+      "categories": [
+        "design",
+        "creative"
+      ]
+    },
+    {
+      "id": "vectorcraft",
+      "name": {
+        "en-US": "VectorCraft"
+      },
+      "description": {
+        "en-US": "Fast, open-source vector illustration, reimagined in pure Rust.",
+        "zh-CN": "快速的开源矢量插画软件，用纯 Rust 重新构想。",
+        "ar-SA": "رسم متجه سريع ومفتوح المصدر، أُعيد تصوره بلغة Rust الخالصة."
+      },
+      "highlight": {
+        "en-US": "Craft"
+      },
+      "publisher": "ArtCraft",
+      "url": "artcraft/vectorcraft/",
+      "icon": "artcraft/vectorcraft/icons/256/ai.storyteller.vectorcraft.png",
+      "color": "#e8573f",
+      "categories": [
+        "design",
+        "creative"
+      ]
+    },
+    {
+      "id": "wordcraft",
+      "name": {
+        "en-US": "WordCraft"
+      },
+      "description": {
+        "en-US": "Fast, open-source word processing, rebuilt in pure Rust.",
+        "zh-CN": "快速的开源文字处理软件，用纯 Rust 重建。",
+        "ar-SA": "معالجة نصوص سريعة ومفتوحة المصدر، أُعيد بناؤها بلغة Rust الخالصة."
+      },
+      "highlight": {
+        "en-US": "Craft"
+      },
+      "publisher": "ArtCraft",
+      "url": "artcraft/wordcraft/",
+      "icon": "artcraft/wordcraft/wordcraft-fa59e09a3f921e03.ico",
+      "color": "#3b5bdb",
+      "categories": [
+        "office",
+        "productivity"
+      ]
+    },
+    {
+      "id": "tracedraw",
+      "name": {
+        "en-US": "TraceDraw"
+      },
+      "description": {
+        "en-US": "Open-source vector editor that opens .cdr files.",
+        "zh-CN": "可打开 .cdr 文件的开源矢量编辑器。",
+        "ar-SA": "محرر متجهات مفتوح المصدر يفتح ملفات .cdr."
+      },
+      "highlight": {
+        "en-US": "Draw"
+      },
+      "publisher": "TraceDraw",
+      "url": "https://tracedraw.github.io/tracedraw/",
+      "icon": "https://tracedraw.github.io/tracedraw/icon-256.png",
+      "color": "#60a5fa",
+      "categories": [
+        "design",
+        "creative"
+      ]
+    },
+    {
+      "id": "pdfcraft",
+      "name": {
+        "en-US": "PdfCraft"
+      },
+      "description": {
+        "en-US": "The open-source PDF workbench: read, organize, combine, split and secure.",
+        "zh-CN": "开源 PDF 工作台：阅读、整理、合并、拆分与保护。",
+        "ar-SA": "منصة عمل PDF مفتوحة المصدر: اقرأ ونظّم وادمج وقسّم وأمّن."
+      },
+      "highlight": {
+        "en-US": "Craft"
+      },
+      "publisher": "ArtCraft",
+      "url": "artcraft/pdfcraft/",
+      "icon": "artcraft/pdfcraft/icon-256.png",
+      "color": "#b70228",
+      "categories": [
+        "office",
+        "tools"
+      ]
+    }
+  ]
 }

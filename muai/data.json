@@ -4,6 +4,7 @@
     "zh-CN": "{highlight}AI — 浏览器中的 AI",
     "ar-SA": "{highlight}AI — الذكاء الاصطناعي في متصفحك"
   },
+  "brandColor": "#f89520",
   "languages": [
     {
       "code": "en-US",
@@ -147,11 +148,6 @@
       "zh-CN": "模型只读取最近 N 条消息。数值越小越快，占用内存越少（2–60）。",
       "ar-SA": "يقرأ النموذج آخر N رسالة فقط. كلما قلّ الرقم زادت السرعة وقلّ استهلاك الذاكرة (2–60)."
     },
-    "set.theme": {
-      "en-US": "Theme",
-      "zh-CN": "主题",
-      "ar-SA": "السمة"
-    },
     "theme.dark": {
       "en-US": "Dark",
       "zh-CN": "深色",
@@ -161,11 +157,6 @@
       "en-US": "Light",
       "zh-CN": "浅色",
       "ar-SA": "فاتحة"
-    },
-    "set.language": {
-      "en-US": "Language",
-      "zh-CN": "语言",
-      "ar-SA": "اللغة"
     },
     "gpu.active": {
       "en-US": "Active",
@@ -207,21 +198,6 @@
       "zh-CN": "全部删除",
       "ar-SA": "حذف الكل"
     },
-    "reset": {
-      "en-US": "Reset",
-      "zh-CN": "重置",
-      "ar-SA": "إعادة ضبط"
-    },
-    "cancel": {
-      "en-US": "Cancel",
-      "zh-CN": "取消",
-      "ar-SA": "إلغاء"
-    },
-    "save": {
-      "en-US": "Save",
-      "zh-CN": "保存",
-      "ar-SA": "حفظ"
-    },
     "toast.storage": {
       "en-US": "Browser storage is unavailable, history will not be saved",
       "zh-CN": "浏览器存储不可用，历史记录将不会保存",
@@ -251,11 +227,6 @@
       "en-US": "{n} chats imported",
       "zh-CN": "已导入 {n} 个对话",
       "ar-SA": "تم استيراد {n} محادثة"
-    },
-    "toast.saved": {
-      "en-US": "Settings saved",
-      "zh-CN": "设置已保存",
-      "ar-SA": "تم حفظ الإعدادات"
     },
     "error.image": {
       "en-US": "Image could not be read",
@@ -436,6 +407,66 @@
       "en-US": "Select a model first",
       "zh-CN": "请先选择模型",
       "ar-SA": "اختر نموذجًا أولًا"
+    },
+    "set.models.label": {
+      "en-US": "Downloaded models",
+      "zh-CN": "已下载的模型",
+      "ar-SA": "النماذج المُنزَّلة"
+    },
+    "set.models.hint": {
+      "en-US": "The model files are kept in this browser. Delete one to free the space; it downloads again when you choose it.",
+      "zh-CN": "模型文件保存在此浏览器中。删除后可释放空间；再次选择时会重新下载。",
+      "ar-SA": "تُحفظ ملفات النماذج في هذا المتصفح. احذف واحدًا لتحرير المساحة؛ سيُنزَّل مجددًا عند اختياره."
+    },
+    "set.models.empty": {
+      "en-US": "No model is downloaded.",
+      "zh-CN": "没有已下载的模型。",
+      "ar-SA": "لا يوجد نموذج مُنزَّل."
+    },
+    "confirm.deleteModel": {
+      "en-US": "Delete the downloaded files of {name} ({size})? It will download again if you choose it later.",
+      "zh-CN": "删除 {name} 的已下载文件（{size}）？以后再选择时会重新下载。",
+      "ar-SA": "حذف الملفات المُنزَّلة لـ {name} ({size})؟ سيُنزَّل مجددًا إذا اخترته لاحقًا."
+    },
+    "toast.modelDeleted": {
+      "en-US": "{name} deleted",
+      "zh-CN": "已删除 {name}",
+      "ar-SA": "تم حذف {name}"
+    },
+    "data.deleted": {
+      "en-US": "All chats deleted.",
+      "zh-CN": "所有对话已删除。",
+      "ar-SA": "تم حذف كل المحادثات."
+    },
+    "set.model.label": {
+      "en-US": "Model",
+      "zh-CN": "模型",
+      "ar-SA": "النموذج"
+    },
+    "set.model.hint": {
+      "en-US": "The model that answers. Choosing one downloads it the first time.",
+      "zh-CN": "负责回答的模型。首次选择时会下载。",
+      "ar-SA": "النموذج الذي يجيب. يُنزَّل عند اختياره أول مرة."
+    },
+    "set.side.label": {
+      "en-US": "Width of the sidebar",
+      "zh-CN": "侧边栏宽度",
+      "ar-SA": "عرض الشريط الجانبي"
+    },
+    "set.side.hint": {
+      "en-US": "In rem (16–40). It can also be dragged in the page.",
+      "zh-CN": "单位为 rem（16–40）。也可以在页面中拖动调整。",
+      "ar-SA": "بوحدة rem (16–40). ويمكن أيضًا سحبه في الصفحة."
+    },
+    "models.delete": {
+      "en-US": "Delete",
+      "zh-CN": "删除",
+      "ar-SA": "حذف"
+    },
+    "set.gpu.label": {
+      "en-US": "WebGPU",
+      "zh-CN": "WebGPU",
+      "ar-SA": "WebGPU"
     }
   },
   "models": [
@@ -464,16 +495,85 @@
       }
     }
   ],
-  "defaults": {
-    "system": "You are muAI, a helpful assistant. Reply in the language the user writes in, concisely and clearly.",
-    "maxTokens": 1024,
-    "temperature": 0.7,
-    "ctx": 30
-  },
-  "sidebarWidth": {
-    "min": 16,
-    "max": 40,
-    "default": 24
+  "settings": {
+    "defaults": {
+      "model": "",
+      "sideWidth": 16,
+      "system": "You are muAI, a helpful assistant. Reply in the language the user writes in, concisely and clearly.",
+      "maxTokens": 1024,
+      "temperature": 0.7,
+      "ctx": 30
+    },
+    "fields": [
+      {
+        "id": "model",
+        "type": "select",
+        "optionsFrom": {
+          "list": "models",
+          "value": "id",
+          "label": "name"
+        },
+        "empty": "model.select",
+        "label": "set.model.label",
+        "hint": "set.model.hint"
+      },
+      {
+        "id": "sideWidth",
+        "type": "number",
+        "min": 16,
+        "max": 40,
+        "step": 0.2,
+        "label": "set.side.label",
+        "hint": "set.side.hint"
+      },
+      {
+        "id": "system",
+        "type": "textarea",
+        "label": "set.system.label",
+        "hint": "set.system.hint"
+      },
+      {
+        "id": "maxTokens",
+        "type": "number",
+        "min": 64,
+        "max": 4096,
+        "step": 64,
+        "label": "set.max.label",
+        "hint": "set.max.hint"
+      },
+      {
+        "id": "temperature",
+        "type": "range",
+        "min": 0,
+        "max": 1.5,
+        "step": 0.1,
+        "label": "set.temp.label",
+        "hint": "set.temp.hint"
+      },
+      {
+        "id": "ctx",
+        "type": "number",
+        "min": 2,
+        "max": 60,
+        "step": 2,
+        "label": "set.ctx.label",
+        "hint": "set.ctx.hint"
+      }
+    ],
+    "panels": [
+      "webgpu",
+      "downloadedModels",
+      "chatData"
+    ],
+    "models": {
+      "cache": "transformers-cache",
+      "repos": [
+        {
+          "list": "models",
+          "key": "id"
+        }
+      ]
+    }
   },
   "defaultDtype": "q4f16"
 }

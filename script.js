@@ -79,6 +79,8 @@ function renderTabs() {
     tabs.replaceChildren(
         ...allTabs().map(findProject).filter(Boolean).map((project) => {
             const tab = createElement("div", "tab");
+            tab.dataset.id = project.id;
+            tab.classList.toggle("home", project.id === state.home);
             tab.style.setProperty("--color", projectColor(project));
             tab.classList.toggle("active", state.active === project.id);
 
@@ -106,9 +108,81 @@ function renderTabs() {
             return tab;
         })
     );
+    const home = tabs.querySelector(".tab.home");
+    tabs.parentElement.style.setProperty("--home-width", `${home ? home.offsetWidth : 0}px`);   // the Kancamu tab is pinned: the fade and the scrolling start after it
     tabs.querySelector(".tab.active")?.scrollIntoView({ block: "nearest", inline: "nearest" });
     updateTabFade();
 }
+
+// A tab is dragged to a new place (the Kancamu tab is not moved, and nothing goes before it). The order is kept in the address.
+// A pointer is used, so it also works by touch. A click that ends a drag is not taken as a click.
+let drag = null, justDragged = false;
+function tabsOf(strip) {
+    return [...strip.children];
+}
+document.getElementById("tabs").addEventListener("pointerdown", (event) => {
+    const tab = event.target.closest(".tab");
+    if (!tab || tab.classList.contains("home") || event.button !== 0 || event.target.closest(".close")) return;
+    const strip = event.currentTarget;
+    tab.style.transform = "";
+    drag = { tab, strip, startX: event.clientX, initialLeft: tab.getBoundingClientRect().left, active: false, pointer: event.pointerId };
+});
+document.addEventListener("pointermove", (event) => {
+    if (!drag || event.pointerId !== drag.pointer) return;
+    const { tab, strip } = drag;
+    const moved = event.clientX - drag.startX;
+    if (!drag.active) {
+        if (Math.abs(moved) < 6) return;
+        drag.active = true;
+        tab.classList.add("dragging");
+        try { tab.setPointerCapture(event.pointerId); } catch { /* ignore */ }
+    }
+    const direction = document.documentElement.dir === "rtl" ? -1 : 1;
+    const naturalLeft = () => {   // where the tab would be without the move that follows the pointer
+        const kept = tab.style.transform;
+        tab.style.transform = "";
+        const left = tab.getBoundingClientRect().left;
+        tab.style.transform = kept;
+        return left;
+    };
+    const place = () => { tab.style.transform = `translateX(${event.clientX - drag.startX - (naturalLeft() - drag.initialLeft)}px)`; };
+    place();
+    // the tab passes the middle of its neighbour: they change places
+    for (let guard = 0; guard < 50; guard++) {
+        const box = tab.getBoundingClientRect();
+        const center = box.left + box.width / 2;
+        const next = tab.nextElementSibling;
+        const previous = tab.previousElementSibling;
+        const nextBox = next?.getBoundingClientRect();
+        const previousBox = previous?.getBoundingClientRect();
+        if (next && direction * (center - (nextBox.left + nextBox.width / 2)) > 0) strip.insertBefore(tab, next.nextElementSibling);
+        else if (previous && !previous.classList.contains("home") && direction * (center - (previousBox.left + previousBox.width / 2)) < 0) strip.insertBefore(tab, previous);
+        else break;
+        place();
+    }
+    // near the edge of the strip, it scrolls
+    const area = strip.getBoundingClientRect();
+    const homeWidth = strip.querySelector(".tab.home")?.offsetWidth || 0;
+    if (event.clientX > area.right - 32) strip.scrollLeft += 12;
+    else if (event.clientX < area.left + homeWidth + 32) strip.scrollLeft -= 12;
+});
+function endDrag(event) {
+    if (!drag || event.pointerId !== drag.pointer) return;
+    const { tab, strip, active } = drag;
+    drag = null;
+    if (!active) return;
+    tab.classList.remove("dragging");
+    tab.style.transform = "";
+    try { tab.releasePointerCapture(event.pointerId); } catch { /* ignore */ }
+    justDragged = true;
+    setTimeout(() => { justDragged = false; }, 0);
+    state.tabs = tabsOf(strip).map((item) => item.dataset.id).filter((id) => id !== state.home);
+    saveFilters();
+    renderTabs();
+}
+document.addEventListener("pointerup", endDrag);
+document.addEventListener("pointercancel", endDrag);
+document.getElementById("tabs").addEventListener("click", (event) => { if (justDragged) { event.stopPropagation(); event.preventDefault(); } }, true);
 
 function syncViewer() {
     const viewer = document.getElementById("viewer");
@@ -282,7 +356,7 @@ function createProjectCard(project) {
     const categories = createElement("div", "project-categories");
     categories.append(
         ...(project.categories || []).map((key) =>
-            createElement("span", "category", categoryLabel(key))
+            categoryTag(key)
         )
     );
 
@@ -308,6 +382,13 @@ function createNameElement(name, highlight) {
         name.slice(index + highlight.length)
     );
     return element;
+}
+
+// A category as a tag. The key is on the element, so the style can tell a category from another (Official has a yellow border).
+function categoryTag(key) {
+    const tag = createElement("span", "category", categoryLabel(key));
+    tag.dataset.category = key;
+    return tag;
 }
 
 function categoryLabel(key) {
@@ -342,6 +423,7 @@ function renderCategoryFilter() {
                 key === state.category ? "active" : "",
                 key === "all" ? t("all") : categoryLabel(key)
             );
+            button.dataset.category = key;
             button.addEventListener("click", () => {
                 state.category = key;
                 saveFilters();

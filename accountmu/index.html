@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+<meta name="theme-color" content="#111115">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="layout.css">
+<script src="../assets/theme.js"></script>
+</head>
+<body>
+<div id="page">
+  <div class="side">
+    <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
+    <div class="side-nav" role="tablist">
+      <button id="account-tab" class="side-item" type="button" role="tab"><span class="icon icon-user"></span><span data-i18n="account"></span></button>
+      <span class="side-title" data-i18n="settings"></span>
+      <div id="side-apps" class="side-apps"></div>
+    </div>
+    <a class="copyright" href="/" target="_top" data-i18n="copyright"></a>
+  </div>
+
+  <div class="main">
+    <div class="main-bar">
+      <select class="language" data-i18n-label="language"></select>
+      <button id="theme-button" class="square" type="button" data-i18n-title="theme" data-i18n-label="theme"><span class="icon icon-sun"></span></button>
+      <button id="close-button" class="square" type="button" hidden data-i18n-title="close" data-i18n-label="close"><span class="icon icon-close"></span></button>
+    </div>
+
+    <div class="content">
+      <form id="token-form" autocomplete="off">
+        <span class="hint" data-i18n="hint"></span>
+        <input id="token-input" type="password" autocomplete="off" spellcheck="false" data-i18n-placeholder="token" data-i18n-label="token">
+        <span id="token-error" class="token-error-message" role="alert"></span>
+        <div class="form-actions">
+          <button id="create-token-button" type="button"><span class="icon icon-external"></span><span data-i18n="create"></span></button>
+          <button type="submit" class="primary"><span data-i18n="signIn"></span></button>
+        </div>
+      </form>
+
+      <div id="account-profile">
+        <div class="account-owner">
+          <div class="account-avatar"></div>
+          <div class="account-names selectable">
+            <span class="account-name"></span>
+            <span class="account-login"></span>
+          </div>
+        </div>
+        <span class="account-bio"></span>
+        <div id="account-details" class="selectable"></div>
+        <span class="hint" data-i18n="signedIn"></span>
+        <button id="sign-out-button" class="danger" type="button"><span class="icon icon-logout"></span><span data-i18n="signOut"></span></button>
+      </div>
+
+      <div id="settings-page"></div>
+    </div>
+
+  </div>
+</div>
+<script src="../assets/i18n.js"></script>
+<script src="../assets/dialog.js"></script>
+<script src="../assets/account.js"></script>
+<script src="../assets/storage.js"></script>
+<script src="../assets/settings.js"></script>
+<script type="module" src="script.js"></script>
+</body>
+</html>
