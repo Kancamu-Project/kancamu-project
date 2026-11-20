@@ -420,6 +420,16 @@ button {
                 color: var(--on-color);
             }
         }
+
+        &[data-category="education"] {
+            border-color: var(--green);
+            color: var(--green);
+
+            &.active {
+                background: var(--green);
+                color: var(--on-color);
+            }
+        }
     }
 }
 
@@ -618,7 +628,12 @@ button {
                 color: var(--blue);
             }
 
-            /* The category that is filtered: filled, like its button in the filter (Official yellow, Mobile blue) */
+            &[data-category="education"] {
+                border-color: var(--green);
+                color: var(--green);
+            }
+
+            /* The category that is filtered: filled, like its button in the filter (Official yellow, Mobile blue, Education green) */
             &.active {
                 background: var(--fg);
                 border-color: var(--fg);
@@ -634,6 +649,12 @@ button {
             &.active[data-category="mobile"] {
                 background: var(--blue);
                 border-color: var(--blue);
+                color: var(--on-color);
+            }
+
+            &.active[data-category="education"] {
+                background: var(--green);
+                border-color: var(--green);
                 color: var(--on-color);
             }
         }

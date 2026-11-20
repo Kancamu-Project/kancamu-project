@@ -202,6 +202,11 @@
       "en-US": "Mobile",
       "zh-CN": "移动端",
       "ar-SA": "للجوال"
+    },
+    "education": {
+      "en-US": "Education",
+      "zh-CN": "教育",
+      "ar-SA": "التعليم"
     }
   },
   "projects": [
@@ -298,6 +303,29 @@
         "mobile",
         "creative",
         "storage"
+      ]
+    },
+    {
+      "id": "lingomu",
+      "name": {
+        "en-US": "Lingo{highlight}"
+      },
+      "description": {
+        "en-US": "Learn a language with short lessons, a little every day.",
+        "zh-CN": "用简短的课程学习语言，每天一点点。",
+        "ar-SA": "تعلّم لغة بدروس قصيرة، قليلا كل يوم."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "lingomu/",
+      "icon": "lingomu/favicon.png",
+      "color": "#1cc93d",
+      "categories": [
+        "official",
+        "mobile",
+        "education"
       ]
     },
     {

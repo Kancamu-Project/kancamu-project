@@ -1,0 +1,129 @@
+/* Lingomu: lessons that teach a language, a few words at a time. */
+.hidden { display: none !important; }
+.error { color: var(--danger); }
+
+/* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
+.icon {
+  width: var(--icon-size-small); height: var(--icon-size-small); flex: none; background: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
+}
+.icon-user { --icon: url("../assets/icons/user.svg"); }
+.icon-zap { --icon: url("../assets/icons/zap.svg"); }
+.icon-star { --icon: url("../assets/icons/star.svg"); }
+.icon-heart { --icon: url("../assets/icons/heart.svg"); }
+.icon-close { --icon: url("../assets/icons/close.svg"); }
+.icon-check { --icon: url("../assets/icons/check.svg"); }
+.icon-lock { --icon: url("../assets/icons/lock.svg"); }
+.icon-play { --icon: url("../assets/icons/play.svg"); }
+.icon-volume { --icon: url("../assets/icons/volume.svg"); }
+
+/* Buttons */
+button {
+  display: flex; justify-content: center; align-items: center; gap: var(--gap-small);
+  height: var(--height); min-width: 0; cursor: pointer; white-space: nowrap; font-weight: 700; text-transform: uppercase;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+button > span:not(.icon) { overflow: hidden; text-overflow: ellipsis; }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+button.primary { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+button.primary:hover:not(:disabled) { background: var(--brand); border-color: var(--fg); }
+button.ghost { color: var(--fg-1); }
+button.ghost:hover:not(:disabled) { color: var(--fg); }
+
+/* Page: the header, then the lessons (or a lesson, or its result), then the status line */
+.lingo-app {
+  height: 100%; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--gap-medium); padding: var(--padding-medium); min-width: 0; min-height: 0; background: var(--bg);
+}
+
+.header { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); height: var(--height); }
+.logo { display: flex; align-items: center; gap: var(--gap-small); font-size: var(--font-size-large); font-weight: 700; }
+.logo-mark { width: var(--icon-size-large); height: var(--icon-size-large); flex: none; background: url("favicon.png") center / contain no-repeat; image-rendering: pixelated; }
+.logo .highlight { color: var(--brand); }
+.header-tools { display: flex; gap: var(--gap-small); height: 100%; min-width: 0; }
+.header-tools > * { height: 100%; }
+.header-tools > select { min-width: 0; }
+
+.statusbar { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); color: var(--fg-1); font-size: var(--font-size-small); }
+.statusbar a { flex: none; white-space: nowrap; color: inherit; }
+#status { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#status.error { color: var(--danger); white-space: normal; }
+
+/* The bar that fills while something is done: the goal of the day, the lesson */
+.progress { flex: 1; height: calc(var(--unit) * 3); min-width: 0; background: var(--border); border-radius: var(--border-radius-small); overflow: hidden; }
+.progress-fill { width: 0; height: 100%; background: var(--brand); transition: width 0.3s; }
+
+/* The lessons */
+.path-view { min-height: 0; display: flex; flex-direction: column; gap: var(--gap-medium); overflow-y: auto; }
+
+.stats-bar { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-medium); padding: var(--padding-medium); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); background: var(--bg-1); }
+.stat { display: flex; align-items: center; gap: var(--gap-small); min-width: 0; }
+.stat > .icon { color: var(--brand); }
+.stat-value { font-size: var(--font-size-large); font-weight: 700; }
+.stat-label { color: var(--fg-1); font-size: var(--font-size-small); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.goal { flex: 1 1 calc(var(--unit) * 60); display: flex; flex-direction: column; gap: var(--gap-small); min-width: 0; }
+.goal-text { color: var(--fg-1); font-size: var(--font-size-small); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.goal .progress { flex: none; }
+
+.units { flex: none; display: flex; flex-direction: column; gap: var(--gap-large); }
+.unit { display: flex; flex-direction: column; gap: var(--gap-small); }
+.unit-title { display: flex; align-items: center; height: var(--height); padding: 0 var(--padding-medium); background: var(--brand); color: var(--brand-ink); font-weight: 700; border-radius: var(--border-radius-medium); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lessons { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 70), 1fr)); gap: var(--gap-small); }
+
+.lesson-card { height: auto; min-height: calc(var(--unit) * 36); flex-direction: column; align-items: stretch; justify-content: flex-start; gap: var(--gap-small); padding: var(--padding-medium); text-align: start; text-transform: none; }
+.lesson-card > .lesson-card-head { display: flex; align-items: center; gap: var(--gap-small); min-width: 0; }
+.lesson-card-title { flex: 1; min-width: 0; font-size: var(--font-size-medium); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lesson-card-words { color: var(--fg-1); font-size: var(--font-size-small); font-weight: 400; white-space: normal; overflow-wrap: anywhere; text-align: start; }
+.lesson-card-state { color: var(--fg-1); font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; }
+.lesson-card.done > .lesson-card-head > .icon { color: var(--ok); }
+.lesson-card.next { border-color: var(--brand); }
+.lesson-card.next .lesson-card-state { color: var(--brand); }
+
+/* A lesson: the bar on top, the exercise, what was answered, and the button */
+.lesson-view { min-height: 0; display: flex; flex-direction: column; gap: var(--gap-medium); }
+.lesson-bar { display: flex; align-items: center; gap: var(--gap-small); height: var(--height); }
+.lesson-bar > button { height: 100%; }
+.hearts { display: flex; align-items: center; gap: var(--gap-extra-small); color: var(--danger); font-weight: 700; }
+.hearts-count { min-width: calc(var(--unit) * 6); }
+
+.exercise { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--gap-large); padding: var(--padding-medium); }
+.exercise-prompt { color: var(--fg-1); font-size: var(--font-size-large); font-weight: 700; }
+.exercise-word { display: flex; align-items: center; gap: var(--gap-small); font-size: var(--font-size-extra-large); font-weight: 700; }
+.exercise-word > span { min-width: 0; overflow-wrap: anywhere; }
+.exercise-roman, .exercise-hint { color: var(--fg-1); font-size: var(--font-size-medium); }
+.exercise-hint { font-size: var(--font-size-small); }
+.choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--unit) * 70), 1fr)); gap: var(--gap-small); }
+.choice { height: auto; min-height: calc(var(--unit) * 24); justify-content: flex-start; padding: var(--padding-medium); text-transform: none; font-size: var(--font-size-medium); white-space: normal; }
+.choice-key { flex: none; display: flex; align-items: center; justify-content: center; width: calc(var(--unit) * 8); height: calc(var(--unit) * 8); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-small); color: var(--fg-1); font-size: var(--font-size-small); }
+.choice-text { flex: 1; min-width: 0; text-align: start; overflow-wrap: anywhere; }
+.choice-roman { display: block; color: inherit; opacity: 0.7; font-size: var(--font-size-small); }
+.choice.chosen { border-color: var(--brand); }
+.choice.right { background: var(--ok); color: var(--on-color); border-color: var(--ok); }
+.choice.wrong { background: var(--danger); color: var(--on-color); border-color: var(--danger); }
+.choice.matched { opacity: 0.4; }
+.type-input { height: var(--height); font-size: var(--font-size-medium); }
+.match-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap-medium); }
+.match-column { display: flex; flex-direction: column; gap: var(--gap-small); }
+
+.feedback { display: flex; flex-direction: column; gap: var(--gap-extra-small); padding: var(--padding-medium); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); }
+.feedback.right { border-color: var(--ok); color: var(--ok); }
+.feedback.wrong { border-color: var(--danger); color: var(--danger); }
+.feedback-title { font-weight: 700; }
+.feedback-answer { color: var(--fg); }
+.lesson-actions { display: flex; }
+.lesson-actions > button { flex: 1; }
+
+/* The end of a lesson */
+.result-view { min-height: 0; display: flex; align-items: center; justify-content: center; }
+.result-card { width: 100%; max-width: calc(var(--unit) * 140); display: flex; flex-direction: column; align-items: stretch; gap: var(--gap-large); padding: var(--padding-extra-large); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); background: var(--bg-1); }
+.result-title { font-size: var(--font-size-extra-large); font-weight: 700; text-align: center; }
+.result-lines { display: flex; flex-direction: column; align-items: center; gap: var(--gap-small); font-size: var(--font-size-medium); }
+.result-line { display: flex; align-items: center; gap: var(--gap-small); }
+.result-line > .icon { color: var(--brand); }
+.result-actions { display: flex; flex-wrap: wrap; gap: var(--gap-small); }
+.result-actions > button { flex: 1 1 calc(var(--unit) * 60); }
+
+/* Messages */
+dialog { color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--border); padding: 0; }
+dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent); }
+.toast { position: fixed; inset-block-end: var(--padding-large); inset-inline: var(--padding-large); z-index: 1000; padding: var(--padding-medium); background: var(--bg-1); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); }

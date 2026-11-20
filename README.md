@@ -20,6 +20,7 @@ Plain HTML, CSS, and JavaScript. No framework, no build step, no special server.
 | Drivemu | File storage that keeps its data in the user's own GitHub repository | `drivemu/` |
 | Gallemu | A gallery of the photos and videos in the user's Drive | `gallemu/` |
 | Spotimu | A music player for the audio files in the user's Drive | `spotimu/` |
+| Lingomu | Short lessons that teach the words of a language (hearts, XP, daily goal, streak); the progress is kept on the user's account | `lingomu/` |
 | muRMBG | Removes the background of an image or a video with a model that runs on the graphics card (WebGPU) | `murmbg/` |
 | Transmu | Translates text between eight languages with AI models that run in the browser (Opus-MT, NLLB-200, M2M100) | `transmu/` |
 | Youmu | The sign-in, the profile, and the settings of every web | `youmu/` |
@@ -57,6 +58,7 @@ artcraft/        The eight ArtCraft apps (downloaded by update.ps1)
 drivemu/         File storage on GitHub
 gallemu/        Gallery of the photos and videos of the Drive (reads the drivemu branch, read only)
 spotimu/        Music player for the audio files of the Drive (reads the drivemu branch, read only)
+lingomu/        Language lessons (courses, units and lessons are in data.json; the progress is on the lingomu branch)
 murmbg/         Background remover in the browser (WebGPU, nothing is uploaded) with three models (RMBG 1.4, BiRefNet lite, MODNet); images and videos (frame by frame, saved as WebM, MP4, GIF or a ZIP of PNG frames; the background is transparent, white, black or any colour); can take a file from the Drive and save the result to it
 transmu/        Translator in the browser (Transformers.js; Opus-MT, NLLB-200 or M2M100, chosen in a select; nothing is uploaded); Opus-MT uses English as the bridge between two other languages
 muai/            AI in the browser

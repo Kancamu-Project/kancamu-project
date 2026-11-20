@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+<meta name="theme-color" content="#111115">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="layout.css">
+<script src="../assets/theme.js"></script>
+</head>
+<body>
+
+<div id="lingo-app" class="lingo-app">
+  <div class="header">
+    <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
+    <div class="header-tools">
+      <select id="course-select" data-i18n-label="course.label"></select>
+      <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
+    </div>
+  </div>
+
+  <div id="path-view" class="path-view">
+    <div class="stats-bar">
+      <div class="stat">
+        <span class="icon icon-zap"></span>
+        <span id="streak-count" class="stat-value"></span>
+        <span class="stat-label" data-i18n="stats.streak"></span>
+      </div>
+      <div class="stat">
+        <span class="icon icon-star"></span>
+        <span id="total-xp" class="stat-value"></span>
+        <span class="stat-label" data-i18n="stats.xp"></span>
+      </div>
+      <div class="goal">
+        <span id="goal-text" class="goal-text"></span>
+        <div class="progress"><div id="goal-fill" class="progress-fill"></div></div>
+      </div>
+    </div>
+    <div id="units" class="units"></div>
+  </div>
+
+  <div id="lesson-view" class="lesson-view hidden">
+    <div class="lesson-bar">
+      <button id="quit-button" class="ghost square" type="button" data-i18n-title="quit.label" data-i18n-label="quit.label"><span class="icon icon-close"></span></button>
+      <div class="progress"><div id="lesson-fill" class="progress-fill"></div></div>
+      <div id="hearts" class="hearts"><span class="icon icon-heart"></span><span id="hearts-count" class="hearts-count"></span></div>
+    </div>
+    <div id="exercise" class="exercise"></div>
+    <div id="feedback" class="feedback hidden" role="status">
+      <span id="feedback-title" class="feedback-title"></span>
+      <span id="feedback-answer" class="feedback-answer selectable"></span>
+    </div>
+    <div class="lesson-actions">
+      <button id="check-button" class="primary" type="button" disabled><span data-i18n="check"></span></button>
+    </div>
+  </div>
+
+  <div id="result-view" class="result-view hidden">
+    <div class="result-card">
+      <span id="result-title" class="result-title"></span>
+      <div id="result-lines" class="result-lines"></div>
+      <div class="result-actions">
+        <button id="result-retry-button" class="hidden" type="button"><span data-i18n="failed.retry"></span></button>
+        <button id="result-continue-button" class="primary" type="button"><span data-i18n="continue"></span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="statusbar">
+    <span id="status"></span>
+    <a href="/" target="_top" data-i18n="copyright"></a>
+  </div>
+</div>
+
+<script src="../assets/i18n.js"></script>
+<script src="../assets/dialog.js"></script>
+<script src="../assets/account.js"></script>
+<script src="../assets/settings.js"></script>
+<script src="../assets/storage.js"></script>
+<script type="module" src="script.js"></script>
+</body>
+</html>
