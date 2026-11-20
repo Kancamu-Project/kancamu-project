@@ -388,6 +388,7 @@ function createNameElement(name, highlight) {
 function categoryTag(key) {
     const tag = createElement("span", "category", categoryLabel(key));
     tag.dataset.category = key;
+    tag.classList.toggle("active", state.category === key);   // the category that is filtered shows as active on every project that has it
     return tag;
 }
 

@@ -5,14 +5,15 @@
 @font-face { font-family: "Inter"; font-weight: 700; font-display: swap; src: url("fonts/inter-latin-700-normal.woff2") format("woff2"); }
 
 :root {
-    /* Palette: six colours, named after the colour itself. Values are the same in every theme.
-       Black (not truly black, just dark) and white for backgrounds and text; red, yellow, blue and green for highlights. */
+    /* Palette: six colours, named after the colour itself.
+       Black (not truly black, just dark) and white for backgrounds and text, the same in every theme.
+       Red, yellow, blue and green for highlights: lighter in the dark theme, so the text on them is dark, and darker in the light theme (below), so the text on them is white. */
     --black: #111115;
     --white: #ffffff;
-    --red: #ef4444;
-    --yellow: #f59e0b;
-    --blue: #3b82f6;
-    --green: #22c55e;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --blue: #60a5fa;
+    --green: #4ade80;
 
     /* Roles: they change with the theme and are derived from the palette. Components use role names.
        Each theme has two grays, mixes of white and black: --neutral for secondary text, --neutral-soft for lines and the second background. */
@@ -28,6 +29,10 @@
     --accent-text: var(--white);
     --danger: var(--red);
     --ok: var(--green);
+
+    /* The text on a fill of red, yellow, blue, green or danger: one role for all of them, dark in the dark theme and white in the light theme.
+       The text on a neutral fill is the opposite role (--accent-ink on --accent, --bg on --fg); the text on the colour of a web is --brand-ink (assets/i18n.js). */
+    --on-color: var(--black);
 
     /* The units. A layout.css writes no unit (rem, px, vh, vw): it writes calc(var(--unit) * n), a line as --border-width,
        and a viewport length as calc(var(--vw) * n) or calc(var(--vh) * n). */
@@ -67,6 +72,11 @@
 }
 
 :root[data-theme="light"] {
+    --red: #dc2626;
+    --yellow: #d97706;
+    --blue: #2563eb;
+    --green: #15803d;
+    --on-color: var(--white);
     --neutral: color-mix(in srgb, var(--black) 60%, var(--white));
     --neutral-soft: color-mix(in srgb, var(--black) 15%, var(--white));
     --bg: var(--white);
@@ -77,8 +87,6 @@
     --accent: var(--black);
     --accent-ink: var(--white);
     --accent-text: var(--black);
-    --danger: color-mix(in srgb, var(--red) 80%, var(--black));
-    --ok: color-mix(in srgb, var(--green) 65%, var(--black));
     color-scheme: light;
 }
 

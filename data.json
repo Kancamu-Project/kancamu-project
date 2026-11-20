@@ -221,7 +221,7 @@
       "publisher": "{brand}",
       "url": "muos/",
       "icon": "muos/favicon.png",
-      "color": "blue",
+      "color": "#1782db",
       "categories": [
         "official",
         "system",
@@ -244,7 +244,7 @@
       "publisher": "{brand}",
       "url": "drivemu/",
       "icon": "drivemu/favicon.png",
-      "color": "yellow",
+      "color": "#f89520",
       "categories": [
         "official",
         "mobile",
@@ -349,9 +349,9 @@
       ]
     },
     {
-      "id": "account",
+      "id": "youmu",
       "name": {
-        "en-US": "Account{highlight}"
+        "en-US": "You{highlight}"
       },
       "description": {
         "en-US": "Your sign-in, your profile, and the settings of every web.",
@@ -362,12 +362,36 @@
         "en-US": "{highlight}"
       },
       "publisher": "{brand}",
-      "url": "accountmu/",
-      "icon": "accountmu/favicon.png",
+      "url": "youmu/",
+      "icon": "youmu/favicon.png",
       "color": "#1cc93d",
       "categories": [
         "official",
         "mobile",
+        "tools"
+      ]
+    },
+    {
+      "id": "assetmu",
+      "name": {
+        "en-US": "Asset{highlight}"
+      },
+      "description": {
+        "en-US": "Every colour, icon, font, and size of the webs, in one place.",
+        "zh-CN": "所有网站的颜色、图标、字体和尺寸，集中在一处。",
+        "ar-SA": "كل ألوان المواقع وأيقوناتها وخطوطها ومقاساتها في مكان واحد."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "assetmu/",
+      "icon": "assetmu/favicon.png",
+      "color": "#1cc93d",
+      "categories": [
+        "official",
+        "mobile",
+        "design",
         "tools"
       ]
     },
@@ -411,7 +435,7 @@
       "publisher": "{brand}",
       "url": "./",
       "icon": "favicon.png",
-      "color": "blue",
+      "color": "#1782db",
       "categories": [
         "official",
         "mobile",

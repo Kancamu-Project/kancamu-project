@@ -188,6 +188,10 @@ html, body {
         flex: 1;
         min-height: 0;
         overflow-y: auto;
+
+        &:focus-visible {   /* the page takes the focus when the dialog opens, and shows no ring: a ring means a control that can be used */
+            outline: none;
+        }
     }
 }
 
@@ -255,7 +259,7 @@ html, body {
     }
 }
 
-#token-form, #account-profile, #settings-page {
+#token-form, #settings-page {
     display: flex;
     flex-direction: column;
     gap: var(--gap-medium);
@@ -312,10 +316,14 @@ html, body {
 #account-details {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-medium);
 
     &:empty {
         display: none;
+    }
+
+    & > .detail-section {
+        gap: 0;
+        border-bottom: var(--border-width) solid var(--border);
     }
 }
 
@@ -424,25 +432,44 @@ html, body {
     }
 }
 
-.account-owner {
+/* The profile: a card, a row of numbers, and parts that open and close; like the settings page, it has no padding of its own */
+#account-profile {
+    display: flex;
+    flex-direction: column;
+
+    & > .hint {
+        padding: var(--padding-extra-large);
+    }
+}
+
+.profile-card {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
-    gap: var(--gap-small);
+    gap: var(--gap-large);
+    padding: var(--padding-extra-large);
+    border-bottom: var(--border-width) solid var(--border);
 
     & > .account-avatar {
-        width: calc(var(--unit) * 20);
-        height: calc(var(--unit) * 20);
+        width: calc(var(--unit) * 32);
+        height: calc(var(--unit) * 32);
         flex: none;
         background: var(--bg-1) center / cover no-repeat;
+        border: var(--border-width) solid var(--border);
+        border-radius: var(--border-radius-large);
     }
 
     & > .account-names {
+        flex: 1 1 calc(var(--unit) * 60);
         display: flex;
         flex-direction: column;
+        gap: var(--gap-extra-small);
         min-width: 0;
 
-        & > span {
+        & > .account-name {
+            font-size: var(--font-size-extra-large);
+            font-weight: 700;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -454,15 +481,36 @@ html, body {
     }
 }
 
-.copyright {
-    flex: none;
-    display: flex;
-    align-items: center;
-    height: var(--height);
-    padding: 0 var(--padding-medium);
-    border-top: var(--border-width) solid var(--border);
-    color: var(--fg-1);
-    font-size: var(--font-size-small);
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(calc(var(--unit) * 36), 1fr));
+    border-bottom: var(--border-width) solid var(--border);
+
+    &:empty {
+        display: none;
+    }
+
+    & > .stat {
+        display: flex;
+        flex-direction: column;
+        gap: var(--gap-extra-small);
+        padding: var(--padding-large) var(--padding-extra-large);
+        border-inline-end: var(--border-width) solid var(--border);
+
+        &:last-child {
+            border-inline-end: 0;
+        }
+
+        & > .stat-value {
+            font-size: var(--font-size-extra-large);
+            font-weight: 700;
+        }
+
+        & > .stat-label {
+            color: var(--fg-1);
+            font-size: var(--font-size-small);
+        }
+    }
 }
 
 #sign-out-button {

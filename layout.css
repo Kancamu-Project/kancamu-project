@@ -193,9 +193,15 @@ body {
                 height: var(--icon-size-large);
                 padding: 0;
                 border-width: 0;
+                border-radius: var(--border-radius-small);
                 overflow: hidden;
                 opacity: 0;
-                transition: width 0.2s, opacity 0.2s;
+                transition: width 0.2s, opacity 0.2s, background 0.2s, color 0.2s;
+
+                &:hover {   /* closing is a red thing: a light red tint behind the cross */
+                    background: color-mix(in srgb, var(--danger) 20%, transparent);
+                    color: var(--danger);
+                }
             }
 
             &:is(:hover, :focus-within, .active) > .close {
@@ -395,7 +401,7 @@ button {
 
             &.active {
                 background: var(--yellow);
-                color: var(--black);
+                color: var(--on-color);
             }
         }
 
@@ -405,7 +411,7 @@ button {
 
             &.active {
                 background: var(--blue);
-                color: var(--white);
+                color: var(--on-color);
             }
         }
     }
@@ -604,6 +610,25 @@ button {
             &[data-category="mobile"] {
                 border-color: var(--blue);
                 color: var(--blue);
+            }
+
+            /* The category that is filtered: filled, like its button in the filter (Official yellow, Mobile blue) */
+            &.active {
+                background: var(--fg);
+                border-color: var(--fg);
+                color: var(--bg);
+            }
+
+            &.active[data-category="official"] {
+                background: var(--yellow);
+                border-color: var(--yellow);
+                color: var(--on-color);
+            }
+
+            &.active[data-category="mobile"] {
+                background: var(--blue);
+                border-color: var(--blue);
+                color: var(--on-color);
             }
         }
     }

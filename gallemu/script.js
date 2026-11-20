@@ -1,6 +1,5 @@
 // Gallemu: the photos and videos of the user's Drive (the drivemu branch), in one gallery.
 await i18n.load();
-document.documentElement.style.setProperty("--brand", i18n.data.brandColor);   // the colour of Gallemu (from its icon), written in data.json
 i18n.selects();
 
 const tr = (key, params) => i18n.t(key, params);

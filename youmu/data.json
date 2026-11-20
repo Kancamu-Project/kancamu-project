@@ -1,8 +1,8 @@
 {
   "name": {
-    "en-US": "Account{highlight} — sign-in, profile, and settings",
-    "zh-CN": "Account{highlight} — 登录、个人资料和设置",
-    "ar-SA": "Account{highlight} — تسجيل الدخول والملف الشخصي والإعدادات"
+    "en-US": "You{highlight} — sign-in, profile, and settings",
+    "zh-CN": "You{highlight} — 登录、个人资料和设置",
+    "ar-SA": "You{highlight} — تسجيل الدخول والملف الشخصي والإعدادات"
   },
   "brandColor": "#1cc93d",
   "languages": [
@@ -214,14 +214,19 @@
       "ar-SA": "استعادة الإعدادات الافتراضية"
     },
     "logo": {
-      "en-US": "Account<span class=\"highlight\">{highlight}</span>",
-      "zh-CN": "Account<span class=\"highlight\">{highlight}</span>",
-      "ar-SA": "Account<span class=\"highlight\">{highlight}</span>"
+      "en-US": "You<span class=\"highlight\">{highlight}</span>",
+      "zh-CN": "You<span class=\"highlight\">{highlight}</span>",
+      "ar-SA": "You<span class=\"highlight\">{highlight}</span>"
     },
     "settings.empty": {
       "en-US": "There is nothing to set here yet. Sign in to see the settings of this web.",
       "zh-CN": "这里暂时没有可设置的内容。登录后可查看此网站的设置。",
       "ar-SA": "لا يوجد ما يمكن ضبطه هنا بعد. سجّل الدخول لرؤية إعدادات هذا الموقع."
+    },
+    "settings.general": {
+      "en-US": "General",
+      "zh-CN": "常规",
+      "ar-SA": "عام"
     }
   },
   "token": {

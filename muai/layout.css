@@ -46,7 +46,7 @@ button.primary:hover:not(:disabled) { background: var(--accent); border-color: v
 button.ghost { height: var(--height-s); font-size: var(--font-size-extra-small); color: var(--fg-1); }
 button.ghost:hover:not(:disabled) { color: var(--fg); }
 button.danger { color: var(--danger); border-color: var(--danger); }
-button.danger:hover:not(:disabled) { background: var(--danger); color: var(--bg); border-color: var(--danger); }
+button.danger:hover:not(:disabled) { background: var(--danger); color: var(--on-color); border-color: var(--danger); }
 button.outline { border-color: var(--fg); }
 button.outline:hover:not(:disabled) { background: var(--fg); color: var(--bg); border-color: var(--fg); }
 button.active, button.invert { background: var(--fg); color: var(--bg); border-color: var(--fg); }

@@ -4,7 +4,6 @@ import { pipeline, env } from "https://cdn.jsdelivr.net/npm/@huggingface/transfo
 env.allowLocalModels = false;   // a model is downloaded from Hugging Face once and kept in the browser cache
 
 await i18n.load();
-document.documentElement.style.setProperty("--brand", i18n.data.brandColor);   // the colour of Transmu (from its icon), written in data.json
 i18n.selects();
 
 const tr = (key, params) => i18n.t(key, params);

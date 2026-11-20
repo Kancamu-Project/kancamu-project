@@ -97,7 +97,7 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 var(
 
 .logo { display: flex; align-items: center; gap: var(--gap-small); font-weight: 700; font-size: var(--font-size-large); }
 /* Logo = favicon.png (16x16 pixels). Shown at 2rem (exactly 2x) with pixelated rendering so the pixels stay sharp. */
-.logo .highlight { color: var(--yellow); }
+.logo .highlight { color: var(--brand); }
 .logo-mark { display: block; flex: none; width: var(--icon-size-large); height: var(--icon-size-large); background: url(favicon.png) center / contain no-repeat; image-rendering: pixelated; }
 .logo.light { color: var(--accent-ink); }
 /* on the panel the orange icon needs a dark background for contrast; tile = 2rem icon + 0.6rem padding */
@@ -259,8 +259,8 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 var(
 .toasts { position: fixed; left: 50%; bottom: calc(var(--unit) * 10); transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: var(--gap-small); z-index: 60; width: min(calc(var(--unit) * 160), calc(var(--vw) * 92)); pointer-events: none; }
 .toast { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--gap-small); width: 100%; padding: var(--padding-large) var(--padding-extra-large); border-radius: var(--border-radius-large); background: var(--fg); color: var(--bg); box-shadow: var(--shadow-lg); font-size: var(--font-size-small); font-weight: 500; animation: pop .2s var(--ease); pointer-events: auto; }
 .toast .icon { --is: var(--icon-size-medium); color: var(--green); }
-.toast.err { background: var(--danger); color: var(--white); }
-.toast.err .icon { color: var(--white); }
+.toast.err { background: var(--danger); color: var(--on-color); }
+.toast.err .icon { color: var(--on-color); }
 .toast .progress-bar { grid-column: 1 / -1; height: calc(var(--unit) * 2); background: color-mix(in srgb, var(--bg) 25%, transparent); overflow: hidden; }
 .toast .progress-bar i { display: block; height: 100%; width: 0; background: var(--green); transition: width .2s; }
 

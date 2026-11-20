@@ -1,6 +1,6 @@
 // The settings of the webs, shared by every web (they all run on one origin).
 // Everything of a web that the user can adjust (except how a list is shown and sorted) is one of its settings, kept in localStorage under "<app>.settings",
-// and can be set in the account web (/accountmu/?page=settings&app=<app>, opened by the account button of the web). A web has no settings screen of its own,
+// and can be set in the account web (/youmu/?page=settings&app=<app>, opened by the account button of the web). A web has no settings screen of its own,
 // but it can keep a control for a setting in its page: the control and the account web write the same settings, and each follows the other.
 //   settings.set("muai", values)               saves the settings of the app (the control of a web, and the account web)
 //   settings.get("muai", defaults)              the settings of the app: the defaults, over which the saved values

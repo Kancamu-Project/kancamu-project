@@ -29,7 +29,7 @@
       <button id="close-button" class="square" type="button" hidden data-i18n-title="close" data-i18n-label="close"><span class="icon icon-close"></span></button>
     </div>
 
-    <div class="content">
+    <div class="content" tabindex="-1">
       <form id="token-form" autocomplete="off">
         <span class="hint" data-i18n="hint"></span>
         <input id="token-input" type="password" autocomplete="off" spellcheck="false" data-i18n-placeholder="token" data-i18n-label="token">
@@ -41,17 +41,18 @@
       </form>
 
       <div id="account-profile">
-        <div class="account-owner">
+        <div class="profile-card">
           <div class="account-avatar"></div>
           <div class="account-names selectable">
             <span class="account-name"></span>
             <span class="account-login"></span>
+            <span class="account-bio"></span>
           </div>
+          <button id="sign-out-button" class="danger" type="button"><span class="icon icon-logout"></span><span data-i18n="signOut"></span></button>
         </div>
-        <span class="account-bio"></span>
+        <div id="profile-stats" class="profile-stats"></div>
         <div id="account-details" class="selectable"></div>
         <span class="hint" data-i18n="signedIn"></span>
-        <button id="sign-out-button" class="danger" type="button"><span class="icon icon-logout"></span><span data-i18n="signOut"></span></button>
       </div>
 
       <div id="settings-page"></div>

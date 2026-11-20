@@ -21,7 +21,7 @@ muOS keeps its own language files in its languages folder, and ArtCraft is a thi
 #### 3. Shared Language and Theme
 The language ("lang") and the theme ("theme") are stored in localStorage under those keys and shared by every web, because all webs run on one origin.
 A change in one web is followed live by every other open web through the "storage" event: assets/i18n.js and assets/theme.js do it for the normal webs, and muOS does it through system/core/sync.js.
-Only the main website and the account web have the language and theme controls, in their header (the theme is one button that toggles it). In every other web they are set in the account web (see Other 4), and a web has no language or theme control of its own.
+Only the main website and the account web have the language and theme controls, in their header (the theme is one button that toggles it). Assetmu has the theme button too, because it shows the colours of both themes. In every other web they are set in the account web (see Other 4), and a web has no language or theme control of its own.
 A new web gets this for free by loading the two shared scripts. Do not store the language or the theme under another key.
 muOS also has the theme "system" (follows the device), which stays inside muOS; only light and dark are shared.
 
@@ -147,12 +147,13 @@ Do not repeat in layout.css what assets/style.css already has.
 Every project name has a highlighted part (the "mu" of Kancamu, Drivemu, muAI, and muOS; the data.json "highlight" field of a project), and the web of that project shows its own name that way too, in the colour of the project.
 There are six main colours in assets/style.css, named after the colour itself in English.
 Black (not truly black, just dark) and white for backgrounds and text.
-Red, yellow (the more orange one), blue, and green for highlights.
+Red, yellow (the more orange one), blue, and green for highlights. They are lighter in the dark theme and darker in the light theme, so the text on them is dark in the dark theme and white in the light theme.
 There is no gray in the palette. Each theme has two grays, both mixes of white and black made with color-mix: --neutral for secondary text, and --neutral-soft for lines and the second background. They are the only grays.
 Every other colour is derived from the six with color-mix too, so do not write new hex codes.
 Components use role names (bg, fg, border, danger, and so on), which change with the dark and light theme.
+The text on a fill follows one standard, in every theme: on a neutral fill it is the opposite role (--accent-ink on --accent, --bg on --fg); on red, yellow, blue, green, or danger it is --on-color (dark in the dark theme, white in the light theme); on the colour of a web (--brand) it is --brand-ink, which assets/i18n.js sets to white or dark by contrast (white when the contrast is 3 or more). A layout.css does not write --white or --black as the text on a colour.
 Colours that come from a third party, such as an app's own brand colour, may be used as they are.
-The brand colour of a web (the colour of its icon) is written once, as a hex, in a data.json: the "color" of its project in the main web (a hex, or the name of a colour of the palette, such as yellow or blue), and "brandColor" in its own data.json, which its script sets as --brand. A layout.css uses var(--brand), never the hex.
+The brand colour of a web (the colour of its icon) is written once, as a hex, in a data.json: the "color" of its project in the main web (always a hex, never a colour of the palette: a project can come from outside, and it keeps its own colour in every theme), and "brandColor" in its own data.json, which its script sets as --brand. A layout.css uses var(--brand), never the hex.
 
 #### 7. Theme
 Dark is the default, and light is set with data-theme="light" on html.
@@ -202,7 +203,8 @@ Do not make a button, input, or select borderless. A variant (primary, danger, a
 /assets/icons - holds every svg icon for the GUI, do not use emoji.
 /assets/fonts - holds the fonts.
 Each web has its own folder in the root with index.html, layout.css, script.js, and data.json (the root itself is the main website).
-/accountmu - the account web: the sign-in, the profile, and the settings of every web, embedded by every other web in a dialog. Its pages are chosen by the query string (see Other 4), and its panels.js holds the work on the data of the webs (see Other 8).
+/assetmu - the web that shows every asset (the colours, the icons, the fonts, the sizes, and the files of /assets, and the colour and icon of every web). A new icon or font goes in its folder and in the lists of assetmu/data.json.
+/youmu - the account web: the sign-in, the profile, and the settings of every web, embedded by every other web in a dialog. Its pages are chosen by the query string (see Other 4), and its panels.js holds the work on the data of the webs (see Other 8).
 /muos - the web OS, with its own design, languages, tests, and file index (run npm run index in it after adding or removing files).
 /artcraft - the official web builds of the ArtCraft apps, one folder per app, with data.json (the installed versions) and update.ps1.
 
@@ -216,7 +218,7 @@ Icons are used as CSS masks and their colour is currentColor.
 Every web uses the fonts in /assets/fonts. Do not load fonts from outside and do not keep fonts in a web's own folder.
 
 #### 4. Account
-The GitHub sign-in, the profile, and the settings of every web are pages of the account web (/accountmu), chosen by the query string: ?page=login, ?page=profile, and ?page=settings&app=<app>. With no page, it shows the profile, or the sign-in when there is no account.
+The GitHub sign-in, the profile, and the settings of every web are pages of the account web (/youmu), chosen by the query string: ?page=login, ?page=profile, and ?page=settings&app=<app>. With no page, it shows the profile, or the sign-in when there is no account.
 No other web builds its own sign-in screen, login form, profile panel, or settings dialog.
 The account is kept in localStorage under the key "account" ({ token, login, name, avatar }) and handled only by assets/account.js.
 A web has one button for all of it, an icon-only square button with the class "account", placed after the other buttons of its header, and calls account.bind(button): it opens the account web in a dialog on the settings of that web (the profile or the sign-in when the web has no settings; the sidebar of the account web has the profile and the settings of every web) and shows the avatar once signed in. A web has no settings button.
@@ -240,8 +242,8 @@ The colour, tagline, and translations of each app are kept in the main data.json
 A folder that holds many files of the same kind uses the plural form, such as assets, fonts, and icons.
 
 #### 8. Settings
-Everything of a web that the user can adjust is one of its settings, and every setting of every web is in the account web (/accountmu/?page=settings&app=<app>): the model of an AI, the volume of a player, the background of a result, the width of a sidebar. The only exceptions are how a list is shown (grid or list view) and how it is sorted. The language and the theme are the buttons of the header of the account web. Its sidebar lists the account and every web, and the button of a web that has no settings yet is disabled.
-A web describes its settings in its data.json: "settings": { "defaults": { ... }, "fields": [ { id, type, label, hint, min, max, step } ], "panels": [ ... ] }. The type of a field is textarea, number, range, select, checkbox, or color; a select takes its options from "options", or from a list of the data.json of the web ("optionsFrom": { "list", "value", "label", "labelPrefix" }). A field is saved at once, kept between its min and max, in localStorage under "<app>.settings". A panel does what a field cannot, on the data of the web (the downloaded models of muAI, muRMBG, and Transmu, which can be deleted; the chats of muAI; the usage and the reset of Drivemu): its code is in accountmu/panels.js, not in the web.
+Everything of a web that the user can adjust is one of its settings, and every setting of every web is in the account web (/youmu/?page=settings&app=<app>): the model of an AI, the volume of a player, the background of a result, the width of a sidebar. The only exceptions are how a list is shown (grid or list view) and how it is sorted. The language and the theme are the buttons of the header of the account web. Its sidebar lists the account and every web, and the button of a web that has no settings yet is disabled.
+A web describes its settings in its data.json: "settings": { "defaults": { ... }, "fields": [ { id, type, label, hint, min, max, step } ], "panels": [ ... ] }. The type of a field is textarea, number, range, select, checkbox, or color; a select takes its options from "options", or from a list of the data.json of the web ("optionsFrom": { "list", "value", "label", "labelPrefix" }). A field is saved at once, kept between its min and max, in localStorage under "<app>.settings". A panel does what a field cannot, on the data of the web (the downloaded models of muAI, muRMBG, and Transmu, which can be deleted; the chats of muAI; the usage and the reset of Drivemu): its code is in youmu/panels.js, not in the web.
 A web has no settings dialog and no settings button. It reads its settings with settings.get and follows a change with settings.onChange (assets/settings.js). A web may keep a control for a setting in its page (the model picker, the volume slider, the background switch) as well: the control and the account web write the same settings with settings.set, and each follows the other. When the account web did something to the data of a web (deleted its chats, reset its drive), the web shows what is left by listening with settings.listen.
 What the user is doing is not a setting: the open folder, the text of a search, the file that is shown.
 

@@ -1,6 +1,5 @@
 // Spotimu: the audio files of the user's Drive (the drivemu branch), with a player.
 await i18n.load();
-document.documentElement.style.setProperty("--brand", i18n.data.brandColor);   // the colour of Spotimu (from its icon), written in data.json
 i18n.selects();
 
 const tr = (key, params) => i18n.t(key, params);

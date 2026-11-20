@@ -20,7 +20,6 @@ import {
 env.allowLocalModels = false;
 
 await i18n.load();
-document.documentElement.style.setProperty("--brand", i18n.data.brandColor);   // the colour of muAI (from its icon), written in data.json
 i18n.selects();
 const tr = (key, params) => i18n.t(key, params);
 
@@ -76,7 +75,7 @@ function toast(msg) {
   t.textContent = msg;
   Object.assign(t.style, {
     position: "fixed", bottom: "4.4rem", left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center",
-    height: "2.4rem", padding: "0 1.2rem", background: "var(--fg)", color: "var(--bg)", fontFamily: "var(--font-mono)", fontWeight: "bold", letterSpacing: "0.1rem", textTransform: "uppercase", zIndex: 50,
+    height: "2.4rem", padding: "0 1.2rem", background: "var(--fg)", color: "var(--bg)", fontWeight: "bold", letterSpacing: "0.1rem", textTransform: "uppercase", zIndex: 50,
   });
   (document.querySelector("dialog[open]") || document.body).appendChild(t); setTimeout(() => t.remove(), 1800);
 }

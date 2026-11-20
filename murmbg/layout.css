@@ -27,7 +27,7 @@ button {
 }
 button > span:not(.icon) { overflow: hidden; text-overflow: ellipsis; }
 button:disabled { opacity: 0.4; cursor: not-allowed; }
-button.primary { background: var(--brand); color: var(--white); border-color: var(--brand); }
+button.primary { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
 button.primary:hover:not(:disabled) { background: var(--brand); border-color: var(--fg); }
 button.ghost { color: var(--fg-1); }
 button.ghost:hover:not(:disabled) { color: var(--fg); }

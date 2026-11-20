@@ -3,7 +3,7 @@
 // Sign in once in any web and every other web, open or opened later, knows it.
 // Only a personal access token (classic) is accepted for now.
 //
-// The sign-in screen, the profile, and the settings of every web are pages of the account web (/accountmu), chosen by the query string
+// The sign-in screen, the profile, and the settings of every web are pages of the account web (/youmu), chosen by the query string
 // (?page=login, ?page=profile, ?page=settings&app=<app>), so no other web builds its own:
 //   account.open()              opens the account web in a dialog over the current page: the profile, or the sign-in when there is no account
 //   account.open("settings")    opens a page of it: "login", "profile", or "settings"
@@ -12,7 +12,7 @@
 // A web has one button for all of it. The dialog knows the web that opened it (the first folder of the address, such as muai), so it opens on the settings
 // of that web; the sidebar of the account web has the profile and the settings of every other web.
 (() => {
-    const PAGE = new URL("../accountmu/", document.currentScript.src).href;
+    const PAGE = new URL("../youmu/", document.currentScript.src).href;
     const KEY = "account";
     const listeners = [];
 

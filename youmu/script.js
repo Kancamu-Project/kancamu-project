@@ -62,32 +62,42 @@ function section(title, rows) {
 
 function renderDetails() {
     const box = $("account-details");
-    if (!details) return box.replaceChildren();
+    const stats = $("profile-stats");
+    if (!details) { box.replaceChildren(); return stats.replaceChildren(); }
     const { user } = details;
     const link = user.html_url ? Object.assign(element("a", "", user.html_url.replace("https://", "")), { href: user.html_url, target: "_blank", rel: "noopener" }) : null;
     const date = (value) => (value ? i18n.date(value, { year: "numeric", month: "long", day: "numeric" }) : "");
     const scopes = details.scopes.length ? element("span", "scope-chips") : null;
     details.scopes.forEach((scope) => scopes.append(element("span", "scope-chip", scope)));
+    // The numbers of the account, as a row of tiles
+    const numbers = [
+        [t("publicRepos"), user.public_repos],
+        [t("privateRepos"), user.owned_private_repos],
+        [t("followers"), user.followers],
+        [t("memberSince"), user.created_at ? String(new Date(user.created_at).getFullYear()) : null],
+    ].filter(([, value]) => value !== null && value !== undefined);
+    stats.replaceChildren(...numbers.map(([label, value]) => {
+        const tile = element("div", "stat");
+        tile.append(element("span", "stat-value", typeof value === "number" ? i18n.number(value) : value), element("span", "stat-label", label));
+        return tile;
+    }));
+    // The rest opens and closes, like the settings
     box.replaceChildren(
-        section(t("profile"), [
+        collapsible(section(t("profile"), [
             [t("githubProfile"), link],
             [t("email"), user.email],
             [t("company"), user.company],
             [t("location"), user.location],
             [t("website"), user.blog],
-            [t("publicRepos"), user.public_repos],
-            [t("privateRepos"), user.owned_private_repos],
-            [t("followers"), user.followers],
             [t("plan"), user.plan && user.plan.name],
-            [t("memberSince"), date(user.created_at)],
-        ]),
-        section(t("tokenTitle"), [
+        ])),
+        collapsible(section(t("tokenTitle"), [
             [t("tokenType"), t(details.token.startsWith("ghp_") ? "tokenKind.classic" : "tokenKind.other")],
             [t("tokenValue"), `…${details.token.slice(-4)}`],
             [t("scopes"), scopes],
             [t("apiLeft"), details.remaining && i18n.t("apiLeftValue", { remaining: details.remaining, limit: details.limit })],
             [t("expires"), date(details.expires)],
-        ])
+        ]))
     );
     $("account-profile").querySelector(".account-bio").textContent = user.bio || "";
 }
@@ -301,7 +311,7 @@ async function renderSettings() {
         reset.lastChild.textContent = t("settings.reset");
         reset.addEventListener("click", () => { settings.reset(app); renderSettings(); });
         const box = element("div", "detail-section");
-        box.append(element("span", "detail-section-title", state.apps.find((item) => item.id === app).name), form, reset);
+        box.append(element("span", "detail-section-title", t("settings.general")), form, reset);
         nodes.push(collapsible(box));
     }
     const context = { app, data: state.appData, t: appText, ask: (options) => dialogs.ask(options), toast, announce: (message) => settings.announce(app, message) };
@@ -343,14 +353,13 @@ document.addEventListener("keydown", (event) => {
 });
 
 // The first control, so the keyboard works at once when the dialog opens.
-const focusFirst = () => (pageNow() === "login" ? $("token-input") : pageNow() === "profile" ? $("sign-out-button") : document.querySelector("#side-apps .side-item:not(:disabled)") || $("account-tab")).focus();
+const focusFirst = () => (pageNow() === "login" ? $("token-input") : document.querySelector(".content")).focus({ preventScroll: true });
 window.addEventListener("message", (event) => {
     if (event.origin === location.origin && event.data?.type === "account:focus") focusFirst();
 });
 
 await i18n.load();
 loadApps().then((found) => { state.apps = found; state.loaded = true; render(); });   // the sidebar fills in when the webs are known; the page does not wait for it
-document.documentElement.style.setProperty("--brand", i18n.data.brandColor);   // the colour of the account web (from its icon), written in data.json
 account.onChange(render);
 i18n.onChange(render);
 i18n.selects();   // the language select in the header

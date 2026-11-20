@@ -27,8 +27,24 @@
             this.languages = this.data.languages || [];
             this.ui = this.data.ui || {};
             this.lang = this.resolve();
+            this.applyBrandColour();
             this.apply();
             return this.data;
+        },
+
+        // The colour of the web (brandColor in its data.json, taken from its icon) is --brand, and the colour of the text on it is --brand-ink:
+        // white when it reads well on that colour (a contrast of 3 or more), else dark.
+        applyBrandColour() {
+            const hex = this.data?.brandColor;
+            if (!/^#[0-9a-f]{6}$/i.test(hex || "")) return;
+            const channel = (index) => {
+                const value = parseInt(hex.slice(1 + index * 2, 3 + index * 2), 16) / 255;
+                return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+            };
+            const luminance = 0.2126 * channel(0) + 0.7152 * channel(1) + 0.0722 * channel(2);
+            const root = document.documentElement.style;
+            root.setProperty("--brand", hex);
+            root.setProperty("--brand-ink", 1.05 / (luminance + 0.05) >= 3 ? "var(--white)" : "var(--black)");
         },
 
         // Every text of data.json that says {brand} gets the name of the brand, and {highlight} its highlighted word.

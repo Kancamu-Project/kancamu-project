@@ -22,7 +22,8 @@ Plain HTML, CSS, and JavaScript. No framework, no build step, no special server.
 | Spotimu | A music player for the audio files in the user's Drive | `spotimu/` |
 | muRMBG | Removes the background of an image or a video with a model that runs on the graphics card (WebGPU) | `murmbg/` |
 | Transmu | Translates text between eight languages with AI models that run in the browser (Opus-MT, NLLB-200, M2M100) | `transmu/` |
-| Account | The sign-in, the profile, and the settings of every web | `accountmu/` |
+| Youmu | The sign-in, the profile, and the settings of every web | `youmu/` |
+| Assetmu | Shows every asset of the webs: colours (they follow the theme), the colour and icon of each web, icons, fonts, sizes, and files | `assetmu/` |
 | muAI | AI models that run directly in the browser | `muai/` |
 | ArtCraft | Seven creative and productivity apps: DeckCraft, EffectCraft, FilmCraft, GridCraft, PhotoCraft, VectorCraft, WordCraft | `artcraft/<name>/` |
 
@@ -42,14 +43,15 @@ assets/          Shared assets
   storage.js     The shared data storage: one private repository (<id>-data), one branch per app (drivemu, muai); muAI keeps conversations/ and files/ on its branch
   dialog.js      The shared question and message dialog (dialogs.ask, dialogs.tell); its button texts are in dialog.json. No web uses alert, confirm, or prompt
   autocomplete.js  The autocomplete of every search input (autocomplete.attach)
-  account.js     The shared GitHub sign-in: get, onChange, and the dialog (open, bind) that embeds /accountmu
+  account.js     The shared GitHub sign-in: get, onChange, and the dialog (open, bind) that embeds /youmu
   settings.js    The settings of every web (get, set, onChange, listen): written by the account web and by the controls of a web
   style.css      Shared styles (fonts, colour tokens, reset, input and select), used by every web except muOS
-  fonts/         Inter (woff2), the only font, used by every project
+  fonts/         Inter (woff2), used by every web, and JetBrains Mono (woff2), used by muOS
   icons/         Every SVG icon of the main site, Drivemu, and muAI (universal names)
 favicon.png      Site icon
 RULES.md         Project rules
-accountmu/       The account web, shown in a dialog by every other web; the query string picks the page: ?page=login, ?page=profile, ?page=settings&app=<app>. All settings of all webs (language, theme, and the settings, models, and data of each app) are set here
+assetmu/         Assetmu: shows every asset (colours, icons, fonts, sizes, files) and the colour and icon of each web
+youmu/       The account web, shown in a dialog by every other web; the query string picks the page: ?page=login, ?page=profile, ?page=settings&app=<app>. All settings of all webs (language, theme, and the settings, models, and data of each app) are set here
 artcraft/        The eight ArtCraft apps (downloaded by update.ps1)
 drivemu/         File storage on GitHub
 gallemu/        Gallery of the photos and videos of the Drive (reads the drivemu branch, read only)
