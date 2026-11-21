@@ -346,7 +346,7 @@ a:hover {
 
 /* The toasts: the short notes at the bottom of the page. */
 .shared-toasts {
-    inset: auto auto var(--padding-large) 50%;
+    inset: auto auto var(--height) 50%;
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;

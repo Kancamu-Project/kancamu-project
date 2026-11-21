@@ -60,6 +60,7 @@ assets/          Shared assets, in folders
   fonts/         Inter (woff2), used by every web, and JetBrains Mono (woff2), used by muOS
   icons/         Every SVG icon of the main site, Drivemu, and muAI (universal names)
 favicon.png      Site icon
+preview.png      Open Graph image (1200x630): a screenshot of the directory, update it when the page changes a lot
 RULES.md         Project rules
 assetmu/         Assetmu: shows every asset (colours, icons, fonts, sizes, files) and the colour and icon of each web
 kitmu/          Kitmu: the UI kit (templates of assets/css/components.css, helpers of assets/js/components.js, popups of assets/js/popup.js)

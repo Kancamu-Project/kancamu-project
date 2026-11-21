@@ -260,17 +260,13 @@ function showMenu(anchor, project) {
         items: [
             {
                 label: t("copyLink"),
-                async onSelect({ button, close }) {
-                    let message;
+                async onSelect() {
                     try {
                         await navigator.clipboard.writeText(new URL(project.url, location.href).href);
-                        message = t("copied");
+                        popups.toast(t("copied"));
                     } catch {
-                        message = t("copyFailed");
+                        popups.toast(t("copyFailed"), { kind: "error" });
                     }
-                    button.lastChild.textContent = message;
-                    setTimeout(close, 800);
-                    return false;
                 },
             },
             { label: t("openNew"), onSelect: () => window.open(project.url, "_blank", "noopener") },
