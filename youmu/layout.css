@@ -1,65 +1,5 @@
-.icon {
-    display: block;
-    width: var(--icon-size-small);
-    height: var(--icon-size-small);
-    flex: none;
-    background: currentColor;
-    mask: var(--icon) center / contain no-repeat;
-    -webkit-mask: var(--icon) center / contain no-repeat;
-
-    &.icon-close { --icon: url("../assets/icons/close.svg"); }
-    &.icon-logout { --icon: url("../assets/icons/logout.svg"); }
-    &.icon-external { --icon: url("../assets/icons/external.svg"); }
-    &.icon-user { --icon: url("../assets/icons/user.svg"); }
-    &.icon-list { --icon: url("../assets/icons/list.svg"); }
-    &.icon-sliders { --icon: url("../assets/icons/sliders.svg"); }
-    &.icon-chevron-down { --icon: url("../assets/icons/chevron-down.svg"); }
-    &.icon-trash { --icon: url("../assets/icons/trash.svg"); }
-    &.icon-download { --icon: url("../assets/icons/download.svg"); }
-    &.icon-upload { --icon: url("../assets/icons/upload.svg"); }
-    &.icon-refresh { --icon: url("../assets/icons/refresh.svg"); }
-    &.icon-moon { --icon: url("../assets/icons/moon.svg"); }
-    &.icon-sun { --icon: url("../assets/icons/sun.svg"); }
-}
-
 button {
-    height: var(--height);
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: var(--gap-small);
-    cursor: pointer;
-    white-space: nowrap;
     font-size: var(--font-size-small);
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
-
-    &.square {
-        padding: 0;
-    }
-
-    &.primary {
-        background: var(--accent);
-        color: var(--accent-ink);
-        border-color: var(--accent);
-
-        &:hover:not(:disabled) {
-            background: var(--accent);
-            border-color: var(--fg);
-        }
-    }
-
-    &.danger {
-        color: var(--danger);
-        border-color: var(--danger);
-    }
-
-    &:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-    }
 }
 
 [hidden] {
@@ -70,87 +10,14 @@ html, body {
     height: 100%;
 }
 
-/* The page is the header (the logo), the sidebar (the pages and the sections of the settings), and the main, directly in the body. The padding and the gap are the ones of the body: the three elements have none. */
-body {
-    display: grid;
-    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr) auto;
-    gap: var(--gap-medium);
-    padding: var(--padding-medium);
-}
+:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/components.css) */
 
-.header {
-    grid-column: 1;
-    grid-row: 1;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--gap-small);
-
-    & > .logo {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: var(--gap-small);
-        height: var(--height);
-        font-size: var(--font-size-large);
-        font-weight: 700;
-
-        & > .logo-mark {
-            width: var(--icon-size-large);
-            height: var(--icon-size-large);
-            flex: none;
-            background: url("favicon.png") center / contain no-repeat;
-            image-rendering: pixelated;
-        }
-
-        & .highlight {
-            color: var(--brand, var(--fg));
-        }
-    }
-
-    & > .header-tools {
-        display: flex;
-        gap: var(--gap-small);
-        height: var(--height);
-
-        & > button {
-            height: 100%;
-        }
-
-        & > .menu-button {
-            display: none;
-        }
-    }
-}
-
-.sidebar {
-    grid-column: 1;
-    grid-row: 2;
-    min-height: 0;
-    overflow: hidden;   /* the footer stays where it is: only the list of the webs scrolls */
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-small);
-    background: var(--bg);
-}
-
-.footer {
-    grid-column: 1;
-    grid-row: 3;
-    display: flex;
-    align-items: center;
-    color: var(--fg-1);
-    font-size: var(--font-size-small);
+/* The page is the template (assets/css/components.css): the header, the sidebar, the main, and the footer. Here is only what is Youmu's own. */
+.logo-mark {
+    background-image: url("favicon.png");   /* the logo of the web: its favicon */
 }
 
 .sidebar-nav {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
     gap: var(--gap-small);
 
     & > * {
@@ -158,22 +25,8 @@ body {
     }
 
     & .sidebar-item {
-        justify-content: flex-start;
         flex: none;
-
-        &.on {   /* like the folders of Drivemu: a light tint and a white line at the start */
-            background: var(--bg-1);
-            border-inline-start: var(--border-width-thick) solid var(--fg);
-        }
     }
-}
-
-.sidebar-title {
-    padding-block-start: var(--padding-small);
-    color: var(--fg-1);
-    font-size: var(--font-size-extra-small);
-    font-weight: 700;
-    text-transform: uppercase;
 }
 
 .sidebar-apps {
@@ -194,80 +47,18 @@ body {
     }
 }
 
-.main {
-    grid-column: 2;
-    grid-row: 1 / -1;
-    min-width: 0;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border: var(--border-width) solid var(--border);
-    border-radius: var(--border-radius-large);
-
-    & > .topbar {
-        flex: none;
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-end;
-        height: var(--height);
-        border-bottom: var(--border-width) solid var(--border);
-
-        & > select {
-            width: calc(var(--height) * 4);
-        }
+.main { gap: 0; overflow: hidden; & > .topbar {
+        justify-content: flex-end; border-bottom: var(--border-width) solid var(--border); & > select {
+            width: calc(var(--height) * 4); }
 
         & > :is(select, button) {
-            height: 100%;
-            border-width: 0;
-            border-inline-start-width: var(--border-width);
-            border-radius: 0;
-        }
+            height: 100%; border-width: 0; border-inline-start-width: var(--border-width); border-radius: 0; }
     }
 
     & > .content {
-        flex: 1;
-        min-height: 0;
-        overflow-y: auto;
-
-        &:focus-visible {   /* the page takes the focus when the dialog opens, and shows no ring: a ring means a control that can be used */
-            outline: none;
-        }
-    }
-}
-
-/* On a narrow screen the header is a row on top, with the button that opens the sidebar; the sidebar opens over the main */
-@media (max-width: 48rem) {
-    body {
-        grid-template-columns: minmax(0, 1fr);
-    }
-
-    .header {
-        grid-column: 1;
-
-        & > .header-tools > .menu-button {
-            display: flex;
-        }
-    }
-
-    .sidebar {
-        display: none;
-
-        &.open {
-            display: flex;
-            position: fixed;
-            inset-inline: var(--padding-medium);
-            top: calc(var(--height) + var(--padding-medium) + var(--gap-medium));
-            bottom: var(--padding-medium);
-            z-index: 5;
-        }
-    }
-
-    .main {
-        grid-column: 1;
-        grid-row: 2;
-    }
-}
+        flex: 1; overflow-y: auto; &:focus-visible {   
+            outline: none; }
+    }; }
 
 #token-form, #settings-page {
     display: flex;
@@ -347,49 +138,10 @@ body {
         text-transform: uppercase;
     }
 
-    /* A part of the settings that opens and closes */
-    & > .section-toggle {
-        justify-content: space-between;
-        background: var(--bg-1);
-        border-width: 0;
-        border-radius: 0;
-        border-inline-start: var(--border-width-thick) solid var(--green);   /* open: green */
-        color: var(--fg);
-        font-size: var(--font-size-small);
-
-        &:hover {
-            background: var(--bg-1);
-            border-inline-start-color: var(--green);
-        }
-
-        &[aria-expanded="false"],
-        &[aria-expanded="false"]:hover {
-            border-inline-start-color: var(--red);   /* closed: red */
-        }
-
-        & > .icon {
-            transition: transform 0.2s;
-        }
-
-        &[aria-expanded="false"] > .icon {
-            transform: rotate(-90deg);
-        }
-    }
-
+    /* A part of the settings that opens and closes: the button and the body are the template (assets/css/components.css) */
     & > .section-body {
-        display: flex;
-        flex-direction: column;
-        gap: var(--gap-small);
         padding: var(--padding-extra-large);
-
-        &[hidden] {
-            display: none;
-        }
     }
-}
-
-:root[dir="rtl"] .section-toggle[aria-expanded="false"] > .icon {
-    transform: rotate(90deg);
 }
 
 .detail-rows {
@@ -461,12 +213,9 @@ body {
     padding: var(--padding-extra-large);
     border-bottom: var(--border-width) solid var(--border);
 
-    & > .account-avatar {
+    & > .avatar {
         width: calc(var(--unit) * 32);
         height: calc(var(--unit) * 32);
-        flex: none;
-        background: var(--bg-1) center / cover no-repeat;
-        border: var(--border-width) solid var(--border);
         border-radius: var(--border-radius-large);
     }
 
@@ -556,14 +305,6 @@ body {
     }
 }
 
-.field-label {
-    font-weight: 700;
-}
-
-.field-hint {
-    color: var(--fg-1);
-}
-
 .status {
     display: block;
     padding: var(--padding-small) var(--padding-medium);
@@ -614,17 +355,6 @@ body {
     flex-direction: row;
     flex-wrap: wrap;
     gap: var(--gap-small);
-}
-
-.toast {
-    position: fixed;
-    inset-block-end: var(--padding-large);
-    inset-inline: var(--padding-large);
-    z-index: 10;
-    padding: var(--padding-medium);
-    background: var(--bg-1);
-    border: var(--border-width) solid var(--border);
-    border-radius: var(--border-radius-large);
 }
 
 /* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */

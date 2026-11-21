@@ -3,6 +3,7 @@
 
 await i18n.load();
 
+const { element, icon } = components;
 const tr = (key, params) => i18n.t(key, params);
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
@@ -13,13 +14,6 @@ const els = Object.fromEntries([
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
 const { lesson: rules, concepts, courses, units, storageBranch, settings: { defaults } } = i18n.data;
-const element = (tag, className, text) => {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
-  return node;
-};
-const icon = (name) => element("span", `icon icon-${name}`);
 // A word of a course is a text, or { text, roman } for a script with a reading aid (pinyin, romaji, ...): the aid is shown, and can be typed instead of the script.
 const wordText = (course, id) => (typeof course.words[id] === "string" ? course.words[id] : course.words[id].text);
 const wordRoman = (course, id) => (typeof course.words[id] === "string" ? "" : course.words[id].roman);
@@ -32,10 +26,8 @@ const shuffled = (list) => {
   }
   return copy;
 };
-function say(text, isError = false) {
-  els.status.textContent = text;
-  els.status.classList.toggle("error", isError);
-}
+
+const say = components.status(els.status);
 
 /* ---------- the progress ---------- */
 const PROGRESS_KEY = "lingomu.progress";
@@ -129,26 +121,18 @@ const isLocked = (course, all, lesson) => {
 };
 
 // On a narrow screen the lessons are hidden, and a button opens them over the main (Escape closes them and gives the focus back).
-function setMenu(open) {
-  els.sidebar.classList.toggle("open", open);
-  els.menuButton.setAttribute("aria-expanded", String(open));
-  if (open) els.sidebar.querySelector(".sidebar-item.active, .sidebar-item:not(:disabled)")?.focus();
-}
-els.menuButton.addEventListener("click", () => setMenu(!els.sidebar.classList.contains("open")));
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && els.sidebar.classList.contains("open") && els.menuButton.offsetParent) { setMenu(false); els.menuButton.focus(); }
-});
 
 // Choosing a lesson in the list shows it in the main part (a lesson that is going on asks first).
 async function choose(id) {
-  if (view === "lesson" && !(await dialogs.ask({ title: tr("quit.title"), text: tr("quit.text"), ok: tr("quit.ok") }))) return;
+  if (view === "lesson" && !(await popups.ask({ title: tr("quit.title"), text: tr("quit.text"), ok: tr("quit.ok") }))) return;
   lesson = null;
   selectedId = id;
-  setMenu(false);
+  menu.set(false);
   show("overview");
   renderPath();
 }
 
+const menu = components.drawer({ sidebar: els.sidebar, button: els.menuButton });
 function renderSidebar(course, all) {
   els.sidebarNav.replaceChildren(...units.map((unit, unitIndex) => {
     const section = element("div", "unit");
@@ -157,7 +141,7 @@ function renderSidebar(course, all) {
       const done = timesDone(course, item.id);
       const locked = isLocked(course, all, item);
       const title = tr("lesson.title", { number: lessonIndex + 1 });
-      const link = element("button", `sidebar-item${done ? " done" : ""}${item.id === selectedId ? " active" : ""}${locked ? " locked" : ""}`);
+      const link = element("button", `sidebar-item${done ? " done" : ""}${item.id === selectedId ? " on" : ""}${locked ? " locked" : ""}`);
       link.type = "button";
       link.disabled = locked;
       link.title = locked ? tr("lesson.locked") : tr("lesson.open", { title });
@@ -344,7 +328,7 @@ function choiceList(options, right, romanOf = () => "") {
   list.append(...options.map((option, index) => choiceButton(option, index, (button) => {
     if (lesson.answered) return;
     lesson.chosen = option;
-    list.querySelectorAll(".choice").forEach((other) => other.classList.toggle("chosen", other === button));
+    list.querySelectorAll(".choice").forEach((other) => other.classList.toggle("on", other === button));
     els.checkButton.disabled = false;
   }, romanOf(option))));
   return list;
@@ -374,19 +358,19 @@ function pick(side, id, button) {
   const pairing = lesson.pairing;
   if (lesson.answered || pairing.matched.has(id)) return;
   const previous = pairing.picked[side];
-  if (previous) previous.button.classList.remove("chosen");
+  if (previous) previous.button.classList.remove("on");
   pairing.picked[side] = { id, button };
-  button.classList.add("chosen");
+  button.classList.add("on");
   const { word, meaning } = pairing.picked;
   if (!word || !meaning) return;
   pairing.picked = { word: null, meaning: null };
   const buttons = [word.button, meaning.button];
   if (word.id === meaning.id) {
     pairing.matched.add(word.id);
-    buttons.forEach((each) => { each.classList.remove("chosen"); each.classList.add("right", "matched"); each.disabled = true; });
+    buttons.forEach((each) => { each.classList.remove("on"); each.classList.add("right", "matched"); each.disabled = true; });
     if (pairing.matched.size === lesson.current.ids.length) answered(true, "");
   } else {
-    buttons.forEach((each) => { each.classList.remove("chosen"); each.classList.add("wrong"); });
+    buttons.forEach((each) => { each.classList.remove("on"); each.classList.add("wrong"); });
     setTimeout(() => buttons.forEach((each) => each.classList.remove("wrong")), 600);
     loseHeart(true);
   }
@@ -407,7 +391,7 @@ function checkAnswer() {
   const right = typed ? lesson.accepted.some((accepted) => sameAnswer(lesson.chosen || "", accepted)) : lesson.chosen === lesson.correct;
   els.exercise.querySelectorAll(".choice").forEach((button) => {
     button.disabled = true;
-    button.classList.remove("chosen");
+    button.classList.remove("on");
     if (button.dataset.value === lesson.correct) button.classList.add("right");
     else if (button.dataset.value === lesson.chosen) button.classList.add("wrong");
   });
@@ -500,7 +484,7 @@ els.resultContinueButton.addEventListener("click", () => {
 els.resultRetryButton.addEventListener("click", () => lesson?.retry && startLesson(lesson.retry));
 
 els.quitButton.addEventListener("click", async () => {
-  if (!(await dialogs.ask({ title: tr("quit.title"), text: tr("quit.text"), ok: tr("quit.ok") }))) return;
+  if (!(await popups.ask({ title: tr("quit.title"), text: tr("quit.text"), ok: tr("quit.ok") }))) return;
   lesson = null;
   show("overview");
   renderPath();

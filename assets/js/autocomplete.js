@@ -3,7 +3,7 @@
 // suggestions gives the texts to offer (it is asked each time the user types, so it can follow what the page shows).
 // A suggestion that is picked is put in the input, and the input gets an "input" event, so the search runs as if it was typed.
 // Keys: arrow down and up move through the list, Enter picks the marked suggestion, Escape closes the list.
-// The list is drawn by the page itself (not the datalist of the browser), in the style of the web (see assets/style.css).
+// The list is drawn by the page itself (not the datalist of the browser), in the style of the web (see assets/css/style.css).
 (() => {
     const MAX = 6;
     let counter = 0;

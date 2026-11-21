@@ -2,10 +2,11 @@
 await i18n.load();
 i18n.selects();
 
+const { extensionOf, formatSize } = components;
 const tr = (key, params) => i18n.t(key, params);
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
-  "music-search", "album-select", "sort-order", "refresh-button", "track-list", "empty-state", "empty-title", "empty-text", "empty-action-button",
+  "music-search", "album-select", "sort-order", "refresh-button", "track-list", "empty-state", "empty-action-button",
   "player-name", "player-time", "seek-slider", "shuffle-button", "previous-button", "play-button", "play-icon", "next-button", "repeat-button", "repeat-mark", "volume-slider",
   "status", "audio-element", "account-button"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
@@ -44,26 +45,11 @@ function applySettings() {
   els.repeatButton.setAttribute("aria-label", label);
 }
 
-const extensionOf = (name) => (name.includes(".") ? name.split(".").pop().toLowerCase() : "");
-const sizeText = (bytes) => {
-  if (bytes < 1024) return `${bytes} B`;
-  const units = ["KB", "MB", "GB", "TB"];
-  let value = bytes, i = -1;
-  do { value /= 1024; i++; } while (value >= 1024 && i < units.length - 1);
-  return `${i18n.number(value, { maximumFractionDigits: value < 10 ? 1 : 0 })} ${units[i]}`;
-};
 const clock = (seconds) => {
   if (!Number.isFinite(seconds)) return "0:00";
   const whole = Math.floor(seconds);
   return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, "0")}`;
 };
-function toast(text) {
-  const note = document.createElement("div");
-  note.className = "toast";
-  note.textContent = text;
-  document.body.appendChild(note);
-  setTimeout(() => note.remove(), 6000);
-}
 
 /* ---------- the files ---------- */
 async function loadFiles() {
@@ -87,8 +73,8 @@ async function loadFiles() {
   } catch (error) {
     state.phase = "failed";
     state.items = [];
-    if (error.status === 401) { toast(tr("acct.tokenInvalid", { name: signedIn.login || tr("acct.anAccount") })); account.signOut(); state.phase = "signedOut"; }
-    else toast(tr("load.failed", { message: error.message }));
+    if (error.status === 401) { popups.toast(tr("acct.tokenInvalid", { name: signedIn.login || tr("acct.anAccount") }), { kind: "error" }); account.signOut(); state.phase = "signedOut"; }
+    else popups.toast(tr("load.failed", { message: error.message }), { kind: "error" });
   }
   render();
 }
@@ -126,16 +112,16 @@ function render() {
   els.trackList.classList.toggle("hidden", !state.shown.length || !ready);
   els.emptyState.classList.toggle("hidden", !!state.shown.length && ready);
   els.emptyActionButton.classList.toggle("hidden", !signedOut);
-  if (state.phase === "loading") { els.emptyTitle.textContent = tr("loading"); els.emptyText.textContent = ""; }
-  else if (signedOut) { els.emptyTitle.textContent = tr("signedout.title"); els.emptyText.textContent = tr("signedout.text"); }
-  else if (query && inThisAlbum.length) { els.emptyTitle.textContent = tr("empty.noMatches"); els.emptyText.textContent = tr("empty.noMatchesText", { query: els.musicSearch.value.trim() }); }
-  else { els.emptyTitle.textContent = tr("empty.title"); els.emptyText.textContent = tr("empty.text"); }
+  if (state.phase === "loading") { els.emptyState.heading = tr("loading"); els.emptyState.text = ""; }
+  else if (signedOut) { els.emptyState.heading = tr("signedout.title"); els.emptyState.text = tr("signedout.text"); }
+  else if (query && inThisAlbum.length) { els.emptyState.heading = tr("empty.noMatches"); els.emptyState.text = tr("empty.noMatchesText", { query: els.musicSearch.value.trim() }); }
+  else { els.emptyState.heading = tr("empty.title"); els.emptyState.text = tr("empty.text"); }
 
   els.trackList.replaceChildren(...(ready ? state.shown.map(makeTrack) : []));
   markPlaying();
   const total = state.shown.reduce((sum, item) => sum + item.size, 0);
   els.status.textContent = !ready ? "" : state.truncated ? tr("status.truncated")
-    : state.shown.length === state.items.length ? tr("status.items", { count: i18n.number(state.items.length), size: sizeText(total) })
+    : state.shown.length === state.items.length ? tr("status.items", { count: i18n.number(state.items.length), size: formatSize(total) })
     : tr("status.filtered", { shown: i18n.number(state.shown.length), total: i18n.number(state.items.length) });
 }
 
@@ -150,7 +136,7 @@ function makeTrack(item, index) {
   icon.className = "track-icon";
   const title = document.createElement("span"); title.className = "track-title"; title.textContent = item.title;
   const album = document.createElement("span"); album.className = "track-album"; album.textContent = albumLabel(item);
-  const size = document.createElement("span"); size.className = "track-size"; size.textContent = sizeText(item.size);
+  const size = document.createElement("span"); size.className = "track-size"; size.textContent = formatSize(item.size);
   row.append(icon, title, album, size);
   row.addEventListener("click", () => {
     if (state.now?.path === item.path) return togglePlay();   // the track that is loaded: the same as the play button
@@ -208,7 +194,7 @@ async function playCurrent() {
   } catch (error) {
     if (token !== loadToken) return;
     els.playerName.textContent = item.title;
-    toast(tr("player.failed", { message: error.message }));
+    popups.toast(tr("player.failed", { message: error.message }), { kind: "error" });
   }
 }
 function togglePlay() {
@@ -217,7 +203,7 @@ function togglePlay() {
     state.queue = [...state.shown]; state.queueIndex = 0; state.history = [];
     return playCurrent();
   }
-  if (audio.paused) audio.play().catch((error) => toast(tr("player.failed", { message: error.message })));
+  if (audio.paused) audio.play().catch((error) => popups.toast(tr("player.failed", { message: error.message }), { kind: "error" }));
   else audio.pause();
 }
 // direction is 1 for the next track and -1 for the previous one; automatic is true when a track ended by itself.

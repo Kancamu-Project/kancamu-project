@@ -1,5 +1,5 @@
 // The GitHub storage shared by the webs that keep data for the user (they all run on one origin).
-// One private repository named after the brand (<id>-data, with the id of assets/brand.json),
+// One private repository named after the brand (<id>-data, with the id of assets/data/brand.json),
 // and one branch per app, named after the app (drivemu, muai). An app only touches its own branch.
 //   const store = await storage.connect("muai");           opens the branch, creating the repository and the branch if needed
 //   const text = await storage.readFile(store, "a.json");  the text of a file of the branch, or null
@@ -9,9 +9,9 @@
 //   await storage.readBinary(store, "a.jpg");              the bytes of a file (a Uint8Array), or null
 //   await storage.writeBinary(store, "a.jpg", bytes);      saves bytes
 //   await storage.removeFile(store, "a.json");             deletes a file
-// The account (assets/account.js) must be signed in.
+// The account (assets/js/account.js) must be signed in.
 (() => {
-    const BRAND = new URL("brand.json", document.currentScript.src).href;
+    const BRAND = new URL("../data/brand.json", document.currentScript.src).href;
     const API = "https://api.github.com";
 
     const fail = (code, message = code) => Object.assign(new Error(message), { code });

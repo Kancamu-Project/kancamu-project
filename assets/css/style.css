@@ -1,10 +1,10 @@
 /* Styles shared by every web except muOS: fonts, colour tokens, reset and control basics.
    Each web loads this file first, then its own layout.css. */
 
-@font-face { font-family: "Inter"; font-weight: 400; font-display: swap; src: url("fonts/inter-latin-400-normal.woff2") format("woff2"); }
-@font-face { font-family: "Inter"; font-weight: 700; font-display: swap; src: url("fonts/inter-latin-700-normal.woff2") format("woff2"); }
-@font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: swap; src: url("fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2"); }
-@font-face { font-family: "JetBrains Mono"; font-weight: 700; font-display: swap; src: url("fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 400; font-display: swap; src: url("../fonts/inter-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 700; font-display: swap; src: url("../fonts/inter-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: swap; src: url("../fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 700; font-display: swap; src: url("../fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2"); }
 
 :root {
     /* Palette: six colours, named after the colour itself.
@@ -33,7 +33,7 @@
     --ok: var(--green);
 
     /* The text on a fill of red, yellow, blue, green or danger: one role for all of them, dark in the dark theme and white in the light theme.
-       The text on a neutral fill is the opposite role (--accent-ink on --accent, --bg on --fg); the text on the colour of a web is --brand-ink (assets/i18n.js). */
+       The text on a neutral fill is the opposite role (--accent-ink on --accent, --bg on --fg); the text on the colour of a web is --brand-ink (assets/js/i18n.js). */
     --on-color: var(--black);
 
     /* The units. A layout.css writes no unit (rem, px, vh, vw): it writes calc(var(--unit) * n), a line as --border-width,
@@ -144,7 +144,7 @@ a:hover {
     text-decoration: underline;
 }
 
-/* The suggestions under a search input (assets/autocomplete.js). */
+/* The suggestions under a search input (assets/js/autocomplete.js). */
 .autocomplete-list {
     position: fixed;
     z-index: 1000;
@@ -175,7 +175,11 @@ a:hover {
     font-weight: 700;
 }
 
-/* The question and message dialog of every web (assets/dialog.js). */
+/* The popups of every web (assets/js/popup.js): the question and message dialog, and the toasts. They are in the #popups element of the body, which has no box of its own. */
+.popups {
+    display: contents;
+}
+
 .shared-dialog {
     width: min(26rem, calc(var(--vw) * 100 - 2.4rem));
     padding: 0;
@@ -209,6 +213,251 @@ a:hover {
     display: flex;
     justify-content: flex-end;
     gap: var(--gap-small);
+}
+
+/* The sheet (a panel at an edge: popups.sheet) and the command (a search with a list: popups.command). */
+.shared-sheet {
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    max-width: none;
+    max-height: none;
+    color: var(--fg);
+    background: var(--bg);
+    border: 0 solid var(--border);
+}
+
+.shared-sheet::backdrop,
+.shared-command::backdrop {
+    background: color-mix(in srgb, var(--black) 60%, transparent);
+}
+
+.shared-sheet[open] {
+    display: flex;
+    flex-direction: column;
+}
+
+.shared-sheet[data-side="end"],
+.shared-sheet[data-side="start"] {
+    inset-block: 0;
+    width: min(26rem, calc(var(--vw) * 100 - 2.4rem));
+    height: 100%;
+}
+
+.shared-sheet[data-side="end"] {
+    inset-inline: auto 0;
+    border-inline-start-width: var(--border-width);
+}
+
+.shared-sheet[data-side="start"] {
+    inset-inline: 0 auto;
+    border-inline-end-width: var(--border-width);
+}
+
+.shared-sheet[data-side="top"],
+.shared-sheet[data-side="bottom"] {
+    inset-inline: 0;
+    width: 100%;
+    height: auto;
+    max-height: 70%;
+}
+
+.shared-sheet[data-side="top"] {
+    inset-block: 0 auto;
+    border-bottom-width: var(--border-width);
+}
+
+.shared-sheet[data-side="bottom"] {
+    inset-block: auto 0;
+    border-top-width: var(--border-width);
+}
+
+.shared-sheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-small);
+    padding: var(--padding-large);
+    border-bottom: var(--border-width) solid var(--border);
+}
+
+.shared-sheet-title {
+    font-size: var(--font-size-large);
+    font-weight: 700;
+}
+
+.shared-sheet-close {
+    width: calc(var(--height) * 3);
+}
+
+.shared-sheet-body {
+    flex: 1;
+    min-height: 0;
+    padding: var(--padding-large);
+    overflow: auto;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.shared-command {
+    width: min(32rem, calc(var(--vw) * 100 - 2.4rem));
+    padding: 0;
+    color: var(--fg);
+    background: var(--bg);
+    border: var(--border-width) solid var(--border);
+}
+
+.shared-command-input {
+    width: 100%;
+    border-width: 0 0 var(--border-width);
+    border-radius: 0;
+}
+
+.shared-command-list {
+    display: flex;
+    flex-direction: column;
+    max-height: 16rem;
+    padding: var(--padding-small);
+    overflow: auto;
+}
+
+.shared-command-item {
+    justify-content: space-between;
+    border: 0;
+    background: transparent;
+    font-weight: 400;
+    text-align: start;
+    text-transform: none;
+}
+
+.shared-command-item.on {
+    background: var(--bg-1);
+}
+
+.shared-command-hint {
+    color: var(--fg-1);
+    font-size: var(--font-size-extra-small);
+}
+
+.shared-command-empty {
+    padding: var(--padding-medium);
+    color: var(--fg-1);
+}
+
+/* The toasts: the short notes at the bottom of the page. */
+.shared-toasts {
+    inset: auto auto var(--padding-large) 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small);
+    width: min(26rem, calc(var(--vw) * 100 - 2.4rem));
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.shared-toasts:not(:popover-open) {
+    display: none;
+}
+
+.shared-toast {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--gap-small);
+    padding: var(--padding-medium) var(--padding-large);
+    color: var(--fg);
+    background: var(--bg);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--border-radius-large);
+    font-size: var(--font-size-small);
+    overflow-wrap: anywhere;
+    animation: shared-toast-in 0.2s;
+}
+
+/* The kind of a toast and of a dialog is a colour with a meaning: green is good, blue is neutral, yellow is careful, red is bad or sensitive. */
+.shared-toast,
+.shared-dialog {
+    --kind: var(--border);
+}
+
+.shared-toast.success,
+.shared-dialog[data-kind="success"] {
+    --kind: var(--ok);
+}
+
+.shared-toast.info,
+.shared-dialog[data-kind="info"] {
+    --kind: var(--blue);
+}
+
+.shared-toast.warning,
+.shared-dialog[data-kind="warning"] {
+    --kind: var(--yellow);
+}
+
+.shared-toast.error,
+.shared-dialog[data-kind="error"] {
+    --kind: var(--danger);
+}
+
+.shared-toast,
+.shared-dialog {
+    border-color: var(--kind);
+}
+
+.shared-toast-icon {
+    width: var(--icon-size-medium);
+    height: var(--icon-size-medium);
+    color: var(--kind);
+    background: currentColor;
+    -webkit-mask: url(../icons/check.svg) center / contain no-repeat;
+    mask: url(../icons/check.svg) center / contain no-repeat;
+}
+
+.shared-toast.info .shared-toast-icon {
+    -webkit-mask-image: url(../icons/info.svg);
+    mask-image: url(../icons/info.svg);
+}
+
+.shared-toast.warning .shared-toast-icon {
+    -webkit-mask-image: url(../icons/warning.svg);
+    mask-image: url(../icons/warning.svg);
+}
+
+.shared-toast.error .shared-toast-icon {
+    -webkit-mask-image: url(../icons/alert.svg);
+    mask-image: url(../icons/alert.svg);
+}
+
+.shared-toast.progress .shared-toast-icon {
+    -webkit-mask-image: url(../icons/upload.svg);
+    mask-image: url(../icons/upload.svg);
+}
+
+.shared-toast-bar {
+    grid-column: 1 / -1;
+    height: var(--border-width-thick);
+    background: var(--border);
+    overflow: hidden;
+}
+
+.shared-toast-fill {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: var(--kind);
+    transition: width 0.2s;
+}
+
+@keyframes shared-toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(0.4rem);
+    }
 }
 
 .hidden {
@@ -284,7 +533,7 @@ select {
     appearance: none;
     cursor: pointer;
     padding-inline-end: calc(var(--padding-medium) + var(--icon-size-small) + var(--gap-small));   /* room for the arrow, so a select as wide as its text does not put the text under it */
-    background-image: url("icons/chevron-down-white.svg");
+    background-image: url("../icons/chevron-down-white.svg");
     background-size: 1rem;
     background-repeat: no-repeat;
     background-position: right 0.6rem center;
@@ -295,7 +544,7 @@ select {
 }
 
 :root[data-theme="light"] select {
-    background-image: url("icons/chevron-down-black.svg");
+    background-image: url("../icons/chevron-down-black.svg");
 }
 
 :root[dir="rtl"] select {
@@ -330,7 +579,7 @@ button:hover:not(:disabled, .active, .on, .invert, .primary, .danger) {
     border-color: var(--fg-1);
 }
 
-/* The account web is shown in this dialog (assets/account.js). */
+/* The account web is shown in this dialog (assets/js/account.js). */
 dialog.account-dialog {
     width: min(56rem, calc(100vw - 2.4rem));
     padding: 0;

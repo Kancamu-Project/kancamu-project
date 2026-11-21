@@ -6,23 +6,25 @@
 <title></title>
 <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
 <meta name="theme-color" content="#1a1a1b">
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/page.css">
 <link rel="stylesheet" href="layout.css">
-<script src="../assets/theme.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script defer src="../assets/js/i18n.js"></script>
+<script defer src="../assets/js/popup.js"></script>
+<script defer src="../assets/js/components.js"></script>
+<script defer src="../assets/js/account.js"></script>
+<script defer src="../assets/js/settings.js"></script>
+<script defer src="../assets/js/storage.js"></script>
+<script type="module" src="app.js"></script>
 </head>
 <body>
 
-    <div id="header" class="header">
-      <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
-      <div class="header-tools">
-        <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
-        <button id="menu-button" class="menu-button" type="button" aria-controls="sidebar" aria-expanded="false"><span class="icon icon-list"></span><span data-i18n="lessons.label"></span></button>
-      </div>
-    </div>
-    <div id="sidebar" class="sidebar">
-        <select id="course-select" data-i18n-label="course.label"></select>
-        <div id="sidebar-nav" class="sidebar-nav"></div>
-        <div class="sidebar-summary">
+    <kit-header id="header" menu menu-text data-i18n-menu-label="lessons.label"></kit-header>
+    <kit-sidebar id="sidebar">
+        <select id="course-select" slot="before" data-i18n-label="course.label"></select>
+        <div class="sidebar-summary" slot="after">
           <div class="stats">
             <div class="stat">
               <span class="icon icon-zap"></span>
@@ -38,7 +40,7 @@
           <span id="goal-text" class="goal-text"></span>
           <div class="progress"><div id="goal-fill" class="progress-fill"></div></div>
         </div>
-    </div>
+    </kit-sidebar>
 
     <div id="main" class="main">
       <div id="overview-view" class="overview-view">
@@ -83,16 +85,8 @@
   </div>
 
     </div>
-    <div id="footer" class="footer">
-      <span id="status"></span>
-      <a href="/" target="_top" data-i18n="copyright"></a>
-    </div>
+    <kit-footer id="footer" status></kit-footer>
 
-<script src="../assets/i18n.js"></script>
-<script src="../assets/dialog.js"></script>
-<script src="../assets/account.js"></script>
-<script src="../assets/settings.js"></script>
-<script src="../assets/storage.js"></script>
-<script type="module" src="script.js"></script>
+<div id="popups" class="popups"></div>
 </body>
 </html>

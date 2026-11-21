@@ -10,7 +10,7 @@
 //                                            viewer that shows one file after another); load() gives the Blob. region is a function that gives the part of the element
 //                                            where a picture is dragged (the whole element if left out).
 //   await transfer.take(event)               the files of a drop: the ones of the computer, a picture of the Drive, or a file of the Drive that came as a link
-//   The main web is told (a message to the parent page) which file a web drags, and gives it to the web of any tab as a real file (see script.js).
+//   The main web is told (a message to the parent page) which file a web drags, and gives it to the web of any tab as a real file (see app.js).
 //   transfer.dragging                        true while a file of this page is being dragged (a page does not take its own file)
 (() => {
     const LIMIT = 64 * 1024 * 1024;   // a bigger file is not dragged: it would take too long to read before the drag

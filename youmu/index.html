@@ -6,24 +6,26 @@
 <title></title>
 <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
 <meta name="theme-color" content="#1a1a1b">
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/page.css">
 <link rel="stylesheet" href="layout.css">
-<script src="../assets/theme.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script defer src="../assets/js/i18n.js"></script>
+<script defer src="../assets/js/popup.js"></script>
+<script defer src="../assets/js/components.js"></script>
+<script defer src="../assets/js/account.js"></script>
+<script defer src="../assets/js/storage.js"></script>
+<script defer src="../assets/js/settings.js"></script>
+<script type="module" src="app.js"></script>
 </head>
 <body>
-  <div id="header" class="header">
-    <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
-    <div class="header-tools">
-      <button id="menu-button" class="square menu-button" type="button" aria-controls="sidebar" aria-expanded="false" data-i18n-title="menu" data-i18n-label="menu"><span class="icon icon-list"></span></button>
-    </div>
-  </div>
-  <div id="sidebar" class="sidebar">
-      <div class="sidebar-nav" role="tablist">
+  <kit-header id="header" menu no-account></kit-header>
+  <kit-sidebar id="sidebar" tablist>
         <button id="account-tab" class="sidebar-item" type="button" role="tab"><span class="icon icon-user"></span><span data-i18n="account"></span></button>
         <span class="sidebar-title" data-i18n="settings"></span>
         <div id="sidebar-apps" class="sidebar-apps"></div>
-      </div>
-  </div>
+      </kit-sidebar>
 
   <div id="main" class="main">
     <div class="topbar">
@@ -45,7 +47,7 @@
 
       <div id="account-profile">
         <div class="profile-card">
-          <div class="account-avatar"></div>
+          <div class="avatar"></div>
           <div class="account-names selectable">
             <span class="account-name"></span>
             <span class="account-login"></span>
@@ -62,14 +64,7 @@
     </div>
 
   </div>
-  <div id="footer" class="footer">
-    <a class="copyright" href="/" target="_top" data-i18n="copyright"></a>
-  </div>
-<script src="../assets/i18n.js"></script>
-<script src="../assets/dialog.js"></script>
-<script src="../assets/account.js"></script>
-<script src="../assets/storage.js"></script>
-<script src="../assets/settings.js"></script>
-<script type="module" src="script.js"></script>
+  <kit-footer id="footer"></kit-footer>
+<div id="popups" class="popups"></div>
 </body>
 </html>

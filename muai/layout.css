@@ -5,48 +5,14 @@
 }
 
 /* The page is the header, the sidebar, and the main, directly in the body. The padding and the gap are the ones of the body: the three elements have none. */
-body { display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; gap: var(--gap-medium); padding: var(--padding-medium); line-height: 1.55; overflow: hidden; }
-.error { color: var(--danger); }
+body { grid-template-columns: var(--sidebar-width) minmax(0, 1fr); line-height: 1.55; overflow: hidden; }
 .note { color: var(--fg-1); }
 .mono {text-transform: uppercase; }
 
 /* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
-.icon {
-  width: var(--icon-size-small); height: var(--icon-size-small); flex: none; background: currentColor;
-  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
-}
-.icon-plus { --icon: url("../assets/icons/plus.svg"); }
-.icon-menu { --icon: url("../assets/icons/menu.svg"); }
-.icon-chevron { --icon: url("../assets/icons/chevron-down.svg"); }
-.icon-x { --icon: url("../assets/icons/close.svg"); }
-.icon-trash { --icon: url("../assets/icons/trash.svg"); }
-.icon-edit { --icon: url("../assets/icons/pencil.svg"); }
-.icon-copy { --icon: url("../assets/icons/copy.svg"); }
-.icon-refresh { --icon: url("../assets/icons/refresh.svg"); }
-.icon-download { --icon: url("../assets/icons/download.svg"); }
-.icon-upload { --icon: url("../assets/icons/upload.svg"); }
-.icon-user { --icon: url("../assets/icons/user.svg"); }
-.icon-send { --icon: url("../assets/icons/send.svg"); }
-.icon-stop { --icon: url("../assets/icons/stop.svg"); }
-.icon-image { --icon: url("../assets/icons/image.svg"); }
-.icon-sun { --icon: url("../assets/icons/sun.svg"); }
-.icon-moon { --icon: url("../assets/icons/moon.svg"); }
 
 /* Button */
-button {
-  display: flex; flex-direction: row; justify-content: center; align-items: center; gap: var(--gap-small);
-  height: var(--height); min-width: 0; cursor: pointer; white-space: nowrap;
-font-weight: bold;text-transform: uppercase;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-}
-button > span:not(.icon) { overflow: hidden; text-overflow: ellipsis; }
-button:disabled { opacity: 0.4; cursor: not-allowed; }
-button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-button.primary:hover:not(:disabled) { background: var(--accent); border-color: var(--fg); }
-button.ghost { height: var(--height-s); font-size: var(--font-size-extra-small); color: var(--fg-1); }
-button.ghost:hover:not(:disabled) { color: var(--fg); }
-button.danger { color: var(--danger); border-color: var(--danger); }
-button.danger:hover:not(:disabled) { background: var(--danger); color: var(--on-color); border-color: var(--danger); }
+button.ghost { height: var(--height-s); font-size: var(--font-size-extra-small); }
 button.outline { border-color: var(--fg); }
 button.outline:hover:not(:disabled) { background: var(--fg); color: var(--bg); border-color: var(--fg); }
 button.active, button.invert { background: var(--fg); color: var(--bg); border-color: var(--fg); }
@@ -57,15 +23,14 @@ input[type=search] { width: 100%; }
 input[type=range] { height: var(--height); padding: 0; border: none; accent-color: var(--accent); }
 
 /* Sidebar */
-.sidebar { grid-column: 1; grid-row: 2; position: relative; display: flex; flex-direction: column; min-height: 0; background: var(--bg); gap: var(--gap-small); }
+.sidebar { grid-column: 1; grid-row: 2; position: relative; display: flex; overflow: visible; }   /* the handle to resize it sticks out */
 .chat-controls { display: flex; flex-direction: column; gap: var(--gap-small); }
-.header { grid-column: 1; grid-row: 1; display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); }
-.header-tools { display: flex; gap: var(--gap-small); height: var(--height); }
-.header-tools > button { height: 100%; }
-.logo { display: flex; align-items: center; gap: var(--gap-small); height: var(--height); font-size: var(--font-size-large); font-weight: 700;}
+.header { grid-column: 1; grid-row: 1; }
+.logo { height: var(--height); }
 .logo .logo-name { display: flex; }
 .logo .highlight { color: var(--brand, var(--red)); }
-.logo-mark { width: var(--icon-size-large); height: var(--icon-size-large); flex: none; background: url("favicon.png") center / contain no-repeat; image-rendering: pixelated; }
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the web: its favicon (the rest is in assets/css/components.css) */
+:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/components.css) */
 #chat-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; padding: 0 0 var(--padding-large); }
 .date-group { padding: var(--padding-medium) var(--padding-medium) var(--padding-small);font-size: var(--font-size-extra-small);text-transform: uppercase; color: var(--fg-1); }
 .chat-item {
@@ -80,7 +45,7 @@ input[type=range] { height: var(--height); padding: 0; border: none; accent-colo
 .chat-item .actions button { width: var(--height); height: 100%; padding: 0; color: var(--fg-1); }
 .chat-item .actions button:hover { color: var(--fg); background: none; }
 .empty-chat-list { padding: var(--padding-medium); color: var(--fg-1); }
-.footer { grid-column: 1; grid-row: 3; display: flex; align-items: center; color: var(--fg-1); font-size: var(--font-size-small); }
+.footer { grid-column: 1; grid-row: 3; }
 
 .sidebar-resizer { position: absolute; top: 0; bottom: 0; inset-inline-end: calc(var(--unit) * -1); width: calc(var(--unit) * 2); z-index: 5; cursor: col-resize; background: none; transition: background 0.2s; touch-action: none; }
 .sidebar-resizer::before { content: ""; position: absolute; top: 0; bottom: 0; inset-inline: calc(var(--unit) * -2); }
@@ -91,12 +56,11 @@ body.resizing .sidebar { transition: none; }
 /* Main area */
 /* The right part is one panel with a border; the page has a padding around it. */
 /* The sidebar fills the height of the page; only the app has a space above and below it. */
-.main { grid-column: 2; grid-row: 1 / -1; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--bg); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); overflow: hidden; }
-.topbar { box-sizing: content-box; display: flex; align-items: center; gap: var(--gap-small); height: var(--height); padding-inline: var(--padding-extra-large) 0; border-bottom: var(--border-width) solid var(--border); }
-.topbar > button { height: 100%; }
+.main { gap: 0; grid-column: 2; grid-row: 1 / -1; background: var(--bg); overflow: hidden; }
+.topbar { box-sizing: content-box; padding-inline: var(--padding-extra-large) 0; border-bottom: var(--border-width) solid var(--border); }
 /* What touches another element is square: the bar, the buttons of a row, the theme switch, the head of a code block. */
 .topbar > button, .chat-item .actions button, .markdown .code-header > button, .segmented-control button { border-radius: 0; }
-.bubble, .markdown .code { border-radius: var(--border-radius-medium); }
+.markdown .code { border-radius: var(--border-radius-medium); }
 .attachment-thumbnail { border-radius: var(--border-radius-small); }
 #chat-title { flex: 1; min-width: 0; font-weight: 700; font-size: var(--font-size-large);overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #menu-button { display: none; }
@@ -104,8 +68,6 @@ body.resizing .sidebar { transition: none; }
 #model-picker.ok { color: var(--ok); border-color: var(--ok); }
 #model-picker.unchosen { color: var(--danger); border-color: var(--danger); }
 #model-picker.loading { color: var(--yellow); border-color: var(--yellow); }
-.segmented-control { display: flex; }
-.segmented-control button + button { border-inline-start: none; }
 .scrollable-area { flex: 1; min-height: 0; overflow-y: auto; display: flex; justify-content: center; align-items: flex-start; padding: var(--padding-large) var(--padding-extra-large); }
 .welcome-message { padding-block: var(--padding-extra-large); text-align: center; font-size: var(--font-size-extra-large); font-weight: 700; }
 /* No messages yet: the welcome and the message box sit together in the middle of the page, under the top bar. */
@@ -121,11 +83,8 @@ body.resizing .sidebar { transition: none; }
 
 /* Chat */
 #chat { display: flex; flex-direction: column; gap: var(--gap-small); width: 100%; }
-.message { display: flex; flex-direction: column; gap: var(--gap-small); min-width: 0; }
-.message.user { align-items: flex-end; }
-.bubble { display: flex; flex-direction: column; gap: var(--gap-small); max-width: 92%; padding: var(--padding-medium) var(--padding-medium); border: var(--border-width) solid var(--border); overflow-wrap: anywhere; line-height: 1.6; }
-.message.user .bubble { background: var(--bg-1); border-color: var(--fg-1); white-space: pre-wrap; }
-.attachment { width: calc(var(--unit) * 100); max-width: 100%; height: calc(var(--unit) * 75); background-size: contain; background-position: left center; background-repeat: no-repeat; image-rendering: pixelated; }
+.bubble.filled { white-space: pre-wrap; }   /* what the user wrote keeps its lines */
+.message-image { width: calc(var(--unit) * 100); max-width: 100%; height: calc(var(--unit) * 75); background-size: contain; background-position: left center; background-repeat: no-repeat; image-rendering: pixelated; }
 .message-actions { display: flex; align-items: center; gap: var(--gap-small); opacity: 0; transition: opacity 0.15s; }
 .message:hover .message-actions, .message:focus-within .message-actions { opacity: 1; }
 @media (hover: none) { .message-actions { opacity: 1; } }
@@ -173,7 +132,6 @@ dialog h2 { font-size: var(--font-size-large); font-weight: 700;}
 dialog label { display: flex; flex-direction: column; gap: var(--gap-small); }
 dialog textarea { min-height: calc(var(--unit) * 30); padding: var(--padding-medium); line-height: 1.5; resize: vertical; }
 
-
 .sidebar-overlay { display: none; }
 @media (max-width: 48rem) {
   /* The header is a row on top (the brand, the account button, and the menu button); the sidebar is a drawer that opens under it */
@@ -185,7 +143,6 @@ dialog textarea { min-height: calc(var(--unit) * 30); padding: var(--padding-med
   body.sidebar-open .sidebar-overlay { display: block; position: fixed; inset: 0; z-index: 10; background: color-mix(in srgb, var(--black) 60%, transparent); }
   #menu-button { display: flex; }
   .sidebar-resizer { display: none; }
-  .bubble { max-width: 98%; }
 }
 @media (max-width: 35rem) {
   .topbar #export-button > span:not(.icon) { display: none; }
@@ -193,7 +150,7 @@ dialog textarea { min-height: calc(var(--unit) * 30); padding: var(--padding-med
 
 /* ---------- Language and right-to-left ---------- */
 .footer span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-:root[dir="rtl"] .attachment { background-position: right center; }
+:root[dir="rtl"] .message-image { background-position: right center; }
 :root[dir="rtl"] .chat-item.active { box-shadow: inset calc(var(--border-width) * -1) 0 0 var(--accent); }
 @media (max-width: 48rem) {
   :root[dir="rtl"] .sidebar { transform: translateX(calc(100% + var(--padding-medium))); }

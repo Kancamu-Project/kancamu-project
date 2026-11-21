@@ -12,4 +12,4 @@ export const OS_INFO = Object.freeze({
 });
 
 /** Where the name of the brand is written (relative to the OS root): the one place, shared by every web. */
-export const BRAND_FILE = '../assets/brand.json';
+export const BRAND_FILE = '../assets/data/brand.json';

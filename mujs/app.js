@@ -4,6 +4,7 @@
 
 await i18n.load();
 
+const { element, icon } = components;
 const tr = (key, params) => i18n.t(key, params);
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
@@ -16,17 +17,8 @@ const els = Object.fromEntries([
 
 const { units, limits, storageBranch, syntax, settings: { defaults } } = i18n.data;
 const lessons = units.flatMap((unit) => unit.lessons.map((lesson) => ({ ...lesson, unit })));
-const element = (tag, className, text) => {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
-  return node;
-};
-const icon = (name) => element("span", `icon icon-${name}`);
-function say(text, isError = false) {
-  els.status.textContent = text;
-  els.status.classList.toggle("error", isError);
-}
+
+const say = components.status(els.status);
 
 /* ---------- the colours of the code ---------- */
 // A word is a comment, a text, a number, a keyword, a value (true, null), a name that JavaScript has (console, Math), or the name of something that is called.
@@ -159,21 +151,17 @@ const isDone = (lesson) => !!progress.done[lesson.id];
 const startingLesson = () => lessons.find((lesson) => lesson.id === progress.last) || lessons.find((lesson) => !isDone(lesson)) || lessons[0];
 
 let current = null;   // the lesson that is open
-function setMenu(open) {
-  els.sidebar.classList.toggle("open", open);
-  els.menuButton.setAttribute("aria-expanded", String(open));
-  if (open) els.sidebar.querySelector(".sidebar-item.active, .sidebar-item")?.focus();
-}
+const menu = components.drawer({ sidebar: els.sidebar, button: els.menuButton });
 function renderSidebar() {
   const done = lessons.filter(isDone).length;
   els.summaryText.textContent = tr("progress.summary", { done: i18n.number(done), total: i18n.number(lessons.length) });
-  els.stepper.replaceChildren(...lessons.map((lesson) => element("div", `step${isDone(lesson) ? " done" : ""}${lesson === current ? " active" : ""}`)));
+  els.stepper.replaceChildren(...lessons.map((lesson) => element("div", `step${isDone(lesson) ? " done" : ""}${lesson === current ? " on" : ""}`)));
   els.sidebarNav.replaceChildren(...units.map((unit, unitIndex) => {
     const section = element("div", "unit");
     section.append(element("span", "unit-title", tr("unit.title", { number: unitIndex + 1, title: i18n.pick(unit.title) })));
     for (const lesson of lessons.filter((item) => item.unit === unit)) {
       const title = i18n.pick(lesson.title);
-      const link = element("button", `sidebar-item${isDone(lesson) ? " done" : ""}${lesson === current ? " active" : ""}`);
+      const link = element("button", `sidebar-item${isDone(lesson) ? " done" : ""}${lesson === current ? " on" : ""}`);
       link.type = "button";
       link.title = tr("lesson.open", { title });
       link.setAttribute("aria-label", link.title);
@@ -181,7 +169,7 @@ function renderSidebar() {
       const badge = element("span", "sidebar-item-number");
       if (isDone(lesson)) badge.append(icon("check")); else badge.textContent = String(lessons.indexOf(lesson) + 1);
       link.append(badge, element("span", "sidebar-item-title", title));
-      link.addEventListener("click", () => { setMenu(false); openLesson(lesson.id); });
+      link.addEventListener("click", () => { menu.set(false); openLesson(lesson.id); });
       section.append(link);
     }
     return section;
@@ -315,7 +303,7 @@ els.followingButton.addEventListener("click", () => go(1));
 els.previousButton.addEventListener("click", () => go(-1));
 
 els.resetButton.addEventListener("click", async () => {
-  if (!(await dialogs.ask({ text: tr("reset.text"), ok: tr("reset.ok") }))) return;
+  if (!(await popups.ask({ text: tr("reset.text"), ok: tr("reset.ok") }))) return;
   delete progress.code[current.id];
   save();
   els.codeEditor.value = current.starter;
@@ -324,7 +312,7 @@ els.resetButton.addEventListener("click", async () => {
   els.codeEditor.focus();
 });
 els.solutionButton.addEventListener("click", async () => {
-  if (!(await dialogs.ask({ text: tr("solution.text"), ok: tr("solution.ok") }))) return;
+  if (!(await popups.ask({ text: tr("solution.text"), ok: tr("solution.ok") }))) return;
   els.codeEditor.value = current.solution;
   progress.code[current.id] = current.solution;
   save();
@@ -333,10 +321,6 @@ els.solutionButton.addEventListener("click", async () => {
 });
 
 /* ---------- the list of lessons on a narrow screen, the settings, the account, and the language ---------- */
-els.menuButton.addEventListener("click", () => setMenu(!els.sidebar.classList.contains("open")));
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && els.sidebar.classList.contains("open") && els.menuButton.offsetParent) { setMenu(false); els.menuButton.focus(); }
-});
 settings.onChange("mujs", defaults, (changed) => { preferences = changed; applyPreferences(); });
 settings.listen("mujs", (message) => {
   if (message.type === "progressReset") { progress = blank(); openLesson(lessons[0].id); }

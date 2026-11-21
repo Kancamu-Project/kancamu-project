@@ -14,49 +14,24 @@ const S = {
 };
 
 /* ---------- utilities ---------- */
-const h = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-const icon = (name) => h('span', 'icon icon-' + name);
+const { element, icon, extensionOf } = components;
 const enc = (p) => p.split('/').map(encodeURIComponent).join('/');
 const fullPath = (...parts) => [...S.path, ...parts].filter(Boolean).join('/');
 const contentsOf = (path) => `/contents${path ? '/' + enc(path) : ''}`;
-const fmtSize = (n) => {
-  if (n < 1024) return n + ' B';
-  const u = ['KB', 'MB', 'GB', 'TB']; let i = -1;
-  do { n /= 1024; i++; } while (n >= 1024 && i < u.length - 1);
-  return n.toFixed(n < 10 ? 1 : 0) + ' ' + u[i];
-};
-const ext = (name) => (name.includes('.') ? name.split('.').pop().toLowerCase() : '');
 const kind = (it) => {
   if (it.type === 'dir') return 'folder';
-  const e = ext(it.name);
+  const e = extensionOf(it.name);
   for (const k in TYPES) if (TYPES[k].includes(e)) return k;
   return 'file';
 };
-const typeLabel = (it) => (it.type === 'dir' ? tr('type.folder') : ext(it.name) ? tr('type.fileExt', { ext: ext(it.name).toUpperCase() }) : tr('type.file'));
-const tile = (k, big = false) => { const t = h('span', 'file-tile kind-' + k + (big ? ' large' : '')); t.appendChild(icon(ICON_OF[k])); return t; };
+const typeLabel = (it) => (it.type === 'dir' ? tr('type.folder') : extensionOf(it.name) ? tr('type.fileExt', { ext: extensionOf(it.name).toUpperCase() }) : tr('type.file'));
+const tile = (k, big = false) => { const t = element('span', 'file-tile kind-' + k + (big ? ' large' : '')); t.appendChild(icon(ICON_OF[k])); return t; };
 
-function toast(msg, isErr = false, ms = 3500) {
-  const el = h('div', 'toast' + (isErr ? ' err' : ''));
-  el.append(icon(isErr ? 'alert' : 'check'), h('span', '', msg));
-  $('toasts').appendChild(el);
-  if (ms) setTimeout(() => el.remove(), ms);
-  return el;
-}
-function progressToast(text) {
-  const el = h('div', 'toast');
-  const label = h('span', '', text), bar = h('div', 'progress-bar'); bar.appendChild(h('i'));
-  el.append(icon('upload'), label, bar);
-  $('toasts').appendChild(el);
-  return {
-    set(t, p) { label.textContent = t; bar.firstChild.style.width = Math.round(p * 100) + '%'; },
-    done() { el.remove(); },
-  };
-}
 
 /* ---------- dialogs ---------- */
-// A question in the dialog shared by every web (assets/dialog.js). input: the text to start from; the answer is true, or the trimmed text (null when cancelled).
+// A question in the dialog shared by every web (assets/js/popup.js). input: the text to start from; the answer is true, or the trimmed text (null when cancelled).
 async function ask({ title, text = '', input = null, ok }) {
-  const answer = await dialogs.ask({ title, text, value: input, ok });
+  const answer = await popups.ask({ title, text, value: input, ok });
   return typeof answer === 'string' ? answer.trim() : answer || null;
 }
 
@@ -112,7 +87,7 @@ async function listViaTree(dir) {
     .filter((t) => t.path.startsWith(prefix) && !t.path.slice(prefix.length).includes('/'))
     .map((t) => ({ name: t.path.slice(prefix.length), path: t.path, type: t.type === 'tree' ? 'dir' : 'file', size: t.size || 0, sha: t.sha }));
 }
-/* ---------- the account: one sign-in, shared with the other webs (assets/account.js) ---------- */
+/* ---------- the account: one sign-in, shared with the other webs (assets/js/account.js) ---------- */
 async function authenticate(token) {
   S.token = token;
   const res = await api('/user', { returnResponse: true });
@@ -126,7 +101,7 @@ async function createDefaultFolders() {
   await commitTree(DEFAULT_FOLDERS.map((name) => ({ path: `${name}/${KEEP}`, mode: '100644', type: 'blob', sha: blob.sha })), 'Drivemu: create the default folders');
 }
 
-// Connects to the drivemu branch of the shared storage (assets/storage.js), then makes sure the root folder is there.
+// Connects to the drivemu branch of the shared storage (assets/js/storage.js), then makes sure the root folder is there.
 async function openStorage() {
   const store = await storage.connect('drivemu');
   S.owner = store.owner; S.repo = store.repo; S.branch = store.branch;
@@ -146,7 +121,7 @@ async function startFromAccount() {
     await authenticate(acc.token);
     await openStorage();
   } catch (e) {
-    if (e.status === 401) { toast(tr('acct.tokenInvalid', { name: acc.login || tr('acct.anAccount') }), true, 6000); account.signOut(); showSignedOut(); }
+    if (e.status === 401) { popups.toast(tr('acct.tokenInvalid', { name: acc.login || tr('acct.anAccount') }), { kind: "error" }); account.signOut(); showSignedOut(); }
     else showSignedOut(tr('login.couldNotConnect', { message: e.code === 'noWrite' ? tr('error.noWrite') : e.message }));
   }
 }
@@ -166,7 +141,7 @@ function showSignedOut(err = '') {
   S.path = []; S.query = ''; $('file-search').value = ''; S.selected.clear(); S.items = []; S.head = null;
   $('loading').classList.add('hidden');
   render();
-  if (err) toast(err, true, 6000);
+  if (err) popups.toast(err, { kind: "error" });
 }
 
 /* --- settings: set in the account web; the reset it does shows here --- */
@@ -178,7 +153,7 @@ settings.listen('drivemu', (message) => {
 
 /* ---------- file list ---------- */
 async function load() {
-  $('loading').replaceChildren(...Array.from({ length: 4 }, () => h('i')));
+  $('loading').replaceChildren(...Array.from({ length: 4 }, () => element('i')));
   $('loading').classList.remove('hidden'); $('empty').classList.add('hidden'); $('file-list').replaceChildren();
   S.selected.clear();
   try {
@@ -189,7 +164,7 @@ async function load() {
     if (!S.path.length) S.rootFolders = S.items.filter((i) => i.type === 'dir').map((i) => i.name);
   } catch (e) {
     if (e.status === 404) S.items = [];
-    else { toast(tr('load.failed', { message: e.message }), true); S.items = []; }
+    else { popups.toast(tr('load.failed', { message: e.message }), { kind: "error" }); S.items = []; }
   }
   $('loading').classList.add('hidden');
   render();
@@ -200,7 +175,7 @@ function visibleItems() {
   const cmp = {
     name: (a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }),
     size: (a, b) => a.size - b.size,
-    type: (a, b) => ext(a.name).localeCompare(ext(b.name)) || a.name.localeCompare(b.name),
+    type: (a, b) => extensionOf(a.name).localeCompare(extensionOf(b.name)) || a.name.localeCompare(b.name),
   }[S.sort];
   const items = S.items.filter((i) => !q || i.name.toLowerCase().includes(q));
   items.sort((a, b) => (a.type === b.type ? cmp(a, b) * S.dir : a.type === 'dir' ? -1 : 1));
@@ -211,7 +186,7 @@ function visibleItems() {
 function usageInfo() {
   const used = S.repoSizeKB * 1024, limit = STORAGE_LIMIT_KB * 1024;
   const percent = Math.min(100, (used / limit) * 100);
-  const params = { percent: i18n.number(percent, { maximumFractionDigits: percent < 10 ? 1 : 0 }), used: fmtSize(used), limit: fmtSize(limit) };
+  const params = { percent: i18n.number(percent, { maximumFractionDigits: percent < 10 ? 1 : 0 }), used: components.formatSize(used), limit: components.formatSize(limit) };
   return { percent, params };
 }
 function refreshUsage() {
@@ -237,8 +212,8 @@ function renderSide() {
   nav.replaceChildren(); box.replaceChildren();
   if (!S.user) return;
   const entry = (label, ico, path, on) => {
-    const b = h('button', 'button sidebar-item'); b.type = 'button'; b.classList.toggle('on', on);
-    b.append(icon(ico), h('span', '', label));
+    const b = element('button', 'sidebar-item'); b.type = 'button'; b.classList.toggle('on', on);
+    b.append(icon(ico), element('span', '', label));
     b.onclick = () => goTo(path);
     return b;
   };
@@ -246,11 +221,11 @@ function renderSide() {
   for (const name of S.rootFolders) nav.append(entry(name, 'folder', [name], S.path[0] === name));
   // the indicator of the storage used, at the bottom
   const { percent, params } = usageInfo();
-  const meter = h('div', 'meter'), fill = h('i');
+  const meter = element('div', 'meter'), fill = element('i');
   fill.style.width = `${percent > 0 ? Math.max(percent, 1) : 0}%`;
   meter.append(fill);
   meter.setAttribute('role', 'progressbar'); meter.setAttribute('aria-valuenow', Math.round(percent)); meter.setAttribute('aria-valuemin', 0); meter.setAttribute('aria-valuemax', 100);
-  box.append(h('span', 'usage-percent', tr('usage.percent', params)), meter, h('span', 'usage-detail', tr('usage.detail', params)));
+  box.append(element('span', 'usage-percent', tr('usage.percent', params)), meter, element('span', 'usage-detail', tr('usage.detail', params)));
 }
 function goTo(path) { S.path = path; S.query = ''; $('file-search').value = ''; load(); }
 
@@ -263,8 +238,8 @@ function render() {
   list.replaceChildren();
   if (S.view === 'grid') {
     const dirs = items.filter((i) => i.type === 'dir'), files = items.filter((i) => i.type !== 'dir');
-    if (dirs.length) { list.appendChild(h('div', 'list-section-title', tr('list.folders'))); const g = h('div', 'folder-grid'); dirs.forEach((i) => g.appendChild(folderChip(i))); list.appendChild(g); }
-    if (files.length) { list.appendChild(h('div', 'list-section-title', tr('list.files'))); const g = h('div', 'file-grid'); files.forEach((i) => g.appendChild(fileCard(i))); list.appendChild(g); }
+    if (dirs.length) { list.appendChild(element('div', 'list-section-title', tr('list.folders'))); const g = element('div', 'folder-grid'); dirs.forEach((i) => g.appendChild(folderChip(i))); list.appendChild(g); }
+    if (files.length) { list.appendChild(element('div', 'list-section-title', tr('list.files'))); const g = element('div', 'file-grid'); files.forEach((i) => g.appendChild(fileCard(i))); list.appendChild(g); }
   } else if (items.length) {
     list.appendChild(listTable(items));
   }
@@ -273,10 +248,10 @@ function render() {
   $('empty').classList.toggle('hidden', !empty);
   if (empty) {
     const searching = S.query && S.items.length > 0;
-    $('empty-title').textContent = tr(!S.user ? 'signedout.title' : searching ? 'empty.noMatches' : 'empty.title');
-    $('empty-text').textContent = !S.user ? tr('signedout.text') : searching ? tr('empty.noMatchesText', { query: S.query }) : tr('empty.text');
+    $('empty').heading = tr(!S.user ? 'signedout.title' : searching ? 'empty.noMatches' : 'empty.title');
+    $('empty').text = !S.user ? tr('signedout.text') : searching ? tr('empty.noMatchesText', { query: S.query }) : tr('empty.text');
     const cta = $('empty-action-button');
-    cta.replaceChildren(icon(S.user ? 'upload' : 'user'), h('span', '', tr(S.user ? 'menu.uploadFiles' : 'login.signIn')));
+    cta.replaceChildren(icon(S.user ? 'upload' : 'user'), element('span', '', tr(S.user ? 'menu.uploadFiles' : 'login.signIn')));
     cta.onclick = S.user ? () => $('file-input').click() : () => account.open();
     cta.classList.toggle('hidden', searching && !!S.user);
   }
@@ -287,41 +262,41 @@ function render() {
   updateSelection();
   const files = S.items.filter((i) => i.type !== 'dir');
   const total = files.reduce((s, f) => s + f.size, 0);
-  $('status').textContent = !S.user ? '' : tr('status', { folders: S.items.length - files.length, files: files.length, size: fmtSize(total), });
+  $('status').textContent = !S.user ? '' : tr('status', { folders: S.items.length - files.length, files: files.length, size: components.formatSize(total), });
 }
 
 function renderCrumbs() {
   const c = $('breadcrumbs'); c.replaceChildren();
   const mk = (label, depth) => {
-    const b = h('span', 'breadcrumb', label); b.tabIndex = 0; b.setAttribute('role', 'link');
+    const b = element('span', 'breadcrumb', label); b.tabIndex = 0; b.setAttribute('role', 'link');
     b.onclick = () => goTo(S.path.slice(0, depth));
     b.onkeydown = (e) => { if (e.key === 'Enter') b.click(); };
     return b;
   };
   c.appendChild(mk(tr('nav.myDrive'), 0));
-  S.path.forEach((p, i) => { const s = icon('chevron-right'); s.classList.add('breadcrumb-separator'); c.append(s, mk(p, i + 1)); });
+  S.path.forEach((p, i) => c.append(mk(p, i + 1)));   // the tag kit-breadcrumbs puts the separators
 }
 
 /* ----- item building blocks ----- */
 function chkEl(it, always = false) {
-  const c = h('input', 'checkbox' + (always ? ' always' : '')); c.type = 'checkbox'; c.setAttribute('aria-label', tr('sel.item', { name: it.name }));
+  const c = element('input', 'checkbox' + (always ? ' always' : '')); c.type = 'checkbox'; c.setAttribute('aria-label', tr('sel.item', { name: it.name }));
   c.onclick = (e) => e.stopPropagation();
   c.onchange = () => toggleSel(it.name, c.checked);
   return c;
 }
 function actsEl(it) {
-  const a = h('div', 'actions');
-  const btn = (ic, title, fn, cls = '') => { const b = h('button', 'icon-button ' + cls); b.append(icon(ic)); b.title = title; b.setAttribute('aria-label', title); b.onclick = (e) => { e.stopPropagation(); fn(); }; return b; };
+  const a = element('div', 'actions');
+  const btn = (ic, title, fn, cls = '') => { const b = element('button', 'icon-button ' + cls); b.append(icon(ic)); b.title = title; b.setAttribute('aria-label', title); b.onclick = (e) => { e.stopPropagation(); fn(); }; return b; };
   if (it.type !== 'dir') a.appendChild(btn('download', tr('download'), () => download(it)));
   a.appendChild(btn('pencil', tr('rename'), () => rename(it)));
   a.appendChild(btn('trash', tr('delete'), () => remove([it]), 'delete'));
   return a;
 }
 function nameCell(it, k) {
-  const n = h('div', 'name-cell'); n.append(tile(k), h('span', 'file-name', it.name)); return n;
+  const n = element('div', 'name-cell'); n.append(tile(k), element('span', 'file-name', it.name)); return n;
 }
 function base(it, cls) {
-  const el = h('div', 'file-item ' + cls); el.dataset.name = it.name; el.title = it.name;
+  const el = element('div', 'file-item ' + cls); el.dataset.name = it.name; el.title = it.name;
   el.onclick = () => (S.selected.size ? toggleSel(it.name) : open(it));
   if (it.type !== 'dir') transfer.drag(el, { id: it.path, name: it.name, size: it.size, image: kind(it) === 'image', load: () => fetchBlob(it) }, () => el.querySelector('.file-thumbnail, .file-tile'));   // the picture can be dragged out of the page, as a file
   // Keyboard: Tab reaches every item; arrows move between them, Enter opens, Space selects, F2 renames, Delete deletes.
@@ -339,40 +314,40 @@ function base(it, cls) {
 }
 function folderChip(it) {
   const el = base(it, 'file-chip kind-folder');
-  el.append(tile('folder'), h('span', 'file-name', it.name), actsEl(it), chkEl(it));
+  el.append(tile('folder'), element('span', 'file-name', it.name), actsEl(it), chkEl(it));
   return el;
 }
 function fileCard(it) {
   const k = kind(it);
   const el = base(it, 'file-card kind-' + k);
-  const th = h('div', 'file-thumbnail');
+  const th = element('div', 'file-thumbnail');
   th.appendChild(tile(k, true));
-  if (it.download_url && THUMB_EXT.includes(ext(it.name)) && it.size > 0 && it.size < THUMB_MAX) {
-    const img = h('img'); img.loading = 'lazy'; img.decoding = 'async'; img.alt = '';
+  if (it.download_url && THUMB_EXT.includes(extensionOf(it.name)) && it.size > 0 && it.size < THUMB_MAX) {
+    const img = element('img'); img.loading = 'lazy'; img.decoding = 'async'; img.alt = '';
     img.onload = () => img.classList.add('ready');
     img.onerror = () => img.remove();
     img.src = it.download_url;
     th.appendChild(img);
   }
   th.append(chkEl(it), actsEl(it));
-  const foot = h('div', 'card-footer');
-  const txt = h('div', 'card-text'); txt.append(h('span', 'file-name', it.name), h('span', 'file-meta', `${typeLabel(it)} · ${fmtSize(it.size)}`));
+  const foot = element('div', 'card-footer');
+  const txt = element('div', 'card-text'); txt.append(element('span', 'file-name', it.name), element('span', 'file-meta', `${typeLabel(it)} · ${components.formatSize(it.size)}`));
   foot.append(icon(ICON_OF[k]), txt);
   el.append(th, foot);
   return el;
 }
 function listTable(items) {
-  const t = h('div', 'file-table');
-  const head = h('div', 'file-row table-header');
-  const all = h('input', 'checkbox always'); all.type = 'checkbox'; all.id = 'select-all-checkbox'; all.setAttribute('aria-label', tr('sel.all'));
+  const t = element('div', 'file-table');
+  const head = element('div', 'file-row table-header');
+  const all = element('input', 'checkbox always'); all.type = 'checkbox'; all.id = 'select-all-checkbox'; all.setAttribute('aria-label', tr('sel.all'));
   all.onchange = () => { S.visible.forEach((i) => (all.checked ? S.selected.add(i.name) : S.selected.delete(i.name))); updateSelection(); };
-  const hc = (key) => h('span', 'header-cell', tr(key));
-  head.append(all, hc('list.name'), hc('list.type'), hc('list.size'), h('span'));
+  const hc = (key) => element('span', 'header-cell', tr(key));
+  head.append(all, hc('list.name'), hc('list.type'), hc('list.size'), element('span'));
   t.appendChild(head);
   for (const it of items) {
     const k = kind(it);
     const el = base(it, 'file-row');
-    el.append(chkEl(it), nameCell(it, k), h('div', 'file-cell muted', typeLabel(it)), h('div', 'file-cell muted numeric-cell', it.type === 'dir' ? '—' : fmtSize(it.size)), actsEl(it));
+    el.append(chkEl(it), nameCell(it, k), element('div', 'file-cell muted', typeLabel(it)), element('div', 'file-cell muted numeric-cell', it.type === 'dir' ? '—' : components.formatSize(it.size)), actsEl(it));
     t.appendChild(el);
   }
   return t;
@@ -408,40 +383,35 @@ function open(it) {
 async function fetchBlob(it) {
   const res = await repoApi(`/contents/${enc(it.path)}?ref=${S.head || S.branch}`, { headers: { Accept: 'application/vnd.github.raw+json' } });
   const b = await res.blob();
-  const m = MIME[ext(it.name)];
+  const m = MIME[extensionOf(it.name)];
   return new Blob([b], { type: m || 'application/octet-stream' });   // the type of the answer (a JSON of GitHub) is not the type of the file
 }
-function saveBlob(blob, name) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 10000);
-}
 async function download(it) {
-  const t = toast(tr('download.start', { name: it.name }), false, 0);
-  try { saveBlob(await fetchBlob(it), it.name); } catch (e) { toast(tr('download.failed', { message: e.message }), true); }
-  t.remove();
+  const t = popups.toast(tr('download.start', { name: it.name }), { kind: "info", duration: 0 });
+  try { components.download(it.name, await fetchBlob(it)); } catch (e) { popups.toast(tr('download.failed', { message: e.message }), { kind: "error" }); }
+  t.close();
 }
 
 let pvUrl = null;
 async function previewFile(it) {
   const k = kind(it), body = $('preview-content');
   $('preview-name').textContent = it.name;
-  body.replaceChildren(h('div', 'spinner'));
+  body.replaceChildren(element('div', 'spinner'));
   $('preview-download-button').onclick = () => download(it);
   const dlg = $('preview'); if (!dlg.open) dlg.showModal();
   try {
-    if (!['image', 'video', 'audio', 'pdf', 'text'].includes(k)) { body.replaceChildren(h('span', 'muted', tr('preview.none'))); return; }
+    if (!['image', 'video', 'audio', 'pdf', 'text'].includes(k)) { body.replaceChildren(element('span', 'muted', tr('preview.none'))); return; }
     const blob = await fetchBlob(it);
     if (!dlg.open) return;
     if (pvUrl) URL.revokeObjectURL(pvUrl);
     body.replaceChildren();
-    if (k === 'text') { const pre = h('pre', 'selectable'); pre.textContent = await blob.text(); body.appendChild(pre); return; }
+    if (k === 'text') { const pre = element('pre', 'selectable'); pre.textContent = await blob.text(); body.appendChild(pre); return; }
     pvUrl = URL.createObjectURL(blob);
     const tag = { image: 'img', video: 'video', audio: 'audio', pdf: 'iframe' }[k];
     const el = document.createElement(tag); el.src = pvUrl;
     if (k === 'video' || k === 'audio') el.controls = true;
     body.appendChild(el);
-  } catch (e) { body.replaceChildren(h('span', 'error', tr('preview.failed', { message: e.message }))); }
+  } catch (e) { body.replaceChildren(element('span', 'error', tr('preview.failed', { message: e.message }))); }
 }
 
 const readB64 = (file) => new Promise((res, rej) => {
@@ -457,14 +427,14 @@ async function upload(input) {
   let files = [...input].map((x) => (x instanceof File ? { file: x, rel: x.webkitRelativePath || x.name } : x));
   if (!files.length || S.busy) return;
   const tooBig = files.filter((f) => f.file.size > MAX_FILE);
-  if (tooBig.length) toast(tr('upload.skipped', { size: fmtSize(MAX_FILE), names: tooBig.map((f) => f.rel).join(', ') }), true, 6000);
+  if (tooBig.length) popups.toast(tr('upload.skipped', { size: components.formatSize(MAX_FILE), names: tooBig.map((f) => f.rel).join(', ') }), { kind: "warning" });
   files = files.filter((f) => f.file.size <= MAX_FILE);
   if (!files.length) return;
   const dup = files.filter((f) => S.items.some((i) => i.name === f.rel));
   if (dup.length && !(await ask({ title: tr('upload.overwriteTitle'), text: tr('upload.overwriteText', { count: dup.length, names: dup.map((f) => f.rel).slice(0, 5).join(', ') }), ok: tr('upload.overwrite') }))) return;
 
   S.busy = true;
-  const pt = progressToast(tr('upload.start'));
+  const pt = popups.toast(tr('upload.start'), { duration: 0, progress: 0 });
   try {
     const entries = []; let done = 0, next = 0;
     const worker = async () => {
@@ -479,30 +449,30 @@ async function upload(input) {
     await Promise.all([worker(), worker(), worker()]);
     pt.set(tr('upload.saving'), 1);
     await commitTree(entries, `Drivemu: upload ${files.length} file(s)`);
-    toast(tr('upload.done', { count: files.length }));
-  } catch (e) { toast(tr('upload.failed', { message: e.message }), true, 7000); }
-  pt.done(); S.busy = false; load(); refreshUsage();
+    popups.toast(tr('upload.done', { count: files.length }));
+  } catch (e) { popups.toast(tr('upload.failed', { message: e.message }), { kind: "error" }); }
+  pt.close(); S.busy = false; load(); refreshUsage();
 }
 
 async function newFolder() {
   const name = await ask({ title: tr('folder.newTitle'), input: tr('folder.untitled'), ok: tr('create') });
   if (!name) return;
-  if (/[\\/]/.test(name) || name === '.' || name === '..') return toast(tr('folder.invalid'), true);
-  if (S.items.some((i) => i.name === name)) return toast(tr('name.inUse'), true);
+  if (/[\\/]/.test(name) || name === '.' || name === '..') return popups.toast(tr('folder.invalid'), { kind: "error" });
+  if (S.items.some((i) => i.name === name)) return popups.toast(tr('name.inUse'), { kind: "error" });
   try {
     const put = await repoApi(`/contents/${enc(fullPath(name, KEEP))}`, { method: 'PUT', body: JSON.stringify({ message: `Drivemu: new folder ${name}`, content: '', branch: S.branch }) });
     if (put && put.commit) S.head = put.commit.sha;
-    toast(tr('folder.created'));
-  } catch (e) { toast(tr('failed', { message: e.message }), true); }
+    popups.toast(tr('folder.created'));
+  } catch (e) { popups.toast(tr('failed', { message: e.message }), { kind: "error" }); }
   load();
 }
 
 async function rename(it) {
   const name = await ask({ title: tr('rename'), input: it.name, ok: tr('save') });
   if (!name || name === it.name) return;
-  if (/[\\/]/.test(name) || name === '.' || name === '..') return toast(tr('name.invalid'), true);
-  if (S.items.some((i) => i.name === name)) return toast(tr('name.inUse'), true);
-  const t = toast(tr('rename.renaming'), false, 0);
+  if (/[\\/]/.test(name) || name === '.' || name === '..') return popups.toast(tr('name.invalid'), { kind: "error" });
+  if (S.items.some((i) => i.name === name)) return popups.toast(tr('name.inUse'), { kind: "error" });
+  const t = popups.toast(tr('rename.renaming'), { kind: "info", duration: 0 });
   try {
     const entries = [];
     if (it.type === 'dir') {
@@ -515,15 +485,15 @@ async function rename(it) {
       entries.push({ path: it.path, mode: '100644', type: 'blob', sha: null });
     }
     await commitTree(entries, `Drivemu: rename ${it.name} to ${name}`);
-    toast(tr('rename.done'));
-  } catch (e) { toast(tr('failed', { message: e.message }), true); }
-  t.remove(); load();
+    popups.toast(tr('rename.done'));
+  } catch (e) { popups.toast(tr('failed', { message: e.message }), { kind: "error" }); }
+  t.close(); load();
 }
 
 async function remove(list) {
   const label = list.length === 1 ? tr('delete.labelOne', { name: list[0].name }) : tr('delete.labelMany', { count: list.length });
   if (!(await ask({ title: tr('delete.title'), text: tr('delete.text', { label }), ok: tr('delete') }))) return;
-  const t = toast(tr('delete.deleting'), false, 0);
+  const t = popups.toast(tr('delete.deleting'), { kind: "info", duration: 0 });
   try {
     const entries = [];
     for (const it of list) {
@@ -531,40 +501,24 @@ async function remove(list) {
       else entries.push({ path: it.path, mode: '100644', type: 'blob', sha: null });
     }
     if (entries.length) await commitTree(entries, `Drivemu: delete ${label}`);
-    toast(tr('delete.done'));
-  } catch (e) { toast(tr('failed', { message: e.message }), true); }
-  t.remove(); load(); refreshUsage();
+    popups.toast(tr('delete.done'));
+  } catch (e) { popups.toast(tr('failed', { message: e.message }), { kind: "error" }); }
+  t.close(); load(); refreshUsage();
 }
 
-/* ---------- menu "New" ---------- */
-function openMenu(anchor) {
-  const m = $('new-menu');
-  m.classList.remove('hidden');
-  const r = anchor.getBoundingClientRect();
-  m.style.top = r.bottom + 6 + 'px';
-  m.style.left = Math.max(8, Math.min(r.left, window.innerWidth - m.offsetWidth - 8)) + 'px';
-  m.querySelector('button').focus();
-}
-const closeMenu = () => $('new-menu').classList.add('hidden');
-// Keyboard in the menu: arrows move, Escape closes and gives the focus back, Tab leaves.
-$('new-menu').onkeydown = (e) => {
-  const buttons = [...$('new-menu').querySelectorAll('button')], i = buttons.indexOf(document.activeElement);
-  if (e.key === 'ArrowDown') { e.preventDefault(); buttons[(i + 1) % buttons.length].focus(); }
-  else if (e.key === 'ArrowUp') { e.preventDefault(); buttons[(i - 1 + buttons.length) % buttons.length].focus(); }
-  else if (e.key === 'Escape') { e.stopPropagation(); closeMenu(); $('new-button').focus(); }
-  else if (e.key === 'Tab') closeMenu();
-};
-$('new-button').onclick = (e) => { e.stopPropagation(); openMenu(e.currentTarget); };
-document.addEventListener('click', closeMenu);
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
-$('new-menu').onclick = (e) => {
-  const b = e.target.closest('button'); if (!b) return;
-  closeMenu();
-  ({ files: () => $('file-input').click(), 'folder-upload': () => $('folder-input').click(), folder: newFolder })[b.dataset.act]();
-};
+/* ---------- menu "New": the menu of the template (assets/js/components.js) ---------- */
+$('new-button').onclick = (e) => components.menu({
+  anchor: e.currentTarget,
+  items: [
+    { label: tr('menu.uploadFiles'), icon: 'upload', onSelect: () => $('file-input').click() },
+    { label: tr('menu.uploadFolder'), icon: 'folder-up', onSelect: () => $('folder-input').click() },
+    { separator: true },
+    { label: tr('menu.newFolder'), icon: 'folder-plus', onSelect: newFolder },
+  ],
+});
 
 /* ---------- events ---------- */
-document.querySelectorAll('[data-act=account]').forEach((b) => account.bind(b));
+account.bind($('account-button'));
 $('file-input').onchange = (e) => { upload(e.target.files); e.target.value = ''; };
 $('folder-input').onchange = (e) => { upload(e.target.files); e.target.value = ''; };
 $('refresh-button').onclick = () => { S.head = null; load(); refreshUsage(); }; // read the files again (changes made elsewhere)

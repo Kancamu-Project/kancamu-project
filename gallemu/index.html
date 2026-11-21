@@ -6,25 +6,27 @@
 <title></title>
 <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
 <meta name="theme-color" content="#1a1a1b">
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/page.css">
 <link rel="stylesheet" href="layout.css">
-<script src="../assets/theme.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script defer src="../assets/js/i18n.js"></script>
+<script defer src="../assets/js/popup.js"></script>
+<script defer src="../assets/js/components.js"></script>
+<script defer src="../assets/js/autocomplete.js"></script>
+<script defer src="../assets/js/account.js"></script>
+<script defer src="../assets/js/transfer.js"></script>
+<script defer src="../assets/js/storage.js"></script>
+<script type="module" src="app.js"></script>
 </head>
 <body>
 
-<div id="header" class="header">
-  <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
-  <div class="header-tools">
-    <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
-  </div>
-</div>
+<kit-header id="header"></kit-header>
 <div id="main" class="main">
 
   <div class="toolbar">
-    <label class="searchbox">
-      <span class="icon icon-search"></span>
-      <input id="gallery-search" type="search" data-i18n-placeholder="search" data-i18n-label="search.label">
-    </label>
+    <kit-search input-id="gallery-search" data-i18n-placeholder="search" data-i18n-label="search.label"></kit-search>
     <select id="album-select" data-i18n-label="album.label"></select>
     <select id="sort-order" data-i18n-label="sort.label">
       <option value="name-asc" data-i18n="sort.nameAsc"></option>
@@ -37,19 +39,13 @@
 
   <div id="gallery" class="gallery">
     <div id="gallery-grid" class="gallery-grid hidden"></div>
-    <div id="empty-state" class="empty-state hidden">
-      <div class="empty-illustration"><span class="icon icon-image"></span></div>
-      <span id="empty-title" class="empty-title"></span>
-      <span id="empty-text" class="empty-text"></span>
-      <button id="empty-action-button" class="primary hidden" type="button"><span class="icon icon-user"></span><span data-i18n="login.signIn"></span></button>
-    </div>
+    <kit-empty id="empty-state" class="hidden" icon="image">
+      <button id="empty-action-button" slot="action" class="primary hidden" type="button"><span class="icon icon-user"></span><span data-i18n="login.signIn"></span></button>
+    </kit-empty>
   </div>
 
 </div>
-<div id="footer" class="footer">
-  <span id="status"></span>
-  <a href="/" target="_top" data-i18n="copyright"></a>
-</div>
+<kit-footer id="footer" status></kit-footer>
 
 <dialog id="viewer-dialog" class="viewer-dialog">
   <div class="viewer-bar">
@@ -67,12 +63,6 @@
   </div>
 </dialog>
 
-<script src="../assets/i18n.js"></script>
-<script src="../assets/dialog.js"></script>
-<script src="../assets/autocomplete.js"></script>
-<script src="../assets/account.js"></script>
-<script src="../assets/transfer.js"></script>
-<script src="../assets/storage.js"></script>
-<script type="module" src="script.js"></script>
+<div id="popups" class="popups"></div>
 </body>
 </html>

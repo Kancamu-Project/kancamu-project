@@ -1,0 +1,27 @@
+/* Kitmu: the UI kit of the webs (the templates, the helpers, and the popups). The page itself is the template of ../assets/css/components.css. */
+html, body { height: 100%; }
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the web: its favicon (the rest is in assets/css/components.css) */
+.sidebar-nav { gap: var(--gap-small); }
+.sidebar-nav > * { flex: none; }
+.main { gap: 0; overflow: hidden; }
+.content { flex: 1; min-height: 0; overflow-y: auto; scroll-behavior: smooth; }
+
+/* A section of the kit */
+.kit-section { display: flex; flex-direction: column; gap: var(--gap-medium); padding: var(--padding-extra-large); border-bottom: var(--border-width) solid var(--border); }
+.section-title { font-size: var(--font-size-large); font-weight: 700; }
+.section-hint { color: var(--fg-1); }
+.group { display: flex; flex-direction: column; gap: var(--gap-small); }
+.group-title { color: var(--fg-1); font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; }
+
+/* The usage of each template, helper, and popup: what it is, how it looks, and the code to copy */
+.doc-list { display: flex; flex-direction: column; gap: var(--gap-small); }
+.doc-item { display: flex; flex-direction: column; }
+.doc-body { align-items: flex-start; padding: var(--padding-medium) var(--padding-extra-large); }
+.doc-title { font-weight: 700; }
+.doc-text { color: var(--fg-1); }
+.doc-code { align-self: stretch; margin: 0; padding: var(--padding-medium); overflow-x: auto; direction: ltr; text-align: left; background: var(--bg-1); border-radius: var(--border-radius-small); font-family: var(--font-mono); font-size: var(--font-size-small); }
+.kit-section[hidden] { display: none; }
+.doc-frame { align-self: stretch; width: 100%; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-small); background: var(--bg); }
+
+/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
+.popup-try, .segmented-control > button { width: calc(var(--height) * 3); }

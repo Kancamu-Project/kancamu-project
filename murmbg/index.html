@@ -6,18 +6,24 @@
 <title></title>
 <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
 <meta name="theme-color" content="#1a1a1b">
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/page.css">
 <link rel="stylesheet" href="layout.css">
-<script src="../assets/theme.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script defer src="../assets/js/i18n.js"></script>
+<script defer src="../assets/js/popup.js"></script>
+<script defer src="../assets/js/components.js"></script>
+<script defer src="../assets/js/autocomplete.js"></script>
+<script defer src="../assets/js/account.js"></script>
+<script defer src="../assets/js/transfer.js"></script>
+<script defer src="../assets/js/settings.js"></script>
+<script defer src="../assets/js/storage.js"></script>
+<script type="module" src="app.js"></script>
 </head>
 <body>
 
-<div id="header" class="header">
-  <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
-  <div class="header-tools">
-    <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
-  </div>
-</div>
+<kit-header id="header"></kit-header>
 <div id="main" class="main">
 
   <div class="model-bar">
@@ -71,31 +77,18 @@
   <div class="progress hidden" id="progress"><div id="progress-fill" class="progress-fill"></div></div>
 
 </div>
-<div id="footer" class="footer">
-  <span id="status"></span>
-  <a href="/" target="_top" data-i18n="copyright"></a>
-</div>
+<kit-footer id="footer" status></kit-footer>
 
 <dialog id="drive-dialog" class="drive-dialog">
   <div class="drive-bar">
     <span class="drive-title" data-i18n="drive.title"></span>
     <button id="drive-close-button" class="square" type="button" data-i18n-title="close" data-i18n-label="close"><span class="icon icon-close"></span></button>
   </div>
-  <label class="searchbox">
-    <span class="icon icon-search"></span>
-    <input id="drive-search" type="search" data-i18n-placeholder="drive.search" data-i18n-label="drive.searchLabel">
-  </label>
+  <kit-search input-id="drive-search" data-i18n-placeholder="drive.search" data-i18n-label="drive.searchLabel"></kit-search>
   <div id="drive-list" class="drive-list"></div>
   <span id="drive-message" class="drive-message hidden"></span>
 </dialog>
 
-<script src="../assets/i18n.js"></script>
-<script src="../assets/dialog.js"></script>
-<script src="../assets/autocomplete.js"></script>
-<script src="../assets/account.js"></script>
-<script src="../assets/transfer.js"></script>
-<script src="../assets/settings.js"></script>
-<script src="../assets/storage.js"></script>
-<script type="module" src="script.js"></script>
+<div id="popups" class="popups"></div>
 </body>
 </html>

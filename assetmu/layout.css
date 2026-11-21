@@ -4,49 +4,21 @@ html, body { height: 100%; }
 .probe { position: absolute; visibility: hidden; pointer-events: none; }
 
 /* Icon: SVG files of this folder are used as masks, so they follow the colour of the text */
-.icon {
-  display: block; width: var(--icon-size-small); height: var(--icon-size-small); flex: none; background: currentColor;
-  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
-}
-.icon-user { --icon: url("../assets/icons/user.svg"); }
-.icon-list { --icon: url("../assets/icons/list.svg"); }
-.icon-sun { --icon: url("../assets/icons/sun.svg"); }
-.icon-moon { --icon: url("../assets/icons/moon.svg"); }
-
 /* Buttons */
-button {
-  display: flex; justify-content: center; align-items: center; gap: var(--gap-small);
-  height: var(--height); min-width: 0; cursor: pointer; white-space: nowrap; font-weight: 700; text-transform: uppercase;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-}
-button > span:not(.icon) { overflow: hidden; text-overflow: ellipsis; }
-button.account.signed-in { background-size: cover; background-position: center; }
 
 /* The page is the header, the sidebar, and the main, directly in the body. The padding and the gap are the ones of the body: the three elements have none. */
-body {
-  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; gap: var(--gap-medium); padding: var(--padding-medium);
-}
-.header { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); }
-.header > .logo { height: var(--height); }
-.header-tools { display: flex; gap: var(--gap-small); height: var(--height); }
-.header-tools > button { height: 100%; }
-.sidebar { display: none; min-height: 0; flex-direction: column; gap: var(--gap-small); background: var(--bg); overflow: hidden; }
-.sidebar.open { display: flex; position: fixed; inset-inline: var(--padding-medium); top: calc(var(--height) + var(--padding-medium) + var(--gap-medium)); bottom: var(--padding-medium); z-index: 5; }
 .menu-button { display: none; }
-.logo { display: flex; align-items: center; gap: var(--gap-small); height: var(--height); font-size: var(--font-size-large); font-weight: 700; }
-.logo-mark { width: var(--icon-size-large); height: var(--icon-size-large); flex: none; background: url("favicon.png") center / contain no-repeat; image-rendering: pixelated; }
-.logo .highlight { color: var(--brand); }
+.logo { height: var(--height); }
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the web: its favicon (the rest is in assets/css/components.css) */
+:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/components.css) */
 
-.sidebar-nav { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--gap-small); }
+.sidebar-nav { gap: var(--gap-small); }
 .sidebar-nav > * { flex: none; }
-.sidebar-item { justify-content: flex-start; border: 0; border-inline-start: var(--border-width-thick) solid transparent; background: transparent; }
 .sidebar-item:hover { background: color-mix(in srgb, var(--fg) 6%, transparent); }
-.sidebar-item.on { background: color-mix(in srgb, var(--fg) 10%, transparent); border-inline-start-color: var(--fg); }
 
-.footer { display: flex; align-items: center; color: var(--fg-1); font-size: var(--font-size-small); }
 .copyright { color: inherit; }
 
-.main { min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); }
+.main { gap: 0; overflow: hidden; }
 .content { flex: 1; min-height: 0; overflow-y: auto; scroll-behavior: smooth; }
 
 /* A section of assets */
@@ -73,10 +45,6 @@ body {
 .web-chip { width: var(--icon-size-small); height: var(--icon-size-small); background: var(--chip); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-small); }
 
 /* Icons */
-.searchbox { position: relative; display: flex; align-items: center; }
-.searchbox input { width: 100%; padding-inline-start: calc(var(--unit) * 18); }
-.searchbox .icon { position: absolute; inset-inline-start: calc(var(--unit) * 6); width: var(--icon-size-medium); height: var(--icon-size-medium); color: var(--fg-1); pointer-events: none; }
-.icon-search { --icon: url("../assets/icons/search.svg"); }
 .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 32), 1fr)); gap: var(--gap-small); }
 .icon-tile { flex-direction: column; height: calc(var(--unit) * 32); padding: 0 var(--padding-small); font-size: var(--font-size-extra-small); font-weight: 400; text-transform: none; }
 .icon-tile .icon { width: var(--icon-size-large); height: var(--icon-size-large); }
@@ -106,8 +74,6 @@ body {
 .file-row:last-child { border-bottom: 0; }
 .file-name { font-weight: 700; overflow-wrap: anywhere; }
 .file-description { color: var(--fg-1); }
-
-.toast { position: fixed; inset-block-end: var(--padding-large); inset-inline: var(--padding-large); z-index: 1000; padding: var(--padding-medium); background: var(--bg-1); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); }
 
 /* From a tablet up, the sidebar is beside the main; below it is a row on top, and the sections open over the main with the button of that row */
 @media (min-width: 48rem) {

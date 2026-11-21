@@ -1,7 +1,7 @@
 // The panels of the settings that need more than a value: they work on the data of a web (its chats, its downloaded models, its drive).
 // A web names the panels it wants in its data.json ("settings": { "panels": [...] }); the account web draws them and does the work, so the web itself has no code for it.
 // Every panel gets { app, data, t, ask, toast, announce }: the name of the web, its data.json, a function for its texts, the shared question dialog, a toast,
-// and a function that tells the web what was done to its data (assets/settings.js: the web follows it with settings.listen).
+// and a function that tells the web what was done to its data (assets/js/settings.js: the web follows it with settings.listen).
 
 const element = (tag, className, text) => {
     const node = document.createElement(tag);
@@ -133,7 +133,7 @@ async function chatData({ t, ask, toast, announce }) {
     exportAll.addEventListener("click", async () => {
         const database = await openChats();
         const chats = database ? await chatRequest(database, "readonly", (store) => store.getAll()) : [];
-        if (!chats?.length) return toast(t("toast.noHistory"));
+        if (!chats?.length) return toast(t("toast.noHistory"), { kind: "warning" });
         download("muai-history.json", JSON.stringify(chats), "application/json");
     });
     importChats.addEventListener("click", () => file.click());
@@ -158,12 +158,12 @@ async function chatData({ t, ask, toast, announce }) {
             }
             announce({ type: "imported", ids });
             toast(t("toast.imported", { n: ids.length }));
-        } catch { toast(t("toast.invalidImport")); }
+        } catch { toast(t("toast.invalidImport"), { kind: "error" }); }
     });
     deleteAll.addEventListener("click", async () => {
         const database = await openChats();
         const count = database ? await chatRequest(database, "readonly", (store) => store.count()) : 0;
-        if (!count) return toast(t("toast.noHistory"));
+        if (!count) return toast(t("toast.noHistory"), { kind: "warning" });
         if (!(await ask({ text: t("confirm.deleteAll", { n: count }), ok: t("data.deleteAll") }))) return;
         await chatRequest(database, "readwrite", (store) => store.clear());
         if (account.get()) {   // the copies in the storage too, or they would come back
@@ -230,7 +230,7 @@ async function driveReset({ data, t, ask, toast, announce }) {
     reset.addEventListener("click", async () => {
         if (!(await ask({ title: t("reset.title"), text: t("reset.text"), ok: t("reset") }))) return;
         reset.disabled = true;
-        toast(t("reset.doing"));
+        toast(t("reset.doing"), { kind: "info" });
         try {
             const ref = await call(`/git/ref/heads/${store.branch}`);
             const commit = await call(`/git/commits/${ref.object.sha}`);
@@ -243,7 +243,7 @@ async function driveReset({ data, t, ask, toast, announce }) {
             await call(`/git/refs/heads/${store.branch}`, { method: "PATCH", body: JSON.stringify({ sha: newCommit.sha }) });
             announce({ type: "reset", head: newCommit.sha });
             toast(t("reset.done"));
-        } catch (error) { toast(t("failed", { message: error.message })); }
+        } catch (error) { toast(t("failed", { message: error.message }), { kind: "error" }); }
         reset.disabled = false;
     });
     return panel(t("reset.title"), t("reset.hint"), reset);

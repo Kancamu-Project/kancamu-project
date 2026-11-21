@@ -15,7 +15,7 @@ import { brandName } from './osinfo.js';
  *     "id": "file-explorer",            short name, used in settings and commands
  *     "name": { "en-US": "File Explorer", "zh-CN": "文件资源管理器", "ar-SA": "مستكشف الملفات" },
  *     "description": { "en-US": "...", ... },
- *     "publisher": { "en-US": "{brand}", ... },   {brand} is the name written in /assets/brand.json
+ *     "publisher": { "en-US": "{brand}", ... },   {brand} is the name written in /assets/data/brand.json
  *     "version": "1.0.0",
  *     "entry": "apps/file-explorer/index.html",   page loaded inside the window: an address, or a path relative to the OS root
  *     "icon": "apps/file-explorer/favicon.png",   an address, or a path relative to the OS root (like entry)

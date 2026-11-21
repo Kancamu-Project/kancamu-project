@@ -1,12 +1,13 @@
 // Language support shared by every web (except muOS and ArtCraft).
 // A web keeps its texts in its own data.json:
 //   { "name": { "en-US": "..." }, "languages": [{ "code", "name", "dir" }], "ui": { "key": { "en-US": "...", ... } } }
-// The rest of the data of the web is in the same file too (the projects of the main web, the models of muAI, the file types of Drivemu): script.js reads it from i18n.data.
+// The rest of the data of the web is in the same file too (the projects of the main web, the models of muAI, the file types of Drivemu): app.js reads it from i18n.data.
 // Mark elements in the HTML with data-i18n (text), data-i18n-html (text with <b>/<i>, from our own data.json),
 // data-i18n-title, data-i18n-placeholder, or data-i18n-label (aria-label), then call i18n.load().
+// A tag kit-* (assets/js/components.js) takes a text for any of its attributes the same way: data-i18n-heading="key" gives heading the text of the key.
 (() => {
-    // assets/brand.json sits next to this script. The name of the brand and its highlighted word are written there and nowhere else.
-    const BRAND = new URL("brand.json", document.currentScript.src).href;
+    // assets/data/brand.json is in the folder data, beside the folder of this script. The name of the brand and its highlighted word are written there and nowhere else.
+    const BRAND = new URL("../data/brand.json", document.currentScript.src).href;
     const FALLBACK = "en-US";
     const KEY = "lang";
     const listeners = [];
@@ -97,6 +98,7 @@
             document.documentElement.lang = this.lang;
             document.documentElement.dir = language?.dir || "ltr";
             if (this.data?.name) document.title = this.pick(this.data.name);
+            if (root === document) window.components?.refreshTexts?.();   // the tags kit-* that show a text of assets/data/kit.json
             root.querySelectorAll("[data-i18n]").forEach((element) => {
                 element.textContent = this.t(element.dataset.i18n);
             });
@@ -142,7 +144,7 @@
             });
         },
 
-        // Runs fn after every language change, for text that script.js builds itself.
+        // Runs fn after every language change, for text that app.js builds itself.
         onChange(fn) {
             listeners.push(fn);
         },

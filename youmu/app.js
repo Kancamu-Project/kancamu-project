@@ -1,9 +1,10 @@
 // The account web: the sign-in, the profile, and the settings of every web. The query string says which page shows:
 //   ?page=login  ?page=profile  ?page=settings&app=<app>
-// Any web opens it with its account button, account.open() (assets/account.js), which embeds this page in a dialog.
+// Any web opens it with its account button, account.open() (assets/js/account.js), which embeds this page in a dialog.
 // The settings of a web are described in its data.json ("settings": fields, defaults, and panels), and are only changed here.
 import { panels } from "./panels.js";
 
+const { element } = components;
 const $ = (id) => document.getElementById(id);
 const t = (key) => i18n.t(key);
 const embedded = window.parent !== window;
@@ -37,12 +38,6 @@ async function fetchDetails(token) {
     };
 }
 
-const element = (tag, className, text) => {
-    const node = document.createElement(tag);
-    if (className) node.className = className;
-    if (text != null) node.textContent = text;
-    return node;
-};
 
 function section(title, rows) {
     const box = element("div", "detail-section");
@@ -117,7 +112,7 @@ function render() {
     $("settings-page").hidden = page !== "settings";
     renderSide(page, selected);
     if (user) {
-        $("account-profile").querySelector(".account-avatar").style.backgroundImage = `url("${user.avatar}")`;
+        $("account-profile").querySelector(".avatar").style.backgroundImage = `url("${user.avatar}")`;
         $("account-profile").querySelector(".account-name").textContent = user.name;
         $("account-profile").querySelector(".account-login").textContent = `@${user.login}`;
         if (details?.token === user.token) renderDetails();
@@ -201,11 +196,6 @@ async function loadApps() {
 // A text of the web that is being set, in the language of the page.
 const appText = (key, params = {}) => (state.appData.ui?.[key] ? i18n.pick(state.appData.ui[key]) : key).replace(/\{(\w+)\}/g, (_, name) => params[name] ?? "");
 
-function toast(text) {
-    const note = element("div", "toast", text);
-    document.body.append(note);
-    setTimeout(() => note.remove(), 3500);
-}
 
 // One button in the header toggles the theme; its icon is the theme that a click gives (a sun in the dark theme).
 $("theme-button").addEventListener("click", () => {
@@ -239,19 +229,9 @@ function optionsOf(definition) {
 function collapsible(box) {
     const title = box.querySelector(":scope > .detail-section-title");
     if (!title) return box;   // a panel that shows nothing
-    const toggle = element("button", "section-toggle");
-    toggle.type = "button";
-    toggle.innerHTML = '<span class="section-title"></span><span class="icon icon-chevron-down"></span>';
-    toggle.firstChild.textContent = title.textContent;
-    toggle.setAttribute("aria-expanded", "true");
-    const body = element("div", "section-body");
-    body.append(...[...box.children].filter((child) => child !== title));
-    toggle.addEventListener("click", () => {
-        body.hidden = !body.hidden;
-        toggle.setAttribute("aria-expanded", !body.hidden);
-    });
-    box.replaceChildren(toggle, body);
-    return box;
+    const part = components.make("collapsible", { heading: title.textContent, open: true }, [...box.children].filter((child) => child !== title));
+    part.classList.add("detail-section");
+    return part;
 }
 
 // A field of the web that is being set: a label, a hint, and a control. The value is saved at once, kept in range.
@@ -314,7 +294,7 @@ async function renderSettings() {
         box.append(element("span", "detail-section-title", t("settings.general")), form, reset);
         nodes.push(collapsible(box));
     }
-    const context = { app, data: state.appData, t: appText, ask: (options) => dialogs.ask(options), toast, announce: (message) => settings.announce(app, message) };
+    const context = { app, data: state.appData, t: appText, ask: (options) => popups.ask(options), toast: (text, options) => popups.toast(text, options), announce: (message) => settings.announce(app, message) };
     // The fields show at once; every panel takes its place when it is ready (some ask GitHub).
     const run = ++state.run;
     const waiting = (config.panels || []).filter((name) => panels[name]).map((name) => {
@@ -349,20 +329,9 @@ $("create-token-button").addEventListener("click", () => window.open(`${i18n.dat
 $("close-button").hidden = !embedded;
 $("close-button").addEventListener("click", () => window.parent.postMessage({ type: "account:close" }, location.origin));
 // On a narrow screen the list is hidden, and the button of the first row opens it over the page (Escape closes it first).
-function setMenu(open) {
-    $("sidebar").classList.toggle("open", open);
-    $("menu-button").setAttribute("aria-expanded", String(open));
-    if (open) $("sidebar").querySelector(".sidebar-item.on, .sidebar-item")?.focus();
-}
-$("menu-button").addEventListener("click", () => setMenu(!$("sidebar").classList.contains("open")));
-$("sidebar").addEventListener("click", (event) => { if (event.target.closest(".sidebar-item")) setMenu(false); });
+const menu = components.drawer({ sidebar: $("sidebar"), button: $("menu-button") });
+$("sidebar").addEventListener("click", (event) => { if (event.target.closest(".sidebar-item")) menu.set(false); });
 document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && $("sidebar").classList.contains("open") && $("menu-button").offsetParent) {
-        event.stopImmediatePropagation();
-        setMenu(false);
-        $("menu-button").focus();
-        return;
-    }
     if (event.key === "Escape" && embedded) window.parent.postMessage({ type: "account:close" }, location.origin);
 });
 

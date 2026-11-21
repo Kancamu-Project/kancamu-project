@@ -6,33 +6,34 @@
 <title></title>
 <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
 <meta name="theme-color" content="#1a1a1b">
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/page.css">
 <link rel="stylesheet" href="layout.css">
-<script src="../assets/theme.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script defer src="../assets/js/i18n.js"></script>
+<script defer src="../assets/js/popup.js"></script>
+<script defer src="../assets/js/components.js"></script>
+<script defer src="../assets/js/autocomplete.js"></script>
+<script defer src="../assets/js/account.js"></script>
+<script defer src="../assets/js/transfer.js"></script>
+<script defer src="../assets/js/settings.js"></script>
+<script defer src="../assets/js/storage.js"></script>
+<script defer src="app.js"></script>
 </head>
 <body>
 
 <!-- App -->
-  <div id="header" class="header">
-    <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
-    <div class="header-tools">
-      <button id="account-button" class="button ghost square account" data-act="account" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
-      <button id="menu-button" class="button ghost square menu-button" type="button" aria-controls="sidebar" aria-expanded="false" data-i18n-title="list.folders" data-i18n-label="list.folders"><span class="icon icon-menu"></span></button>
-    </div>
-  </div>
-  <div class="sidebar" id="sidebar">
-      <div id="sidebar-nav" class="sidebar-nav" data-i18n-label="list.folders"></div>
-      <div class="spacer"></div>
-      <div id="usage" class="usage"></div>
-  </div>
+  <kit-header id="header" menu data-i18n-menu-label="list.folders"></kit-header>
+  <kit-sidebar id="sidebar" data-i18n-label="list.folders">
+      <div class="spacer" slot="after"></div>
+      <div id="usage" class="usage" slot="after"></div>
+  </kit-sidebar>
 
   <div id="main" class="main">
   <div class="topbar">
-    <button class="button primary" id="new-button"><span class="icon icon-plus"></span><span data-i18n="new"></span></button>
-    <label class="searchbox">
-      <span class="icon icon-search"></span>
-      <input id="file-search" type="search" data-i18n-placeholder="search" data-i18n-label="search">
-    </label>
+    <button class="primary" id="new-button"><span class="icon icon-plus"></span><span data-i18n="new"></span></button>
+    <kit-search input-id="file-search" data-i18n-placeholder="search" data-i18n-label="search"></kit-search>
     <select id="sort-order" data-i18n-label="sort.label">
       <option value="name:1" data-i18n="sort.nameAsc"></option>
       <option value="name:-1" data-i18n="sort.nameDesc"></option>
@@ -41,7 +42,7 @@
       <option value="size:-1" data-i18n="sort.sizeDesc"></option>
     </select>
     <div class="spacer"></div>
-    <button class="button ghost square" id="refresh-button" data-i18n-title="refresh" data-i18n-label="refresh"><span class="icon icon-refresh"></span></button>
+    <button class="ghost square" id="refresh-button" data-i18n-title="refresh" data-i18n-label="refresh"><span class="icon icon-refresh"></span></button>
     <div class="segmented-control" role="group" data-i18n-label="view">
       <button id="view-list-button" class="square" data-i18n-title="view.list"><span class="icon icon-list"></span></button>
       <button id="view-grid-button" class="square" data-i18n-title="view.grid"><span class="icon icon-grid"></span></button>
@@ -50,37 +51,27 @@
 
   <div class="files-area" id="drop-zone">
     <div class="titlebar">
-      <div id="breadcrumbs" class="breadcrumbs"></div>
+      <kit-breadcrumbs id="breadcrumbs"></kit-breadcrumbs>
       <div id="selection-bar" class="selection-bar hidden">
-        <button class="button ghost square" id="selection-clear-button" data-i18n-title="sel.clear"><span class="icon icon-close"></span></button>
+        <button class="ghost square" id="selection-clear-button" data-i18n-title="sel.clear"><span class="icon icon-close"></span></button>
         <b id="selection-count"></b>
         <div class="spacer"></div>
-        <button class="button danger" id="delete-selected-button"><span class="icon icon-trash"></span><span data-i18n="delete"></span></button>
+        <button class="danger" id="delete-selected-button"><span class="icon icon-trash"></span><span data-i18n="delete"></span></button>
       </div>
     </div>
 
     <div id="file-list" class="list"></div>
 
-    <div id="empty" class="empty hidden">
-      <div class="empty-illustration"><span class="icon icon-folder-open"></span></div>
-      <h3 id="empty-title"></h3>
-      <span id="empty-text" class="muted"></span>
-      <button class="button primary" id="empty-action-button"></button>
-    </div>
+    <kit-empty id="empty" class="hidden" icon="folder-open">
+      <button slot="action" class="primary" id="empty-action-button"></button>
+    </kit-empty>
     <div id="loading" class="loading hidden"></div>
     <div id="drop-overlay" class="drop-overlay hidden"><span class="icon icon-upload"></span><span data-i18n="drop"></span></div>
   </div>
 
   </div>
-  <div id="footer" class="footer"><span id="status"></span><a href="/" target="_top" data-i18n="copyright"></a></div>
+  <kit-footer id="footer" status></kit-footer>
 
-<!-- "New" menu -->
-<div id="new-menu" class="menu hidden" role="menu">
-  <button role="menuitem" data-act="files"><span class="icon icon-upload"></span><span data-i18n="menu.uploadFiles"></span></button>
-  <button role="menuitem" data-act="folder-upload"><span class="icon icon-folder-up"></span><span data-i18n="menu.uploadFolder"></span></button>
-  <hr>
-  <button role="menuitem" data-act="folder"><span class="icon icon-folder-plus"></span><span data-i18n="menu.newFolder"></span></button>
-</div>
 <input type="file" id="file-input" multiple hidden>
 <input type="file" id="folder-input" webkitdirectory hidden>
 
@@ -91,21 +82,13 @@
   <div class="preview-header">
     <b id="preview-name"></b>
     <div class="spacer"></div>
-    <button class="button" id="preview-download-button"><span class="icon icon-download"></span><span data-i18n="download"></span></button>
-    <button class="button ghost square" id="preview-close-button" data-i18n-title="close"><span class="icon icon-close"></span></button>
+    <button id="preview-download-button"><span class="icon icon-download"></span><span data-i18n="download"></span></button>
+    <button class="ghost square" id="preview-close-button" data-i18n-title="close"><span class="icon icon-close"></span></button>
   </div>
   <div id="preview-content" class="preview-body"></div>
 </dialog>
 
-<div id="toasts" class="toasts" aria-live="polite"></div>
 
-<script src="../assets/i18n.js"></script>
-<script src="../assets/dialog.js"></script>
-<script src="../assets/autocomplete.js"></script>
-<script src="../assets/account.js"></script>
-<script src="../assets/transfer.js"></script>
-<script src="../assets/settings.js"></script>
-<script src="../assets/storage.js"></script>
-<script src="script.js"></script>
+<div id="popups" class="popups"></div>
 </body>
 </html>

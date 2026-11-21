@@ -181,6 +181,7 @@
     "hard-drive",
     "heart",
     "image",
+    "info",
     "layers",
     "list",
     "lock",
@@ -211,6 +212,7 @@
     "user",
     "video",
     "volume",
+    "warning",
     "zap"
   ],
   "fonts": [
@@ -245,7 +247,7 @@
   ],
   "files": [
     {
-      "name": "style.css",
+      "name": "css/style.css",
       "description": {
         "en-US": "Shared styles: fonts, colours, the theme, the reset, and the basics of buttons, inputs, and selects.",
         "zh-CN": "共享样式：字体、颜色、主题、重置，以及按钮、输入框和选择框的基础样式。",
@@ -253,7 +255,31 @@
       }
     },
     {
-      "name": "theme.js",
+      "name": "css/components.css",
+      "description": {
+        "en-US": "The templates: icons, buttons, the page with its header, sidebar, main and footer, the search box, the progress bar, the segmented control, and the empty state.",
+        "zh-CN": "模板：图标、按钮、带页眉、侧栏、主区域和页脚的页面、搜索框、进度条、分段控件和空状态。",
+        "ar-SA": "القوالب: الأيقونات والأزرار والصفحة بترويستها وشريطها الجانبي ومحتواها وتذييلها ومربع البحث وشريط التقدم والتحكم المجزّأ والحالة الفارغة."
+      }
+    },
+    {
+      "name": "css/page.css",
+      "description": {
+        "en-US": "The page: the header, the footer, the main, and the sidebar with its drawer (every web but the main website).",
+        "zh-CN": "页面：页眉、页脚、主区域和带抽屉的侧栏（除主网站外的所有网站）。",
+        "ar-SA": "الصفحة: الترويسة والتذييل والمحتوى والشريط الجانبي مع درجه (كل المواقع ما عدا الموقع الرئيسي)."
+      }
+    },
+    {
+      "name": "js/components.js",
+      "description": {
+        "en-US": "The helpers of the templates (components.element, icon, formatSize, extensionOf, status, drawer, download).",
+        "zh-CN": "模板的辅助函数（components.element、icon、formatSize、extensionOf、status、drawer、download）。",
+        "ar-SA": "دوال القوالب المساعدة (components.element وicon وformatSize وextensionOf وstatus وdrawer وdownload)."
+      }
+    },
+    {
+      "name": "js/theme.js",
       "description": {
         "en-US": "Applies the saved theme before the page shows, and follows a change from another web.",
         "zh-CN": "在页面显示前应用已保存的主题，并跟随其他网站的更改。",
@@ -261,7 +287,7 @@
       }
     },
     {
-      "name": "i18n.js",
+      "name": "js/i18n.js",
       "description": {
         "en-US": "Loads data.json, picks the language, applies it, and sets the colour of the web (--brand and --brand-ink).",
         "zh-CN": "加载 data.json，选择并应用语言，并设置网站颜色（--brand 和 --brand-ink）。",
@@ -269,23 +295,23 @@
       }
     },
     {
-      "name": "dialog.js",
+      "name": "js/popup.js",
       "description": {
-        "en-US": "The shared question and message dialog (dialogs.ask and dialogs.tell).",
-        "zh-CN": "共享的提问与消息对话框（dialogs.ask 和 dialogs.tell）。",
-        "ar-SA": "مربع الأسئلة والرسائل المشترك (dialogs.ask و dialogs.tell)."
+        "en-US": "The shared popups: the question and message dialog (popups.ask and popups.tell) and the toasts (popups.toast).",
+        "zh-CN": "共享的弹出内容：提问与消息对话框（popups.ask 和 popups.tell）以及轻提示（popups.toast）。",
+        "ar-SA": "النوافذ المنبثقة المشتركة: مربع الأسئلة والرسائل (popups.ask و popups.tell) والإشعارات القصيرة (popups.toast)."
       }
     },
     {
-      "name": "dialog.json",
+      "name": "data/popup.json",
       "description": {
-        "en-US": "The texts of the buttons of the shared dialog, in every language.",
+        "en-US": "The texts of the buttons of the shared dialog (popup.js), in every language.",
         "zh-CN": "共享对话框按钮的文字，包含所有语言。",
         "ar-SA": "نصوص أزرار المربع المشترك بكل اللغات."
       }
     },
     {
-      "name": "autocomplete.js",
+      "name": "js/autocomplete.js",
       "description": {
         "en-US": "The suggestions under every search input (autocomplete.attach).",
         "zh-CN": "每个搜索框下方的建议（autocomplete.attach）。",
@@ -293,7 +319,7 @@
       }
     },
     {
-      "name": "account.js",
+      "name": "js/account.js",
       "description": {
         "en-US": "The shared GitHub sign-in and the button that opens the account web.",
         "zh-CN": "共享的 GitHub 登录，以及打开账户网站的按钮。",
@@ -301,7 +327,7 @@
       }
     },
     {
-      "name": "settings.js",
+      "name": "js/settings.js",
       "description": {
         "en-US": "The settings of every web: read, save, follow, and the messages of the account web.",
         "zh-CN": "所有网站的设置：读取、保存、跟随，以及账户网站的消息。",
@@ -309,7 +335,15 @@
       }
     },
     {
-      "name": "storage.js",
+      "name": "js/transfer.js",
+      "description": {
+        "en-US": "Files dragged from a web to the tab of another one (transfer.drag and transfer.receive).",
+        "zh-CN": "从一个网站拖到另一个网站标签页的文件（transfer.drag 和 transfer.receive）。",
+        "ar-SA": "ملفات تُسحب من موقع إلى تبويب موقع آخر (transfer.drag وtransfer.receive)."
+      }
+    },
+    {
+      "name": "js/storage.js",
       "description": {
         "en-US": "The GitHub storage: one repository, one branch for each web.",
         "zh-CN": "GitHub 存储：一个仓库，每个网站一个分支。",
@@ -317,7 +351,7 @@
       }
     },
     {
-      "name": "brand.json",
+      "name": "data/brand.json",
       "description": {
         "en-US": "The id, the name, and the highlighted word of the brand.",
         "zh-CN": "品牌的标识、名称和高亮词。",

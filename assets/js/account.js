@@ -12,7 +12,7 @@
 // A web has one button for all of it. The dialog knows the web that opened it (the first folder of the address, such as muai), so it opens on the settings
 // of that web; the sidebar of the account web has the profile and the settings of every other web.
 (() => {
-    const PAGE = new URL("../youmu/", document.currentScript.src).href;
+    const PAGE = new URL("../../youmu/", document.currentScript.src).href;
     const KEY = "account";
     const listeners = [];
 

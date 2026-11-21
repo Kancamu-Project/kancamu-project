@@ -1,53 +1,22 @@
 /* Gallemu: the photos and videos of the Drive, in one gallery. */
 .hidden { display: none !important; }
-.error { color: var(--danger); }
 
 /* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
-.icon {
-  width: var(--icon-size-small); height: var(--icon-size-small); flex: none; background: currentColor;
-  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
-}
-.icon-image { --icon: url("../assets/icons/image.svg"); }
-.icon-video { --icon: url("../assets/icons/video.svg"); }
-.icon-search { --icon: url("../assets/icons/search.svg"); }
-.icon-user { --icon: url("../assets/icons/user.svg"); }
-.icon-refresh { --icon: url("../assets/icons/refresh.svg"); }
-.icon-download { --icon: url("../assets/icons/download.svg"); }
-.icon-close { --icon: url("../assets/icons/close.svg"); }
-.icon-chevron-left { --icon: url("../assets/icons/chevron-left.svg"); }
-.icon-chevron-right { --icon: url("../assets/icons/chevron-right.svg"); }
 :root[dir="rtl"] :is(.icon-chevron-left, .icon-chevron-right) { transform: scaleX(-1); }
 
 /* Buttons */
-button {
-  display: flex; justify-content: center; align-items: center; gap: var(--gap-small);
-  height: var(--height); min-width: 0; cursor: pointer; white-space: nowrap; font-weight: 700; text-transform: uppercase;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-}
-button > span:not(.icon) { overflow: hidden; text-overflow: ellipsis; }
-button:disabled { opacity: 0.4; cursor: not-allowed; }
-button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-button.primary:hover:not(:disabled) { background: var(--accent); border-color: var(--fg); }
-button.ghost { color: var(--fg-1); }
-button.ghost:hover:not(:disabled) { color: var(--fg); }
 button.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
 
 /* Page */
 /* The page is the header, the main, and the footer, directly in the body. The padding and the gap are the ones of the body. */
-body { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; gap: var(--gap-medium); padding: var(--padding-medium); }
-.main { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: var(--gap-medium); min-width: 0; min-height: 0; }
+.main { display: grid; grid-template-rows: auto minmax(0, 1fr); }
 
-.header { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); height: var(--height); }
-.logo { display: flex; align-items: center; gap: var(--gap-small); font-size: var(--font-size-large); font-weight: 700; }
-.logo-mark { width: var(--icon-size-large); height: var(--icon-size-large); flex: none; background: url("favicon.png") center / contain no-repeat; image-rendering: pixelated; }
-.logo .highlight { color: var(--brand); }
-.header-tools { display: flex; gap: var(--gap-small); height: 100%; }
-.header-tools > button { height: 100%; }
+.header { height: var(--height); }
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the web: its favicon (the rest is in assets/css/components.css) */
+:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/components.css) */
+.header-tools { height: 100%; }
 
 .toolbar { display: flex; flex-wrap: wrap; gap: var(--gap-small); }
-.searchbox { position: relative; display: flex; align-items: center; flex: 1; min-width: calc(var(--unit) * 60); }
-.searchbox input { width: 100%; padding-inline-start: calc(var(--unit) * 18); }
-.searchbox .icon { position: absolute; inset-inline-start: calc(var(--unit) * 6); width: var(--icon-size-medium); height: var(--icon-size-medium); color: var(--fg-1); pointer-events: none; }
 .toolbar select { width: calc(var(--height) * 6); max-width: 100%; }
 
 /* The gallery: a grid of tiles, each a square photo or a video */
@@ -67,15 +36,6 @@ body { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows:
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0; transition: opacity 0.15s;
 }
 .tile:hover .tile-name, .tile:focus-visible .tile-name { opacity: 1; }
-
-.empty-state { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--gap-medium); text-align: center; }
-.empty-illustration { display: flex; align-items: center; justify-content: center; width: calc(var(--unit) * 40); height: calc(var(--unit) * 40); background: var(--bg-1); border-radius: var(--border-radius-large); }
-.empty-illustration .icon { width: var(--icon-size-extra-large); height: var(--icon-size-extra-large); color: var(--fg-1); }
-.empty-title { font-size: var(--font-size-large); font-weight: 700; }
-.empty-text { max-width: calc(var(--unit) * 140); color: var(--fg-1); }
-
-.footer { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); color: var(--fg-1); font-size: var(--font-size-small); }
-#status { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* The viewer: one photo or video at a time */
 dialog { color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--border); padding: 0; }

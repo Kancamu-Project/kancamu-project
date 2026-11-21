@@ -1,17 +1,11 @@
-// Assetmu: shows every asset of the webs: the colours (read from the page, so they follow the theme), the colour and icon of every web, the icons, the fonts, the sizes, and the files.
+// Assetmu: shows every asset of the webs: the colours (read from the page, so they follow the theme), the colour and icon of every web, the icons, the fonts, the sizes, and the files. The templates, the helpers, and the popups are in Kitmu.
 await i18n.load();
 i18n.selects();
 
 const tr = (key, params) => i18n.t(key, params);
 const $ = (id) => document.getElementById(id);
+const { element } = components;
 const { palette, roles, sizes, icons, fonts, files, sectionOrder } = i18n.data;
-
-const element = (tag, className, text) => {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text != null) node.textContent = text;
-  return node;
-};
 
 /* ---------- reading the page: the value of a colour or a length as the page has it now ---------- */
 const probe = element("div", "probe");
@@ -39,17 +33,12 @@ const lengthValue = (name) => {
 };
 
 /* ---------- copying ---------- */
-function toast(text) {
-  const note = element("div", "toast", text);
-  document.body.append(note);
-  setTimeout(() => note.remove(), 2500);
-}
 async function copy(text) {
   try {
     await navigator.clipboard.writeText(text);
-    toast(tr("copied", { text }));
+    popups.toast(tr("copied", { text }));
   } catch {
-    toast(tr("copy.failed"));
+    popups.toast(tr("copy.failed"), { kind: "error" });
   }
 }
 
@@ -148,7 +137,7 @@ function renderIcons() {
     const tile = element("button", "icon-tile");
     tile.type = "button";
     const glyph = element("span", "icon");
-    glyph.style.setProperty("--icon", `url("../assets/icons/${name}.svg")`);
+    glyph.style.setProperty("--icon", `url("${new URL(`../assets/icons/${name}.svg`, location.href).href}")`);
     tile.append(glyph, element("span", "icon-name", name));
     tile.title = `${name}.svg`;
     tile.addEventListener("click", () => copy(`${name}.svg`));
@@ -207,22 +196,14 @@ function renderFiles() {
 
 /* ---------- the sidebar: a button for each section, which scrolls to it ---------- */
 // On a narrow screen the sections are hidden, and a button opens them over the page (Escape closes them and gives the focus back).
-function setMenu(open) {
-  $("sidebar").classList.toggle("open", open);
-  $("menu-button").setAttribute("aria-expanded", String(open));
-  if (open) $("sidebar-nav").querySelector(".sidebar-item.on, .sidebar-item")?.focus();
-}
-$("menu-button").addEventListener("click", () => setMenu(!$("sidebar").classList.contains("open")));
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && $("sidebar").classList.contains("open") && $("menu-button").offsetParent) { setMenu(false); $("menu-button").focus(); }
-});
+const menu = components.drawer({ sidebar: $("sidebar"), button: $("menu-button") });
 function renderSide() {
   $("sidebar-nav").replaceChildren(...sectionOrder.map((id) => {
     const item = element("button", "sidebar-item");
     item.type = "button";
     item.dataset.section = id;
     item.append(element("span", "", tr(`section.${id}`)));
-    item.addEventListener("click", () => { setMenu(false); sections[id].box.scrollIntoView({ block: "start" }); });
+    item.addEventListener("click", () => { menu.set(false); sections[id].box.scrollIntoView({ block: "start" }); });
     return item;
   }));
   markSection();

@@ -29,10 +29,7 @@ const state = {
   stop: false,
 };
 
-function say(text, isError = false) {
-  els.status.textContent = text;
-  els.status.classList.toggle("error", isError);
-}
+const say = components.status(els.status);
 function setProgress(percent) {
   els.progress.classList.toggle("hidden", percent === null);
   if (percent !== null) els.progressFill.style.width = `${percent}%`;
@@ -196,15 +193,8 @@ els.clearButton.addEventListener("click", () => {
 });
 
 /* ---------- copying the translation ---------- */
-function toast(text) {
-  const note = document.createElement("div");
-  note.className = "toast";
-  note.textContent = text;
-  document.body.appendChild(note);
-  setTimeout(() => note.remove(), 3000);
-}
 els.copyButton.addEventListener("click", async () => {
-  try { await navigator.clipboard.writeText(els.targetText.textContent); toast(tr("toast.copied")); } catch (error) { say(tr("error.failed", { message: error.message }), true); }
+  try { await navigator.clipboard.writeText(els.targetText.textContent); popups.toast(tr("toast.copied")); } catch (error) { say(tr("error.failed", { message: error.message }), true); }
 });
 
 /* ---------- the settings ---------- */

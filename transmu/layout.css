@@ -1,44 +1,18 @@
 /* Transmu: translates text with AI models that run in the browser. */
 .hidden { display: none !important; }
-.error { color: var(--danger); }
 
 /* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
-.icon {
-  width: var(--icon-size-small); height: var(--icon-size-small); flex: none; background: currentColor;
-  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
-}
-.icon-swap { --icon: url("../assets/icons/swap.svg"); }
-.icon-copy { --icon: url("../assets/icons/copy.svg"); }
-.icon-close { --icon: url("../assets/icons/close.svg"); }
-.icon-send { --icon: url("../assets/icons/send.svg"); }
-.icon-stop { --icon: url("../assets/icons/stop.svg"); }
-.icon-user { --icon: url("../assets/icons/user.svg"); }
 
 /* Buttons */
-button {
-  display: flex; justify-content: center; align-items: center; gap: var(--gap-small);
-  height: var(--height); min-width: 0; cursor: pointer; white-space: nowrap; font-weight: 700; text-transform: uppercase;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-}
-button > span:not(.icon) { overflow: hidden; text-overflow: ellipsis; }
-button:disabled { opacity: 0.4; cursor: not-allowed; }
-button.primary { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
-button.primary:hover:not(:disabled) { background: var(--brand); border-color: var(--fg); }
-button.ghost { color: var(--fg-1); }
-button.ghost:hover:not(:disabled) { color: var(--fg); }
 button.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
 
 /* Page */
 /* The page is the header, the main, and the footer, directly in the body. The padding and the gap are the ones of the body. */
-body { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; gap: var(--gap-medium); padding: var(--padding-medium); }
-.main { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto auto; gap: var(--gap-medium); min-width: 0; min-height: 0; }
+.main { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto auto; }
 
-.header { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); height: var(--height); }
-.logo { display: flex; align-items: center; gap: var(--gap-small); font-size: var(--font-size-large); font-weight: 700; }
-.logo-mark { width: var(--icon-size-large); height: var(--icon-size-large); flex: none; background: url("favicon.png") center / contain no-repeat; image-rendering: pixelated; }
-.logo .highlight { color: var(--brand); }
-.header-tools { display: flex; gap: var(--gap-small); height: 100%; }
-.header-tools > button { height: 100%; }
+.header { height: var(--height); }
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the web: its favicon (the rest is in assets/css/components.css) */
+.header-tools { height: 100%; }
 
 .model-bar { display: flex; align-items: center; gap: var(--gap-small); }
 .model-label { font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; color: var(--fg-1); white-space: nowrap; }
@@ -64,18 +38,11 @@ textarea.pane-text { color: var(--fg); }
 
 .actions { display: flex; justify-content: flex-end; gap: var(--gap-small); }
 
-.progress { height: calc(var(--unit) * 2); background: var(--border); border-radius: var(--border-radius-small); overflow: hidden; }
-.progress-fill { width: 0; height: 100%; background: var(--brand); transition: width 0.2s; }
-
-.footer { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); color: var(--fg-1); font-size: var(--font-size-small); }
-.footer a { flex: none; white-space: nowrap; color: inherit; }
-#status { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-#status.error { color: var(--danger); white-space: normal; }
+#status.error { white-space: normal; }
 
 /* Settings */
 dialog { color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--border); padding: 0; }
 dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent); }
-.toast { position: fixed; inset-block-end: var(--padding-large); inset-inline: var(--padding-large); z-index: 1000; padding: var(--padding-medium); background: var(--bg-1); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); }
 
 @media (max-width: 48rem) {
   .panes { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }

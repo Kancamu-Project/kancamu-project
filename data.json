@@ -447,6 +447,30 @@
       ]
     },
     {
+      "id": "kitmu",
+      "name": {
+        "en-US": "Kit{highlight}"
+      },
+      "description": {
+        "en-US": "The UI kit of the webs: templates, helpers, and popups to copy.",
+        "zh-CN": "各网站的界面组件库：可复制的模板、辅助函数和弹窗。",
+        "ar-SA": "عدة واجهات المواقع: قوالب ودوال مساعدة ونوافذ منبثقة للنسخ."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "kitmu/",
+      "icon": "kitmu/favicon.png",
+      "color": "#1782db",
+      "categories": [
+        "official",
+        "mobile",
+        "design",
+        "tools"
+      ]
+    },
+    {
       "id": "muai",
       "name": {
         "en-US": "{highlight}AI"

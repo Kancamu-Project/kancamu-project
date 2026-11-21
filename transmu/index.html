@@ -6,18 +6,21 @@
 <title></title>
 <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
 <meta name="theme-color" content="#1a1a1b">
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/page.css">
 <link rel="stylesheet" href="layout.css">
-<script src="../assets/theme.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script defer src="../assets/js/i18n.js"></script>
+<script defer src="../assets/js/popup.js"></script>
+<script defer src="../assets/js/components.js"></script>
+<script defer src="../assets/js/account.js"></script>
+<script defer src="../assets/js/settings.js"></script>
+<script type="module" src="app.js"></script>
 </head>
 <body>
 
-<div id="header" class="header">
-  <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
-  <div class="header-tools">
-    <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
-  </div>
-</div>
+<kit-header id="header"></kit-header>
 <div id="main" class="main">
 
   <label class="model-bar">
@@ -57,14 +60,8 @@
   <div class="progress hidden" id="progress"><div id="progress-fill" class="progress-fill"></div></div>
 
 </div>
-<div id="footer" class="footer">
-  <span id="status"></span>
-  <a href="/" target="_top" data-i18n="copyright"></a>
-</div>
+<kit-footer id="footer" status></kit-footer>
 
-<script src="../assets/i18n.js"></script>
-<script src="../assets/account.js"></script>
-<script src="../assets/settings.js"></script>
-<script type="module" src="script.js"></script>
+<div id="popups" class="popups"></div>
 </body>
 </html>

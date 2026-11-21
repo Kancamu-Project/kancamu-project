@@ -86,7 +86,7 @@ function renderTabs() {
 
             const select = createElement("button", "select");
             select.title = pickText(project.name);
-            const icon = createElement("div", "icon");
+            const icon = createElement("div", "app-icon");
             icon.style.backgroundImage = `url(${JSON.stringify(project.icon)})`;
             select.append(
                 icon,
@@ -248,70 +248,31 @@ function createGlyph(name) {
     return createElement("div", `glyph ${name}`);
 }
 
-let openMenu = null;
-
-function closeMenu() {
-    openMenu?.remove();
-    openMenu = null;
-}
-
+// The menu of a project: the menu of the template (assets/js/components.js); a second click on the button closes it.
 function showMenu(anchor, project) {
-    const menu = createElement("div", "menu");
-    menu.owner = anchor;
-
-    const copy = createButton("menu-item", t("copyLink"));
-    copy.addEventListener("click", async () => {
-        let message;
-        try {
-            await navigator.clipboard.writeText(new URL(project.url, location.href).href);
-            message = t("copied");
-        } catch {
-            message = t("copyFailed");
-        }
-        copy.firstChild.textContent = message;
-        setTimeout(closeMenu, 800);
+    components.menu({
+        anchor,
+        align: "end",
+        items: [
+            {
+                label: t("copyLink"),
+                async onSelect({ button, close }) {
+                    let message;
+                    try {
+                        await navigator.clipboard.writeText(new URL(project.url, location.href).href);
+                        message = t("copied");
+                    } catch {
+                        message = t("copyFailed");
+                    }
+                    button.lastChild.textContent = message;
+                    setTimeout(close, 800);
+                    return false;
+                },
+            },
+            { label: t("openNew"), onSelect: () => window.open(project.url, "_blank", "noopener") },
+        ],
     });
-
-    const here = createButton("menu-item", t("openNew"));
-    here.addEventListener("click", () => {
-        window.open(project.url, "_blank", "noopener");
-        closeMenu();
-    });
-
-    menu.append(copy, here);
-    document.body.appendChild(menu);
-    copy.focus();
-    // Keyboard in the menu: arrows move, Escape closes and gives the focus back, Tab leaves.
-    menu.addEventListener("keydown", (event) => {
-        const buttons = [...menu.querySelectorAll("button")], i = buttons.indexOf(document.activeElement);
-        if (event.key === "ArrowDown") {
-            event.preventDefault();
-            buttons[(i + 1) % buttons.length].focus();
-        } else if (event.key === "ArrowUp") {
-            event.preventDefault();
-            buttons[(i - 1 + buttons.length) % buttons.length].focus();
-        } else if (event.key === "Escape") {
-            event.stopPropagation();
-            closeMenu();
-            anchor.focus();
-        } else if (event.key === "Tab") closeMenu();
-    });
-
-    const rect = anchor.getBoundingClientRect();
-    const fitsBelow = rect.bottom + menu.offsetHeight < window.innerHeight;
-    menu.style.top = `${fitsBelow ? rect.bottom + 2 : rect.top - menu.offsetHeight - 2}px`;
-    menu.style.left = `${Math.max(0, rect.right - menu.offsetWidth)}px`;
-    openMenu = menu;
 }
-
-document.addEventListener("click", (event) => {
-    if (openMenu && !openMenu.contains(event.target)) closeMenu();
-});
-document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeMenu();
-});
-window.addEventListener("resize", closeMenu);
-document.addEventListener("scroll", closeMenu, true);
 
 function createProjectCard(project) {
     const name = pickText(project.name);
@@ -326,7 +287,7 @@ function createProjectCard(project) {
     link.append(createElement("span", "", project.id), createGlyph("external"));
     top.append(createElement("span", "project-publisher", project.publisher || ""), link);
 
-    const icon = createElement("div", "icon");
+    const icon = createElement("div", "app-icon");
     icon.style.backgroundImage = `url(${JSON.stringify(project.icon)})`;
 
     const text = createElement("div", "project-text");
@@ -345,9 +306,7 @@ function createProjectCard(project) {
     more.appendChild(createGlyph("more"));
     more.addEventListener("click", (event) => {
         event.stopPropagation();
-        const wasOpenHere = openMenu?.owner === more;
-        closeMenu();
-        if (!wasOpenHere) showMenu(more, project);
+        showMenu(more, project);
     });
 
     const actions = createElement("div", "project-actions");
@@ -519,14 +478,14 @@ document.getElementById("tabs").addEventListener(
 );
 
 i18n.onChange(() => {
-    closeMenu();
+    components.closeOverlay();
     renderAll();
 });
 
 /* ---------- a file of the Drive dragged to any web ---------- */
 // TODO: this is a workaround (see TODO.md, "Retest"); retest from time to time whether a plain drag with the file works, and delete this then.
 // A page cannot put a file in a drag (the browser keeps only a picture), but the webs run in frames of this page, and this page is the one that knows what is dragged:
-// the web that drags a file says it (assets/transfer.js), and every drag event that goes into the frame of another web, with no file in it, is given again with the real
+// the web that drags a file says it (assets/js/transfer.js), and every drag event that goes into the frame of another web, with no file in it, is given again with the real
 // file in it, as if it came from the file explorer. So the drop area of any web (ours or somebody else's) gets the file, whatever its kind.
 let carried = null;   // { name, file }: the file that a web is dragging now
 window.addEventListener("message", (event) => {
@@ -593,7 +552,7 @@ document.getElementById("theme-button").addEventListener("click", () => {
     } catch {}
 });
 
-// Account: the sign-in is the account web, opened by assets/account.js.
+// Account: the sign-in is the account web, opened by assets/js/account.js.
 account.bind(document.getElementById("account-button"));
 
 document.getElementById("publisher-filter").addEventListener("change", (event) => {

@@ -6,6 +6,7 @@ env.allowLocalModels = false;   // the model is downloaded from Hugging Face onc
 await i18n.load();
 i18n.selects();
 
+const { extensionOf, formatSize } = components;
 const tr = (key, params) => i18n.t(key, params);
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
@@ -43,10 +44,7 @@ const state = {
   format: preferences.format,   // the file format of a video
 };
 
-function say(text, isError = false) {
-  els.status.textContent = text;
-  els.status.classList.toggle("error", isError);
-}
+const say = components.status(els.status);
 function setProgress(percent) {
   els.progress.classList.toggle("hidden", percent === null);
   if (percent !== null) els.progressFill.style.width = `${percent}%`;
@@ -559,22 +557,7 @@ async function openDrive() {
   if (!state.store || state.token !== signedIn.token) { state.store = await storage.connect(storageBranch); state.token = signedIn.token; }
   return state.store;
 }
-const extensionOf = (name) => (name.includes(".") ? name.split(".").pop().toLowerCase() : "");
-const sizeText = (bytes) => {
-  if (bytes < 1024) return `${bytes} B`;
-  const units = ["KB", "MB", "GB"];
-  let value = bytes, i = -1;
-  do { value /= 1024; i++; } while (value >= 1024 && i < units.length - 1);
-  return `${i18n.number(value, { maximumFractionDigits: value < 10 ? 1 : 0 })} ${units[i]}`;
-};
 let driveImages = [];   // { path, name, folder, size }
-function toast(text) {
-  const note = document.createElement("div");
-  note.className = "toast";
-  note.textContent = text;
-  document.body.appendChild(note);
-  setTimeout(() => note.remove(), 6000);
-}
 
 async function chooseFromDrive() {
   if (state.busy) return;
@@ -607,10 +590,10 @@ function renderDriveList() {
     row.type = "button";
     row.className = "drive-file";
     row.title = image.path;
-    const icon = document.createElement("span"); icon.className = "icon icon-file";
+    const icon = document.createElement("span"); icon.className = "icon icon-image";
     const name = document.createElement("span"); name.textContent = image.name;
     const folder = document.createElement("span"); folder.className = "drive-file-folder"; folder.textContent = image.folder;
-    const size = document.createElement("span"); size.className = "drive-file-size"; size.textContent = sizeText(image.size);
+    const size = document.createElement("span"); size.className = "drive-file-size"; size.textContent = formatSize(image.size);
     row.append(icon, name, folder, size);
     row.addEventListener("click", () => openFromDrive(image));
     return row;
@@ -647,7 +630,7 @@ els.saveButton.addEventListener("click", async () => {
     const taken = new Set((await storage.list(store, saveFolder)).map((file) => file.name));
     for (let n = 2; taken.has(`${suggestion.split("/").pop()}.${extension}`); n++) suggestion = `${saveFolder}/${state.name}${downloadSuffix}-${n}`;
   } catch { /* the name stays as it is */ }
-  const answer = await dialogs.ask({ text: tr("save.prompt"), value: `${suggestion}.${extension}`, ok: tr("drive.save") });
+  const answer = await popups.ask({ text: tr("save.prompt"), value: `${suggestion}.${extension}`, ok: tr("drive.save") });
   if (answer === null) return;
   const path = answer.trim().replace(/\\/g, "/").replace(/^\/+/, "").replace(new RegExp(`(\\.${extension})?$`, "i"), `.${extension}`);
   if (!path.replace(new RegExp(`\\.${extension}$`, "i"), "") || path.split("/").some((part) => !part || part === "." || part === ".." || part === ".git")) return say(tr("save.invalid"), true);
@@ -655,11 +638,11 @@ els.saveButton.addEventListener("click", async () => {
   try {
     const folder = path.split("/").slice(0, -1).join("/");
     const exists = (await storage.list(store, folder)).some((file) => file.name === path.split("/").pop());
-    if (exists && !(await dialogs.ask({ text: tr("save.exists", { path }), ok: tr("save.replace") }))) return say(tr("status.idle"));
+    if (exists && !(await popups.ask({ text: tr("save.exists", { path }), ok: tr("save.replace") }))) return say(tr("status.idle"));
     const { blob } = await resultFile();
     await storage.writeBinary(store, path, new Uint8Array(await blob.arrayBuffer()), `muRMBG: save ${path}`);
     say(tr("save.saved", { path }));
-    toast(tr("save.saved", { path }));
+    popups.toast(tr("save.saved", { path }));
   } catch (error) {
     say(tr("save.failed", { message: error.message }), true);
   }

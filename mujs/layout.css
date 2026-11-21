@@ -1,85 +1,38 @@
 /* muJS: lessons that teach JavaScript, with a code editor that runs the code. */
 .hidden { display: none !important; }
-.error { color: var(--danger); }
 
 /* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
-.icon {
-  width: var(--icon-size-small); height: var(--icon-size-small); flex: none; background: currentColor;
-  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
-}
-.icon-user { --icon: url("../assets/icons/user.svg"); }
-.icon-list { --icon: url("../assets/icons/list.svg"); }
-.icon-play { --icon: url("../assets/icons/play.svg"); }
-.icon-check { --icon: url("../assets/icons/check.svg"); }
-.icon-close { --icon: url("../assets/icons/close.svg"); }
-.icon-refresh { --icon: url("../assets/icons/refresh.svg"); }
-.icon-file-text { --icon: url("../assets/icons/file-text.svg"); }
-.icon-chevron-left { --icon: url("../assets/icons/chevron-left.svg"); }
-.icon-chevron-right { --icon: url("../assets/icons/chevron-right.svg"); }
 
 /* Buttons */
-button {
-  display: flex; justify-content: center; align-items: center; gap: var(--gap-small);
-  height: var(--height); min-width: 0; cursor: pointer; white-space: nowrap; font-weight: 700; text-transform: uppercase;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-}
-button > span:not(.icon) { overflow: hidden; text-overflow: ellipsis; }
-button:disabled { opacity: 0.4; cursor: not-allowed; }
-button.primary { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
-button.primary:hover:not(:disabled) { background: var(--brand); border-color: var(--fg); }
-button.ghost { color: var(--fg-1); }
-button.ghost:hover:not(:disabled) { color: var(--fg); }
 
 /* The page is the header, the sidebar, and the main, directly in the body. The padding and the gap are the ones of the body: the three elements have none. */
-body {
-  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; gap: var(--gap-medium); padding: var(--padding-medium);
-}
-.header { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); }
-.header > .logo { height: var(--height); }
-.header-tools { display: flex; gap: var(--gap-small); height: var(--height); }
-.header-tools > button { height: 100%; }
 
-.logo { display: flex; align-items: center; gap: var(--gap-small); font-size: var(--font-size-large); font-weight: 700; }
-.logo-mark { width: var(--icon-size-large); height: var(--icon-size-large); flex: none; background: url("favicon.png") center / contain no-repeat; image-rendering: pixelated; }
-.logo .highlight { color: var(--brand); }
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the web: its favicon (the rest is in assets/css/components.css) */
 
 /* The sidebar holds the status line and the copyright at its end */
-.footer { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); color: var(--fg-1); font-size: var(--font-size-small); }
-.footer a { flex: none; white-space: nowrap; color: inherit; }
-#status { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-#status.error { color: var(--danger); }
 
 .section-title { color: var(--fg-1); font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; }
 
 /* The lessons on one side, the lesson on the other */
-.sidebar { display: none; min-height: 0; flex-direction: column; gap: var(--gap-small); background: var(--bg); overflow: hidden; }
-.sidebar.open { display: flex; position: fixed; inset-inline: var(--padding-medium); top: calc(var(--height) + var(--padding-medium) + var(--gap-medium)); bottom: var(--padding-medium); z-index: 5; }
-.sidebar-nav { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
 .unit { display: flex; flex-direction: column; gap: var(--gap-extra-small); padding-block-end: var(--padding-small); }
 .unit-title { display: flex; align-items: center; height: var(--height); padding: 0 var(--padding-medium); color: var(--fg-1); font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sidebar-item { height: var(--height); justify-content: flex-start; padding: 0 var(--padding-medium); border: 0; border-inline-start: var(--border-width-thick) solid transparent; border-radius: var(--border-radius-medium); background: transparent; text-align: start; text-transform: none; }
-.sidebar-item:hover:not(:disabled) { background: color-mix(in srgb, var(--fg) 6%, transparent); }
-.sidebar-item.active { background: color-mix(in srgb, var(--fg) 10%, transparent); border-inline-start-color: var(--brand); color: var(--brand); }
+.sidebar-item { text-transform: none; }
 .sidebar-item-number { flex: none; display: flex; align-items: center; justify-content: center; width: calc(var(--unit) * 8); height: calc(var(--unit) * 8); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-small); color: var(--fg-1); font-size: var(--font-size-extra-small); }
-.sidebar-item.active .sidebar-item-number { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.sidebar-item.on .sidebar-item-number { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
 .sidebar-item.done .sidebar-item-number { border-color: var(--ok); color: var(--ok); }
-.sidebar-item.done.active .sidebar-item-number { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.sidebar-item.done.on .sidebar-item-number { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
 .sidebar-item-title { flex: 1; min-width: 0; font-size: var(--font-size-small); text-align: start; }
-.sidebar-summary { flex: none; display: flex; flex-direction: column; gap: var(--gap-small); padding: var(--padding-medium); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); }
 .summary-text { color: var(--fg-1); font-size: var(--font-size-small); }
 .stepper { display: flex; gap: var(--gap-extra-small); }
 .step { flex: 1; height: calc(var(--unit) * 2); background: var(--border); border-radius: var(--border-radius-small); }
 .step.done { background: var(--ok); }
-.step.active { background: var(--brand); }
+.step.on { background: var(--brand); }
 
 /* The lesson is the part that has a border around it */
-.main { padding: var(--padding-medium); min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: var(--gap-medium); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); }
-.topbar { flex: none; display: flex; align-items: center; gap: var(--gap-small); height: var(--height); }
-.breadcrumb { flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--gap-small); color: var(--fg-1); font-size: var(--font-size-small); white-space: nowrap; }
-.breadcrumb-unit { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-.breadcrumb-lesson { min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--fg); font-weight: 700; }
+.main { padding: var(--padding-medium); }
+.breadcrumbs { flex: 1; }
+.breadcrumb { height: auto; font-size: var(--font-size-small); }
 .lesson-counter { flex: none; color: var(--fg-1); font-size: var(--font-size-small); white-space: nowrap; }
-.topbar > button { height: 100%; }
 
 .lesson-body { flex: 1; min-height: 0; overflow-y: auto; display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: var(--gap-large); }
 .lesson-text, .lesson-work { min-width: 0; display: flex; flex-direction: column; gap: var(--gap-small); }
@@ -97,7 +50,6 @@ body {
   margin: 0; padding: var(--padding-medium); font-family: var(--font-mono); font-size: calc(var(--font-size-small) * var(--editor-scale, 1)); line-height: 1.6; tab-size: 2;
   white-space: pre; color: var(--fg);
 }
-.code-block { border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); background: var(--bg-1); overflow-x: auto; min-width: 0; }
 
 .editor { display: flex; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); background: var(--bg-1); overflow: hidden; min-width: 0; }
 .editor-gutter { flex: none; padding: var(--padding-medium) var(--padding-small); min-width: calc(var(--unit) * 12); border-inline-end: var(--border-width) solid var(--border); font-family: var(--font-mono); font-size: calc(var(--font-size-small) * var(--editor-scale, 1)); line-height: 1.6; text-align: end; white-space: pre; color: var(--fg-1); }
@@ -167,4 +119,3 @@ dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent)
 }
 
 /* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
-.menu-button { width: calc(var(--height) * 4); }

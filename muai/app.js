@@ -68,22 +68,8 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, 
 const lsGet = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
 const icon = (n) => `<span class="icon icon-${n}"></span>`;
-// A question in the dialog shared by every web (assets/dialog.js): true or false, or the text the user typed (null when cancelled).
-const ask = (options) => dialogs.ask(options);
-function toast(msg) {
-  const t = document.createElement("span");
-  t.textContent = msg;
-  Object.assign(t.style, {
-    position: "fixed", bottom: "4.4rem", left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center",
-    height: "2.4rem", padding: "0 1.2rem", background: "var(--fg)", color: "var(--bg)", fontWeight: "bold", letterSpacing: "0.1rem", textTransform: "uppercase", zIndex: 50,
-  });
-  (document.querySelector("dialog[open]") || document.body).appendChild(t); setTimeout(() => t.remove(), 1800);
-}
-function download(name, text, type) {
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([text], { type }));
-  a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-}
+// A question in the dialog shared by every web (assets/js/popup.js): true or false, or the text the user typed (null when cancelled).
+const ask = (options) => popups.ask(options);
 
 // ---------- Settings ----------
 // They are set in the account web (the settings button opens it); muAI only reads them, and follows a change.
@@ -119,9 +105,9 @@ const idb = {
   del: async (id) => { await del(id); removedChat(id); },
   clear: async () => { for (const c of await idb.all()) removedChat(c.id); if (db) await new Promise((res) => { const r = tx("readwrite").clear(); r.onsuccess = r.onerror = () => res(); }); },
 };
-if (!db) toast(tr("toast.storage"));
+if (!db) popups.toast(tr("toast.storage"), { kind: "warning" });
 
-// ---------- Sync: signed in, the chats are also kept on the muai branch of the user's storage (assets/storage.js) ----------
+// ---------- Sync: signed in, the chats are also kept on the muai branch of the user's storage (assets/js/storage.js) ----------
 // conversations/<id>.json  one file per chat, loaded when the chat is opened
 // files/<sha256>           the files attached to the chats, named by their hash, so a file is kept once whatever chat it came from
 const CHATS = "conversations", FILES = "files";
@@ -306,7 +292,7 @@ function renderList() {
     const it = document.createElement("div");
     it.className = "chat-item" + (current && current.id === c.id ? " active" : "");
     it.dataset.id = c.id;
-    it.innerHTML = `<span class="chat-list-title"></span><div class="actions"><button data-a="rename" type="button" title="${tr("chat.rename")}" aria-label="${tr("chat.rename")}">${icon("edit")}</button><button data-a="delete" type="button" title="${tr("chat.delete")}" aria-label="${tr("chat.delete")}">${icon("trash")}</button></div>`;
+    it.innerHTML = `<span class="chat-list-title"></span><div class="actions"><button data-a="rename" type="button" title="${tr("chat.rename")}" aria-label="${tr("chat.rename")}">${icon("pencil")}</button><button data-a="delete" type="button" title="${tr("chat.delete")}" aria-label="${tr("chat.delete")}">${icon("trash")}</button></div>`;
     it.querySelector(".chat-list-title").textContent = c.title;
     it.title = new Date(c.updated).toLocaleString(i18n.lang);
     it.tabIndex = 0;   // Tab reaches every chat, Enter opens it
@@ -322,7 +308,7 @@ els.chatList.addEventListener("click", async (e) => {
     const t = await ask({ text: tr("prompt.name"), value: c.title, ok: tr("chat.rename") });
     if (t && t.trim()) { c.title = t.trim().slice(0, 80); await idb.put(c); renderList(); if (current === c) els.chatTitle.textContent = c.title; }
   } else if (a === "delete") {
-    if (busy && current === c) return toast(tr("toast.wait"));
+    if (busy && current === c) return popups.toast(tr("toast.wait"), { kind: "warning" });
     if (!(await ask({ text: tr("confirm.delete", { title: c.title }), ok: tr("chat.delete") }))) return;
     convs = convs.filter((x) => x !== c); await idb.del(c.id);
     if (current === c) newChat(); else renderList();
@@ -337,25 +323,25 @@ function setTitle() {
   els.exportButton.classList.toggle("hidden", !current);
 }
 function makeMsgEl(m, idx) {
-  const row = document.createElement("div");
-  row.className = "message " + m.role; row.dataset.idx = idx;
-  const b = document.createElement("div"); b.className = "bubble selectable";
+  const parts = [];
   if (m.image) {
-    const im = document.createElement("div"); im.className = "attachment";
+    const im = document.createElement("div"); im.className = "message-image";
     im.style.backgroundImage = `url("${m.image}")`; im.setAttribute("role", "img"); im.setAttribute("aria-label", tr("msg.attachment"));
-    b.appendChild(im);
+    parts.push(im);
   }
   const body = document.createElement("div");
   if (m.role === "user") body.textContent = m.text;
   else { body.className = "markdown" + (m.error ? " error" : ""); body.innerHTML = m.error ? esc(m.text) : md(m.text); }
-  b.appendChild(body); row.appendChild(b);
-  const acts = document.createElement("div"); acts.className = "message-actions";
+  parts.push(body);
+  const acts = document.createElement("div"); acts.className = "message-actions"; acts.slot = "footer";
   acts.innerHTML = `<button class="ghost" type="button" data-a="copy">${icon("copy")}<span>${tr("msg.copy")}</span></button>` +
     (m.role === "user"
-      ? `<button class="ghost" type="button" data-a="edit">${icon("edit")}<span>${tr("msg.edit")}</span></button>`
+      ? `<button class="ghost" type="button" data-a="edit">${icon("pencil")}<span>${tr("msg.edit")}</span></button>`
       : `<button class="ghost" type="button" data-a="regen">${icon("refresh")}<span>${tr("msg.regen")}</span></button>`) +
     (m.tps ? `<span class="model-meta">${m.model ? esc(m.model) + " · " : ""}${tr("msg.tps", { n: m.tps.toFixed(1) })}</span>` : "");
-  row.appendChild(acts);
+  // the message is the tag kit-message (assets/js/components.js): the user's is at the end, and its bubble is filled
+  const row = components.make("message", { end: m.role === "user", bubble: m.role === "user" ? "filled" : null }, [...parts, acts]);
+  row.parts.bubble.classList.add("selectable"); row.dataset.idx = idx;
   return { row, body };
 }
 function renderChat() {
@@ -377,8 +363,8 @@ els.chat.addEventListener("click", async (e) => {
   }
   const a = btn.dataset.a; if (!a) return;
   const idx = +btn.closest(".message").dataset.idx, m = current.messages[idx];
-  if (a === "copy") { await navigator.clipboard?.writeText(m.text).catch(() => {}); toast(tr("toast.copied")); return; }
-  if (busy) return toast(tr("toast.wait"));
+  if (a === "copy") { await navigator.clipboard?.writeText(m.text).catch(() => {}); popups.toast(tr("toast.copied")); return; }
+  if (busy) return popups.toast(tr("toast.wait"), { kind: "warning" });
   if (a === "edit") {
     current.messages.splice(idx); current.updated = Date.now(); await idb.put(current);
     els.messageInput.value = m.text; pendingImage = m.image && loadedDef?.kind === "multi" ? m.image : null;
@@ -394,7 +380,7 @@ function newChat() {
   current = null; renderChat(); closeSide(); els.messageInput.focus();
 }
 async function openConv(c) {
-  if (busy) return toast(tr("toast.wait"));
+  if (busy) return popups.toast(tr("toast.wait"), { kind: "warning" });
   await loadChat(c);
   current = c; renderChat(); closeSide();
 }
@@ -410,9 +396,9 @@ async function unloadModel() {
 // The chat works at once: the first message loads the chosen model if it is not loaded yet.
 async function ensureModel() {
   if (model) return true;
-  if (!MODEL) { toast(tr("model.none")); els.modelPicker.focus(); return false; }
-  if (!gpuOk) { toast(tr("gpu.unsupported")); return false; }
-  if (loading) { toast(tr("toast.wait")); return false; }
+  if (!MODEL) { popups.toast(tr("model.none"), { kind: "warning" }); els.modelPicker.focus(); return false; }
+  if (!gpuOk) { popups.toast(tr("gpu.unsupported"), { kind: "error" }); return false; }
+  if (loading) { popups.toast(tr("toast.wait"), { kind: "warning" }); return false; }
   await loadModel();
   return !!model;
 }
@@ -468,7 +454,7 @@ async function loadModel() {
 
 // ---------- Model picker ----------
 async function chooseModel(m) {
-  if (busy) { renderModelPicker(); return toast(tr("toast.wait")); }
+  if (busy) { renderModelPicker(); return popups.toast(tr("toast.wait"), { kind: "warning" }); }
   const seen = lsGet("muai.seen." + m.id) === "1";
   if (!seen && m.mb >= 1000 && !(await ask({ text: tr("picker.confirm", { name: m.name, size: sizeLabel(m.mb) }), ok: tr("picker.select") }))) { renderModelPicker(); return; }
   if (model) await unloadModel();
@@ -617,20 +603,20 @@ document.addEventListener("drop", async (event) => {
   try {
     const file = event.dataTransfer.files[0];
     if (file && file.type.startsWith("image/")) { pendingImage = await shrink(file); showPreview(); }
-  } catch (e) { toast(e.message); }
+  } catch (e) { popups.toast(e.message, { kind: "error" }); }
 });
 els.imageFileInput.addEventListener("change", async () => {
   const f = els.imageFileInput.files[0]; if (!f) return;
-  try { pendingImage = await shrink(f); showPreview(); } catch (e) { toast(e.message); }
+  try { pendingImage = await shrink(f); showPreview(); } catch (e) { popups.toast(e.message, { kind: "error" }); }
 });
 
 // ---------- Export / import / delete ----------
 const toMarkdown = (c) => `# ${c.title}\n\n_${new Date(c.created).toLocaleString(i18n.lang)}_\n\n` +
   c.messages.map((m) => `**${m.role === "user" ? tr("export.you") : "muAI"}:**${m.image ? ` _${tr("export.imageAttached")}_` : ""}\n\n${m.text}`).join("\n\n---\n\n") + "\n";
-els.exportButton.addEventListener("click", () => current && download(`${current.title.replace(/[^\w-]+/g, "_") || "muai"}.markdown`, toMarkdown(current), "text/markdown"));
+els.exportButton.addEventListener("click", () => current && components.download(`${current.title.replace(/[^\w-]+/g, "_") || "muai"}.markdown`, toMarkdown(current), "text/markdown"));
 // ---------- Settings ----------
 // The settings, the downloaded models, and the data are managed in the account web (the account button opens it). muAI shows what is left after it did something.
-// The sign-in is the account web, opened by assets/account.js.
+// The sign-in is the account web, opened by assets/js/account.js.
 account.bind($("account-button"));
 settings.listen("muai", async (message) => {
   if (message.type === "modelDeleted") {
