@@ -199,3 +199,8 @@ dialog textarea { min-height: calc(var(--unit) * 30); padding: var(--padding-med
   :root[dir="rtl"] .sidebar { transform: translateX(calc(100% + var(--padding-medium))); }
   :root[dir="rtl"] body.sidebar-open .sidebar { transform: none; }
 }
+
+/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
+#export-button { width: calc(var(--height) * 5); }
+#remove-attachment-button { width: calc(var(--height) * 4); }
+#stop-button { width: calc(var(--height) * 3); }

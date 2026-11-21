@@ -51,7 +51,7 @@ body { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows:
 .searchbox { position: relative; display: flex; align-items: center; flex: 1; min-width: calc(var(--unit) * 60); }
 .searchbox input { width: 100%; padding-inline-start: calc(var(--unit) * 18); }
 .searchbox .icon { position: absolute; inset-inline-start: calc(var(--unit) * 6); width: var(--icon-size-medium); height: var(--icon-size-medium); color: var(--fg-1); pointer-events: none; }
-.toolbar select { max-width: 100%; }
+.toolbar select { width: calc(var(--height) * 6); max-width: 100%; }
 
 /* The tracks: one row each, touching, so the rows are square */
 .music { position: relative; min-height: 0; overflow: auto; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); }
@@ -103,3 +103,6 @@ dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent)
   .track-album { display: none; }
   .volume { flex-basis: 100%; justify-content: flex-start; }
 }
+
+/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
+#empty-action-button { width: calc(var(--height) * 4); }

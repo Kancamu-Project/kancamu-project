@@ -155,3 +155,6 @@ dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent)
   .main { grid-column: 2; grid-row: 1 / -1; }
   .menu-button { display: none; }
 }
+
+/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
+.menu-button { width: calc(var(--height) * 4); }

@@ -117,7 +117,9 @@ body { display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr)
 /* The panel is the main: it has a border around it. */
 .main { grid-column: 2; grid-row: 1 / -1; display: grid; grid-template-rows: auto minmax(0, 1fr); min-width: 0; min-height: 0; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); overflow: hidden; }
 .topbar { box-sizing: content-box; display: flex; align-items: center; gap: 0; height: var(--height); padding-inline: 0; border-bottom: var(--border-width) solid var(--border); }
-.topbar > :is(.searchbox, #sort-order, #refresh-button, .segmented-control) { height: 100%; }
+.topbar > :is(#new-button, .searchbox, #sort-order, #refresh-button, .segmented-control) { height: 100%; }
+#new-button { flex: none; }
+.searchbox input { border-inline-start-width: 0; }   /* the button before it has the line */
 #refresh-button { border-inline-end-width: 0; }
 /* What touches another element is square: the bar of the files, the view switch, the buttons of a row. */
 .topbar :is(input, select, button), .segmented-control button, .actions .icon-button { border-radius: 0; }
@@ -126,21 +128,19 @@ body { display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr)
 .header { grid-column: 1; grid-row: 1; display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); }
 .header-tools { display: flex; gap: var(--gap-small); height: var(--height); }
 .header-tools > .button { height: 100%; }
-.sidebar-actions { display: flex; gap: var(--gap-small); }
 .menu-button { display: none; }
-.sidebar-actions > .primary { flex: 1; }
 .sidebar-nav { display: flex; flex-direction: column; gap: var(--gap-small); }
 .sidebar-nav > .sidebar-item { flex: none; width: 100%; justify-content: flex-start; font-weight: 400; text-transform: none; }
 .sidebar-nav > .sidebar-item > span:not(.icon) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sidebar-nav > .sidebar-item.on { background: var(--bg-1); border-inline-start: var(--border-width-thick) solid var(--fg); }
-body.plain :is(.sidebar-actions, .sidebar-nav, .usage, #refresh-button) { display: none; }
+body.plain :is(#new-button, .sidebar-nav, .usage, #refresh-button) { display: none; }
 .usage { display: flex; flex: none; flex-direction: column; gap: var(--gap-small); padding: var(--padding-medium); border-radius: var(--border-radius-medium); border: var(--border-width) solid var(--border); font-size: var(--font-size-small); }
 .usage-detail { color: var(--fg-1); }
 .meter { height: calc(var(--unit) * 2); border: var(--border-width) solid var(--border); }
 .meter > i { display: block; height: 100%; background: var(--fg); }
-#sort-order { width: calc(var(--unit) * 55); border-inline-start-width: 0; }
+#sort-order { width: calc(var(--height) * 5); border-inline-start-width: 0; }
 .header-cell { padding-inline: var(--padding-small); }
-.searchbox { position: relative; display: flex; align-items: center; flex: none; width: calc(var(--unit) * 70); }
+.searchbox { position: relative; display: flex; align-items: center; flex: none; width: calc(var(--height) * 6); }
 .searchbox input { width: 100%; }
 .searchbox .icon { --is: var(--icon-size-medium); position: absolute; inset-inline-start: calc(var(--unit) * 6); color: var(--fg-1); pointer-events: none; }
 .searchbox input { height: 100%; padding-inline-start: calc(var(--unit) * 18); }
@@ -289,8 +289,10 @@ body.plain :is(.sidebar-actions, .sidebar-nav, .usage, #refresh-button) { displa
 @media (max-width: 35rem) {
   /* The search takes a whole line; the sort and the view buttons share the line under it. */
   .topbar { flex-wrap: wrap; height: auto; border-bottom: 0; }
-  .topbar > :is(.searchbox, #sort-order, #refresh-button, .segmented-control) { height: var(--height); }
-  .searchbox { flex: 1 1 100%; border-bottom: var(--border-width) solid var(--border); }
+  .topbar > :is(#new-button, .searchbox, #sort-order, #refresh-button, .segmented-control) { height: var(--height); }
+  .searchbox { order: -1; flex: 1 1 100%; border-bottom: var(--border-width) solid var(--border); }
+  .searchbox input { border-inline-start-width: var(--border-width); }
+  #new-button { border-bottom: var(--border-width) solid var(--border); }
   #sort-order { flex: 1; width: auto; border-inline-start-width: var(--border-width); border-bottom: var(--border-width) solid var(--border); }
   :is(#refresh-button, .segmented-control) { border-bottom: var(--border-width) solid var(--border); }
 }
@@ -313,5 +315,11 @@ input:focus, select:focus { box-shadow: none; border-color: var(--fg); }
 .toast { box-shadow: none; border: var(--border-width) solid var(--border); }
 
 /* ---------- Language and right-to-left ---------- */
-select.language { width: calc(var(--unit) * 50); flex: none; padding-inline: var(--padding-medium) var(--padding-extra-large); }
+select.language { width: calc(var(--height) * 5); flex: none; padding-inline: var(--padding-medium) var(--padding-extra-large); }
 :root[dir="rtl"] .icon-chevron-left, :root[dir="rtl"] .icon-chevron-right { transform: scaleX(-1); }
+
+/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
+#new-button { width: calc(var(--height) * 3); }
+#delete-selected-button { width: calc(var(--height) * 3); }
+#preview-download-button { width: calc(var(--height) * 4); }
+#empty-action-button { width: calc(var(--height) * 5); }

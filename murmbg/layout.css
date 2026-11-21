@@ -128,3 +128,13 @@ dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent)
   .panes { grid-template-columns: 1fr; overflow: auto; }
   .picture { min-height: calc(var(--unit) * 70); }
 }
+
+/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
+#choose-button { width: calc(var(--height) * 4); }
+#drive-button { width: calc(var(--height) * 4); }
+#stop-button { width: calc(var(--height) * 3); }
+#another-button { width: calc(var(--height) * 5); }
+#save-button { width: calc(var(--height) * 5); }
+#zip-button { width: calc(var(--height) * 5); }
+#frame-rate-select { width: calc(var(--height) * 2); }
+#format-select { width: calc(var(--height) * 6); }

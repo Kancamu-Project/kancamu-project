@@ -81,3 +81,7 @@ dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent)
   .panes { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
   .pane-text { min-height: calc(var(--unit) * 30); }
 }
+
+/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
+#translate-button { width: calc(var(--height) * 4); }
+#stop-button { width: calc(var(--height) * 3); }

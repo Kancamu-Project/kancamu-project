@@ -165,3 +165,6 @@ dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent)
 @media (min-width: 64rem) {
   .lesson-body { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
+.menu-button { width: calc(var(--height) * 4); }

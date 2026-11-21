@@ -755,3 +755,8 @@ button {
         }
     }
 }
+
+/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
+#reset-button {
+    width: calc(var(--height) * 3);
+}

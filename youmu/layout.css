@@ -213,6 +213,10 @@ body {
         height: var(--height);
         border-bottom: var(--border-width) solid var(--border);
 
+        & > select {
+            width: calc(var(--height) * 4);
+        }
+
         & > :is(select, button) {
             height: 100%;
             border-width: 0;
@@ -621,4 +625,15 @@ body {
     background: var(--bg-1);
     border: var(--border-width) solid var(--border);
     border-radius: var(--border-radius-large);
+}
+
+/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
+#create-token-button {
+    width: calc(var(--height) * 5);
+}
+#token-form button[type="submit"] {
+    width: calc(var(--height) * 3);
+}
+#sign-out-button {
+    width: calc(var(--height) * 4);
 }

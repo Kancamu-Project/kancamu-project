@@ -196,6 +196,10 @@ The spacing of the page is the padding and the gap of the body (a grid). The ele
 In a web that has a sidebar, the main is wrapped in a border (var(--border-width), solid, with var(--border-radius-large)), and the header, the sidebar, and the footer have no border and sit on the page background. In a web that has no sidebar, the main has no border of its own: the parts inside it have theirs.
 The parts have the same ids and classes in every web: #header.header, with .logo (.logo-mark and .logo-name) and .header-tools (#account-button, #menu-button, #theme-button); #main.main, with .topbar when it has a bar on top; #footer.footer, with #status and the .copyright link; and, when there is a sidebar, #sidebar.sidebar, with #sidebar-nav.sidebar-nav, its .sidebar-item and .sidebar-title, and a .sidebar-summary for a box of numbers, #sidebar-overlay and #sidebar-resizer when there are. The width of the sidebar is --sidebar-width. A new web uses these names, and any other thing that two webs have in common is named the same in both.
 
+#### 15. Control Width
+A button, an input, a select, or any other control whose size does not change, or whose size must not follow its content, has a width that is set, as a multiple of the height: for example calc(var(--height) * 3), that is three times the height of the control. Its label, value, or placeholder then stays inside that width on one line, and is shortened with an ellipsis when it is too long for it (see Single Line). The set width is the same wherever the same control is used.
+A button that holds only an icon already has the width of its height (see Spacing). A control whose width must follow its content, such as a tag, or that fills a row of free width, such as a search box or a text area, keeps the width of its content or of the row.
+
 ## Other
 
 #### 1. Structure
