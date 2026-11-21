@@ -4,6 +4,7 @@ const state = {
     projects: [],
     category: "all",
     publisher: "all",
+    alternative: "all",   // a product that a project is an alternative to (Microsoft Word)
     sort: "asc",
     query: "",
     view: "grid",
@@ -16,6 +17,7 @@ function saveFilters() {
     if (state.query) params.set("q", state.query);
     if (state.category !== "all") params.set("category", state.category);
     if (state.publisher !== "all") params.set("publisher", state.publisher);
+    if (state.alternative !== "all") params.set("alternative", state.alternative);
     if (state.sort !== "asc") params.set("sort", state.sort);
     if (state.view !== "grid") params.set("view", state.view);
     if (state.tabs.length) params.set("tabs", state.tabs.join(","));
@@ -30,6 +32,7 @@ function restoreFilters() {
     const category = params.get("category");
     if (category && state.categories[category]) state.category = category;
     state.publisher = params.get("publisher") || "all";
+    state.alternative = params.get("alternative") || "all";
     if (["asc", "desc"].includes(params.get("sort"))) state.sort = params.get("sort");
     state.query = params.get("q") || "";
     if (["grid", "list"].includes(params.get("view"))) state.view = params.get("view");
@@ -212,7 +215,7 @@ function syncViewer() {
 
 function syncControls() {
     document.getElementById("reset-button").hidden =
-        !state.query && state.category === "all" && state.publisher === "all";
+        !state.query && state.category === "all" && state.publisher === "all" && state.alternative === "all";
     document.getElementById("project-search").value = state.query;
     document.getElementById("sort-order").value = state.sort;
     document.querySelectorAll("#view-toggle button").forEach((button) =>
@@ -227,6 +230,7 @@ function renderAll() {
     i18n.apply();
     renderTabs();
     renderPublisherSelect();
+    renderAlternativeSelect();
     renderCategoryFilter();
     renderProjects();
 }
@@ -371,6 +375,23 @@ function renderPublisherSelect() {
     select.value = state.publisher;
 }
 
+// Every product that some project is an alternative to; a project may be an alternative to several.
+function renderAlternativeSelect() {
+    const select = document.getElementById("alternative-filter");
+    const alternatives = [...new Set(state.projects.flatMap((project) => project.alternatives || []))]
+        .sort((a, b) => a.localeCompare(b, i18n.lang));
+    const options = [["all", t("allAlternatives")], ...alternatives.map((name) => [name, name])];
+    select.replaceChildren(
+        ...options.map(([value, label]) => {
+            const option = createElement("option", "", label);
+            option.value = value;
+            return option;
+        })
+    );
+    if (!alternatives.includes(state.alternative)) state.alternative = "all";
+    select.value = state.alternative;
+}
+
 function renderCategoryFilter() {
     const filter = document.getElementById("category-filter");
     const sorted = Object.keys(state.categories).sort((a, b) =>
@@ -409,7 +430,10 @@ function renderProjects() {
             state.publisher === "all" || project.publisher === state.publisher
         )
         .filter((project) =>
-            `${pickText(project.name)} ${pickText(project.description)}`.toLowerCase().includes(query)
+            state.alternative === "all" || (project.alternatives || []).includes(state.alternative)
+        )
+        .filter((project) =>
+            `${pickText(project.name)} ${pickText(project.description)} ${(project.alternatives || []).join(" ")}`.toLowerCase().includes(query)
         )
         .sort((a, b) => direction * pickText(a.name).localeCompare(pickText(b.name)));
 
@@ -561,6 +585,12 @@ document.getElementById("publisher-filter").addEventListener("change", (event) =
     renderProjects();
 });
 
+document.getElementById("alternative-filter").addEventListener("change", (event) => {
+    state.alternative = event.target.value;
+    saveFilters();
+    renderProjects();
+});
+
 document.getElementById("sort-order").addEventListener("change", (event) => {
     state.sort = event.target.value;
     saveFilters();
@@ -580,9 +610,11 @@ document.getElementById("reset-button").addEventListener("click", () => {
     state.query = "";
     state.category = "all";
     state.publisher = "all";
+    state.alternative = "all";
     saveFilters();
     document.getElementById("project-search").value = "";
     document.getElementById("publisher-filter").value = "all";
+    document.getElementById("alternative-filter").value = "all";
     renderCategoryFilter();
     renderProjects();
 });

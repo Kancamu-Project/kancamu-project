@@ -140,6 +140,16 @@
       "en-US": "Account",
       "zh-CN": "账户",
       "ar-SA": "الحساب"
+    },
+    "alternative": {
+      "en-US": "Alternative to",
+      "zh-CN": "替代",
+      "ar-SA": "بديل لـ"
+    },
+    "allAlternatives": {
+      "en-US": "All alternatives",
+      "zh-CN": "所有替代对象",
+      "ar-SA": "جميع البدائل"
     }
   },
   "categories": {
@@ -231,7 +241,8 @@
         "official",
         "system",
         "tools"
-      ]
+      ],
+      "alternatives": []
     },
     {
       "id": "drivemu",
@@ -255,6 +266,10 @@
         "mobile",
         "storage",
         "tools"
+      ],
+      "alternatives": [
+        "Google Drive",
+        "Dropbox"
       ]
     },
     {
@@ -279,6 +294,9 @@
         "mobile",
         "creative",
         "storage"
+      ],
+      "alternatives": [
+        "Google Photos"
       ]
     },
     {
@@ -303,6 +321,9 @@
         "mobile",
         "creative",
         "storage"
+      ],
+      "alternatives": [
+        "Spotify"
       ]
     },
     {
@@ -326,6 +347,9 @@
         "official",
         "mobile",
         "education"
+      ],
+      "alternatives": [
+        "Duolingo"
       ]
     },
     {
@@ -349,7 +373,8 @@
         "official",
         "mobile",
         "education"
-      ]
+      ],
+      "alternatives": []
     },
     {
       "id": "murmbg",
@@ -373,6 +398,9 @@
         "mobile",
         "creative",
         "design"
+      ],
+      "alternatives": [
+        "remove.bg"
       ]
     },
     {
@@ -397,6 +425,10 @@
         "mobile",
         "creative",
         "design"
+      ],
+      "alternatives": [
+        "Google Translate",
+        "DeepL"
       ]
     },
     {
@@ -420,7 +452,8 @@
         "official",
         "mobile",
         "tools"
-      ]
+      ],
+      "alternatives": []
     },
     {
       "id": "assetmu",
@@ -444,7 +477,8 @@
         "mobile",
         "design",
         "tools"
-      ]
+      ],
+      "alternatives": []
     },
     {
       "id": "kitmu",
@@ -468,6 +502,9 @@
         "mobile",
         "design",
         "tools"
+      ],
+      "alternatives": [
+        "shadcn/ui"
       ]
     },
     {
@@ -492,7 +529,8 @@
         "mobile",
         "ai",
         "tools"
-      ]
+      ],
+      "alternatives": []
     },
     {
       "id": "kancamu",
@@ -516,7 +554,8 @@
         "mobile",
         "directory",
         "tools"
-      ]
+      ],
+      "alternatives": []
     },
     {
       "id": "deckcraft",
@@ -539,6 +578,11 @@
         "office",
         "design",
         "productivity"
+      ],
+      "alternatives": [
+        "Microsoft PowerPoint",
+        "Google Slides",
+        "Keynote"
       ]
     },
     {
@@ -561,6 +605,9 @@
       "categories": [
         "video",
         "creative"
+      ],
+      "alternatives": [
+        "Adobe After Effects"
       ]
     },
     {
@@ -583,6 +630,10 @@
       "categories": [
         "video",
         "creative"
+      ],
+      "alternatives": [
+        "Adobe Premiere Pro",
+        "Final Cut Pro"
       ]
     },
     {
@@ -605,6 +656,10 @@
       "categories": [
         "office",
         "productivity"
+      ],
+      "alternatives": [
+        "Microsoft Excel",
+        "Google Sheets"
       ]
     },
     {
@@ -627,6 +682,9 @@
       "categories": [
         "design",
         "creative"
+      ],
+      "alternatives": [
+        "Adobe Photoshop"
       ]
     },
     {
@@ -649,6 +707,9 @@
       "categories": [
         "design",
         "creative"
+      ],
+      "alternatives": [
+        "Adobe Illustrator"
       ]
     },
     {
@@ -671,6 +732,10 @@
       "categories": [
         "office",
         "productivity"
+      ],
+      "alternatives": [
+        "Microsoft Word",
+        "Google Docs"
       ]
     },
     {
@@ -693,6 +758,9 @@
       "categories": [
         "design",
         "creative"
+      ],
+      "alternatives": [
+        "CorelDRAW"
       ]
     },
     {
@@ -715,6 +783,9 @@
       "categories": [
         "office",
         "tools"
+      ],
+      "alternatives": [
+        "Adobe Acrobat"
       ]
     }
   ]

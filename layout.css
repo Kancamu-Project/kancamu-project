@@ -613,7 +613,7 @@ button {
             padding: var(--padding-extra-small) var(--padding-small);
             border: var(--border-width) solid var(--border);
             border-radius: var(--border-radius-small);
-            color: var(--fg-1);
+            color: var(--fg);
             font-size: var(--font-size-extra-small);
             text-transform: none;
 
@@ -673,8 +673,6 @@ button {
         }
 
         & > .project-open-button {
-            border-color: var(--fg);
-
             &:hover {
                 background: var(--fg);
                 color: var(--bg);

@@ -6,7 +6,7 @@ Plain HTML, CSS, and JavaScript. No framework, no build step, no special server.
 
 ## Features
 
-- A directory of projects in a grid or a list, with search, category and publisher filters, and A-Z or Z-A order.
+- A directory of projects in a grid or a list, with search, category, alternative (a project that replaces another product) and publisher filters, and A-Z or Z-A order.
 - Tabs: a project opens inside the page, and you can copy its link or open it in a new window.
 - The filters are kept in the URL, so a filtered view can be shared.
 - Dark and light themes. The chosen theme and language are remembered by the browser. A change in one web is followed live by all the others, muOS included.
@@ -135,7 +135,8 @@ Everything in the list comes from `data.json`. Add one object to `projects`:
   "url": "example/",
   "icon": "example/favicon.png",
   "color": "blue",
-  "categories": ["tools"]
+  "categories": ["tools"],
+  "alternatives": ["Microsoft Word", "Google Docs"]
 }
 ```
 
@@ -144,6 +145,7 @@ Everything in the list comes from `data.json`. Add one object to `projects`:
 - `highlight` is the part of the name shown in bold on the card, for example `mu` in "muOS".
 - `color` is a palette name (`red`, `yellow`, `blue`, or `green`), or a hex value for a project from another publisher.
 - `categories` must use keys that exist under `categories` in `data.json`: `ai`, `tools`, `productivity`, `system`, `office`, `design`, `video`, `creative`, `directory`, `storage`.
+- `alternatives` lists the products the project is an alternative to (one or more, product names are not translated; `[]` for none). The directory has a filter for them, and the search also finds them.
 - New interface text and new category names are written in all three languages.
 
 ## Hosting
