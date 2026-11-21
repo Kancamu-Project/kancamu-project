@@ -1,7 +1,7 @@
 // Saved sidebar width, applied as early as this script runs.
 try {
   const w = parseFloat(JSON.parse(localStorage.getItem("muai.settings")).sideWidth);
-  if (w >= 16 && w <= 40) document.documentElement.style.setProperty("--side-width", w.toFixed(1) + "rem");
+  if (w >= 16 && w <= 40) document.documentElement.style.setProperty("--sidebar-width", w.toFixed(1) + "rem");
 } catch {}
 
 import {
@@ -35,7 +35,7 @@ const els = Object.fromEntries([
   "model-picker","load-status","progress-box","progress-fill","progress-text","load-error","chat","message-input",
   "send-button","stop-button","chat-area","attach-button","image-file-input","attachment-preview","attachment-preview-image","attachment-preview-name","remove-attachment-button","chat-list","chat-search",
   "new-chat-button","chat-title","export-button","menu-button",
-  "side-overlay","chat-app","welcome-message","side","side-resizer",
+  "sidebar-overlay","main","welcome-message","sidebar","sidebar-resizer",
 ].map((id) => [id.replace(/-([a-z])/g, (m, c) => c.toUpperCase()), $(id)]));   // els.modelPicker is the element with the id model-picker
 // The model is chosen in a select. While a model loads, its option says so.
 function renderModelPicker(label) {
@@ -362,7 +362,7 @@ function renderChat() {
   els.chat.innerHTML = "";
   const empty = !current || !current.messages.length;
   els.welcomeMessage.classList.toggle("hidden", !empty);
-  els.chatApp.classList.toggle("welcoming", empty);   // no messages yet: the welcome and the message box sit in the middle
+  els.main.classList.toggle("welcoming", empty);   // no messages yet: the welcome and the message box sit in the middle
   els.chat.classList.toggle("hidden", empty);
   if (!empty) current.messages.forEach((m, i) => els.chat.appendChild(makeMsgEl(m, i).row));
   els.chatArea.scrollTop = els.chatArea.scrollHeight;
@@ -655,28 +655,28 @@ const remPx = () => parseFloat(getComputedStyle(document.documentElement).fontSi
 function setSideWidth(rem) {
   const max = Math.floor(Math.max(SIDE.min, Math.min(SIDE.max, (innerWidth / remPx()) * 0.6)) / 0.2 + 1e-6) * 0.2;
   sideRem = Math.round(Math.min(max, Math.max(SIDE.min, Math.round(rem / 0.2) * 0.2)) * 10) / 10;
-  document.documentElement.style.setProperty("--side-width", sideRem.toFixed(1) + "rem");
-  els.sideResizer.setAttribute("aria-valuenow", sideRem.toFixed(1));
+  document.documentElement.style.setProperty("--sidebar-width", sideRem.toFixed(1) + "rem");
+  els.sidebarResizer.setAttribute("aria-valuenow", sideRem.toFixed(1));
 }
 const saveSideWidth = () => savePreferences({ sideWidth: Number(sideRem.toFixed(1)) });
-els.sideResizer.addEventListener("pointerdown", (e) => {
-  e.preventDefault(); els.sideResizer.setPointerCapture(e.pointerId);
-  document.body.classList.add("resizing"); els.sideResizer.classList.add("active");
+els.sidebarResizer.addEventListener("pointerdown", (e) => {
+  e.preventDefault(); els.sidebarResizer.setPointerCapture(e.pointerId);
+  document.body.classList.add("resizing"); els.sidebarResizer.classList.add("active");
 });
-els.sideResizer.addEventListener("pointermove", (e) => {
-  if (els.sideResizer.hasPointerCapture(e.pointerId)) {
-    const box = els.side.getBoundingClientRect();
+els.sidebarResizer.addEventListener("pointermove", (e) => {
+  if (els.sidebarResizer.hasPointerCapture(e.pointerId)) {
+    const box = els.sidebar.getBoundingClientRect();
     setSideWidth((document.documentElement.dir === "rtl" ? box.right - e.clientX : e.clientX - box.left) / remPx());
   }
 });
 const endResize = (e) => {
-  if (els.sideResizer.hasPointerCapture(e.pointerId)) els.sideResizer.releasePointerCapture(e.pointerId);
-  document.body.classList.remove("resizing"); els.sideResizer.classList.remove("active"); saveSideWidth();
+  if (els.sidebarResizer.hasPointerCapture(e.pointerId)) els.sidebarResizer.releasePointerCapture(e.pointerId);
+  document.body.classList.remove("resizing"); els.sidebarResizer.classList.remove("active"); saveSideWidth();
 };
-els.sideResizer.addEventListener("pointerup", endResize);
-els.sideResizer.addEventListener("pointercancel", endResize);
-els.sideResizer.addEventListener("dblclick", () => { setSideWidth(SIDE.def); saveSideWidth(); });
-els.sideResizer.addEventListener("keydown", (e) => {
+els.sidebarResizer.addEventListener("pointerup", endResize);
+els.sidebarResizer.addEventListener("pointercancel", endResize);
+els.sidebarResizer.addEventListener("dblclick", () => { setSideWidth(SIDE.def); saveSideWidth(); });
+els.sidebarResizer.addEventListener("keydown", (e) => {
   const flip = document.documentElement.dir === "rtl" ? -1 : 1;
   const to = { ArrowLeft: sideRem - flip, ArrowRight: sideRem + flip, Home: SIDE.min, End: SIDE.max }[e.key];
   if (to === undefined) return;
@@ -686,9 +686,9 @@ addEventListener("resize", () => setSideWidth(sideRem));
 setSideWidth(sideRem);
 
 // ---------- Mobile sidebar ----------
-const closeSide = () => document.body.classList.remove("side-open");
-els.menuButton.addEventListener("click", () => document.body.classList.toggle("side-open"));
-els.sideOverlay.addEventListener("click", closeSide);
+const closeSide = () => document.body.classList.remove("sidebar-open");
+els.menuButton.addEventListener("click", () => document.body.classList.toggle("sidebar-open"));
+els.sidebarOverlay.addEventListener("click", closeSide);
 
 // ---------- Language ----------
 i18n.onChange(() => {

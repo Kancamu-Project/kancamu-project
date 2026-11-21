@@ -13,27 +13,26 @@
 <link rel="stylesheet" href="layout.css">
 </head>
 <body>
-<div class="side" id="side">
-  <div class="brand-row">
-    <div class="logo"><div class="logo-mark"></div><div class="logo-name" data-i18n-html="logo"></div></div>
-    <div class="brand-tools">
-      <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
-    </div>
+<div id="header" class="header">
+  <div class="logo"><div class="logo-mark"></div><div class="logo-name" data-i18n-html="logo"></div></div>
+  <div class="header-tools">
+    <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
+    <button id="menu-button" class="ghost square" type="button" aria-controls="sidebar" data-i18n-label="menu"><span class="icon icon-menu"></span></button>
   </div>
+</div>
+<div class="sidebar" id="sidebar">
   <div class="chat-controls">
     <button id="new-chat-button" class="primary" type="button"><span class="icon icon-plus"></span><span data-i18n="title.new"></span></button>
     <select id="model-picker" data-i18n-label="model.choose"></select>
     <input id="chat-search" type="search" data-i18n-placeholder="search.placeholder" data-i18n-label="search.label">
   </div>
   <div id="chat-list"></div>
-  <div class="side-footer"><a href="/" target="_top" data-i18n="copyright"></a></div>
-  <div id="side-resizer" class="side-resizer" role="separator" aria-orientation="vertical" data-i18n-label="resizer.label" aria-valuemin="16" aria-valuemax="40" tabindex="0" data-i18n-title="resizer.title"></div>
+  <div id="sidebar-resizer" class="sidebar-resizer" role="separator" aria-orientation="vertical" data-i18n-label="resizer.label" aria-valuemin="16" aria-valuemax="40" tabindex="0" data-i18n-title="resizer.title"></div>
 </div>
-<div class="side-overlay" id="side-overlay"></div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-<div id="chat-app" class="app">
+<div id="main" class="main">
   <div class="topbar">
-    <button id="menu-button" class="ghost square" type="button" data-i18n-label="menu"><span class="icon icon-menu"></span></button>
     <div id="chat-title"></div>
     <button id="export-button" class="ghost hidden" type="button"><span class="icon icon-download"></span><span data-i18n="export.md"></span></button>
   </div>
@@ -63,6 +62,7 @@
     </div>
   </div>
 </div>
+<div id="footer" class="footer"><a href="/" target="_top" data-i18n="copyright"></a></div>
 
 <script src="../assets/i18n.js"></script>
 <script src="../assets/dialog.js"></script>

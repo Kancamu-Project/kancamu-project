@@ -188,6 +188,14 @@ The default look has no colour of its own: the text colour and the background fo
 A button that holds only an icon, with no text, is a perfect square: give it the class square, which gives it no padding and a width equal to its height (see Spacing). Every web is checked against this, also buttons made by script.
 Do not make a button, input, or select borderless. A variant (primary, danger, and so on) may have its own colours.
 
+#### 14. Page Layout
+Every web has three elements directly in the body: the header, the main, and the footer; a web that has a sidebar has the sidebar too, so it has four. None of them is wrapped in another element. Other elements may be in the body too (a dialog, a menu, a floating message, a hidden helper).
+The header is on top and has the brand at the start and the account button at the end (in a web that has no account button, such as the main website, what it has instead). The footer is at the bottom and has the status line and the copyright. They are not repeated in the main or in the sidebar.
+In a web that has a sidebar, on a wide screen the header is above the sidebar and has the width of the sidebar (the account button is flush with the end edge of the sidebar), the footer is under the sidebar, and the main is beside the three, from the top to the bottom. On a narrow screen the header goes across the top of the page, the main is under it, and the footer is under the main; the sidebar is hidden, and opens over the main with the button that is at the end of the header, next to the account button.
+The spacing of the page is the padding and the gap of the body (a grid). The elements may have a padding of their own when they need one, and have none when they do not.
+In a web that has a sidebar, the main is wrapped in a border (var(--border-width), solid, with var(--border-radius-large)), and the header, the sidebar, and the footer have no border and sit on the page background. In a web that has no sidebar, the main has no border of its own: the parts inside it have theirs.
+The parts have the same ids and classes in every web: #header.header, with .logo (.logo-mark and .logo-name) and .header-tools (#account-button, #menu-button, #theme-button); #main.main, with .topbar when it has a bar on top; #footer.footer, with #status and the .copyright link; and, when there is a sidebar, #sidebar.sidebar, with #sidebar-nav.sidebar-nav, its .sidebar-item and .sidebar-title, and a .sidebar-summary for a box of numbers, #sidebar-overlay and #sidebar-resizer when there are. The width of the sidebar is --sidebar-width. A new web uses these names, and any other thing that two webs have in common is named the same in both.
+
 ## Other
 
 #### 1. Structure

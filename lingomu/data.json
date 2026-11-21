@@ -1339,6 +1339,16 @@
       "en-US": "You can also type it with the letters of your keyboard.",
       "zh-CN": "也可以用键盘上的字母输入。",
       "ar-SA": "يمكنك أيضا كتابتها بحروف لوحة المفاتيح."
+    },
+    "lessons.label": {
+      "en-US": "Lessons",
+      "zh-CN": "课程",
+      "ar-SA": "الدروس"
+    },
+    "overview.words": {
+      "en-US": "Words in this lesson",
+      "zh-CN": "本课的单词",
+      "ar-SA": "كلمات هذا الدرس"
     }
   }
 }

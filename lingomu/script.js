@@ -6,7 +6,8 @@ await i18n.load();
 const tr = (key, params) => i18n.t(key, params);
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
-  "course-select", "account-button", "path-view", "streak-count", "total-xp", "goal-text", "goal-fill", "units",
+  "course-select", "account-button", "menu-button", "sidebar", "streak-count", "total-xp", "goal-text", "goal-fill", "sidebar-nav",
+  "overview-view", "overview-number", "overview-title", "overview-unit", "overview-words", "overview-state", "start-button",
   "lesson-view", "quit-button", "lesson-fill", "hearts", "hearts-count", "exercise", "feedback", "feedback-title", "feedback-answer", "check-button",
   "result-view", "result-title", "result-lines", "result-retry-button", "result-continue-button", "status"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
@@ -105,7 +106,7 @@ function buildCourseSelect() {
   els.courseSelect.replaceChildren(...availableCourses().map((course) => Object.assign(element("option"), { value: course.id, textContent: i18n.pick(course.name) })));
   if (chosen) els.courseSelect.value = chosen.id;
 }
-els.courseSelect.addEventListener("change", () => { progress.course = els.courseSelect.value; save(); renderPath(); });
+els.courseSelect.addEventListener("change", () => { progress.course = els.courseSelect.value; save(); selectedId = ""; renderPath(); });
 
 /* ---------- the lessons ---------- */
 const lessonsOf = () => units.flatMap((unit, unitIndex) => unit.lessons.map((lesson) => ({ ...lesson, unit, unitIndex })));
@@ -120,39 +121,88 @@ function renderStats() {
   els.goalFill.style.width = `${Math.min(100, Math.round((earned / goal) * 100))}%`;
 }
 
+let selectedId = "";   // the lesson that the main part shows
+let view = "overview";
+const isLocked = (course, all, lesson) => {
+  const index = all.findIndex((item) => item.id === lesson.id);
+  return index > 0 && !timesDone(course, all[index - 1].id);
+};
+
+// On a narrow screen the lessons are hidden, and a button opens them over the main (Escape closes them and gives the focus back).
+function setMenu(open) {
+  els.sidebar.classList.toggle("open", open);
+  els.menuButton.setAttribute("aria-expanded", String(open));
+  if (open) els.sidebar.querySelector(".sidebar-item.active, .sidebar-item:not(:disabled)")?.focus();
+}
+els.menuButton.addEventListener("click", () => setMenu(!els.sidebar.classList.contains("open")));
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && els.sidebar.classList.contains("open") && els.menuButton.offsetParent) { setMenu(false); els.menuButton.focus(); }
+});
+
+// Choosing a lesson in the list shows it in the main part (a lesson that is going on asks first).
+async function choose(id) {
+  if (view === "lesson" && !(await dialogs.ask({ title: tr("quit.title"), text: tr("quit.text"), ok: tr("quit.ok") }))) return;
+  lesson = null;
+  selectedId = id;
+  setMenu(false);
+  show("overview");
+  renderPath();
+}
+
+function renderSidebar(course, all) {
+  els.sidebarNav.replaceChildren(...units.map((unit, unitIndex) => {
+    const section = element("div", "unit");
+    section.append(element("span", "unit-title", tr("unit.title", { number: unitIndex + 1, title: i18n.pick(unit.title) })));
+    unit.lessons.forEach((item, lessonIndex) => {
+      const done = timesDone(course, item.id);
+      const locked = isLocked(course, all, item);
+      const title = tr("lesson.title", { number: lessonIndex + 1 });
+      const link = element("button", `sidebar-item${done ? " done" : ""}${item.id === selectedId ? " active" : ""}${locked ? " locked" : ""}`);
+      link.type = "button";
+      link.disabled = locked;
+      link.title = locked ? tr("lesson.locked") : tr("lesson.open", { title });
+      link.setAttribute("aria-label", link.title);
+      if (item.id === selectedId) link.setAttribute("aria-current", "true");
+      const badge = element("span", "sidebar-item-number");
+      if (locked) badge.append(icon("lock")); else if (done) badge.append(icon("check")); else badge.textContent = String(lessonIndex + 1);
+      link.append(badge, element("span", "sidebar-item-title", title));
+      link.addEventListener("click", () => choose(item.id));
+      section.append(link);
+    });
+    return section;
+  }));
+}
+
+// The main part shows the lesson that is chosen: the words in it, and the button that starts it.
+function renderOverview(course, all) {
+  const item = all.find((entry) => entry.id === selectedId);
+  const number = item.unit.lessons.findIndex((entry) => entry.id === item.id) + 1;
+  const done = timesDone(course, item.id);
+  const locked = isLocked(course, all, item);
+  els.overviewNumber.textContent = String(number);
+  els.overviewTitle.textContent = tr("lesson.title", { number });
+  els.overviewUnit.textContent = tr("unit.title", { number: item.unitIndex + 1, title: i18n.pick(item.unit.title) });
+  els.overviewWords.replaceChildren(...item.words.map((id) => {
+    const row = element("div", "word-row");
+    row.append(Object.assign(element("span", "word-text", wordText(course, id)), { dir: "auto" }));
+    if (wordRoman(course, id)) row.append(element("span", "word-roman", wordRoman(course, id)));
+    row.append(element("span", "word-meaning", meaningOf(id)));
+    return row;
+  }));
+  els.overviewState.textContent = locked ? tr("lesson.locked") : done ? tr("lesson.done", { count: done }) : "";
+  els.startButton.disabled = locked;
+  els.startButton.querySelector("span").textContent = tr(done ? "lesson.practice" : "lesson.new");
+  els.startButton.onclick = () => startLesson(item);
+}
+
 function renderPath() {
   renderStats();
   const course = currentCourse();
-  if (!course) return els.units.replaceChildren();
+  if (!course) return els.sidebarNav.replaceChildren();
   const all = lessonsOf();
-  const nextIndex = all.findIndex((lesson) => !timesDone(course, lesson.id));
-  els.units.replaceChildren(...units.map((unit, unitIndex) => {
-    const section = element("div", "unit");
-    section.append(element("span", "unit-title", tr("unit.title", { number: unitIndex + 1, title: i18n.pick(unit.title) })));
-    const grid = element("div", "lessons");
-    unit.lessons.forEach((lesson, lessonIndex) => {
-      const index = all.findIndex((item) => item.id === lesson.id);
-      const done = timesDone(course, lesson.id);
-      const locked = index > 0 && !timesDone(course, all[index - 1].id);
-      const title = tr("lesson.title", { number: lessonIndex + 1 });
-      const card = element("button", `lesson-card${done ? " done" : ""}${index === nextIndex ? " next" : ""}${locked ? " locked" : ""}`);
-      card.type = "button";
-      card.disabled = locked;
-      card.title = locked ? tr("lesson.locked") : tr("lesson.open", { title });
-      card.setAttribute("aria-label", card.title);
-      const head = element("div", "lesson-card-head");
-      head.append(icon(locked ? "lock" : done ? "check" : "play"), element("span", "lesson-card-title", title));
-      card.append(
-        head,
-        element("span", "lesson-card-words", lesson.words.map((id) => wordText(course, id)).join(", ")),
-        element("span", "lesson-card-state", done ? tr("lesson.done", { count: done }) : tr(locked ? "lesson.lockedShort" : "lesson.new"))
-      );
-      card.addEventListener("click", () => startLesson(lesson));
-      grid.append(card);
-    });
-    section.append(grid);
-    return section;
-  }));
+  if (!all.some((item) => item.id === selectedId)) selectedId = (all.find((item) => !timesDone(course, item.id)) || all[0]).id;
+  renderSidebar(course, all);
+  renderOverview(course, all);
 }
 function renderAll() {
   buildCourseSelect();
@@ -196,10 +246,11 @@ function startLesson(data) {
   show("lesson");
   nextExercise();
 }
-function show(view) {
-  els.pathView.classList.toggle("hidden", view !== "path");
-  els.lessonView.classList.toggle("hidden", view !== "lesson");
-  els.resultView.classList.toggle("hidden", view !== "result");
+function show(name) {
+  view = name;
+  els.overviewView.classList.toggle("hidden", name !== "overview");
+  els.lessonView.classList.toggle("hidden", name !== "lesson");
+  els.resultView.classList.toggle("hidden", name !== "result");
 }
 function renderHearts() {
   els.heartsCount.textContent = String(lesson.hearts);
@@ -437,13 +488,21 @@ function failLesson() {
   });
   lesson = { ...lesson, retry: data };
 }
-els.resultContinueButton.addEventListener("click", () => { lesson = null; show("path"); renderPath(); });
+els.resultContinueButton.addEventListener("click", () => {
+  // after a lesson that was done, the next one is shown
+  const all = lessonsOf();
+  const finished = lesson?.retry ? -1 : all.findIndex((item) => item.id === lesson?.data.id);
+  if (finished >= 0 && all[finished + 1]) selectedId = all[finished + 1].id;
+  lesson = null;
+  show("overview");
+  renderPath();
+});
 els.resultRetryButton.addEventListener("click", () => lesson?.retry && startLesson(lesson.retry));
 
 els.quitButton.addEventListener("click", async () => {
   if (!(await dialogs.ask({ title: tr("quit.title"), text: tr("quit.text"), ok: tr("quit.ok") }))) return;
   lesson = null;
-  show("path");
+  show("overview");
   renderPath();
 });
 
@@ -458,5 +517,5 @@ account.onChange(() => { download(); });
 i18n.onChange(() => { renderAll(); say(tr(account.get() ? "status.signedIn" : "status.signedOut")); });
 
 renderAll();
-show("path");
+show("overview");
 download();

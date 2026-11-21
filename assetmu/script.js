@@ -15,7 +15,7 @@ const element = (tag, className, text) => {
 
 /* ---------- reading the page: the value of a colour or a length as the page has it now ---------- */
 const probe = element("div", "probe");
-document.body.append(probe);
+document.querySelector(".main").append(probe);   // not in the body: the body holds the sidebar and the main only
 const computed = (property, value) => {
   probe.style[property] = "";
   probe.style[property] = value;
@@ -206,13 +206,23 @@ function renderFiles() {
 }
 
 /* ---------- the sidebar: a button for each section, which scrolls to it ---------- */
+// On a narrow screen the sections are hidden, and a button opens them over the page (Escape closes them and gives the focus back).
+function setMenu(open) {
+  $("sidebar").classList.toggle("open", open);
+  $("menu-button").setAttribute("aria-expanded", String(open));
+  if (open) $("sidebar-nav").querySelector(".sidebar-item.on, .sidebar-item")?.focus();
+}
+$("menu-button").addEventListener("click", () => setMenu(!$("sidebar").classList.contains("open")));
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && $("sidebar").classList.contains("open") && $("menu-button").offsetParent) { setMenu(false); $("menu-button").focus(); }
+});
 function renderSide() {
-  $("side-nav").replaceChildren(...sectionOrder.map((id) => {
-    const item = element("button", "side-item");
+  $("sidebar-nav").replaceChildren(...sectionOrder.map((id) => {
+    const item = element("button", "sidebar-item");
     item.type = "button";
     item.dataset.section = id;
     item.append(element("span", "", tr(`section.${id}`)));
-    item.addEventListener("click", () => sections[id].box.scrollIntoView({ block: "start" }));
+    item.addEventListener("click", () => { setMenu(false); sections[id].box.scrollIntoView({ block: "start" }); });
     return item;
   }));
   markSection();
@@ -222,7 +232,7 @@ function markSection() {
   const top = $("content").getBoundingClientRect().top + 8;
   let current = sectionOrder[0];
   for (const id of sectionOrder) if (sections[id].box.getBoundingClientRect().top <= top) current = id;
-  for (const item of $("side-nav").children) item.classList.toggle("on", item.dataset.section === current);
+  for (const item of $("sidebar-nav").children) item.classList.toggle("on", item.dataset.section === current);
 }
 $("content").addEventListener("scroll", markSection);
 

@@ -188,7 +188,7 @@ function syncViewer() {
     const viewer = document.getElementById("viewer");
     const onHome = state.active === state.home;
     viewer.hidden = onHome;
-    document.getElementById("main").hidden = !onHome;
+    document.getElementById("home").hidden = !onHome;
     document.getElementById("footer").hidden = !onHome;
 
     viewer.querySelectorAll("iframe").forEach((frame) => {

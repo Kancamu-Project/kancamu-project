@@ -140,8 +140,8 @@ function render() {
 function renderSide(page, selected) {
     const mark = (tab, on) => { tab.classList.toggle("on", on); tab.setAttribute("aria-selected", on); };
     mark($("account-tab"), page !== "settings");
-    $("side-apps").replaceChildren(...state.apps.map((app) => {
-        const item = element("button", "side-item");
+    $("sidebar-apps").replaceChildren(...state.apps.map((app) => {
+        const item = element("button", "sidebar-item");
         item.type = "button";
         const icon = element("span", "app-icon");
         icon.style.backgroundImage = `url("../${app.icon}")`;
@@ -348,7 +348,21 @@ $("create-token-button").addEventListener("click", () => window.open(`${i18n.dat
 
 $("close-button").hidden = !embedded;
 $("close-button").addEventListener("click", () => window.parent.postMessage({ type: "account:close" }, location.origin));
+// On a narrow screen the list is hidden, and the button of the first row opens it over the page (Escape closes it first).
+function setMenu(open) {
+    $("sidebar").classList.toggle("open", open);
+    $("menu-button").setAttribute("aria-expanded", String(open));
+    if (open) $("sidebar").querySelector(".sidebar-item.on, .sidebar-item")?.focus();
+}
+$("menu-button").addEventListener("click", () => setMenu(!$("sidebar").classList.contains("open")));
+$("sidebar").addEventListener("click", (event) => { if (event.target.closest(".sidebar-item")) setMenu(false); });
 document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && $("sidebar").classList.contains("open") && $("menu-button").offsetParent) {
+        event.stopImmediatePropagation();
+        setMenu(false);
+        $("menu-button").focus();
+        return;
+    }
     if (event.key === "Escape" && embedded) window.parent.postMessage({ type: "account:close" }, location.origin);
 });
 

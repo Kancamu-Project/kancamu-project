@@ -2,10 +2,10 @@
   --height-s: calc(var(--unit) * 10);
   --content-width: calc(var(--unit) * 220);
   --input-width: calc(var(--unit) * 200);
-  --side-width: var(--sidebar-width);
 }
 
-body { display: grid; grid-template-columns: var(--side-width) 1fr; grid-template-rows: minmax(0, 1fr); padding-inline-end: var(--padding-medium); line-height: 1.55; overflow: hidden; }
+/* The page is the header, the sidebar, and the main, directly in the body. The padding and the gap are the ones of the body: the three elements have none. */
+body { display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; gap: var(--gap-medium); padding: var(--padding-medium); line-height: 1.55; overflow: hidden; }
 .error { color: var(--danger); }
 .note { color: var(--fg-1); }
 .mono {text-transform: uppercase; }
@@ -57,11 +57,11 @@ input[type=search] { width: 100%; }
 input[type=range] { height: var(--height); padding: 0; border: none; accent-color: var(--accent); }
 
 /* Sidebar */
-.side { position: relative; display: flex; flex-direction: column; min-height: 0; background: var(--bg); gap: var(--gap-small); padding: var(--padding-large); }
+.sidebar { grid-column: 1; grid-row: 2; position: relative; display: flex; flex-direction: column; min-height: 0; background: var(--bg); gap: var(--gap-small); }
 .chat-controls { display: flex; flex-direction: column; gap: var(--gap-small); }
-.brand-row { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); height: var(--height); }
-.brand-tools { display: flex; gap: var(--gap-small); height: 100%; }
-.brand-tools > button { height: 100%; }
+.header { grid-column: 1; grid-row: 1; display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); }
+.header-tools { display: flex; gap: var(--gap-small); height: var(--height); }
+.header-tools > button { height: 100%; }
 .logo { display: flex; align-items: center; gap: var(--gap-small); height: var(--height); font-size: var(--font-size-large); font-weight: 700;}
 .logo .logo-name { display: flex; }
 .logo .highlight { color: var(--brand, var(--red)); }
@@ -80,18 +80,18 @@ input[type=range] { height: var(--height); padding: 0; border: none; accent-colo
 .chat-item .actions button { width: var(--height); height: 100%; padding: 0; color: var(--fg-1); }
 .chat-item .actions button:hover { color: var(--fg); background: none; }
 .empty-chat-list { padding: var(--padding-medium); color: var(--fg-1); }
-.side-footer { display: flex; align-items: center; height: var(--height); padding: 0 var(--padding-medium); border-top: var(--border-width) solid var(--border); color: var(--fg-1); font-size: var(--font-size-small); }
+.footer { grid-column: 1; grid-row: 3; display: flex; align-items: center; color: var(--fg-1); font-size: var(--font-size-small); }
 
-.side-resizer { position: absolute; top: 0; bottom: 0; inset-inline-end: calc(var(--unit) * -1); width: calc(var(--unit) * 2); z-index: 5; cursor: col-resize; background: none; transition: background 0.2s; touch-action: none; }
-.side-resizer::before { content: ""; position: absolute; top: 0; bottom: 0; inset-inline: calc(var(--unit) * -2); }
-.side-resizer:hover, .side-resizer.active, .side-resizer:focus-visible { background: var(--accent); outline: none; }
+.sidebar-resizer { position: absolute; top: 0; bottom: 0; inset-inline-end: calc(var(--unit) * -1); width: calc(var(--unit) * 2); z-index: 5; cursor: col-resize; background: none; transition: background 0.2s; touch-action: none; }
+.sidebar-resizer::before { content: ""; position: absolute; top: 0; bottom: 0; inset-inline: calc(var(--unit) * -2); }
+.sidebar-resizer:hover, .sidebar-resizer.active, .sidebar-resizer:focus-visible { background: var(--accent); outline: none; }
 body.resizing, body.resizing * { cursor: col-resize !important; user-select: none; }
-body.resizing .side { transition: none; }
+body.resizing .sidebar { transition: none; }
 
 /* Main area */
 /* The right part is one panel with a border; the page has a padding around it. */
 /* The sidebar fills the height of the page; only the app has a space above and below it. */
-.app { align-self: center; display: flex; flex-direction: column; min-width: 0; min-height: 0; height: calc(100% - var(--padding-medium) * 2); background: var(--bg); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); overflow: hidden; }
+.main { grid-column: 2; grid-row: 1 / -1; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--bg); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); overflow: hidden; }
 .topbar { box-sizing: content-box; display: flex; align-items: center; gap: var(--gap-small); height: var(--height); padding-inline: var(--padding-extra-large) 0; border-bottom: var(--border-width) solid var(--border); }
 .topbar > button { height: 100%; }
 /* What touches another element is square: the bar, the buttons of a row, the theme switch, the head of a code block. */
@@ -109,9 +109,9 @@ body.resizing .side { transition: none; }
 .scrollable-area { flex: 1; min-height: 0; overflow-y: auto; display: flex; justify-content: center; align-items: flex-start; padding: var(--padding-large) var(--padding-extra-large); }
 .welcome-message { padding-block: var(--padding-extra-large); text-align: center; font-size: var(--font-size-extra-large); font-weight: 700; }
 /* No messages yet: the welcome and the message box sit together in the middle of the page, under the top bar. */
-.app.welcoming { position: relative; justify-content: center; }
-.app.welcoming > .topbar { position: absolute; inset-block-start: 0; inset-inline: 0; }
-.app.welcoming > .scrollable-area { flex: none; overflow: visible; padding-block-end: 0; }
+.main.welcoming { position: relative; justify-content: center; }
+.main.welcoming > .topbar { position: absolute; inset-block-start: 0; inset-inline: 0; }
+.main.welcoming > .scrollable-area { flex: none; overflow: visible; padding-block-end: 0; }
 .chat-column { flex: 1; min-width: 0; max-width: var(--content-width); display: flex; flex-direction: column; }
 
 #load-status { display: flex; flex-direction: column; gap: var(--gap-small); width: 100%; max-width: var(--content-width); }
@@ -174,16 +174,17 @@ dialog label { display: flex; flex-direction: column; gap: var(--gap-small); }
 dialog textarea { min-height: calc(var(--unit) * 30); padding: var(--padding-medium); line-height: 1.5; resize: vertical; }
 
 
-.side-overlay { display: none; }
+.sidebar-overlay { display: none; }
 @media (max-width: 48rem) {
-  body { grid-template-columns: 1fr; padding: var(--padding-medium); }
-  .app { align-self: stretch; height: 100%; }
-  .side { position: fixed; inset-block: 0; inset-inline: 0 auto; width: min(calc(var(--unit) * 120), calc(var(--vw) * 85)); border-inline-end: var(--border-width) solid var(--border); z-index: 20; transform: translateX(-100%); transition: transform 0.2s; }
-  body.side-open .side { transform: none; }
-  body.side-open .side-overlay { display: block; position: fixed; inset: 0; z-index: 10; background: color-mix(in srgb, var(--black) 60%, transparent); }
+  /* The header is a row on top (the brand, the account button, and the menu button); the sidebar is a drawer that opens under it */
+  body { grid-template-columns: minmax(0, 1fr); }
+  .header { grid-column: 1; }
+  .main { grid-column: 1; grid-row: 2; }
+  .sidebar { position: fixed; grid-row: auto; inset-block: calc(var(--height) + var(--padding-medium) + var(--gap-medium)) var(--padding-medium); inset-inline: var(--padding-medium) auto; width: min(calc(var(--unit) * 120), calc(var(--vw) * 85)); padding: var(--padding-large); background: var(--bg); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); z-index: 20; transform: translateX(calc(-100% - var(--padding-medium))); transition: transform 0.2s; }
+  body.sidebar-open .sidebar { transform: none; }
+  body.sidebar-open .sidebar-overlay { display: block; position: fixed; inset: 0; z-index: 10; background: color-mix(in srgb, var(--black) 60%, transparent); }
   #menu-button { display: flex; }
-  .topbar { padding-inline-start: 0; gap: var(--gap-medium); }
-  .side-resizer { display: none; }
+  .sidebar-resizer { display: none; }
   .bubble { max-width: 98%; }
 }
 @media (max-width: 35rem) {
@@ -191,10 +192,10 @@ dialog textarea { min-height: calc(var(--unit) * 30); padding: var(--padding-med
 }
 
 /* ---------- Language and right-to-left ---------- */
-.side-footer span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.footer span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 :root[dir="rtl"] .attachment { background-position: right center; }
 :root[dir="rtl"] .chat-item.active { box-shadow: inset calc(var(--border-width) * -1) 0 0 var(--accent); }
 @media (max-width: 48rem) {
-  :root[dir="rtl"] .side { transform: translateX(100%); }
-  :root[dir="rtl"] body.side-open .side { transform: none; }
+  :root[dir="rtl"] .sidebar { transform: translateX(calc(100% + var(--padding-medium))); }
+  :root[dir="rtl"] body.sidebar-open .sidebar { transform: none; }
 }

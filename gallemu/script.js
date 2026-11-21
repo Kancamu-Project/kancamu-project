@@ -5,7 +5,7 @@ i18n.selects();
 const tr = (key, params) => i18n.t(key, params);
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
-  "gallery-app", "gallery-search", "album-select", "sort-order", "refresh-button", "gallery", "gallery-grid", "empty-state", "empty-title", "empty-text", "empty-action-button",
+  "gallery-search", "album-select", "sort-order", "refresh-button", "gallery", "gallery-grid", "empty-state", "empty-title", "empty-text", "empty-action-button",
   "status", "viewer-dialog", "viewer-name", "viewer-counter", "viewer-download-button", "viewer-close-button", "viewer-image", "viewer-video", "viewer-message",
   "viewer-previous-button", "viewer-next-button", "account-button"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));

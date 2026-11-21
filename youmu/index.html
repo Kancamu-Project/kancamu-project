@@ -11,19 +11,22 @@
 <script src="../assets/theme.js"></script>
 </head>
 <body>
-<div id="page">
-  <div class="side">
+  <div id="header" class="header">
     <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
-    <div class="side-nav" role="tablist">
-      <button id="account-tab" class="side-item" type="button" role="tab"><span class="icon icon-user"></span><span data-i18n="account"></span></button>
-      <span class="side-title" data-i18n="settings"></span>
-      <div id="side-apps" class="side-apps"></div>
+    <div class="header-tools">
+      <button id="menu-button" class="square menu-button" type="button" aria-controls="sidebar" aria-expanded="false" data-i18n-title="menu" data-i18n-label="menu"><span class="icon icon-list"></span></button>
     </div>
-    <a class="copyright" href="/" target="_top" data-i18n="copyright"></a>
+  </div>
+  <div id="sidebar" class="sidebar">
+      <div class="sidebar-nav" role="tablist">
+        <button id="account-tab" class="sidebar-item" type="button" role="tab"><span class="icon icon-user"></span><span data-i18n="account"></span></button>
+        <span class="sidebar-title" data-i18n="settings"></span>
+        <div id="sidebar-apps" class="sidebar-apps"></div>
+      </div>
   </div>
 
-  <div class="main">
-    <div class="main-bar">
+  <div id="main" class="main">
+    <div class="topbar">
       <select class="language" data-i18n-label="language"></select>
       <button id="theme-button" class="square" type="button" data-i18n-title="theme" data-i18n-label="theme"><span class="icon icon-sun"></span></button>
       <button id="close-button" class="square" type="button" hidden data-i18n-title="close" data-i18n-label="close"><span class="icon icon-close"></span></button>
@@ -59,7 +62,9 @@
     </div>
 
   </div>
-</div>
+  <div id="footer" class="footer">
+    <a class="copyright" href="/" target="_top" data-i18n="copyright"></a>
+  </div>
 <script src="../assets/i18n.js"></script>
 <script src="../assets/dialog.js"></script>
 <script src="../assets/account.js"></script>

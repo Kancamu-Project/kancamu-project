@@ -250,9 +250,9 @@ body {
     display: none !important;
 }
 
-/* Content */
+/* Main: the viewer of the tabs, and the projects */
 
-#content {
+#main {
     width: 100%;
     min-height: 0;
     display: flex;
@@ -274,9 +274,9 @@ body {
     }
 }
 
-/* Main */
+/* The projects (shown on the first page, instead of the viewer) */
 
-#main {
+#home {
     width: 100%;
     height: auto;
     flex: 1;
@@ -732,7 +732,7 @@ button {
 }
 
 @media (max-width: 640px) {
-    #main {
+    #home {
         padding: var(--padding-medium);
     }
 

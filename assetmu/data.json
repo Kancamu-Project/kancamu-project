@@ -232,15 +232,15 @@
       "file": "jetbrains-mono-latin-400-normal.woff2",
       "family": "JetBrains Mono",
       "weight": 400,
-      "loaded": false,
-      "usedBy": "muos"
+      "loaded": true,
+      "usedBy": "every"
     },
     {
       "file": "jetbrains-mono-latin-700-normal.woff2",
       "family": "JetBrains Mono",
       "weight": 700,
-      "loaded": false,
-      "usedBy": "muos"
+      "loaded": true,
+      "usedBy": "every"
     }
   ],
   "files": [
@@ -335,9 +335,9 @@
     {
       "name": "fonts/",
       "description": {
-        "en-US": "The fonts, as WOFF2 files. style.css loads Inter, and muOS loads JetBrains Mono.",
-        "zh-CN": "字体，以 WOFF2 文件提供。style.css 加载 Inter，muOS 加载 JetBrains Mono。",
-        "ar-SA": "الخطوط كملفات WOFF2. يحمّل style.css الخط Inter ويحمّل muOS الخط JetBrains Mono."
+        "en-US": "The fonts, as WOFF2 files. style.css loads Inter and JetBrains Mono (muOS loads JetBrains Mono too).",
+        "zh-CN": "字体，以 WOFF2 文件提供。style.css 加载 Inter 和 JetBrains Mono（muOS 也加载 JetBrains Mono）。",
+        "ar-SA": "الخطوط كملفات WOFF2. يحمّل style.css الخطين Inter وJetBrains Mono (ويحمّل muOS الخط JetBrains Mono أيضا)."
       }
     }
   ],
@@ -460,9 +460,9 @@
       "ar-SA": "لا توجد أيقونة بهذا الاسم."
     },
     "fonts.hint": {
-      "en-US": "Inter is loaded by style.css, so every web has it. JetBrains Mono is loaded only by muOS. The files are in assets/fonts.",
-      "zh-CN": "Inter 由 style.css 加载，所有网站都在使用。JetBrains Mono 只由 muOS 加载。文件在 assets/fonts 中。",
-      "ar-SA": "يحمّل style.css الخط Inter فلذلك تستخدمه كل المواقع. أما JetBrains Mono فيحمّله muOS فقط. الملفات في assets/fonts."
+      "en-US": "style.css loads both fonts, so every web has them: Inter for the text and JetBrains Mono for code. muOS also loads JetBrains Mono itself. The files are in assets/fonts.",
+      "zh-CN": "style.css 加载这两种字体，所有网站都可使用：Inter 用于文字，JetBrains Mono 用于代码。muOS 也自行加载 JetBrains Mono。文件在 assets/fonts 中。",
+      "ar-SA": "يحمّل style.css الخطين معا فتستخدمهما كل المواقع: Inter للنص وJetBrains Mono للشيفرة. ويحمّل muOS الخط JetBrains Mono بنفسه أيضا. الملفات في assets/fonts."
     },
     "fonts.sample": {
       "en-US": "The quick brown fox jumps over the lazy dog 0123456789",
@@ -528,6 +528,11 @@
       "en-US": "Theme",
       "zh-CN": "主题",
       "ar-SA": "المظهر"
+    },
+    "menu": {
+      "en-US": "Sections",
+      "zh-CN": "栏目",
+      "ar-SA": "الأقسام"
     }
   }
 }

@@ -13,23 +13,23 @@
 <body>
 
 <!-- App -->
-<div id="app" class="app">
-  <div class="sidebar" id="sidebar">
-    <div class="brand-row">
-      <div class="logo"><div class="logo-mark"></div><span class="wordmark" data-i18n-html="logo"></span></div>
-      <div class="brand-tools">
-        <button class="button ghost square account" data-act="account" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
-      </div>
+  <div id="header" class="header">
+    <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
+    <div class="header-tools">
+      <button id="account-button" class="button ghost square account" data-act="account" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
+      <button id="menu-button" class="button ghost square menu-button" type="button" aria-controls="sidebar" aria-expanded="false" data-i18n-title="list.folders" data-i18n-label="list.folders"><span class="icon icon-menu"></span></button>
     </div>
-    <div class="side-actions">
+  </div>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-actions">
       <button class="button primary" id="new-button"><span class="icon icon-plus"></span><span data-i18n="new"></span></button>
     </div>
-    <div id="folder-navigation" class="folders-nav" data-i18n-label="list.folders"></div>
-    <div class="spacer"></div>
-    <div id="usage" class="usage"></div>
+      <div id="sidebar-nav" class="sidebar-nav" data-i18n-label="list.folders"></div>
+      <div class="spacer"></div>
+      <div id="usage" class="usage"></div>
   </div>
 
-  <div class="content-panel">
+  <div id="main" class="main">
   <div class="topbar">
     <label class="searchbox">
       <span class="icon icon-search"></span>
@@ -73,9 +73,8 @@
     <div id="drop-overlay" class="drop-overlay hidden"><span class="icon icon-upload"></span><span data-i18n="drop"></span></div>
   </div>
 
-  <div class="statusbar"><span id="status"></span><a href="/" target="_top" data-i18n="copyright"></a></div>
   </div>
-</div>
+  <div id="footer" class="footer"><span id="status"></span><a href="/" target="_top" data-i18n="copyright"></a></div>
 
 <!-- "New" menu -->
 <div id="new-menu" class="menu hidden" role="menu">

@@ -12,13 +12,13 @@
 </head>
 <body>
 
-<div id="remover-app" class="remover-app">
-  <div class="header">
-    <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
-    <div class="header-tools">
-      <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
-    </div>
+<div id="header" class="header">
+  <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
+  <div class="header-tools">
+    <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
   </div>
+</div>
+<div id="main" class="main">
 
   <div class="model-bar">
     <label class="model-field model-field-main">
@@ -70,10 +70,10 @@
 
   <div class="progress hidden" id="progress"><div id="progress-fill" class="progress-fill"></div></div>
 
-  <div class="statusbar">
-    <span id="status"></span>
-    <a href="/" target="_top" data-i18n="copyright"></a>
-  </div>
+</div>
+<div id="footer" class="footer">
+  <span id="status"></span>
+  <a href="/" target="_top" data-i18n="copyright"></a>
 </div>
 
 <dialog id="drive-dialog" class="drive-dialog">

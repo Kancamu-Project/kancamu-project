@@ -12,7 +12,7 @@ body { line-height: 1.5; -webkit-font-smoothing: antialiased; text-rendering: op
 .spacer { flex: 1; }
 .muted { color: var(--fg-1); }
 a { color: var(--accent-text); }
-.statusbar a { color: inherit; }   /* the copyright is gray like the rest of the status bar */
+.footer a { color: inherit; }   /* the copyright is gray like the rest of the footer */
 p, h1, h2, h3, ul { margin: 0; padding: 0; }
 ul { list-style: none; }
 button { font: inherit; color: inherit; }
@@ -39,6 +39,7 @@ button { font: inherit; color: inherit; }
 .icon-refresh { --src: url(../assets/icons/refresh.svg); }
 .icon-grid { --src: url(../assets/icons/grid.svg); }
 .icon-list { --src: url(../assets/icons/list.svg); }
+.icon-menu { --src: url(../assets/icons/menu.svg); }
 .icon-close { --src: url(../assets/icons/close.svg); }
 .icon-external { --src: url(../assets/icons/external.svg); }
 .icon-chevron-right { --src: url(../assets/icons/chevron-right.svg); }
@@ -111,27 +112,28 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 var(
 .inline .button { flex: none; }
 
 /* ---------- App frame ---------- */
-.app { height: 100%; display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); padding-inline-end: var(--padding-medium); min-width: 0; min-height: 0; background: var(--bg); overflow: hidden; }
-/* The right part is one panel with a border and a padding around it. */
-/* The sidebar fills the height of the page; only this panel has a space above and below it. */
-.content-panel { align-self: center; height: calc(100% - var(--padding-medium) * 2); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-width: 0; min-height: 0; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); overflow: hidden; }
+/* The page is the header, the sidebar, and the panel (the main), directly in the body. The padding and the gap are the ones of the body: the three elements have none. */
+body { display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; gap: var(--gap-medium); padding: var(--padding-medium); overflow: hidden; }
+/* The panel is the main: it has a border around it. */
+.main { grid-column: 2; grid-row: 1 / -1; display: grid; grid-template-rows: auto minmax(0, 1fr); min-width: 0; min-height: 0; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); overflow: hidden; }
 .topbar { box-sizing: content-box; display: flex; align-items: center; gap: 0; height: var(--height); padding-inline: 0; border-bottom: var(--border-width) solid var(--border); }
 .topbar > :is(.searchbox, #sort-order, #refresh-button, .segmented-control) { height: 100%; }
 #refresh-button { border-inline-end-width: 0; }
 /* What touches another element is square: the bar of the files, the view switch, the buttons of a row. */
 .topbar :is(input, select, button), .segmented-control button, .actions .icon-button { border-radius: 0; }
-/* The sidebar holds everything of the app: its name with the settings and profile buttons, New and refresh, the folders, and the storage used. */
-.sidebar { display: flex; flex-direction: column; gap: var(--gap-small); padding: var(--padding-large); overflow: auto; }
-.brand-row { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); height: var(--height); }
-.brand-tools { display: flex; gap: var(--gap-small); height: 100%; }
-.brand-tools > .button { height: 100%; }
-.side-actions { display: flex; gap: var(--gap-small); }
-.side-actions > .primary { flex: 1; }
-.folders-nav { display: flex; flex-direction: column; gap: var(--gap-small); }
-.folders-nav > .button { flex: none; width: 100%; justify-content: flex-start; font-weight: 400; text-transform: none; }
-.folders-nav > .button > span:not(.icon) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.folders-nav > .button.on { background: var(--bg-1); border-inline-start: var(--border-width-thick) solid var(--fg); }
-.app.plain :is(.side-actions, .folders-nav, .usage, #refresh-button) { display: none; }
+/* The header holds the name and the profile button; the sidebar holds New, the folders, and the storage used. */
+.sidebar { grid-column: 1; grid-row: 2; display: flex; flex-direction: column; gap: var(--gap-small); overflow: auto; }
+.header { grid-column: 1; grid-row: 1; display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); }
+.header-tools { display: flex; gap: var(--gap-small); height: var(--height); }
+.header-tools > .button { height: 100%; }
+.sidebar-actions { display: flex; gap: var(--gap-small); }
+.menu-button { display: none; }
+.sidebar-actions > .primary { flex: 1; }
+.sidebar-nav { display: flex; flex-direction: column; gap: var(--gap-small); }
+.sidebar-nav > .sidebar-item { flex: none; width: 100%; justify-content: flex-start; font-weight: 400; text-transform: none; }
+.sidebar-nav > .sidebar-item > span:not(.icon) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sidebar-nav > .sidebar-item.on { background: var(--bg-1); border-inline-start: var(--border-width-thick) solid var(--fg); }
+body.plain :is(.sidebar-actions, .sidebar-nav, .usage, #refresh-button) { display: none; }
 .usage { display: flex; flex: none; flex-direction: column; gap: var(--gap-small); padding: var(--padding-medium); border-radius: var(--border-radius-medium); border: var(--border-width) solid var(--border); font-size: var(--font-size-small); }
 .usage-detail { color: var(--fg-1); }
 .meter { height: calc(var(--unit) * 2); border: var(--border-width) solid var(--border); }
@@ -159,7 +161,7 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 var(
 .breadcrumb:last-child { color: var(--fg); font-weight: 700; }
 .breadcrumbs .breadcrumb-separator { --is: var(--icon-size-small); color: var(--fg-1); }
 .selection-bar { display: flex; align-items: center; gap: var(--gap-small); flex: 1; height: var(--height); padding: 0 var(--padding-medium); border-radius: var(--border-radius-medium); background: var(--accent-soft); color: var(--accent-text); }
-.statusbar { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); padding: var(--padding-medium) var(--padding-extra-large); font-size: var(--font-size-small); color: var(--fg-1); border-top: var(--border-width) solid var(--border); }
+.footer { grid-column: 1; grid-row: 3; display: flex; flex-direction: column; gap: var(--gap-extra-small); font-size: var(--font-size-small); color: var(--fg-1); }
 
 /* ---------- List: table ---------- */
 .list-section-title { padding: var(--padding-large) 0 var(--padding-medium); font-size: var(--font-size-small); font-weight: 600; color: var(--fg-1); text-transform: uppercase;}
@@ -266,11 +268,15 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 var(
 
 /* ---------- Responsive ---------- */
 @media (max-width: 56rem) {
-  .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); padding: var(--padding-medium); gap: var(--gap-medium); }
-  .content-panel { align-self: stretch; height: auto; }
-  .app > .sidebar { flex-direction: row; align-items: center; padding: 0; }
-  .brand-row { flex: 1; }
-  .folders-nav, .usage, .sidebar > .spacer { display: none; }
+  body { grid-template-columns: minmax(0, 1fr); }
+  .header { grid-column: 1; }
+  .main { grid-column: 1; grid-row: 2; }
+  .footer { flex-direction: row; justify-content: space-between; }
+  /* New, the folders, and the storage used open over the files with the button of the header */
+  .menu-button { display: flex; }
+  body.plain .menu-button { display: none; }
+  .sidebar { display: none; padding: var(--padding-large); }
+  .sidebar.open { display: flex; position: fixed; inset-inline: var(--padding-medium); top: calc(var(--height) + var(--padding-medium) + var(--gap-medium)); bottom: var(--padding-medium); z-index: 5; overflow-y: auto; background: var(--bg); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); }
   .topbar .spacer { display: none; }
   .searchbox { flex: 1; width: auto; }
     .files-area { padding: 0 var(--padding-large) var(--padding-extra-large); }

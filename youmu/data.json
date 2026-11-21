@@ -227,6 +227,11 @@
       "en-US": "General",
       "zh-CN": "常规",
       "ar-SA": "عام"
+    },
+    "menu": {
+      "en-US": "Menu",
+      "zh-CN": "菜单",
+      "ar-SA": "القائمة"
     }
   },
   "token": {

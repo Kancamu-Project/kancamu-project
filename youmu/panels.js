@@ -249,16 +249,16 @@ async function driveReset({ data, t, ask, toast, announce }) {
     return panel(t("reset.title"), t("reset.hint"), reset);
 }
 
-/* ---------- Lingomu ---------- */
-// The progress (lessons done, XP, streak) is kept in this browser and, once signed in, on the lingomu branch of the storage: the reset deletes both.
-function progressReset({ t, ask, toast, announce }) {
+/* ---------- Lingomu and muJS ---------- */
+// The progress of a web (Lingomu, muJS) is kept in this browser ("<app>.progress") and, once signed in, on the branch of the web (progress.json): the reset deletes both.
+function progressReset({ app, t, ask, toast, announce }) {
     const reset = button("refresh", t("progress.reset"), "danger");
     reset.addEventListener("click", async () => {
         if (!(await ask({ title: t("progress.title"), text: t("progress.text"), ok: t("progress.reset") }))) return;
         reset.disabled = true;
-        lsDelete("lingomu.progress");
+        lsDelete(`${app}.progress`);
         if (account.get()) {   // the copy in the storage too, or it would come back
-            try { await storage.removeFile(await storage.connect("lingomu"), "progress.json", "Lingomu: reset the progress"); } catch (error) { console.warn("[sync]", error); }
+            try { await storage.removeFile(await storage.connect(app), "progress.json", `${app}: reset the progress`); } catch (error) { console.warn("[sync]", error); }
         }
         announce({ type: "progressReset" });
         toast(t("progress.done"));

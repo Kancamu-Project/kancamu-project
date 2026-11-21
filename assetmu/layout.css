@@ -9,6 +9,7 @@ html, body { height: 100%; }
   -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
 }
 .icon-user { --icon: url("../assets/icons/user.svg"); }
+.icon-list { --icon: url("../assets/icons/list.svg"); }
 .icon-sun { --icon: url("../assets/icons/sun.svg"); }
 .icon-moon { --icon: url("../assets/icons/moon.svg"); }
 
@@ -21,24 +22,31 @@ button {
 button > span:not(.icon) { overflow: hidden; text-overflow: ellipsis; }
 button.account.signed-in { background-size: cover; background-position: center; }
 
-/* The sidebar and the panel next to it, like muAI and Youmu */
-.assets-app { height: 100%; display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr); padding-inline-end: var(--padding-medium); min-width: 0; min-height: 0; }
-
-.side { min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: var(--gap-small); padding: var(--padding-large); }
+/* The page is the header, the sidebar, and the main, directly in the body. The padding and the gap are the ones of the body: the three elements have none. */
+body {
+  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; gap: var(--gap-medium); padding: var(--padding-medium);
+}
+.header { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); }
+.header > .logo { height: var(--height); }
+.header-tools { display: flex; gap: var(--gap-small); height: var(--height); }
+.header-tools > button { height: 100%; }
+.sidebar { display: none; min-height: 0; flex-direction: column; gap: var(--gap-small); background: var(--bg); overflow: hidden; }
+.sidebar.open { display: flex; position: fixed; inset-inline: var(--padding-medium); top: calc(var(--height) + var(--padding-medium) + var(--gap-medium)); bottom: var(--padding-medium); z-index: 5; }
+.menu-button { display: none; }
 .logo { display: flex; align-items: center; gap: var(--gap-small); height: var(--height); font-size: var(--font-size-large); font-weight: 700; }
 .logo-mark { width: var(--icon-size-large); height: var(--icon-size-large); flex: none; background: url("favicon.png") center / contain no-repeat; image-rendering: pixelated; }
 .logo .highlight { color: var(--brand); }
 
-.side-nav { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--gap-small); }
-.side-nav > * { flex: none; }
-.side-item { justify-content: flex-start; }
-.side-item.on { background: var(--bg-1); border-inline-start: var(--border-width-thick) solid var(--fg); }
+.sidebar-nav { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--gap-small); }
+.sidebar-nav > * { flex: none; }
+.sidebar-item { justify-content: flex-start; border: 0; border-inline-start: var(--border-width-thick) solid transparent; background: transparent; }
+.sidebar-item:hover { background: color-mix(in srgb, var(--fg) 6%, transparent); }
+.sidebar-item.on { background: color-mix(in srgb, var(--fg) 10%, transparent); border-inline-start-color: var(--fg); }
 
-.copyright { flex: none; display: flex; align-items: center; height: var(--height); padding: 0 var(--padding-medium); border-top: var(--border-width) solid var(--border); color: var(--fg-1); font-size: var(--font-size-small); }
+.footer { display: flex; align-items: center; color: var(--fg-1); font-size: var(--font-size-small); }
+.copyright { color: inherit; }
 
-.main { align-self: center; height: calc(100% - var(--padding-medium) * 2); min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); }
-.main-bar { flex: none; display: flex; justify-content: flex-end; height: var(--height); border-bottom: var(--border-width) solid var(--border); }
-.main-bar > button { height: 100%; border-width: 0; border-inline-start-width: var(--border-width); border-radius: 0; }
+.main { min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); }
 .content { flex: 1; min-height: 0; overflow-y: auto; scroll-behavior: smooth; }
 
 /* A section of assets */
@@ -101,14 +109,17 @@ button.account.signed-in { background-size: cover; background-position: center; 
 
 .toast { position: fixed; inset-block-end: var(--padding-large); inset-inline: var(--padding-large); z-index: 1000; padding: var(--padding-medium); background: var(--bg-1); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); }
 
+/* From a tablet up, the sidebar is beside the main; below it is a row on top, and the sections open over the main with the button of that row */
+@media (min-width: 48rem) {
+  body { grid-template-columns: var(--sidebar-width) minmax(0, 1fr); }
+  .header { grid-column: 1; grid-row: 1; }
+  .sidebar { display: flex; position: static; grid-column: 1; grid-row: 2; }
+  .footer { grid-column: 1; grid-row: 3; }
+  .main { grid-column: 2; grid-row: 1 / -1; }
+  .menu-button { display: none; }
+}
 @media (max-width: 48rem) {
-  .assets-app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); padding: 0; }
-  /* The sidebar becomes a strip on top: the logo and the copyright on one line, and the sections under them, which slide sideways */
-  .side { flex-direction: row; flex-wrap: wrap; align-items: center; padding: var(--padding-medium); border-bottom: var(--border-width) solid var(--border); }
-  .logo { flex: 1; }
-  .copyright { height: auto; padding: 0; border-top: 0; }
-  .side-nav { order: 3; flex: 1 1 100%; min-width: 0; flex-direction: row; overflow-x: auto; overflow-y: hidden; }
-  .main { align-self: stretch; height: auto; border: 0; border-radius: 0; }
+  .menu-button { display: flex; }
   .size-row { grid-template-columns: minmax(0, 1fr) auto; }
   .size-row > :last-child { grid-column: 1 / -1; }
   .file-row { grid-template-columns: minmax(0, 1fr); }

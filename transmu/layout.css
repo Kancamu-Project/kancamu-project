@@ -29,7 +29,9 @@ button.ghost:hover:not(:disabled) { color: var(--fg); }
 button.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
 
 /* Page */
-.translator-app { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto minmax(0, 1fr) auto auto auto; gap: var(--gap-medium); padding: var(--padding-medium); min-width: 0; min-height: 0; background: var(--bg); }
+/* The page is the header, the main, and the footer, directly in the body. The padding and the gap are the ones of the body. */
+body { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; gap: var(--gap-medium); padding: var(--padding-medium); }
+.main { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto auto; gap: var(--gap-medium); min-width: 0; min-height: 0; }
 
 .header { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); height: var(--height); }
 .logo { display: flex; align-items: center; gap: var(--gap-small); font-size: var(--font-size-large); font-weight: 700; }
@@ -65,8 +67,8 @@ textarea.pane-text { color: var(--fg); }
 .progress { height: calc(var(--unit) * 2); background: var(--border); border-radius: var(--border-radius-small); overflow: hidden; }
 .progress-fill { width: 0; height: 100%; background: var(--brand); transition: width 0.2s; }
 
-.statusbar { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); color: var(--fg-1); font-size: var(--font-size-small); }
-.statusbar a { flex: none; white-space: nowrap; color: inherit; }
+.footer { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); color: var(--fg-1); font-size: var(--font-size-small); }
+.footer a { flex: none; white-space: nowrap; color: inherit; }
 #status { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #status.error { color: var(--danger); white-space: normal; }
 

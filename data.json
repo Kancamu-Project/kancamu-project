@@ -329,6 +329,29 @@
       ]
     },
     {
+      "id": "mujs",
+      "name": {
+        "en-US": "{highlight}JS"
+      },
+      "description": {
+        "en-US": "Learn JavaScript by writing code and running it.",
+        "zh-CN": "通过编写并运行代码来学习 JavaScript。",
+        "ar-SA": "تعلّم جافاسكربت بكتابة الشيفرة وتشغيلها."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "mujs/",
+      "icon": "mujs/favicon.png",
+      "color": "#f89520",
+      "categories": [
+        "official",
+        "mobile",
+        "education"
+      ]
+    },
+    {
       "id": "murmbg",
       "name": {
         "en-US": "{highlight}RMBG"

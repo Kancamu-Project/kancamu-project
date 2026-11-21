@@ -218,14 +218,26 @@ function refreshUsage() {
   repoApi('').then((info) => { S.repoSizeKB = info.size; renderSide(); }).catch(() => { /* ignore */ });
 }
 
+// On a narrow screen the folders are hidden, and the button of the first row opens them over the files (Escape closes them and gives the focus back).
+function setSide(open) {
+  $('sidebar').classList.toggle('open', open);
+  $('menu-button').setAttribute('aria-expanded', String(open));
+  if (open) $('sidebar-nav').querySelector('button')?.focus();
+}
+$('menu-button').onclick = () => setSide(!$('sidebar').classList.contains('open'));
+$('sidebar-nav').addEventListener('click', () => setSide(false));
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && $('sidebar').classList.contains('open') && $('menu-button').offsetParent) { setSide(false); $('menu-button').focus(); }
+});
+
 // The sidebar: the folders at the root of the branch (the last list read at the root), and the root itself.
 function renderSide() {
-  const nav = $('folder-navigation'), box = $('usage');
-  $('app').classList.toggle('plain', !S.user);   // signed out: only the name, settings, and profile show
+  const nav = $('sidebar-nav'), box = $('usage');
+  document.body.classList.toggle('plain', !S.user);   // signed out: only the name, settings, and profile show
   nav.replaceChildren(); box.replaceChildren();
   if (!S.user) return;
   const entry = (label, ico, path, on) => {
-    const b = h('button', 'button'); b.type = 'button'; b.classList.toggle('on', on);
+    const b = h('button', 'button sidebar-item'); b.type = 'button'; b.classList.toggle('on', on);
     b.append(icon(ico), h('span', '', label));
     b.onclick = () => goTo(path);
     return b;

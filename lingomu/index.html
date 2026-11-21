@@ -12,34 +12,48 @@
 </head>
 <body>
 
-<div id="lingo-app" class="lingo-app">
-  <div class="header">
-    <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
-    <div class="header-tools">
-      <select id="course-select" data-i18n-label="course.label"></select>
-      <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
+    <div id="header" class="header">
+      <div class="logo"><div class="logo-mark"></div><span class="logo-name" data-i18n-html="logo"></span></div>
+      <div class="header-tools">
+        <button id="account-button" class="ghost square account" type="button" data-i18n-title="account" data-i18n-label="account"><span class="icon icon-user"></span></button>
+        <button id="menu-button" class="menu-button" type="button" aria-controls="sidebar" aria-expanded="false"><span class="icon icon-list"></span><span data-i18n="lessons.label"></span></button>
+      </div>
     </div>
-  </div>
+    <div id="sidebar" class="sidebar">
+        <select id="course-select" data-i18n-label="course.label"></select>
+        <div id="sidebar-nav" class="sidebar-nav"></div>
+        <div class="sidebar-summary">
+          <div class="stats">
+            <div class="stat">
+              <span class="icon icon-zap"></span>
+              <span id="streak-count" class="stat-value"></span>
+              <span class="stat-label" data-i18n="stats.streak"></span>
+            </div>
+            <div class="stat">
+              <span class="icon icon-star"></span>
+              <span id="total-xp" class="stat-value"></span>
+              <span class="stat-label" data-i18n="stats.xp"></span>
+            </div>
+          </div>
+          <span id="goal-text" class="goal-text"></span>
+          <div class="progress"><div id="goal-fill" class="progress-fill"></div></div>
+        </div>
+    </div>
 
-  <div id="path-view" class="path-view">
-    <div class="stats-bar">
-      <div class="stat">
-        <span class="icon icon-zap"></span>
-        <span id="streak-count" class="stat-value"></span>
-        <span class="stat-label" data-i18n="stats.streak"></span>
+    <div id="main" class="main">
+      <div id="overview-view" class="overview-view">
+        <div class="overview-heading">
+          <span id="overview-number" class="overview-number"></span>
+          <div class="overview-titles">
+            <span id="overview-title" class="overview-title"></span>
+            <span id="overview-unit" class="overview-unit"></span>
+          </div>
+        </div>
+        <span class="section-title" data-i18n="overview.words"></span>
+        <div id="overview-words" class="overview-words selectable"></div>
+        <span id="overview-state" class="overview-state"></span>
+        <button id="start-button" class="primary" type="button"><span></span></button>
       </div>
-      <div class="stat">
-        <span class="icon icon-star"></span>
-        <span id="total-xp" class="stat-value"></span>
-        <span class="stat-label" data-i18n="stats.xp"></span>
-      </div>
-      <div class="goal">
-        <span id="goal-text" class="goal-text"></span>
-        <div class="progress"><div id="goal-fill" class="progress-fill"></div></div>
-      </div>
-    </div>
-    <div id="units" class="units"></div>
-  </div>
 
   <div id="lesson-view" class="lesson-view hidden">
     <div class="lesson-bar">
@@ -68,11 +82,11 @@
     </div>
   </div>
 
-  <div class="statusbar">
-    <span id="status"></span>
-    <a href="/" target="_top" data-i18n="copyright"></a>
-  </div>
-</div>
+    </div>
+    <div id="footer" class="footer">
+      <span id="status"></span>
+      <a href="/" target="_top" data-i18n="copyright"></a>
+    </div>
 
 <script src="../assets/i18n.js"></script>
 <script src="../assets/dialog.js"></script>
