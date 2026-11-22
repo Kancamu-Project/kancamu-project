@@ -68,36 +68,26 @@ body.resizing .sidebar { transition: none; }
 #model-picker { flex: 1; min-width: 0; width: 100%; }
 /* The connections (a sheet) and what the model did with files */
 .connection-form { display: flex; flex-direction: column; gap: var(--gap-small); }
-.connection-title { margin: var(--gap-small) 0 0; font-size: var(--font-size-medium); }
-.connection-field { display: flex; flex-direction: column; gap: var(--gap-small); }
-.connection-label { font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; color: var(--fg-1); }
-.connection-field input { width: 100%; min-width: 0; }
-.connection-check { display: flex; align-items: center; justify-content: flex-start; gap: var(--gap-small); height: var(--height); text-align: start; }
 .connection-row { display: flex; justify-content: flex-end; gap: var(--gap-small); }
-.connection-row button { width: calc(var(--height) * 4); }
+.connection-row button { width: calc(var(--height) * 4); }   /* the width of a control is a multiple of its height (RULES.md, Control Width) */
+.connection-row button.wide { width: calc(var(--height) * 8); }
+.connection-command { display: flex; align-items: flex-start; gap: var(--gap-small); }
+.connection-command .code-block { flex: 1; min-width: 0; }
+.connection-command button { flex: none; width: calc(var(--height) * 3); }
+/* The file explorer of the project folder: the bar (up, and the path as breadcrumbs), and the list of folders that scrolls */
+.explorer { display: flex; flex-direction: column; gap: var(--gap-medium); }
+.explorer-bar { display: flex; align-items: center; gap: var(--gap-small); }
+.explorer-bar kit-breadcrumbs { flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }   /* a long path scrolls sideways */
+.explorer-bar .breadcrumb { flex: none; }
+.explorer-list { display: grid; gap: var(--gap-small); align-content: start; max-height: calc(var(--vh) * 40); }
 .connection-row:empty { display: none; }
 #helper-button.connected { color: var(--ok); border-color: var(--ok); }
-#folder-button { max-width: calc(var(--height) * 8); }
+#helper-button { width: calc(var(--height) * 5); }
+#folder-button { width: calc(var(--height) * 8); }
 #folder-button > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #folder-button.unset { color: var(--yellow); border-color: var(--yellow); }
-.connection-path { padding: var(--padding-small) var(--padding-medium); overflow-wrap: anywhere; font-family: "JetBrains Mono", monospace; font-size: var(--font-size-small); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); background: var(--bg-1); }
-.helper-state { padding: 0; }
 /* The file explorer of the project folder */
-.explorer { display: flex; flex-direction: column; gap: var(--gap-small); }
-.explorer-path { padding: var(--padding-small) var(--padding-medium); overflow-wrap: anywhere; font-family: "JetBrains Mono", monospace; font-size: var(--font-size-small); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); background: var(--bg-1); }
-.explorer-bar { display: flex; gap: var(--gap-small); }
-.explorer-bar button { width: calc(var(--height) * 4); }
-.explorer-list { display: flex; flex-direction: column; gap: calc(var(--unit) * 0.5); max-height: calc(var(--vh) * 40); overflow-y: auto; }
-.explorer-row { justify-content: flex-start; gap: var(--gap-medium); padding: 0 var(--padding-medium); font-weight: 400; text-transform: none; text-align: start; }
-.explorer-row > span:last-child, .explorer-row { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (max-width: 48rem) { .topbar > button > span:not(.icon) { display: none; } }
-.connection-status { color: var(--fg-1); font-size: var(--font-size-small); overflow-wrap: anywhere; }
-.connection-status.ok { color: var(--ok); }
-.connection-command { display: flex; gap: var(--gap-small); }
-.connection-command input { flex: 1; min-width: 0; font-family: "JetBrains Mono", monospace; font-size: var(--font-size-extra-small); }
-.connection-command button { flex: none; width: calc(var(--height) * 3); }
-.connection-advanced { display: flex; flex-direction: column; gap: var(--gap-small); }
-.connection-advanced summary { cursor: pointer; color: var(--fg-1); font-size: var(--font-size-small); margin-bottom: var(--gap-small); }
 .markdown .tool-log { list-style: none; margin: var(--gap-small) 0 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--unit) * 0.5); font-size: var(--font-size-small); }
 .markdown .tool-log li { padding-inline-start: var(--padding-medium); border-inline-start: var(--border-width-thick) solid var(--border); }
 .markdown .tool-log li.ok { border-color: var(--ok); }

@@ -550,6 +550,17 @@ button.account.signed-in {
     white-space: nowrap;
 }
 
+/* An item that is pressed (role="button" and tabindex="0" on the tag; the script does the click and the Enter key): it looks like a button when the pointer is over it */
+.item[role="button"] {
+    cursor: pointer;
+}
+
+.item[role="button"]:hover,
+.item[role="button"]:focus-visible {
+    background-color: var(--bg-1);
+    border-color: var(--fg-1);
+}
+
 /* ---------- Code block: code in a box that scrolls sideways (put dir="ltr" on it: code is always left to right) ---------- */
 .code-block pre {
     margin: 0;
@@ -643,6 +654,16 @@ input.radio:disabled {
 .breadcrumb:last-child {
     color: var(--fg);
     font-weight: 700;
+}
+
+/* A breadcrumb that is pressed (role="button" and tabindex="0"): it goes to that part of the path */
+.breadcrumb[role="button"] {
+    cursor: pointer;
+}
+
+.breadcrumb[role="button"]:hover,
+.breadcrumb[role="button"]:focus-visible {
+    color: var(--fg);
 }
 
 .breadcrumbs .breadcrumb-separator {

@@ -4,16 +4,16 @@
 //! What keeps it safe:
 //!   - it listens on 127.0.0.1 (this PC), never on the network;
 //!   - every request needs the token that is printed when it starts (a random one, new at every start unless you give --token);
-//!   - muAI gets the token by itself ("pairing"), but only after YOU allow its origin here, in this terminal (once: the answer is kept in a file);
+//!   - muAI gets the token by itself ("pairing"), at once, but only a page of an allowed origin (https://kancamu.site, plus the ones you add with --origin); with --confirm the program asks in its terminal before it gives the token to an origin (once: the answer is kept in a file);
 //!   - a web page can use it only when its address is in the list of allowed origins (https://kancamu.site, plus the ones you add with --origin);
 //!   - the Host header must be this PC (a defence against DNS rebinding);
 //!   - every path is relative to the folder you chose: no "..", no drive letters, no absolute paths, no links that lead out of the folder;
 //!   - a file is written whole into a temporary file and then renamed, and an existing file is replaced only when the request says so.
 //!
-//! Usage:  muai-helper [--dir <folder>] [--port 47615] [--origin <address>]... [--token <text>] [--yes] [--allow-broad]
+//! Usage:  muai-helper [--dir <folder>] [--port 47615] [--origin <address>]... [--token <text>] [--confirm] [--allow-broad]
 //!   --dir          the one folder muAI may use, and muAI cannot change it. Without it no folder is chosen at the start (or it is the last one that was chosen in muAI),
 //!                  and the user chooses the folder in muAI: a file explorer that shows only the names of folders, and the one folder of the work is the folder that is chosen
-//!   --yes          allow the origins of the list without asking (less safe: for a computer without a terminal)
+//!   --confirm      ask in the terminal before an origin gets the token (safer: one more step)
 //!   --allow-broad  allow the root of a drive or your home folder as the folder (it is refused otherwise: it is too much)
 
 use std::collections::HashSet;
@@ -147,7 +147,7 @@ fn ask_in_terminal(approvals: Arc<Mutex<Approvals>>, origin: String, folder: Str
             let _ = std::io::stdin().lock().read_line(&mut line);
             line.trim().eq_ignore_ascii_case("y") || line.trim().eq_ignore_ascii_case("yes")
         } else {
-            println!("\nThe page {origin} asks to connect, but there is no terminal to ask in. Start it again in a terminal, or with --yes.");
+            println!("\nThe page {origin} asks to connect, but there is no terminal to ask in. Start it again in a terminal, or without --confirm.");
             false
         };
         let mut approvals = approvals.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
@@ -175,7 +175,7 @@ fn main() {
     let config = match parse_args(std::env::args().skip(1).collect()) {
         Ok(config) => config,
         Err(message) => {
-            eprintln!("{message}\n\nUsage: muai-helper [--dir <folder>] [--port {DEFAULT_PORT}] [--origin <address>]... [--token <text>] [--yes] [--allow-broad]");
+            eprintln!("{message}\n\nUsage: muai-helper [--dir <folder>] [--port {DEFAULT_PORT}] [--origin <address>]... [--token <text>] [--confirm] [--allow-broad]");
             std::process::exit(2);
         }
     };
@@ -192,7 +192,7 @@ fn main() {
     println!("  Address: http://{address}");
     println!("  Token  : {}", config.token);
     println!("  Origins: {}", config.origins.join(", "));
-    println!("muAI finds this program and connects by itself (it asks here the first time). Press Ctrl+C to stop.\n");
+    println!("muAI finds this program and connects by itself{}. Press Ctrl+C to stop.\n", if config.yes { "" } else { " (it asks here the first time: --confirm)" });
     for request in server.incoming_requests() {
         handle(&config, request);
     }
@@ -200,7 +200,7 @@ fn main() {
 
 fn parse_args(args: Vec<String>) -> Result<Config, String> {
     let (mut dir, mut port, mut token, mut origins) = (None, DEFAULT_PORT, None, vec![DEFAULT_ORIGIN.to_string()]);
-    let (mut yes, mut allow_broad) = (false, false);
+    let (mut confirm, mut allow_broad) = (false, false);
     // more origins can also come from the variable MUAI_ORIGINS (addresses separated by commas), for a program that is started by a script
     if let Ok(more) = std::env::var("MUAI_ORIGINS") {
         origins.extend(more.split(',').map(|origin| origin.trim().trim_end_matches('/').to_string()).filter(|origin| !origin.is_empty()));
@@ -213,7 +213,8 @@ fn parse_args(args: Vec<String>) -> Result<Config, String> {
             "--port" => port = value("--port")?.parse().map_err(|_| "--port must be a number from 1 to 65535".to_string())?,
             "--token" => token = Some(value("--token")?),
             "--origin" => origins.push(value("--origin")?.trim_end_matches('/').to_string()),
-            "--yes" => yes = true,
+            "--confirm" => confirm = true,
+            "--yes" => {} // the first versions asked in the terminal and needed this; now it is the way it works (and --confirm asks)
             "--allow-broad" => allow_broad = true,
             "--help" | "-h" => return Err("muai-helper lets muAI write files in one folder of this PC.".to_string()),
             other => return Err(format!("unknown option: {other}")),
@@ -245,7 +246,7 @@ fn parse_args(args: Vec<String>) -> Result<Config, String> {
     };
     let mut config = Config::new(PathBuf::new(), token, port, origins);
     *config.root.lock().unwrap_or_else(|poisoned| poisoned.into_inner()) = root;
-    config.yes = yes;
+    config.yes = !confirm;   // an origin of the list gets the token at once, unless --confirm
     config.locked = dir.is_some();
     config.allow_broad = allow_broad;
     config.memory = memory;

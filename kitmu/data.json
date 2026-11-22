@@ -1186,14 +1186,15 @@
     {
       "id": "item",
       "name": "Item",
-      "height": 110,
-      "html": "<kit-item heading=\"Title\" description=\"The description of the item.\">\n  <span slot=\"media\" class=\"avatar\">KM</span>\n  <button slot=\"actions\" type=\"button\"><span>Open</span></button>\n</kit-item>",
+      "height": 230,
+      "html": "<div style=\"display: flex; flex-direction: column; gap: var(--gap-small)\">\n  <kit-item heading=\"Title\" description=\"The description of the item.\">\n    <span slot=\"media\" class=\"avatar\">KM</span>\n    <button slot=\"actions\" type=\"button\"><span>Open</span></button>\n  </kit-item>\n  <kit-item id=\"pressed-item\" role=\"button\" tabindex=\"0\" heading=\"An item that is pressed\" description=\"It looks like a button when the pointer is over it.\">\n    <span slot=\"media\" class=\"avatar\">KM</span>\n  </kit-item>\n</div>",
       "tags": [
         "display",
         "tag",
         "container",
         "list"
-      ]
+      ],
+      "script": "const pressed = document.getElementById(\"pressed-item\");\nconst open = () => popups.toast(\"Pressed\");\npressed.addEventListener(\"click\", open);\npressed.addEventListener(\"keydown\", (event) => { if (event.key === \"Enter\" || event.key === \" \") { event.preventDefault(); open(); } });"
     },
     {
       "id": "chart",
@@ -1307,7 +1308,7 @@
       "id": "breadcrumb",
       "name": "Breadcrumb",
       "height": 90,
-      "html": "<kit-breadcrumbs>\n  <span>Home</span>\n  <span>Folder</span>\n  <span>File</span>\n</kit-breadcrumbs>",
+      "html": "<kit-breadcrumbs>\n  <span role=\"button\" tabindex=\"0\">Home</span>\n  <span role=\"button\" tabindex=\"0\">Folder</span>\n  <span>File</span>\n</kit-breadcrumbs>",
       "tags": [
         "navigation",
         "tag"

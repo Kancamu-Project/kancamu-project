@@ -534,9 +534,9 @@
       "ar-SA": "ملفات هذا الجهاز"
     },
     "conn.helper.hint": {
-      "en-US": "Paste a command in a terminal. It downloads muai-helper and starts it by itself; this window finds it and connects (the first time, allow it in the terminal). Then choose the project folder here: it is the only folder the AI can use. Only the API models can use it.",
-      "zh-CN": "在终端中粘贴一条命令。它会下载并自动启动 muai-helper；此窗口会找到它并连接（第一次需要在终端中允许）。然后在这里选择项目文件夹：它是 AI 唯一能使用的文件夹。只有 API 模型可以使用它。",
-      "ar-SA": "الصق أمرًا في الطرفية. ينزّل muai-helper ويشغّله تلقائيًا؛ وتجده هذه النافذة وتتصل به (في المرة الأولى تسمح به في الطرفية). ثم اختر مجلد المشروع هنا: هو المجلد الوحيد الذي يستطيع الذكاء الاصطناعي استخدامه. نماذج API فقط تستطيع استخدامه."
+      "en-US": "Paste a command in a terminal. It downloads muai-helper and starts it by itself; this window finds it and connects at once. Then choose the project folder here: it is the only folder the AI can use. Only the API models can use it.",
+      "zh-CN": "在终端中粘贴一条命令。它会下载并自动启动 muai-helper；此窗口会找到它并立即连接。然后在这里选择项目文件夹：它是 AI 唯一能使用的文件夹。只有 API 模型可以使用它。",
+      "ar-SA": "الصق أمرًا في الطرفية. ينزّل muai-helper ويشغّله تلقائيًا؛ وتجده هذه النافذة وتتصل به فورًا. ثم اختر مجلد المشروع هنا: هو المجلد الوحيد الذي يستطيع الذكاء الاصطناعي استخدامه. نماذج API فقط تستطيع استخدامه."
     },
     "conn.helperUrl": {
       "en-US": "Address of muai-helper",
@@ -784,9 +784,9 @@
       "ar-SA": "muai-helper لا يعمل. الصق أحد الأوامر أدناه في الطرفية."
     },
     "helper.approve": {
-      "en-US": "muai-helper asks you to allow this page. Look at the terminal where it runs and type y.",
-      "zh-CN": "muai-helper 请你允许此页面。请查看它运行的终端并输入 y。",
-      "ar-SA": "يطلب muai-helper أن تسمح بهذه الصفحة. انظر إلى الطرفية التي يعمل فيها واكتب y."
+      "en-US": "muai-helper was started with --confirm: look at the terminal where it runs and type y.",
+      "zh-CN": "muai-helper 是以 --confirm 启动的：请查看它运行的终端并输入 y。",
+      "ar-SA": "تم تشغيل muai-helper بخيار --confirm: انظر إلى الطرفية التي يعمل فيها واكتب y."
     },
     "helper.denied": {
       "en-US": "muai-helper did not allow this page. Start it again to allow it, or press Connect.",

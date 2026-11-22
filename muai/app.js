@@ -792,16 +792,31 @@ async function generateApi(msgs, hooks) {
   return { text, tps: chunks > 1 && last > first ? (chunks - 1) / ((last - first) / 1000) : 0, actions: run.actions, plan: run.plan };
 }
 
-// The windows (sheets of assets/js/popup.js): the API, muai-helper, and the file explorer of the project folder
-const part = (tag, className, text) => Object.assign(document.createElement(tag), { className, ...(text === undefined ? {} : { textContent: text }) });
-const field = (label, control, hint) => {
-  const wrap = part("label", "connection-field");
-  wrap.append(part("span", "connection-label", label), control);
-  if (hint) wrap.append(part("span", "note", hint));
-  return wrap;
-};
+// The windows (sheets of assets/js/popup.js), made with the components of the kit (assets/js/components.js): field, alert, collapsible, item, breadcrumbs, empty
+const { element, make } = components;
+const field = (label, control, hint) => make("field", { label, hint }, [control]);
 const input = (type, value, placeholder) => Object.assign(document.createElement("input"), { type, value, placeholder: placeholder || "", spellcheck: false, autocapitalize: "off" });
-const button = (label, onClick, className = "") => { const b = Object.assign(part("button", className, label), { type: "button" }); b.addEventListener("click", onClick); return b; };
+const button = (label, onClick, className = "") => {
+  const node = Object.assign(element("button", className), { type: "button" });
+  node.append(element("span", "", label));
+  node.addEventListener("click", onClick);
+  return node;
+};
+const iconButton = (name, label, onClick) => {   // a button with only an icon is a square (RULES.md, Buttons)
+  const node = Object.assign(element("button", "square"), { type: "button", title: label });
+  node.setAttribute("aria-label", label);
+  node.append(components.icon(name));
+  node.addEventListener("click", onClick);
+  return node;
+};
+const row = (...buttons) => { const node = element("div", "connection-row"); node.append(...buttons); return node; };
+const pressed = (node, onPress) => {   // an item or a breadcrumb that is pressed: the click and the Enter key
+  node.setAttribute("role", "button");
+  node.tabIndex = 0;
+  node.addEventListener("click", onPress);
+  node.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onPress(); } });
+  return node;
+};
 const closeSheetOf = (node) => node.closest("dialog")?.close();
 
 // The API (OpenAI-compatible)
@@ -813,7 +828,7 @@ function openConnections() {
   const apiKey = input("password", connection.apiKey, tr("conn.apiKey.optional"));
   const modelName = input("text", connection.model, "gpt-4o-mini");
   modelName.setAttribute("list", "connection-models");
-  const models = part("datalist", "");
+  const models = element("datalist");
   models.id = "connection-models";
   const draft = () => ({ baseUrl: baseUrl.value, apiKey: apiKey.value, model: modelName.value });
   const listModels = button(tr("conn.models"), async () => {
@@ -826,21 +841,18 @@ function openConnections() {
       models.replaceChildren(...ids.map((id) => Object.assign(document.createElement("option"), { value: id })));
       popups.toast(tr("conn.models.found", { n: ids.length }));
     } catch (error) { popups.toast(tr("conn.models.failed", { message: error.message }), { kind: "error" }); }
-  });
+  }, "wide");
   const remove = button(tr("conn.remove"), () => {
     try { localStorage.removeItem(CONNECTION_KEY); } catch { /* ignore */ }
     connection = { ...NO_CONNECTION };
-    helperInfo = null; showHelper(null);
+    showHelper(null);
     if (MODEL?.kind === "api") { MODEL = null; loadedDef = null; savePreferences({ model: "" }); }
     showSelected(); renderChat();
     popups.toast(tr("conn.removed"));
     closeSheetOf(form);
-  });
-  const row = part("div", "connection-row");
-  const rowEnd = part("div", "connection-row");
-  row.append(listModels);
-  rowEnd.append(remove, button(tr("conn.save"), () => form.requestSubmit(), "primary"));
-  form.append(part("span", "note", tr("conn.api.hint")), field(tr("conn.baseUrl"), baseUrl), field(tr("conn.apiKey"), apiKey), field(tr("conn.model"), modelName), models, row, rowEnd);
+  }, "wide");
+  const hint = make("alert", { kind: "info" }, [document.createTextNode(tr("conn.api.hint"))]);
+  form.append(hint, field(tr("conn.baseUrl"), baseUrl), field(tr("conn.apiKey"), apiKey), field(tr("conn.model"), modelName), models, row(listModels), row(remove, button(tr("conn.save"), () => form.requestSubmit(), "primary wide")));
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const next = draft();
@@ -858,21 +870,18 @@ els.connectionButton.addEventListener("click", openConnections);
 
 // muai-helper: while this window is open the page looks for it every second, so it shows the moment the program is running (the command starts it by itself after it is downloaded)
 function openHelper() {
-  const box = part("div", "connection-form");
-  const state = part("div", "connection-form helper-state");   // what depends on the state: it is drawn again when the state changes
+  const box = element("div", "connection-form");
+  const state = element("div", "connection-form");   // what depends on the state: it is made again when the state changes
   const command = (label, text) => {   // a command to paste in a terminal, and the button that copies it
-    const code = input("text", text);
-    code.readOnly = true;
-    code.classList.add("connection-code");
-    code.addEventListener("focus", () => code.select());
+    const code = element("div", "code-block");
+    code.dir = "ltr";
+    code.append(element("pre", "", text));
     const copyButton = button(tr("conn.copyCommand"), async () => {
-      try { await navigator.clipboard.writeText(text); popups.toast(tr("toast.copied")); } catch { code.select(); }
+      try { await navigator.clipboard.writeText(text); popups.toast(tr("toast.copied")); } catch { /* the command can be selected by hand */ }
     });
-    const row = part("div", "connection-command");
-    row.append(code, copyButton);
-    const wrap = part("div", "connection-field");
-    wrap.append(part("span", "connection-label", label), row);
-    return wrap;
+    const line = element("div", "connection-command");
+    line.append(code, copyButton);
+    return make("field", { label }, [line]);
   };
   let drawn = "";
   const draw = () => {
@@ -882,26 +891,21 @@ function openHelper() {
     drawn = signature;
     state.replaceChildren();
     if (!info) {
-      const waiting = part("div", "connection-status");
-      waiting.textContent = helperDenied ? tr("helper.denied") : tr("helper.waiting");
-      state.append(waiting, part("span", "note", tr("conn.helper.hint")), command(tr("conn.helper.cmdWindows"), INSTALL_WINDOWS), command(tr("conn.helper.cmdUnix"), INSTALL_UNIX));
-      if (helperDenied) state.append(button(tr("conn.connect"), () => connectHelper({ force: true }), "primary"));
+      state.append(
+        make("alert", { kind: helperDenied ? "warning" : "info", heading: tr(helperDenied ? "helper.denied" : "helper.waiting") }, [document.createTextNode(tr("conn.helper.hint"))]),
+        command(tr("conn.helper.cmdWindows"), INSTALL_WINDOWS), command(tr("conn.helper.cmdUnix"), INSTALL_UNIX),
+      );
+      if (helperDenied) state.append(row(button(tr("conn.connect"), () => connectHelper({ force: true }), "primary")));
       return;
     }
-    const status = part("div", "connection-status ok");
-    status.textContent = tr("helper.connectedShort", { version: info.version });
-    const folder = part("div", "connection-field");
-    const shown = part("div", "connection-path", info.folder || tr("folder.none"));
+    state.append(make("alert", { kind: "success", heading: tr("helper.connectedShort", { version: info.version }) }));
+    const shown = element("div", "code-block");
     shown.dir = "ltr";
-    folder.append(part("span", "connection-label", tr("folder.current", { folder: "" }).replace(/[:：]\s*$/, "")), shown);
-    state.append(status, folder);
-    if (info.locked) state.append(part("span", "note", tr("folder.locked")));
-    else if (!info.browse) state.append(part("span", "note", tr("helper.old")));
-    else {
-      const row = part("div", "connection-row");
-      row.append(button(tr("folder.choose"), () => { closeSheetOf(box); openExplorer(); }, info.folder ? "" : "primary"));
-      state.append(row);
-    }
+    shown.append(element("pre", "", info.folder || tr("folder.none")));
+    state.append(make("field", { label: tr("explorer.title") }, [shown]));
+    if (info.locked) state.append(make("alert", { kind: "info" }, [document.createTextNode(tr("folder.locked"))]));
+    else if (!info.browse) state.append(make("alert", { kind: "warning" }, [document.createTextNode(tr("helper.old"))]));
+    else state.append(row(button(tr("folder.choose"), () => { closeSheetOf(box); openExplorer(); }, info.folder ? "wide" : "primary wide")));
   };
   const writeMode = document.createElement("select");
   writeMode.replaceChildren(...WRITE_MODES.map((mode) => Object.assign(document.createElement("option"), { value: mode, textContent: tr(`conn.mode.${mode}`) })));
@@ -909,17 +913,20 @@ function openHelper() {
   writeMode.addEventListener("change", () => { connection = { ...connection, writeMode: writeMode.value }; saveConnection(); });
   const helperUrl = input("url", connection.helperUrl, HELPER_URL);
   const helperToken = input("password", connection.helperToken, "");
-  const advanced = part("details", "connection-advanced");
-  const testRow = part("div", "connection-row");
-  testRow.append(button(tr("conn.test"), async () => {
-    try { const info = await helper("ping", null, { ...connection, helperUrl: helperUrl.value, helperToken: helperToken.value }); popups.toast(tr("conn.test.ok", { folder: info.folder || tr("folder.none") })); } catch (error) { popups.toast(error.message, { kind: "error" }); }
-  }), button(tr("conn.save"), () => {
-    connection = { ...connection, helperUrl: helperUrl.value.trim(), helperToken: helperToken.value.trim() };
-    saveConnection();
-    connectHelper({ force: true });
-    popups.toast(tr("conn.saved"));
-  }, "primary"));
-  advanced.append(part("summary", "", tr("conn.advanced")), field(tr("conn.helperUrl"), helperUrl), field(tr("conn.helperToken"), helperToken), testRow);
+  const advanced = make("collapsible", { heading: tr("conn.advanced") }, [
+    field(tr("conn.helperUrl"), helperUrl), field(tr("conn.helperToken"), helperToken),
+    row(
+      button(tr("conn.test"), async () => {
+        try { const info = await helper("ping", null, { ...connection, helperUrl: helperUrl.value, helperToken: helperToken.value }); popups.toast(tr("conn.test.ok", { folder: info.folder || tr("folder.none") })); } catch (error) { popups.toast(error.message, { kind: "error" }); }
+      }),
+      button(tr("conn.save"), () => {
+        connection = { ...connection, helperUrl: helperUrl.value.trim(), helperToken: helperToken.value.trim() };
+        saveConnection();
+        connectHelper({ force: true });
+        popups.toast(tr("conn.saved"));
+      }, "primary"),
+    ),
+  ]);
   box.append(state, field(tr("conn.writeMode"), writeMode), advanced);
   onHelperChange = draw;
   draw();
@@ -932,21 +939,30 @@ function openHelper() {
 }
 els.helperButton.addEventListener("click", openHelper);
 
-// The file explorer of the project folder: it shows the names of the folders of this PC (muai-helper reads them), and the folder that is chosen is the only one that the AI can work in
+// The parts of a path, each with the path up to it: "C:\Users\me" gives C:\, C:\Users, C:\Users\me; "/home/me" gives /, /home, /home/me
+function pathParts(path) {
+  if (!path) return [];   // the start (This PC) has no path
+  const windows = /^[A-Za-z]:[\\/]/.test(path);
+  const names = path.split(/[\\/]/).filter(Boolean);
+  const parts = windows ? [] : [{ name: "/", path: "/" }];
+  let up = "";
+  names.forEach((name, index) => {
+    up = windows ? (index === 0 ? `${name}\\` : `${up.replace(/\\$/, "")}\\${name}`) : `${up}/${name}`;
+    parts.push({ name, path: up });
+  });
+  return parts;
+}
+
+// The file explorer of the project folder: it shows the names of the folders of this PC (muai-helper reads them), and the folder that is chosen is the only one that the AI can use
 function openExplorer() {
   if (!helperInfo) { popups.toast(tr("helper.waiting"), { kind: "warning" }); openHelper(); return; }
   if (helperInfo.locked) return void popups.toast(tr("folder.locked"), { kind: "warning" });
   if (!helperInfo.browse) return void popups.toast(tr("helper.old"), { kind: "warning" });
-  const wrap = part("div", "explorer");
-  const where = part("div", "explorer-path");
-  where.dir = "ltr";
-  const bar = part("div", "explorer-bar");
-  const list = part("div", "explorer-list");
+  const wrap = element("div", "explorer");
+  const bar = element("div", "explorer-bar");
+  const list = element("div", "explorer-list scroll-area");
   let current = "", parent = null;
-  const up = button(tr("explorer.up"), () => show(parent || ""));
-  up.prepend(part("span", "icon icon-arrow-up"));
-  const places = button(tr("explorer.places"), () => show(""));
-  places.prepend(part("span", "icon icon-hard-drive"));
+  const up = iconButton("arrow-up", tr("explorer.up"), () => show(parent || ""));
   const use = button(tr("explorer.use"), async () => {
     try {
       const done = await helper("folder", { path: current });
@@ -954,31 +970,36 @@ function openExplorer() {
       popups.toast(tr("explorer.chosen", { folder: done.folder }));
       closeSheetOf(wrap);
     } catch (error) { popups.toast(tr("explorer.failed", { message: error.message }), { kind: "error" }); }
-  }, "primary");
-  const rows = (items) => items.map((item) => {
-    const row = button(item.name, () => show(item.path), "explorer-row");
-    row.prepend(part("span", "icon icon-folder"));
-    row.title = item.path;
-    return row;
-  });
+  }, "primary wide");
+  const folderItem = (entry) => {
+    const media = components.icon("folder");
+    media.setAttribute("slot", "media");
+    const node = make("item", { heading: entry.name, description: entry.description }, [media]);
+    node.title = entry.path;
+    return pressed(node, () => show(entry.path));
+  };
   async function show(path) {
     try {
       const data = await helper("browse", { path });
       current = data.path;
       parent = data.parent;
-      where.textContent = current || tr("explorer.places");
       up.disabled = !current;
       use.disabled = !current;
-      const items = current ? data.entries : data.places;
-      list.replaceChildren(...(items.length ? rows(items) : [part("span", "note", tr("explorer.empty"))]));
-      if (data.truncated) list.append(part("span", "note", tr("explorer.truncated")));
+      const here = [{ name: tr("explorer.places"), path: "" }, ...pathParts(current)];
+      const crumbs = here.map((part, index) => {
+        const crumb = element("span", "", part.name);
+        return index < here.length - 1 ? pressed(crumb, () => show(part.path)) : crumb;   // where you are is not pressed
+      });
+      bar.replaceChildren(up, make("breadcrumbs", {}, crumbs));
+      const trail = bar.querySelector("kit-breadcrumbs");
+      trail.scrollLeft = trail.scrollWidth;   // a deep path shows its end (where you are)
+      const entries = current ? data.entries : data.places.map((place) => ({ ...place, description: place.path }));
+      list.replaceChildren(...(entries.length ? entries.map(folderItem) : [make("empty", { icon: "folder", heading: tr("explorer.empty") })]));
+      if (data.truncated) list.append(element("span", "note", tr("explorer.truncated")));
       list.scrollTop = 0;
     } catch (error) { popups.toast(tr("explorer.failed", { message: error.message }), { kind: "error" }); }
   }
-  bar.append(up, places);
-  const footer = part("div", "connection-row");
-  footer.append(use);
-  wrap.append(where, bar, list, footer);
+  wrap.append(bar, list, row(use));
   popups.sheet({ title: tr("explorer.title"), node: wrap, side: "bottom" });
   show(helperInfo.folder || "");
 }

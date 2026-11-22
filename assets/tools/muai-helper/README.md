@@ -24,7 +24,7 @@ on macOS and Linux. The program lives in `C:\Users\<you>\kancamu\muai` (Windows)
 - the program is not there, or its SHA-256 is another one (a new version, or the file was changed): the script downloads the program (from kancamu.site, the folder `bin/` of this one), checks that it has the SHA-256 of `latest.txt` (it stops if it has not), keeps it, and **writes the new SHA-256** in `muai-helper.json` beside it (`{ "version", "sha256", "installed" }`);
 - kancamu.site cannot be reached: the program that is there is run, but only if it still has the SHA-256 that `muai-helper.json` says (a program that was changed is never run without a check).
 
-muAI looks for the program by itself (every few seconds, on `127.0.0.1:47615`) and connects: **you copy no address and no token**. The first time, the program asks in its terminal whether to allow muAI (`https://kancamu.site`): type `y`. The answer is kept in a file (`%APPDATA%\muai-helper\allowed-origins.json`, or `~/.config/muai-helper/allowed-origins.json`), so the next time it connects without asking. When the program is started again it has a new token, and muAI takes it by itself.
+muAI looks for the program by itself (every few seconds, on `127.0.0.1:47615`) and connects: **you copy no address and no token**. There is **no question to answer**: the program gives its token at once to a page of an allowed origin (`https://kancamu.site`; others only with `--origin`), and refuses every other page. When the program is started again it has a new token, and muAI takes it by itself. If you want one more step, start it with `--confirm`: it then asks in its terminal (`y`) before an origin gets the token, and keeps the answer in `%APPDATA%\muai-helper\allowed-origins.json` (or `~/.config/muai-helper/allowed-origins.json`).
 
 **The project folder is chosen in muAI.** When it is connected, a button of the project folder shows in the bar of the chat: it opens a file explorer (the names of the folders of this PC, which the program reads), and the folder that you pick with *Use this folder* is the one folder that the AI can use. It is kept for the next start. The root of a drive and your home folder are refused (too much for an AI). The AI gets its tools only after a folder is chosen. To fix the folder from the terminal instead, start the program with `--dir <folder>` (or set `MUAI_DIR` before the command): muAI cannot change it then.
 
@@ -49,7 +49,7 @@ Options:
 | `--port <number>` | The port (default `47615`, the one muAI looks at). |
 | `--token <text>` | Your own token (at least 16 characters). Without it a random one is made at every start. |
 | `--origin <address>` | Another web page that may use it, for example `--origin http://127.0.0.1:8123` to try muAI on your own computer (the variable `MUAI_ORIGINS`, with addresses separated by commas, does the same). `https://kancamu.site` is always in the list. |
-| `--yes` | Allow the origins of the list without asking (less safe: for a computer where the program has no terminal). |
+| `--confirm` | Ask in the terminal before an origin gets the token (one more step, safer). Without it the origins of the list get the token at once. |
 | `--allow-broad` | Allow the root of a drive or your home folder. |
 
 ## For the maker: a new version
@@ -66,7 +66,7 @@ and its SHA-256 (`Get-FileHash binmuai-helper-windows-x64.exe`) goes in the line
 ## What keeps it safe
 
 - It listens on `127.0.0.1` only, and the `Host` of a request must be this PC (a defence against DNS rebinding).
-- Every request needs the token (`Authorization: Bearer <token>`). A page gets the token by itself (`POST /pair`) only if its origin is allowed by you in the terminal; `GET /ping` is open to the allowed origins and tells only that the program is here, its version, the folder, and whether the token that was sent is good.
+- Every request needs the token (`Authorization: Bearer <token>`). A page gets the token by itself (`POST /pair`) only if its origin is in the list (`https://kancamu.site`, and what you add with `--origin`), and with `--confirm` only after you said yes in the terminal; `GET /ping` is open to the allowed origins and tells only that the program is here, its version, the folder, and whether the token that was sent is good.
 - A web page can use it only from an allowed origin; a page from another site is refused.
 - The file explorer shows only the **names of folders** to the page that is allowed (never the files, never what is in them); what the AI can read and write is only the one folder that was chosen. A page that is allowed and has the token can choose another folder, so allow only a page that you trust (`https://kancamu.site`), or start the program with `--dir` to fix the folder.
 - A path is relative to the folder: no `..`, no drive letter (`C:`), no leading slash, no reserved Windows names (`CON`, `NUL`…), and no link that leads out of the folder.
