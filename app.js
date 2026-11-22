@@ -10,6 +10,7 @@ const state = {
     view: "grid",
     tabs: [],
     active: null,
+    page: "",   // "about" or "terms" (data.json, "pages"): shown in the main instead of the directory
     frames: {},   // the query string of the app in each open tab (what the app says about itself, assets/js/url.js): id -> "path=Images&view=list"
 };
 
@@ -22,6 +23,7 @@ function saveFilters() {
     if (state.sort !== "asc") params.set("sort", state.sort);
     if (state.view !== "grid") params.set("view", state.view);
     if (state.tabs.length) params.set("tabs", state.tabs.join(","));
+    if (state.page) params.set("page", state.page);
     if (state.active !== state.home) params.set("tab", state.active);
     for (const id of state.tabs) if (state.frames[id]) params.set(`s.${id}`, state.frames[id]);   // a reload opens every app as it was
     const search = params.toString();
@@ -44,6 +46,7 @@ function restoreFilters() {
         (id) => known.includes(id) && id !== state.home
     );
     for (const id of state.tabs) if (params.get(`s.${id}`)) state.frames[id] = params.get(`s.${id}`);
+    state.page = Object.keys(i18n.data.pages).includes(params.get("page")) ? params.get("page") : "";
     const active = params.get("tab");
     state.active = allTabs().includes(active) ? active : state.home;
 }
@@ -194,7 +197,8 @@ function syncViewer() {
     const viewer = document.getElementById("viewer");
     const onHome = state.active === state.home;
     viewer.hidden = onHome;
-    document.getElementById("home").hidden = !onHome;
+    document.getElementById("home").hidden = !onHome || !!state.page;
+    document.getElementById("page").hidden = !onHome || !state.page;
     document.getElementById("footer").hidden = !onHome;
 
     viewer.querySelectorAll("iframe").forEach((frame) => {
@@ -225,6 +229,38 @@ window.addEventListener("message", (event) => {
     saveFilters();
 });
 
+/* ---------- the pages (About, Terms and conditions): the texts are in data.json, in "pages" ---------- */
+function openPage(name) {
+    state.page = name;
+    saveFilters();
+    syncViewer();
+    renderPage();
+    document.getElementById("page").scrollTop = 0;
+}
+
+function renderPage() {
+    const box = document.getElementById("page");
+    const content = i18n.data.pages[state.page];
+    if (!content) return box.replaceChildren();
+    const back = createElement("button", "page-back");
+    back.type = "button";
+    back.append(createElement("span", "", t("page.back")));
+    back.addEventListener("click", () => openPage(""));
+    const parts = [back, createElement("span", "page-title", t(`${state.page}.title`))];
+    if (content.updated) parts.push(createElement("span", "page-updated", t("page.updated", { date: i18n.date(content.updated, { dateStyle: "long" }) })));
+    for (const section of content.sections) {
+        parts.push(createElement("span", "page-heading", pickText(section.heading)), createElement("span", "page-text selectable", pickText(section.text)));
+        if (section.links) {   // links to other sites (the sources of the images): they open in a tab of their own
+            const links = createElement("div", "page-links");
+            links.append(...section.links.map(({ label, url }) => Object.assign(createElement("a", "page-link", label), { href: url, target: "_blank", rel: "noopener noreferrer" })));
+            parts.push(links);
+        }
+    }
+    box.replaceChildren(...parts);
+}
+document.getElementById("about-button").addEventListener("click", () => openPage("about"));
+document.getElementById("terms-button").addEventListener("click", () => openPage("terms"));
+
 function syncControls() {
     document.getElementById("reset-button").hidden =
         !state.query && state.category === "all" && state.publisher === "all" && state.alternative === "all";
@@ -245,6 +281,7 @@ function renderAll() {
     renderAlternativeSelect();
     renderCategoryFilter();
     renderProjects();
+    renderPage();
 }
 
 function createElement(tag, className, text) {
@@ -282,6 +319,7 @@ function showMenu(anchor, project) {
                 },
             },
             { label: t("openNew"), onSelect: () => window.open(project.url, "_blank", "noopener") },
+            ...(project.source ? [{ label: t("viewSource"), onSelect: () => window.open(project.source, "_blank", "noopener") }] : []),
         ],
     });
 }
@@ -472,11 +510,11 @@ async function showSplash({ images, seconds }) {   // the first image is the fir
     if (settings.get("appearance").splash === false) return;
     const order = images;
     // the splash opens with its images ready, not empty
-    await Promise.all(order.map((source) => { const preload = new Image(); preload.src = source; return preload.decode().catch(() => {}); }));
+    await Promise.all(order.map(({ file }) => { const preload = new Image(); preload.src = file; return preload.decode().catch(() => {}); }));
     const track = createElement("div", "splash-track");
-    track.append(...order.map((source) => {
+    track.append(...order.map(({ file }) => {
         const slide = createElement("div", "splash-slide");
-        slide.style.backgroundImage = `url(${JSON.stringify(source)})`;
+        slide.style.backgroundImage = `url(${JSON.stringify(file)})`;
         return slide;
     }));
     // the dots tell which image shows (and how many there are); the slides keep their place in the list, because the track turns round
@@ -484,9 +522,13 @@ async function showSplash({ images, seconds }) {   // the first image is the fir
     const dots = createElement("div", "splash-dots");
     dots.setAttribute("aria-hidden", "true");
     dots.append(...order.map(() => createElement("span", "splash-dot")));
-    const mark = (index) => [...dots.children].forEach((dot, at) => dot.classList.toggle("on", at === index));
+    const credit = createElement("span", "splash-credit");   // the author of the image that shows, in the top corner of the image
+    const mark = (index) => {
+        [...dots.children].forEach((dot, at) => dot.classList.toggle("on", at === index));
+        credit.textContent = t("splash.credit", { author: order[index].author });
+    };
     mark(0);
-    splash.querySelector(".splash-art").replaceChildren(track, dots);
+    splash.querySelector(".splash-art").replaceChildren(track, dots, credit);
     // every few seconds the track slides by one image, and the image that left goes to the end of it: the images go round without end
     const settle = () => {
         if (!track.classList.contains("moving")) return;

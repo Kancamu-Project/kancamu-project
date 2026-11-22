@@ -12,6 +12,7 @@ Plain HTML, CSS, and JavaScript. No framework, no build step, no special server.
 - Every app keeps what is on its screen (the folder, the tab, the search, the language, the lesson, the chat) in its address, so a reload shows the same. In a tab of the directory, the address of the directory keeps it for the app.
 - Dark and light themes. The chosen theme and language are remembered by the browser. A change in one app is followed live by all the others, muOS included.
 - Three languages: English, 简体中文, and العربية (right to left).
+- Two pages, About and Terms and conditions, with their buttons in the footer of the main website. Their texts are in the main data.json ("pages"), in the three languages, and the page that is open is in the address (?page=terms).
 - A splash screen: when the main website opens, a layer with the logo, the name, and three images (they slide every few seconds, in order) shows until a click or a key; it can be turned off in the Appearance page of the account app.
 - Effects, set in the Appearance page of the account app and shared by every app (except muOS and ArtCraft): today a noise (a fine grain over the page, with an amount and an option to make it move) and a monochrome (the colour taken out, with an amount). An effect is only a layer over the page: a div of its own in the body, which takes no click and changes no element of the page (no style or attribute on any other element), and the noise stays still when the device asks for less motion.
 
@@ -156,6 +157,7 @@ Everything in the list comes from `data.json`. Add one object to `projects`:
 - `highlight` is the part of the name shown in bold on the card, for example `mu` in "muOS".
 - `color` is a palette name (`red`, `yellow`, `blue`, or `green`), or a hex value for a project from another publisher.
 - `categories` must use keys that exist under `categories` in `data.json`: `ai`, `tools`, `productivity`, `system`, `office`, `design`, `video`, `creative`, `directory`, `storage`.
+- `source` (only for a project of another maker) is the address of its source on GitHub: it is the "Source on GitHub" item in the menu of the three dots of its card. The projects of Kancamu have none.
 - `alternatives` lists the products the project is an alternative to (one or more, product names are not translated; `[]` for none). The directory has a filter for them, and the search also finds them.
 - New interface text and new category names are written in all three languages.
 

@@ -160,6 +160,36 @@
       "en-US": "Click or press a key to continue",
       "zh-CN": "点击或按任意键继续",
       "ar-SA": "انقر أو اضغط أي مفتاح للمتابعة"
+    },
+    "about.title": {
+      "en-US": "About",
+      "zh-CN": "关于",
+      "ar-SA": "حول"
+    },
+    "terms.title": {
+      "en-US": "Terms and conditions",
+      "zh-CN": "条款与条件",
+      "ar-SA": "الشروط والأحكام"
+    },
+    "page.back": {
+      "en-US": "Back to the directory",
+      "zh-CN": "返回目录",
+      "ar-SA": "العودة إلى الدليل"
+    },
+    "page.updated": {
+      "en-US": "Last updated: {date}",
+      "zh-CN": "最后更新：{date}",
+      "ar-SA": "آخر تحديث: {date}"
+    },
+    "splash.credit": {
+      "en-US": "{author} on Civitai",
+      "zh-CN": "{author}（Civitai）",
+      "ar-SA": "{author} على Civitai"
+    },
+    "viewSource": {
+      "en-US": "Source on GitHub",
+      "zh-CN": "GitHub 源代码",
+      "ar-SA": "الشيفرة المصدرية على GitHub"
     }
   },
   "categories": {
@@ -623,7 +653,8 @@
         "Microsoft PowerPoint",
         "Google Slides",
         "Keynote"
-      ]
+      ],
+      "source": "https://github.com/storytold/deckcraft"
     },
     {
       "id": "effectcraft",
@@ -648,7 +679,8 @@
       ],
       "alternatives": [
         "Adobe After Effects"
-      ]
+      ],
+      "source": "https://github.com/storytold/effectcraft"
     },
     {
       "id": "filmcraft",
@@ -674,7 +706,8 @@
       "alternatives": [
         "Adobe Premiere Pro",
         "Final Cut Pro"
-      ]
+      ],
+      "source": "https://github.com/storytold/filmcraft"
     },
     {
       "id": "gridcraft",
@@ -700,7 +733,8 @@
       "alternatives": [
         "Microsoft Excel",
         "Google Sheets"
-      ]
+      ],
+      "source": "https://github.com/storytold/gridcraft"
     },
     {
       "id": "photocraft",
@@ -725,7 +759,8 @@
       ],
       "alternatives": [
         "Adobe Photoshop"
-      ]
+      ],
+      "source": "https://github.com/storytold/photocraft"
     },
     {
       "id": "vectorcraft",
@@ -750,7 +785,8 @@
       ],
       "alternatives": [
         "Adobe Illustrator"
-      ]
+      ],
+      "source": "https://github.com/storytold/vectorcraft"
     },
     {
       "id": "wordcraft",
@@ -776,7 +812,8 @@
       "alternatives": [
         "Microsoft Word",
         "Google Docs"
-      ]
+      ],
+      "source": "https://github.com/storytold/wordcraft"
     },
     {
       "id": "tracedraw",
@@ -801,7 +838,8 @@
       ],
       "alternatives": [
         "CorelDRAW"
-      ]
+      ],
+      "source": "https://github.com/tracedraw/tracedraw"
     },
     {
       "id": "pdfcraft",
@@ -826,15 +864,209 @@
       ],
       "alternatives": [
         "Adobe Acrobat"
-      ]
+      ],
+      "source": "https://github.com/storytold/pdfcraft"
     }
   ],
   "splash": {
     "images": [
-      "assets/images/purplelady.webp",
-      "assets/images/siberius.webp",
-      "assets/images/cinnadust.webp"
+      {
+        "file": "assets/images/purplelady.webp",
+        "author": "purplelady",
+        "source": "https://civitai.com/images/136992675"
+      },
+      {
+        "file": "assets/images/siberius.webp",
+        "author": "SIBERIUS",
+        "source": "https://civitai.com/images/141201050"
+      },
+      {
+        "file": "assets/images/cinnadust.webp",
+        "author": "Cinnadust",
+        "source": "https://civitai.com/images/141462600"
+      }
     ],
     "seconds": 3
+  },
+  "pages": {
+    "about": {
+      "sections": [
+        {
+          "heading": {
+            "en-US": "What Kancamu is",
+            "zh-CN": "Kancamu 是什么",
+            "ar-SA": "ما هو Kancamu"
+          },
+          "text": {
+            "en-US": "Kancamu is a directory of apps and tools that open in tabs of one page. Most of them are made by Kancamu. A few are made by other makers (ArtCraft and TraceDraw): they are only opened or linked here, and they belong to their makers.",
+            "zh-CN": "Kancamu 是一个应用和工具的目录，它们在同一页面的标签页中打开。其中大多数由 Kancamu 制作。少数由其他制作者制作（ArtCraft 和 TraceDraw）：它们在这里只是被打开或链接，归其制作者所有。",
+            "ar-SA": "Kancamu دليل للتطبيقات والأدوات التي تُفتح في تبويبات صفحة واحدة. معظمها من صنع Kancamu، وبعضها القليل من صنع آخرين (ArtCraft وTraceDraw): فهي تُفتح هنا أو تُربط فقط، وهي ملك أصحابها."
+          }
+        },
+        {
+          "heading": {
+            "en-US": "Where your data is",
+            "zh-CN": "你的数据在哪里",
+            "ar-SA": "أين بياناتك"
+          },
+          "text": {
+            "en-US": "Kancamu has no server that keeps your files. What an app keeps is in your browser, or in a private repository in your own GitHub account (kancamu-data) once you sign in with GitHub. You can delete it in the settings of the app or on GitHub.",
+            "zh-CN": "Kancamu 没有保存你文件的服务器。应用保存的内容在你的浏览器中，或在你用 GitHub 登录后你自己 GitHub 账户中的私有仓库（kancamu-data）里。你可以在应用的设置中或在 GitHub 上删除它。",
+            "ar-SA": "ليس لدى Kancamu خادم يحفظ ملفاتك. ما يحفظه التطبيق موجود في متصفحك، أو في مستودع خاص في حسابك على GitHub (kancamu-data) بعد تسجيل الدخول بـ GitHub. ويمكنك حذفه من إعدادات التطبيق أو من GitHub."
+          }
+        },
+        {
+          "heading": {
+            "en-US": "AI in your browser",
+            "zh-CN": "浏览器中的 AI",
+            "ar-SA": "الذكاء الاصطناعي في متصفحك"
+          },
+          "text": {
+            "en-US": "The AI models of the apps run in your browser, so your images, audio, and texts are not uploaded. A model is downloaded once from Hugging Face and kept in your browser, and you can delete it in the settings.",
+            "zh-CN": "应用的 AI 模型在你的浏览器中运行，所以你的图片、音频和文字不会被上传。模型只从 Hugging Face 下载一次并保存在浏览器中，你可以在设置中删除它。",
+            "ar-SA": "تعمل نماذج الذكاء الاصطناعي في التطبيقات داخل متصفحك، فلا تُرفع صورك وأصواتك ونصوصك. يُنزَّل النموذج مرة واحدة من Hugging Face ويُحفظ في متصفحك، ويمكنك حذفه من الإعدادات."
+          }
+        },
+        {
+          "heading": {
+            "en-US": "Sign-in",
+            "zh-CN": "登录",
+            "ar-SA": "تسجيل الدخول"
+          },
+          "text": {
+            "en-US": "Sign in with GitHub is done by GitHub. A small service only trades the code that GitHub gives for a token, and does not keep it. The token stays in your browser and expires; sign out to remove it.",
+            "zh-CN": "使用 GitHub 登录由 GitHub 完成。一个小型服务只负责把 GitHub 给出的代码换成令牌，并且不保存它。令牌保存在你的浏览器中并会过期；退出登录即可移除。",
+            "ar-SA": "تسجيل الدخول بـ GitHub يتم عند GitHub. وتكتفي خدمة صغيرة بمبادلة الرمز الذي يعطيه GitHub برمز وصول دون أن تحتفظ به. يبقى الرمز في متصفحك وينتهي بعد مدة؛ سجّل الخروج لإزالته."
+          }
+        },
+        {
+          "heading": {
+            "en-US": "Where the site comes from",
+            "zh-CN": "网站的来源",
+            "ar-SA": "مصدر الموقع"
+          },
+          "text": {
+            "en-US": "The site is published from the GitHub repository Kancamu-Project/kancamu-project.",
+            "zh-CN": "本站发布自 GitHub 仓库 Kancamu-Project/kancamu-project。",
+            "ar-SA": "يُنشر الموقع من مستودع GitHub: Kancamu-Project/kancamu-project."
+          }
+        },
+        {
+          "heading": {
+            "en-US": "Image credits",
+            "zh-CN": "图片来源",
+            "ar-SA": "مصادر الصور"
+          },
+          "text": {
+            "en-US": "The images of the splash screen come from Civitai and were made by the authors below. They belong to their authors.",
+            "zh-CN": "启动画面的图片来自 Civitai，由下列作者制作，版权归其作者所有。",
+            "ar-SA": "صور شاشة البداية من Civitai وهي من صنع المؤلفين أدناه، وهي ملك لأصحابها."
+          },
+          "links": [
+            {
+              "label": "purplelady (Civitai)",
+              "url": "https://civitai.com/images/136992675"
+            },
+            {
+              "label": "SIBERIUS (Civitai)",
+              "url": "https://civitai.com/images/141201050"
+            },
+            {
+              "label": "Cinnadust (Civitai)",
+              "url": "https://civitai.com/images/141462600"
+            }
+          ]
+        }
+      ]
+    },
+    "terms": {
+      "updated": "2026-11-22",
+      "sections": [
+        {
+          "heading": {
+            "en-US": "Using Kancamu",
+            "zh-CN": "使用 Kancamu",
+            "ar-SA": "استخدام Kancamu"
+          },
+          "text": {
+            "en-US": "By using this site and its apps you agree to these terms. If you do not agree, please do not use them.",
+            "zh-CN": "使用本站及其应用即表示你同意这些条款。如果你不同意，请不要使用。",
+            "ar-SA": "باستخدامك هذا الموقع وتطبيقاته فإنك توافق على هذه الشروط. وإن لم توافق فلا تستخدمها."
+          }
+        },
+        {
+          "heading": {
+            "en-US": "As it is",
+            "zh-CN": "按现状提供",
+            "ar-SA": "كما هي"
+          },
+          "text": {
+            "en-US": "The site and the apps are given as they are, with no promise that they work without errors, that they are always available, or that they fit a purpose. They can change or stop at any time.",
+            "zh-CN": "本站和应用按现状提供，不保证它们没有错误、始终可用或适合某种用途。它们可能随时更改或停止。",
+            "ar-SA": "يُقدَّم الموقع والتطبيقات كما هي، دون وعد بأنها تعمل بلا أخطاء أو أنها متاحة دائما أو أنها تناسب غرضا معينا. ويمكن أن تتغير أو تتوقف في أي وقت."
+          }
+        },
+        {
+          "heading": {
+            "en-US": "Your content",
+            "zh-CN": "你的内容",
+            "ar-SA": "محتواك"
+          },
+          "text": {
+            "en-US": "Your files, texts, images, and audio stay yours. You are responsible for what you put in and for having the right to use it. Do not use the apps to break the law or to harm others.",
+            "zh-CN": "你的文件、文字、图片和音频仍归你所有。你要对放入的内容负责，并确保你有权使用它。不要用这些应用违法或伤害他人。",
+            "ar-SA": "تبقى ملفاتك ونصوصك وصورك وأصواتك ملكا لك. وأنت مسؤول عما تضعه فيها وعن امتلاك حق استخدامه. لا تستخدم التطبيقات لمخالفة القانون أو لإيذاء الآخرين."
+          }
+        },
+        {
+          "heading": {
+            "en-US": "AI results",
+            "zh-CN": "AI 结果",
+            "ar-SA": "نتائج الذكاء الاصطناعي"
+          },
+          "text": {
+            "en-US": "A result made by an AI model can be wrong or not fit for your use. Check it before you rely on it. Every model has its own licence (some are only for non-commercial use, such as NLLB-200), and you must follow it when you use the result.",
+            "zh-CN": "AI 模型生成的结果可能有误或不适合你的用途。在依赖之前请先核对。每个模型都有自己的许可（有些仅限非商业使用，例如 NLLB-200），使用结果时你必须遵守。",
+            "ar-SA": "قد تكون النتيجة التي ينتجها نموذج ذكاء اصطناعي خاطئة أو غير مناسبة لاستخدامك. تحقق منها قبل الاعتماد عليها. ولكل نموذج ترخيصه الخاص (وبعضها للاستخدام غير التجاري فقط، مثل NLLB-200)، ويجب أن تلتزم به عند استخدام النتيجة."
+          }
+        },
+        {
+          "heading": {
+            "en-US": "Apps of other makers",
+            "zh-CN": "其他制作者的应用",
+            "ar-SA": "تطبيقات آخرين"
+          },
+          "text": {
+            "en-US": "ArtCraft and TraceDraw are made by other makers and have their own terms. Kancamu does not make them and is not responsible for them.",
+            "zh-CN": "ArtCraft 和 TraceDraw 由其他制作者制作，有各自的条款。Kancamu 并不制作它们，也不对它们负责。",
+            "ar-SA": "ArtCraft وTraceDraw من صنع آخرين ولهما شروطهما الخاصة. لا يصنعهما Kancamu ولا يتحمل مسؤوليتهما."
+          }
+        },
+        {
+          "heading": {
+            "en-US": "GitHub",
+            "zh-CN": "GitHub",
+            "ar-SA": "GitHub"
+          },
+          "text": {
+            "en-US": "When you sign in, your use of GitHub follows the terms of GitHub. You can sign out at any time, and you can delete the repository kancamu-data in your GitHub account.",
+            "zh-CN": "登录后，你对 GitHub 的使用遵循 GitHub 的条款。你可以随时退出登录，也可以删除你 GitHub 账户中的仓库 kancamu-data。",
+            "ar-SA": "عند تسجيل الدخول يخضع استخدامك لـ GitHub لشروط GitHub. يمكنك تسجيل الخروج في أي وقت، ويمكنك حذف المستودع kancamu-data من حسابك على GitHub."
+          }
+        },
+        {
+          "heading": {
+            "en-US": "Changes",
+            "zh-CN": "更改",
+            "ar-SA": "التغييرات"
+          },
+          "text": {
+            "en-US": "These terms can change. The date of the last change is at the top of this page. Questions can be sent through the GitHub repository of the site.",
+            "zh-CN": "这些条款可能会更改。最后更改的日期在本页顶部。如有疑问，可通过本站的 GitHub 仓库联系。",
+            "ar-SA": "يمكن أن تتغير هذه الشروط. وتاريخ آخر تغيير في أعلى هذه الصفحة. ويمكن إرسال الأسئلة عبر مستودع الموقع على GitHub."
+          }
+        }
+      ]
+    }
   }
 }
