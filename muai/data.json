@@ -462,6 +462,336 @@
       "en-US": "Not downloaded",
       "zh-CN": "未下载",
       "ar-SA": "غير منزَّل"
+    },
+    "model.api": {
+      "en-US": "{name} (API)",
+      "zh-CN": "{name}（API）",
+      "ar-SA": "{name} (API)"
+    },
+    "model.apiSetup": {
+      "en-US": "OpenAI-compatible API…",
+      "zh-CN": "兼容 OpenAI 的 API…",
+      "ar-SA": "واجهة API متوافقة مع OpenAI…"
+    },
+    "conn.button": {
+      "en-US": "Connections: the API and the files on this PC",
+      "zh-CN": "连接：API 和这台电脑上的文件",
+      "ar-SA": "الاتصالات: واجهة API وملفات هذا الجهاز"
+    },
+    "conn.title": {
+      "en-US": "Connections",
+      "zh-CN": "连接",
+      "ar-SA": "الاتصالات"
+    },
+    "conn.api.title": {
+      "en-US": "OpenAI-compatible API",
+      "zh-CN": "兼容 OpenAI 的 API",
+      "ar-SA": "واجهة API متوافقة مع OpenAI"
+    },
+    "conn.api.hint": {
+      "en-US": "OpenAI, OpenRouter, Ollama, LM Studio, or any server that has /chat/completions. The key stays in this browser only: it is not synced to your account.",
+      "zh-CN": "OpenAI、OpenRouter、Ollama、LM Studio，或任何提供 /chat/completions 的服务器。密钥只保存在此浏览器中，不会同步到你的账户。",
+      "ar-SA": "OpenAI أو OpenRouter أو Ollama أو LM Studio أو أي خادم فيه /chat/completions. يبقى المفتاح في هذا المتصفح فقط ولا يُزامَن مع حسابك."
+    },
+    "conn.baseUrl": {
+      "en-US": "Base address",
+      "zh-CN": "基础地址",
+      "ar-SA": "العنوان الأساسي"
+    },
+    "conn.apiKey": {
+      "en-US": "API key",
+      "zh-CN": "API 密钥",
+      "ar-SA": "مفتاح API"
+    },
+    "conn.apiKey.optional": {
+      "en-US": "empty for a local server",
+      "zh-CN": "本地服务器可留空",
+      "ar-SA": "اتركه فارغًا للخادم المحلي"
+    },
+    "conn.model": {
+      "en-US": "Model",
+      "zh-CN": "模型",
+      "ar-SA": "النموذج"
+    },
+    "conn.models": {
+      "en-US": "List the models",
+      "zh-CN": "列出模型",
+      "ar-SA": "عرض النماذج"
+    },
+    "conn.models.found": {
+      "en-US": "{n} models found.",
+      "zh-CN": "找到 {n} 个模型。",
+      "ar-SA": "تم العثور على {n} نموذج."
+    },
+    "conn.models.failed": {
+      "en-US": "The models could not be listed: {message}",
+      "zh-CN": "无法列出模型：{message}",
+      "ar-SA": "تعذّر عرض النماذج: {message}"
+    },
+    "conn.helper.title": {
+      "en-US": "Files on this PC",
+      "zh-CN": "这台电脑上的文件",
+      "ar-SA": "ملفات هذا الجهاز"
+    },
+    "conn.helper.hint": {
+      "en-US": "Paste a command in a terminal, in the folder where you want the AI to work. It downloads muai-helper and runs it; muAI finds it and connects by itself (the first time you allow it in the terminal). The AI can use only that folder. Only the API models can use it.",
+      "zh-CN": "在终端中粘贴一条命令，位置要在你希望 AI 工作的文件夹里。它会下载并运行 muai-helper；muAI 会自己找到它并连接（第一次需要你在终端中允许）。AI 只能使用那个文件夹。只有 API 模型可以使用它。",
+      "ar-SA": "الصق أمرًا في الطرفية داخل المجلد الذي تريد أن يعمل فيه الذكاء الاصطناعي. ينزّل muai-helper ويشغّله؛ ويجده muAI ويتصل به تلقائيًا (في المرة الأولى تسمح به في الطرفية). لا يستطيع الذكاء الاصطناعي استخدام غير ذلك المجلد. نماذج API فقط تستطيع استخدامه."
+    },
+    "conn.helperUrl": {
+      "en-US": "Address of muai-helper",
+      "zh-CN": "muai-helper 的地址",
+      "ar-SA": "عنوان muai-helper"
+    },
+    "conn.helperToken": {
+      "en-US": "Token",
+      "zh-CN": "令牌",
+      "ar-SA": "الرمز"
+    },
+    "conn.test": {
+      "en-US": "Test",
+      "zh-CN": "测试",
+      "ar-SA": "اختبار"
+    },
+    "conn.test.ok": {
+      "en-US": "Connected. The folder is {folder}",
+      "zh-CN": "已连接。文件夹是 {folder}",
+      "ar-SA": "تم الاتصال. المجلد هو {folder}"
+    },
+    "conn.test.failed": {
+      "en-US": "It cannot reach muai-helper at {url}. Is it running, and does it allow this page (--origin {origin})? ({message})",
+      "zh-CN": "无法连接到 {url} 的 muai-helper。它在运行吗？它是否允许此页面（--origin {origin}）？（{message}）",
+      "ar-SA": "تعذّر الوصول إلى muai-helper على {url}. هل هو يعمل، وهل يسمح بهذه الصفحة (--origin {origin})؟ ({message})"
+    },
+    "conn.save": {
+      "en-US": "Save",
+      "zh-CN": "保存",
+      "ar-SA": "حفظ"
+    },
+    "conn.remove": {
+      "en-US": "Remove all",
+      "zh-CN": "全部移除",
+      "ar-SA": "إزالة الكل"
+    },
+    "conn.saved": {
+      "en-US": "Saved.",
+      "zh-CN": "已保存。",
+      "ar-SA": "تم الحفظ."
+    },
+    "conn.removed": {
+      "en-US": "The connections are removed from this browser.",
+      "zh-CN": "已从此浏览器中移除这些连接。",
+      "ar-SA": "تمت إزالة الاتصالات من هذا المتصفح."
+    },
+    "conn.needs": {
+      "en-US": "Fill in the base address and the model.",
+      "zh-CN": "请填写基础地址和模型。",
+      "ar-SA": "املأ العنوان الأساسي والنموذج."
+    },
+    "error.api": {
+      "en-US": "The API said: {message}",
+      "zh-CN": "API 返回：{message}",
+      "ar-SA": "قالت واجهة API: {message}"
+    },
+    "error.apiNone": {
+      "en-US": "Set the API first (the button beside the model).",
+      "zh-CN": "请先设置 API（模型旁边的按钮）。",
+      "ar-SA": "اضبط واجهة API أولًا (الزر بجانب النموذج)."
+    },
+    "tool.confirmWrite": {
+      "en-US": "The AI wants to write the file {path} ({bytes} bytes) in your folder. Write it?",
+      "zh-CN": "AI 想在你的文件夹中写入文件 {path}（{bytes} 字节）。要写入吗？",
+      "ar-SA": "يريد الذكاء الاصطناعي كتابة الملف {path} ({bytes} بايت) في مجلدك. هل تكتبه؟"
+    },
+    "tool.confirmReplace": {
+      "en-US": "The AI wants to REPLACE the file {path} ({bytes} bytes) in your folder. Replace it?",
+      "zh-CN": "AI 想替换你文件夹中的文件 {path}（{bytes} 字节）。要替换吗？",
+      "ar-SA": "يريد الذكاء الاصطناعي استبدال الملف {path} ({bytes} بايت) في مجلدك. هل تستبدله؟"
+    },
+    "tool.write": {
+      "en-US": "Write",
+      "zh-CN": "写入",
+      "ar-SA": "اكتب"
+    },
+    "tool.replace": {
+      "en-US": "Replace",
+      "zh-CN": "替换",
+      "ar-SA": "استبدل"
+    },
+    "tool.refused": {
+      "en-US": "You refused.",
+      "zh-CN": "你已拒绝。",
+      "ar-SA": "لقد رفضت."
+    },
+    "tool.noHelper": {
+      "en-US": "muai-helper is not set. Open the connections and give its address and token.",
+      "zh-CN": "未设置 muai-helper。请打开连接并填入它的地址和令牌。",
+      "ar-SA": "لم يُضبط muai-helper. افتح الاتصالات وأدخل عنوانه ورمزه."
+    },
+    "tool.write_file": {
+      "en-US": "Wrote {path}",
+      "zh-CN": "已写入 {path}",
+      "ar-SA": "تمت كتابة {path}"
+    },
+    "tool.read_file": {
+      "en-US": "Read {path}",
+      "zh-CN": "已读取 {path}",
+      "ar-SA": "تمت قراءة {path}"
+    },
+    "tool.list_files": {
+      "en-US": "Listed {path}",
+      "zh-CN": "已列出 {path}",
+      "ar-SA": "تم سرد {path}"
+    },
+    "tool.failed": {
+      "en-US": "{tool}: {message}",
+      "zh-CN": "{tool}：{message}",
+      "ar-SA": "{tool}: {message}"
+    },
+    "error.apiUnreachable": {
+      "en-US": "It cannot reach {url}. The server is not running, the address is wrong, or the server does not let this page use it (CORS: it must answer the browser with Access-Control-Allow-Origin and allow the Authorization header).",
+      "zh-CN": "无法连接到 {url}。可能是服务器没有运行、地址错误，或服务器不允许此页面使用它（CORS：它必须向浏览器返回 Access-Control-Allow-Origin，并允许 Authorization 头）。",
+      "ar-SA": "تعذّر الوصول إلى {url}. إما أن الخادم لا يعمل، أو العنوان خاطئ، أو أن الخادم لا يسمح لهذه الصفحة باستخدامه (CORS: يجب أن يرد على المتصفح برأس Access-Control-Allow-Origin ويسمح برأس Authorization)."
+    },
+    "conn.writeMode": {
+      "en-US": "Writing and editing files",
+      "zh-CN": "写入和编辑文件",
+      "ar-SA": "كتابة الملفات وتعديلها"
+    },
+    "conn.mode.each": {
+      "en-US": "Ask me for every change",
+      "zh-CN": "每次更改都询问我",
+      "ar-SA": "اسألني عن كل تغيير"
+    },
+    "conn.mode.task": {
+      "en-US": "Ask me once for each task",
+      "zh-CN": "每个任务只询问一次",
+      "ar-SA": "اسألني مرة واحدة لكل مهمة"
+    },
+    "conn.mode.never": {
+      "en-US": "Never ask (the folder is the limit)",
+      "zh-CN": "从不询问（文件夹就是边界）",
+      "ar-SA": "لا تسأل أبدًا (المجلد هو الحد)"
+    },
+    "tool.confirmEdit": {
+      "en-US": "The AI wants to edit the file {path} in your folder. Edit it?",
+      "zh-CN": "AI 想编辑你文件夹中的文件 {path}。要编辑吗？",
+      "ar-SA": "يريد الذكاء الاصطناعي تعديل الملف {path} في مجلدك. هل تعدّله؟"
+    },
+    "tool.confirmAppend": {
+      "en-US": "The AI wants to add text to the end of the file {path} ({bytes} bytes) in your folder. Add it?",
+      "zh-CN": "AI 想在你文件夹中的文件 {path} 末尾添加文字（{bytes} 字节）。要添加吗？",
+      "ar-SA": "يريد الذكاء الاصطناعي إضافة نص إلى نهاية الملف {path} ({bytes} بايت) في مجلدك. هل تضيفه؟"
+    },
+    "tool.confirmTask": {
+      "en-US": "To do this task the AI wants to write and edit files in your folder (the first one is {path}). Allow it until the task is done?",
+      "zh-CN": "为完成此任务，AI 想在你的文件夹中写入和编辑文件（第一个是 {path}）。在任务完成前都允许吗？",
+      "ar-SA": "لإنجاز هذه المهمة يريد الذكاء الاصطناعي كتابة الملفات وتعديلها في مجلدك (أولها {path}). هل تسمح بذلك حتى تنتهي المهمة؟"
+    },
+    "tool.allow": {
+      "en-US": "Allow",
+      "zh-CN": "允许",
+      "ar-SA": "اسمح"
+    },
+    "tool.edit": {
+      "en-US": "Edit",
+      "zh-CN": "编辑",
+      "ar-SA": "عدّل"
+    },
+    "tool.edit_file": {
+      "en-US": "Edited {path}",
+      "zh-CN": "已编辑 {path}",
+      "ar-SA": "تم تعديل {path}"
+    },
+    "tool.search_files": {
+      "en-US": "Searched for “{path}”",
+      "zh-CN": "已搜索“{path}”",
+      "ar-SA": "تم البحث عن «{path}»"
+    },
+    "plan.title": {
+      "en-US": "Plan",
+      "zh-CN": "计划",
+      "ar-SA": "الخطة"
+    },
+    "agent.step": {
+      "en-US": "Step {n} of {max}: {what}",
+      "zh-CN": "第 {n} 步，共 {max} 步：{what}",
+      "ar-SA": "الخطوة {n} من {max}: {what}"
+    },
+    "agent.thinking": {
+      "en-US": "thinking…",
+      "zh-CN": "思考中…",
+      "ar-SA": "يفكر…"
+    },
+    "agent.limit": {
+      "en-US": "It paused after {n} steps. Say \"continue\" to go on (the plan is kept).",
+      "zh-CN": "已在 {n} 步后暂停。说“继续”即可接着做（计划已保留）。",
+      "ar-SA": "توقف بعد {n} خطوة. قل «تابع» للاستمرار (الخطة محفوظة)."
+    },
+    "agent.repeat": {
+      "en-US": "the same call again: refused",
+      "zh-CN": "重复相同的调用：已拒绝",
+      "ar-SA": "نفس الاستدعاء مرة أخرى: مرفوض"
+    },
+    "agent.repeatStop": {
+      "en-US": "It repeated the same step and stopped. Tell it what to do differently.",
+      "zh-CN": "它重复了同一步骤并已停止。请告诉它换一种做法。",
+      "ar-SA": "كرر الخطوة نفسها وتوقف. أخبره بما يفعله بشكل مختلف."
+    },
+    "set.steps.label": {
+      "en-US": "Steps an agent may take for one task",
+      "zh-CN": "智能体完成一个任务可执行的步数",
+      "ar-SA": "عدد الخطوات التي يمكن للوكيل اتخاذها لمهمة واحدة"
+    },
+    "set.steps.hint": {
+      "en-US": "How many times the API model is asked again in one task (each step may use tools). When it is reached the agent pauses, and you can say \"continue\".",
+      "zh-CN": "一个任务中再次询问 API 模型的次数（每一步都可能使用工具）。达到上限后智能体会暂停，你可以说“继续”。",
+      "ar-SA": "كم مرة يُسأل نموذج API من جديد في مهمة واحدة (قد تستخدم كل خطوة أدوات). عند بلوغه يتوقف الوكيل ويمكنك قول «تابع»."
+    },
+    "conn.helper.cmdWindows": {
+      "en-US": "Windows (PowerShell)",
+      "zh-CN": "Windows（PowerShell）",
+      "ar-SA": "Windows (PowerShell)"
+    },
+    "conn.helper.cmdUnix": {
+      "en-US": "macOS and Linux",
+      "zh-CN": "macOS 和 Linux",
+      "ar-SA": "macOS و Linux"
+    },
+    "conn.copyCommand": {
+      "en-US": "Copy",
+      "zh-CN": "复制",
+      "ar-SA": "نسخ"
+    },
+    "conn.connect": {
+      "en-US": "Connect",
+      "zh-CN": "连接",
+      "ar-SA": "اتصال"
+    },
+    "conn.advanced": {
+      "en-US": "Address and token by hand",
+      "zh-CN": "手动填写地址和令牌",
+      "ar-SA": "العنوان والرمز يدويًا"
+    },
+    "helper.connected": {
+      "en-US": "muai-helper is connected. Folder: {folder}",
+      "zh-CN": "muai-helper 已连接。文件夹：{folder}",
+      "ar-SA": "تم الاتصال بـ muai-helper. المجلد: {folder}"
+    },
+    "helper.notFound": {
+      "en-US": "muai-helper is not running. Paste a command below in a terminal.",
+      "zh-CN": "muai-helper 没有运行。请在终端中粘贴下面的一条命令。",
+      "ar-SA": "muai-helper لا يعمل. الصق أحد الأوامر أدناه في الطرفية."
+    },
+    "helper.approve": {
+      "en-US": "muai-helper asks you to allow this page. Look at the terminal where it runs (folder: {folder}) and type y.",
+      "zh-CN": "muai-helper 请你允许此页面。请查看它运行的终端（文件夹：{folder}）并输入 y。",
+      "ar-SA": "يطلب muai-helper أن تسمح بهذه الصفحة. انظر إلى الطرفية التي يعمل فيها (المجلد: {folder}) واكتب y."
+    },
+    "helper.denied": {
+      "en-US": "muai-helper did not allow this page. Start it again to allow it, or press Connect.",
+      "zh-CN": "muai-helper 未允许此页面。重新启动它并允许，或点击“连接”。",
+      "ar-SA": "لم يسمح muai-helper بهذه الصفحة. شغّله من جديد واسمح بها، أو اضغط اتصال."
     }
   },
   "models": [
@@ -497,7 +827,8 @@
       "system": "You are muAI, a helpful assistant. Reply in the language the user writes in, concisely and clearly.",
       "maxTokens": 1024,
       "temperature": 0.7,
-      "ctx": 30
+      "ctx": 30,
+      "agentSteps": 40
     },
     "fields": [
       {
@@ -541,6 +872,15 @@
         "step": 2,
         "label": "set.ctx.label",
         "hint": "set.ctx.hint"
+      },
+      {
+        "id": "agentSteps",
+        "type": "number",
+        "min": 1,
+        "max": 200,
+        "step": 1,
+        "label": "set.steps.label",
+        "hint": "set.steps.hint"
       }
     ],
     "panels": [

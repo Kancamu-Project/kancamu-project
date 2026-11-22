@@ -26,7 +26,6 @@
 <link rel="canonical" href="https://kancamu.site/muai/">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"muAI","url":"https://kancamu.site/muai/","description":"AI models running directly in your browser.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","image":"https://kancamu.site/muai/preview.png","isPartOf":{"@id":"https://kancamu.site/#website"},"publisher":{"@type":"Organization","name":"Kancamu","url":"https://kancamu.site/"}}</script>
 <!-- /seo -->
-<meta name="description" content="muAI runs AI models directly in your browser with WebGPU. No server, no data sent.">
 <link rel="stylesheet" href="../assets/css/style.css">
 <link rel="stylesheet" href="../assets/css/components.css">
 <link rel="stylesheet" href="../assets/css/page.css">
@@ -53,7 +52,10 @@
 <div class="sidebar" id="sidebar">
   <div class="chat-controls">
     <button id="new-chat-button" class="primary" type="button"><span class="icon icon-plus"></span><span data-i18n="title.new"></span></button>
-    <select id="model-picker" data-i18n-label="model.choose"></select>
+    <div class="model-row">
+      <select id="model-picker" data-i18n-label="model.choose"></select>
+      <button id="connection-button" class="square" type="button" data-i18n-title="conn.button" data-i18n-label="conn.button"><span class="icon icon-sliders"></span></button>
+    </div>
     <input id="chat-search" type="search" data-i18n-placeholder="search.placeholder" data-i18n-label="search.label">
   </div>
   <div id="chat-list"></div>

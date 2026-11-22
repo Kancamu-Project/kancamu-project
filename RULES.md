@@ -252,7 +252,7 @@ Check an app in more than one size, not in one: a wide and tall window, a wide a
 /assets/data/appearance.json - the Appearance page of the account app: the splash screen of the main website and the effects, with their defaults and texts, in every language.
 /assets/data/kit.json - the texts that the tags kit-* have on their own (the account button, the copyright, previous and next), in every language.
 /assets/icons - holds every svg icon for the GUI, do not use emoji.
-/assets/tools - what helps to make the project and is not an app: assets/tools/og-cards.mjs makes the preview.png of the main website and of the apps from their cards in Assetmu (see HTML 9), and assets/tools/seo.mjs makes sitemap.xml, robots.txt, and what a search engine reads in the pages (see HTML 10).
+/assets/tools - what helps to make the project and is not an app: assets/tools/og-cards.mjs makes the preview.png of the main website and of the apps from their cards in Assetmu (see HTML 9), assets/tools/seo.mjs makes sitemap.xml, robots.txt, and what a search engine reads in the pages (see HTML 10), and assets/tools/muai-helper is the Rust program of muAI for the files of the PC (a Cargo project: its target folder is not kept).
 /assets/images - the images that are content of the site, such as the ones of the splash screen: every image is made once, compressed, in the one format of the folder (WebP), and the original is kept beside it with the ending _raw (cinnadust_raw.jpg, cinnadust.webp). The apps use the compressed ones, never the _raw ones.
 /assets/fonts - holds the fonts.
 Each app has its own folder in the root with index.html, layout.css, app.js, and data.json (the root itself is the main website).

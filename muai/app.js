@@ -27,12 +27,28 @@ const tr = (key, params) => i18n.t(key, params);
 // kind "text" = AutoModelForCausalLM, "multi" = Gemma 4 (text + images).
 const { models: MODELS, settings: { defaults: DEFAULTS } } = i18n.data;
 const sizeLabel = (mb) => (mb >= 1000 ? (mb / 1000).toFixed(1) + " GB" : mb + " MB");
-let MODEL = MODELS.find((m) => m.id === settings.get("muai", DEFAULTS).model) || null;   // null until the user chooses one (the choice is one of the settings)
+// The connections are kept in this browser only (localStorage): the key of the API and the token of muai-helper are secrets, so they are never in the settings that go to the account.
+const CONNECTION_KEY = "muai.connection";
+const NO_CONNECTION = { baseUrl: "", apiKey: "", model: "", helperUrl: "", helperToken: "", writeMode: "task" };   // writeMode: "each" asks for every change, "task" asks once for a task, "never" does not ask
+const WRITE_MODES = ["each", "task", "never"];
+const readConnection = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CONNECTION_KEY)) || {};
+    if (!saved.writeMode && "askWrites" in saved) saved.writeMode = saved.askWrites ? "each" : "never";   // the first version had a yes or no question
+    return { ...NO_CONNECTION, ...saved, writeMode: WRITE_MODES.includes(saved.writeMode) ? saved.writeMode : NO_CONNECTION.writeMode };
+  } catch { return { ...NO_CONNECTION }; }
+};
+let connection = readConnection();
+const apiReady = () => !!(connection.baseUrl.trim() && connection.model.trim());
+const helperReady = () => !!(connection.helperUrl.trim() && connection.helperToken.trim());
+const apiDef = () => ({ id: "api", name: connection.model, kind: "api", mb: 0 });   // the API is a model of the picker too: kind "api" = an OpenAI-compatible server
+const chosenId = settings.get("muai", DEFAULTS).model;   // null until the user chooses one (the choice is one of the settings)
 
+let MODEL = chosenId === "api" ? (apiReady() ? apiDef() : null) : MODELS.find((m) => m.id === chosenId) || null;   // null until the user chooses one (the choice is one of the settings)
 
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
-  "model-picker","chat","message-input",
+  "model-picker","connection-button","chat","message-input",
   "send-button","stop-button","chat-area","attach-button","image-file-input","attachment-preview","attachment-preview-image","attachment-preview-name","remove-attachment-button","chat-list","chat-search",
   "new-chat-button","chat-title","export-button","menu-button",
   "sidebar-overlay","main","welcome-message","sidebar","sidebar-resizer",
@@ -44,6 +60,7 @@ function renderModelPicker(label) {
     option.value = m.id; option.textContent = `${m.name} (${sizeLabel(m.mb)})`;
     return option;
   });
+  options.push(Object.assign(document.createElement("option"), { value: "api", textContent: apiReady() ? tr("model.api", { name: connection.model }) : tr("model.apiSetup") }));
   if (!MODEL) {   // nothing chosen yet: the first option asks for a choice
     const ask = document.createElement("option");
     ask.value = ""; ask.textContent = tr("model.select");
@@ -58,7 +75,7 @@ function renderModelPicker(label) {
   els.modelPicker.disabled = busy || loading;
 }
 function showSelected() {
-  els.attachButton.classList.toggle("hidden", MODEL?.kind !== "multi");
+  els.attachButton.classList.toggle("hidden", MODEL?.kind !== "multi" && MODEL?.kind !== "api");
   renderModelPicker();
 }
 
@@ -81,7 +98,7 @@ settings.onChange("muai", DEFAULTS, (changed) => {
   preferences = changed;
   if (widthChanged) setSideWidth(changed.sideWidth);
   if (modelChanged) {
-    const chosen = MODELS.find((m) => m.id === changed.model);
+    const chosen = changed.model === "api" ? (apiReady() ? apiDef() : null) : MODELS.find((m) => m.id === changed.model);
     if (chosen) chooseModel(chosen); else if (!changed.model) { MODEL = null; showSelected(); renderChat(); }
   }
 });
@@ -234,7 +251,7 @@ const stopper = new InterruptableStoppingCriteria();
 // ---------- WebGPU ----------
 let gpuOk = false;
 try { if (navigator.gpu && (await navigator.gpu.requestAdapter())) gpuOk = true; } catch {}
-if (!gpuOk) popups.toast(tr("gpu.unsupported"), { kind: "error" });
+if (!gpuOk && MODEL?.kind !== "api") popups.toast(tr("gpu.unsupported"), { kind: "error" });
 
 // ---------- Light markdown (safe: all text is escaped first) ----------
 function md(src) {
@@ -334,6 +351,7 @@ function makeMsgEl(m, idx) {
   const body = document.createElement("div");
   if (m.role === "user") body.textContent = m.text;
   else { body.className = "markdown" + (m.error ? " error" : ""); body.innerHTML = m.error ? esc(m.text) : md(m.text); }
+  if (m.plan?.length || m.actions?.length) body.insertAdjacentHTML("beforeend", planHtml(m.plan) + actionsHtml(m.actions));
   parts.push(body);
   const acts = document.createElement("div"); acts.className = "message-actions"; acts.slot = "footer";
   acts.innerHTML = `<button class="ghost" type="button" data-a="copy">${icon("copy")}<span>${tr("msg.copy")}</span></button>` +
@@ -370,7 +388,7 @@ els.chat.addEventListener("click", async (e) => {
   if (busy) return popups.toast(tr("toast.wait"), { kind: "warning" });
   if (a === "edit") {
     current.messages.splice(idx); current.updated = Date.now(); await idb.put(current);
-    els.messageInput.value = m.text; pendingImage = m.image && loadedDef?.kind === "multi" ? m.image : null;
+    els.messageInput.value = m.text; pendingImage = m.image && (loadedDef?.kind === "multi" || loadedDef?.kind === "api") ? m.image : null;
     showPreview(); autosize(); renderChat(); els.messageInput.focus();
   } else if (a === "regen") {
     if (!(await ensureModel())) return;
@@ -398,6 +416,11 @@ async function unloadModel() {
 
 // The chat works at once: the first message loads the chosen model if it is not loaded yet.
 async function ensureModel() {
+  if (MODEL?.kind === "api") {   // nothing to download: the model is on the server of the API
+    if (!apiReady()) { popups.toast(tr("error.apiNone"), { kind: "warning" }); openConnections(); return false; }
+    loadedDef = MODEL;
+    return true;
+  }
   if (model) return true;
   if (!MODEL) { popups.toast(tr("model.none"), { kind: "warning" }); els.modelPicker.focus(); return false; }
   if (!gpuOk) { popups.toast(tr("gpu.unsupported"), { kind: "error" }); return false; }
@@ -453,6 +476,13 @@ async function loadModel() {
 // ---------- Model picker ----------
 async function chooseModel(m) {
   if (busy) { renderModelPicker(); return popups.toast(tr("toast.wait"), { kind: "warning" }); }
+  if (m.kind === "api") {   // the API: the model that was loaded (if any) is let go, and there is nothing to load
+    if (model) await unloadModel();
+    MODEL = m; loadedDef = m; savePreferences({ model: "api" }); showSelected(); renderChat();
+    els.modelPicker.classList.add("ok");
+    return;
+  }
+  if (loadedDef?.kind === "api") { loadedDef = null; els.modelPicker.classList.remove("ok"); }
   const seen = lsGet("muai.seen." + m.id) === "1";
   if (!seen && m.mb >= 1000 && !(await ask({ text: tr("picker.confirm", { name: m.name, size: sizeLabel(m.mb) }), ok: tr("picker.select") }))) { renderModelPicker(); return; }
   if (model) await unloadModel();
@@ -461,9 +491,401 @@ async function chooseModel(m) {
   if (loadedDef && loadedDef.id === m.id) lsSet("muai.seen." + m.id, "1");
 }
 els.modelPicker.addEventListener("change", () => {
+  if (els.modelPicker.value === "api") {
+    if (apiReady()) chooseModel(apiDef()); else { renderModelPicker(); openConnections(); }
+    return;
+  }
   const chosen = MODELS.find((m) => m.id === els.modelPicker.value);
   if (chosen) chooseModel(chosen); else renderModelPicker();
 });
+
+// ---------- The API (OpenAI-compatible) and the files on this PC (muai-helper) ----------
+let abort = null;   // the request of the API that is running: Stop aborts it
+const MAX_STEPS = 40;   // how many times the model is asked in one task when the setting is not there (the setting of the account: agentSteps)
+const TOOL_RESULT_CHARS = 20000;   // what a result of a tool may be when it goes back to the model
+const CONTEXT_CHARS = 240000;      // the size of the conversation of one task (in characters): the old results of tools are let go beyond it
+const REPEATS = 3;                 // the same call this many times in a task is refused, and the task stops after two more
+const fileProperty = { path: { type: "string", description: "A path relative to the folder of the user, with / between the names." } };
+const tool = (name, description, properties, required = []) => ({ type: "function", function: { name, description, parameters: { type: "object", properties, required } } });
+const TOOLS = [
+  tool("update_plan", "Write down or update the plan of the task: the list of steps, each with a status. Call it first for a task of several steps, and again when a step starts or is done. The user sees it.", { steps: { type: "array", items: { type: "object", properties: { text: { type: "string" }, status: { type: "string", enum: ["todo", "doing", "done"] } }, required: ["text", "status"] } } }, ["steps"]),
+  tool("list_files", "List the files and folders of a folder of the user. recursive true gives everything under it (the whole tree).", { ...fileProperty, recursive: { type: "boolean" } }),
+  tool("search_files", "Find the lines that have a text (capitals do not matter) in the files under a folder. It gives the path, the line number, and the line.", { query: { type: "string" }, ...fileProperty, max: { type: "number" } }, ["query"]),
+  tool("read_file", "Read a text file. offset (the first line, from 1) and limit (how many lines) read only a part of a long file.", { ...fileProperty, offset: { type: "number" }, limit: { type: "number" } }, ["path"]),
+  tool("write_file", "Write a text file; the folders are made when needed. overwrite true replaces a file that exists, append true adds to the end of it. The user may refuse.", { ...fileProperty, content: { type: "string" }, overwrite: { type: "boolean" }, append: { type: "boolean" } }, ["path", "content"]),
+  tool("edit_file", "Change a file: the text in old is replaced by the text in new. old must be in the file exactly once (give enough text around it), or replace_all must be true. Use it for a small change instead of writing the whole file again.", { ...fileProperty, old: { type: "string" }, new: { type: "string" }, replace_all: { type: "boolean" } }, ["path", "old", "new"]),
+];
+const AGENT_NOTE = `You are an agent: with the tools you can do a long task by yourself, in one folder of the user's PC. For a task of several steps, first call update_plan with the steps, then do them one after the other, and call update_plan again when a step starts or is done. Look before you change: list_files (recursive true gives the whole tree), search_files, read_file (offset and limit read a part of a long file). Change files with edit_file (a small exact change) or write_file (a new file, or the whole file with overwrite true; append true adds to the end). After a change, check it (read it back or search). Do not ask the user for permission before each step: ask only when you cannot go on without an answer. When the task is done, stop calling tools and say in a few lines what you did and what is left. Use the tools only when the user asks for something with files.`;
+const trimUrl = (url) => url.trim().replace(/\/+$/, "");
+
+// One call to muai-helper (it is on this PC and listens on 127.0.0.1 only; the token is the key to it)
+async function helper(operation, body, conn = connection, again = true) {
+  let response;
+  try {
+    response = await fetch(`${trimUrl(conn.helperUrl)}/${operation}`, { method: operation === "ping" ? "GET" : "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${conn.helperToken.trim()}` }, ...(operation === "ping" ? {} : { body: JSON.stringify(body) }) });
+  } catch (error) { throw new Error(tr("conn.test.failed", { url: trimUrl(conn.helperUrl), origin: location.origin, message: error.message })); }
+  if (response.status === 401 && again && conn === connection && await connectHelper({ quiet: true })) return helper(operation, body, connection, false);   // it was started again: its token is new
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+  return data;
+}
+
+/* ---------- muai-helper is found and connected by itself ---------- */
+// The program runs on this PC (started with the command of the connections). The page looks for it on its port; when it is there, the page asks it for the token (pairing).
+// The program allows that only for the origin that the user allowed in its terminal (the first time), so the user types no address and no token.
+const HELPER_URL = "http://127.0.0.1:47615";
+const INSTALL_WINDOWS = "irm https://kancamu.site/assets/tools/muai-helper/install.ps1 | iex";
+const INSTALL_UNIX = "curl -fsSL https://kancamu.site/assets/tools/muai-helper/install.sh | sh";
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const saveConnection = () => { try { localStorage.setItem(CONNECTION_KEY, JSON.stringify(connection)); } catch { /* the connections work until the page is closed */ } };
+let helperInfo = null;       // { folder, version } while muai-helper is found and its token is good
+let helperPairing = null;    // the pairing that is going on
+let helperDenied = false;    // the user said no in the terminal: it is not asked again until the page is opened again, or the user presses Connect
+function showHelper(info) {
+  helperInfo = info;
+  els.connectionButton.classList.toggle("connected", !!info);
+  els.connectionButton.title = info ? tr("helper.connected", { folder: info.folder }) : tr("conn.button");
+  const status = document.getElementById("helper-status");
+  if (status) { status.textContent = info ? tr("helper.connected", { folder: info.folder }) : tr("helper.notFound"); status.classList.toggle("ok", !!info); }
+}
+async function pingHelper(url, token) {
+  try {
+    const response = await fetch(`${url}/ping`, { headers: token ? { Authorization: `Bearer ${token}` } : {}, signal: AbortSignal.timeout(1500) });
+    const info = await response.json();
+    return response.ok && info.name === "muai-helper" ? info : null;
+  } catch { return null; }
+}
+function connectHelper({ force = false, quiet = false } = {}) {
+  if (helperPairing) return helperPairing;
+  if (helperDenied && !force) return Promise.resolve(false);
+  if (force) helperDenied = false;
+  helperPairing = (async () => {
+    try {
+      let url = "", info = null;
+      for (const candidate of [...new Set([trimUrl(connection.helperUrl || ""), HELPER_URL].filter(Boolean))]) {
+        info = await pingHelper(candidate, connection.helperToken.trim());
+        if (info) { url = candidate; break; }
+      }
+      if (!info) { showHelper(null); return false; }
+      if (info.authorized) { showHelper(info); return true; }   // the token that was kept is good
+      for (let attempt = 0; attempt < 60; attempt++) {   // about 90 seconds to answer in the terminal
+        let data = {};
+        try { data = await (await fetch(`${url}/pair`, { method: "POST" })).json(); } catch { showHelper(null); return false; }
+        if (data.token) {
+          connection = { ...connection, helperUrl: url, helperToken: data.token };
+          saveConnection();
+          showHelper({ ...info, folder: data.folder || info.folder });
+          if (!quiet) popups.toast(tr("helper.connected", { folder: data.folder || info.folder }));
+          return true;
+        }
+        if (data.status === "denied") { helperDenied = true; showHelper(null); popups.toast(tr("helper.denied"), { kind: "warning" }); return false; }
+        if (attempt === 0) popups.toast(tr("helper.approve", { folder: info.folder }), { kind: "info", duration: 10000 });
+        await sleep(1500);
+      }
+      return false;
+    } finally { helperPairing = null; }
+  })();
+  return helperPairing;
+}
+// It looks now and then: soon after the page is opened, then less and less often while nothing is found, and every few seconds while it is connected (so the button tells when it stops)
+let watchTimer = 0, watchDelay = 2000;
+async function watchHelper() {
+  if (!document.hidden) {
+    const connected = await connectHelper();
+    watchDelay = connected ? 10000 : Math.min(Math.round(watchDelay * 1.6), 30000);
+  }
+  watchTimer = setTimeout(watchHelper, watchDelay);
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden) { watchDelay = 2000; clearTimeout(watchTimer); watchHelper(); } });
+
+// The plan of the task (the model keeps it with update_plan; the user sees it): a list of steps, each todo, doing, or done
+const STATUSES = ["todo", "doing", "done"];
+function cleanPlan(steps) {
+  if (!Array.isArray(steps)) throw new Error("steps must be a list");
+  return steps.slice(0, 30).map((step) => ({ text: String(step?.text ?? "").trim().slice(0, 200), status: STATUSES.includes(step?.status) ? step.status : "todo" })).filter((step) => step.text);
+}
+const lastPlan = () => structuredClone([...(current?.messages || [])].reverse().find((m) => m.role === "assistant" && m.plan?.length)?.plan || []);   // a task goes on in the next message with the plan it had
+
+// A change of a file is done only when the user says yes: for each change, once for the task, or never asked (the setting of the connections)
+async function approve(run, kind, path, bytes) {
+  const mode = connection.writeMode;
+  if (mode === "never" || (mode === "task" && run.approved)) return true;
+  const text = mode === "task" ? "tool.confirmTask" : { replace: "tool.confirmReplace", edit: "tool.confirmEdit", append: "tool.confirmAppend" }[kind] || "tool.confirmWrite";
+  const ok = mode === "task" ? "tool.allow" : { replace: "tool.replace", edit: "tool.edit" }[kind] || "tool.write";
+  const yes = await ask({ text: tr(text, { path, bytes }), ok: tr(ok), kind: kind === "replace" ? "warning" : undefined });
+  if (yes && mode === "task") run.approved = true;
+  return yes;
+}
+
+// What the model asked for. The answer goes back to the model as the result of the call; a failure is a result too ({ error }), so the model can try something else.
+async function runTool(call, run) {
+  let args = {};
+  try { args = JSON.parse(call.arguments || "{}") || {}; } catch { /* the model sent a broken text: the call fails below */ }
+  const path = String(args.path ?? "");
+  const key = `${call.name}:${call.arguments || ""}`;
+  const times = (run.seen.get(key) || 0) + 1;
+  run.seen.set(key, times);
+  if (call.name === "update_plan") {
+    try { run.plan = cleanPlan(args.steps); run.hooks.plan(run.plan); return { ok: true, steps: run.plan.length }; } catch (error) { return { error: error.message }; }
+  }
+  const record = { tool: call.name, path: call.name === "search_files" ? String(args.query ?? "") : path || "/", ok: false, note: "" };
+  run.actions.push(record);
+  if (times > REPEATS) {   // the same call again and again: the model is stuck
+    run.repeats++;
+    record.note = tr("agent.repeat");
+    return { error: "You made this exact call already. Do something different, or finish and tell the user what is not done." };
+  }
+  try {
+    if (!helperReady()) throw new Error(tr("tool.noHelper"));
+    let result;
+    if (call.name === "write_file") {
+      const content = String(args.content ?? "");
+      const bytes = new TextEncoder().encode(content).length;
+      const kind = args.append === true ? "append" : args.overwrite === true ? "replace" : "write";
+      if (!(await approve(run, kind, path, bytes))) throw new Error(tr("tool.refused"));
+      result = await helper("write", { path, content, overwrite: args.overwrite === true, append: args.append === true });
+    } else if (call.name === "edit_file") {
+      if (!(await approve(run, "edit", path, 0))) throw new Error(tr("tool.refused"));
+      result = await helper("edit", { path, old: String(args.old ?? ""), new: String(args.new ?? ""), replace_all: args.replace_all === true });
+    } else if (call.name === "read_file") result = await helper("read", { path, ...(args.offset ? { offset: Number(args.offset) } : {}), ...(args.limit ? { limit: Number(args.limit) } : {}) });
+    else if (call.name === "list_files") result = await helper("list", { path, recursive: args.recursive === true });
+    else if (call.name === "search_files") result = await helper("search", { query: String(args.query ?? ""), path, ...(args.max ? { max: Number(args.max) } : {}) });
+    else throw new Error("unknown tool");
+    record.ok = true;
+    return result;
+  } catch (error) {
+    record.note = error.message;
+    return { error: error.message };
+  }
+}
+const markers = { todo: "☐", doing: "▶", done: "✓" };
+const planHtml = (plan) => plan?.length
+  ? `<div class="plan"><div class="plan-title">${esc(tr("plan.title"))}</div><ul>${plan.map((step) => `<li class="${step.status}"><span class="plan-mark">${markers[step.status]}</span>${esc(step.text)}</li>`).join("")}</ul></div>`
+  : "";
+const actionsHtml = (actions) => actions?.length
+  ? `<ul class="tool-log">${actions.map((a) => `<li class="${a.ok ? "ok" : "failed"}">${esc(a.ok ? tr(`tool.${a.tool}`, { path: a.path }) : tr("tool.failed", { tool: a.tool, message: a.note }))}</li>`).join("")}</ul>`
+  : "";
+const statusHtml = (status) => (status ? `<div class="agent-status">${esc(status)}</div>` : "");
+
+function buildApiMessages() {
+  const msgs = [];
+  const system = [preferences.system.trim(), helperReady() ? AGENT_NOTE : ""].filter(Boolean).join("\n\n");
+  if (system) msgs.push({ role: "system", content: system });
+  let hist = current.messages.filter((m) => !m.error).slice(-preferences.ctx);
+  while (hist.length && hist[0].role !== "user") hist.shift();
+  for (const m of hist) {
+    if (m.role === "user") msgs.push({ role: "user", content: m.image ? [{ type: "text", text: m.text }, { type: "image_url", image_url: { url: m.image } }] : m.text });
+    else msgs.push({ role: "assistant", content: m.text
+      + (m.actions?.length ? "\n\n" + m.actions.map((a) => `[${a.tool} ${a.path}: ${a.ok ? "ok" : "failed"}]`).join("\n") : "")
+      + (m.plan?.length ? "\n\nPlan:\n" + m.plan.map((step) => `- [${step.status === "done" ? "x" : step.status === "doing" ? "~" : " "}] ${step.text}`).join("\n") : "") });   // what was done and the plan stay in the next messages of the chat, so a task goes on
+  }
+  return { msgs, imgs: [] };
+}
+
+// One request to /chat/completions, read as it streams. The calls of the model for tools come in pieces (by index) and are put together.
+async function streamChat(body, onText, signal) {
+  const headers = { "Content-Type": "application/json" };
+  if (connection.apiKey.trim()) headers.Authorization = `Bearer ${connection.apiKey.trim()}`;
+  let response;
+  try {
+    response = await fetch(`${trimUrl(connection.baseUrl)}/chat/completions`, { method: "POST", headers, body: JSON.stringify({ ...body, stream: true }), signal });
+  } catch (error) {
+    if (error.name === "AbortError") throw error;
+    throw new Error(tr("error.apiUnreachable", { url: trimUrl(connection.baseUrl) }));   // the browser only says "Failed to fetch" for every network failure, so the message says what it can be
+  }
+  if (!response.ok) {
+    let message = `HTTP ${response.status}`;
+    try { const data = await response.json(); message = data.error?.message || data.message || JSON.stringify(data).slice(0, 300); } catch { /* the body is not JSON */ }
+    throw Object.assign(new Error(message), { status: response.status });
+  }
+  const reader = response.body.getReader(), decoder = new TextDecoder();
+  let buffer = "", content = "", chunks = 0, first = 0;
+  const calls = [];
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    let at;
+    while ((at = buffer.indexOf("\n")) >= 0) {
+      const line = buffer.slice(0, at).trim();
+      buffer = buffer.slice(at + 1);
+      if (!line.startsWith("data:")) continue;
+      const data = line.slice(5).trim();
+      if (data === "[DONE]") continue;
+      let json;
+      try { json = JSON.parse(data); } catch { continue; }
+      if (json.error) throw new Error(json.error.message || JSON.stringify(json.error));
+      const delta = json.choices?.[0]?.delta;
+      if (!delta) continue;
+      if (delta.content) { first ||= performance.now(); chunks++; content += delta.content; onText(delta.content); }
+      for (const piece of delta.tool_calls || []) {
+        const call = (calls[piece.index ?? 0] ??= { id: "", name: "", arguments: "" });
+        if (piece.id) call.id = piece.id;
+        if (piece.function?.name) call.name += piece.function.name;
+        if (piece.function?.arguments) call.arguments += piece.function.arguments;
+      }
+    }
+  }
+  return { content, calls: calls.filter(Boolean), chunks, first };
+}
+
+// The old results and the contents that were written are let go when the conversation of a task gets too big (the model has already used them)
+function compact(msgs) {
+  const size = () => msgs.reduce((n, m) => n + (typeof m.content === "string" ? m.content.length : JSON.stringify(m.content ?? "").length) + (m.tool_calls ? JSON.stringify(m.tool_calls).length : 0), 0);
+  for (let i = 0; i < msgs.length - 6 && size() > CONTEXT_CHARS; i++) {
+    const m = msgs[i];
+    if (m.role === "tool" && m.content.length > 200) m.content = JSON.stringify({ omitted: `an old result of ${m.content.length} characters` });
+    for (const call of m.tool_calls || []) if (call.function.arguments.length > 400) call.function.arguments = JSON.stringify({ omitted: "the arguments of an old call (they were used)" });
+  }
+}
+const clip = (text) => (text.length > TOOL_RESULT_CHARS ? `${text.slice(0, TOOL_RESULT_CHARS)}… [${text.length - TOOL_RESULT_CHARS} more characters were cut: ask for a part, with offset and limit or a narrower search]` : text);
+
+// The answer of the API, and the work of an agent: the model is asked again after each result of a tool, until it stops asking for tools (the task is done), the user stops it,
+// it has taken as many steps as the setting says, or it is stuck. hooks: text(piece), actions(list), plan(list), status(text).
+async function generateApi(msgs, hooks) {
+  abort = new AbortController();
+  const maxSteps = Math.max(1, Math.min(200, Math.round(Number(preferences.agentSteps)) || MAX_STEPS));
+  const run = { actions: [], plan: lastPlan(), approved: false, seen: new Map(), repeats: 0, hooks };
+  let text = "", chunks = 0, first = 0, last = 0;
+  const body = { model: connection.model.trim(), messages: msgs, temperature: preferences.temperature, max_tokens: preferences.maxTokens, ...(helperReady() ? { tools: TOOLS } : {}) };
+  const add = (piece) => { text += piece; hooks.text(piece); };
+  try {
+    for (let step = 1; ; step++) {
+      if (step > maxSteps) { add(`\n\n${tr("agent.limit", { n: maxSteps })}`); break; }
+      if (step > 1 && text && !text.endsWith("\n")) add("\n\n");
+      hooks.status(helperReady() ? tr("agent.step", { n: step, max: maxSteps, what: tr("agent.thinking") }) : "");
+      compact(msgs);
+      let result;
+      for (let attempt = 0; ; attempt++) {
+        try { result = await streamChat(body, add, abort.signal); break; } catch (error) {
+          // some servers do not know max_tokens (they want max_completion_tokens) or do not take a temperature: ask again once without it
+          if (error.name === "AbortError" || error.status !== 400 || attempt >= 2) throw error;
+          if (/max_completion_tokens/i.test(error.message) && "max_tokens" in body) { body.max_completion_tokens = body.max_tokens; delete body.max_tokens; }
+          else if (/temperature/i.test(error.message) && "temperature" in body) delete body.temperature;
+          else throw error;
+        }
+      }
+      chunks += result.chunks; first ||= result.first; if (result.chunks) last = performance.now();
+      if (!result.calls.length) break;   // no tool asked for: the task is done
+      msgs.push({ role: "assistant", content: result.content || null, tool_calls: result.calls.map((call, index) => ({ id: call.id ||= `call_${step}_${index}`, type: "function", function: { name: call.name, arguments: call.arguments || "{}" } })) });
+      for (const call of result.calls) {
+        if (abort.signal.aborted) throw Object.assign(new Error("stopped"), { name: "AbortError" });
+        hooks.status(tr("agent.step", { n: step, max: maxSteps, what: `${call.name} ${(() => { try { return JSON.parse(call.arguments).path || JSON.parse(call.arguments).query || ""; } catch { return ""; } })()}`.trim() }));
+        const outcome = await runTool(call, run);
+        hooks.actions(run.actions);
+        msgs.push({ role: "tool", tool_call_id: call.id, content: clip(JSON.stringify(outcome)) });
+      }
+      if (run.repeats >= 2) { add(`\n\n${tr("agent.repeatStop")}`); break; }
+    }
+  } catch (error) {
+    if (error.name !== "AbortError") throw error;   // Stop keeps what came so far
+  } finally {
+    abort = null;
+    hooks.status("");
+  }
+  return { text, tps: chunks > 1 && last > first ? (chunks - 1) / ((last - first) / 1000) : 0, actions: run.actions, plan: run.plan };
+}
+
+// The connections: the API and muai-helper (a sheet with a form)
+function openConnections() {
+  const form = document.createElement("form");
+  form.className = "connection-form";
+  form.autocomplete = "off";
+  const part = (tag, className, text) => Object.assign(document.createElement(tag), { className, ...(text === undefined ? {} : { textContent: text }) });
+  const field = (label, control, hint) => {
+    const wrap = part("label", "connection-field");
+    wrap.append(part("span", "connection-label", label), control);
+    if (hint) wrap.append(part("span", "note", hint));
+    return wrap;
+  };
+  const input = (type, value, placeholder) => Object.assign(document.createElement("input"), { type, value, placeholder: placeholder || "", spellcheck: false, autocapitalize: "off" });
+  const button = (label, onClick, className = "") => { const b = Object.assign(part("button", className, label), { type: "button" }); b.addEventListener("click", onClick); return b; };
+
+  const baseUrl = input("url", connection.baseUrl, "https://api.openai.com/v1");
+  const apiKey = input("password", connection.apiKey, tr("conn.apiKey.optional"));
+  const modelName = input("text", connection.model, "gpt-4o-mini");
+  modelName.setAttribute("list", "connection-models");
+  const models = part("datalist", "");
+  models.id = "connection-models";
+  const helperUrl = input("url", connection.helperUrl, HELPER_URL);
+  const helperToken = input("password", connection.helperToken, "");
+  const writeMode = document.createElement("select");
+  writeMode.replaceChildren(...WRITE_MODES.map((mode) => Object.assign(document.createElement("option"), { value: mode, textContent: tr(`conn.mode.${mode}`) })));
+  writeMode.value = connection.writeMode;
+  const draft = () => ({ baseUrl: baseUrl.value, apiKey: apiKey.value, model: modelName.value, helperUrl: helperUrl.value, helperToken: helperToken.value, writeMode: writeMode.value });
+
+  const listModels = button(tr("conn.models"), async () => {
+    try {
+      const conn = draft();
+      const response = await fetch(`${trimUrl(conn.baseUrl)}/models`, { headers: conn.apiKey.trim() ? { Authorization: `Bearer ${conn.apiKey.trim()}` } : {} });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error?.message || `HTTP ${response.status}`);
+      const ids = (data.data || data.models || []).map((item) => item.id || item.name).filter(Boolean).sort();
+      models.replaceChildren(...ids.map((id) => Object.assign(document.createElement("option"), { value: id })));
+      popups.toast(tr("conn.models.found", { n: ids.length }));
+    } catch (error) { popups.toast(tr("conn.models.failed", { message: error.message }), { kind: "error" }); }
+  });
+  const command = (label, text) => {   // a command to paste in a terminal, and the button that copies it
+    const box = input("text", text);
+    box.readOnly = true;
+    box.classList.add("connection-code");
+    box.addEventListener("focus", () => box.select());
+    const copyButton = button(tr("conn.copyCommand"), async () => {
+      try { await navigator.clipboard.writeText(text); popups.toast(tr("toast.copied")); } catch { box.select(); }
+    });
+    const row = part("div", "connection-command");
+    row.append(box, copyButton);
+    const wrap = part("div", "connection-field");
+    wrap.append(part("span", "connection-label", label), row);
+    return wrap;
+  };
+  const helperStatus = part("div", "connection-status");
+  helperStatus.id = "helper-status";
+  const advanced = part("details", "connection-advanced");
+  advanced.append(part("summary", "", tr("conn.advanced")), field(tr("conn.helperUrl"), helperUrl), field(tr("conn.helperToken"), helperToken));
+  const connectNow = button(tr("conn.connect"), async () => { await connectHelper({ force: true }); showHelper(helperInfo); });
+  const testHelper = button(tr("conn.test"), async () => {
+    try { const info = await helper("ping", null, draft()); popups.toast(tr("conn.test.ok", { folder: info.folder })); } catch (error) { popups.toast(error.message, { kind: "error" }); }
+  });
+  const save = Object.assign(button(tr("conn.save"), () => form.requestSubmit(), "primary"), {});
+  const remove = button(tr("conn.remove"), () => {
+    try { localStorage.removeItem(CONNECTION_KEY); } catch { /* ignore */ }
+    connection = { ...NO_CONNECTION };
+    if (MODEL?.kind === "api") { MODEL = null; loadedDef = null; savePreferences({ model: "" }); }
+    showSelected(); renderChat();
+    popups.toast(tr("conn.removed"));
+    form.closest("dialog")?.close();
+  });
+
+  form.append(
+    part("h3", "connection-title", tr("conn.api.title")), part("span", "note", tr("conn.api.hint")),
+    field(tr("conn.baseUrl"), baseUrl), field(tr("conn.apiKey"), apiKey), field(tr("conn.model"), modelName), models,
+    part("div", "connection-row", ""),
+    part("h3", "connection-title", tr("conn.helper.title")), part("span", "note", tr("conn.helper.hint")),
+    helperStatus, command(tr("conn.helper.cmdWindows"), INSTALL_WINDOWS), command(tr("conn.helper.cmdUnix"), INSTALL_UNIX), field(tr("conn.writeMode"), writeMode), advanced,
+    part("div", "connection-row", ""),
+    part("div", "connection-row", ""),
+  );
+  const rows = form.querySelectorAll(".connection-row");
+  rows[0].append(listModels);
+  rows[1].append(testHelper, connectNow);
+  showHelper(helperInfo);
+  rows[2].append(remove, save);
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const next = draft();
+    if ((next.baseUrl.trim() || next.model.trim()) && !(next.baseUrl.trim() && next.model.trim())) return popups.toast(tr("conn.needs"), { kind: "warning" });
+    connection = { ...NO_CONNECTION, ...next };
+    saveConnection();
+    popups.toast(tr("conn.saved"));
+    form.closest("dialog")?.close();
+    if (apiReady()) { if (!busy) await chooseModel(apiDef()); } else if (MODEL?.kind === "api") { MODEL = null; loadedDef = null; savePreferences({ model: "" }); showSelected(); renderChat(); }
+    renderModelPicker();
+  });
+  popups.sheet({ title: tr("conn.title"), node: form, side: "end" });
+}
+els.connectionButton.addEventListener("click", openConnections);
+watchHelper();   // muai-helper is looked for from the start
 
 // ---------- Generate ----------
 async function generate(messages, imgs, opts, onText) {
@@ -495,6 +917,7 @@ async function generate(messages, imgs, opts, onText) {
 }
 
 function buildMessages() {
+  if (loadedDef.kind === "api") return buildApiMessages();
   const msgs = [], imgs = [];
   if (preferences.system.trim()) msgs.push({ role: "system", content: preferences.system.trim() });
   let hist = current.messages.filter((m) => !m.error);
@@ -529,15 +952,26 @@ async function runAssistant() {
   els.chatArea.scrollTop = els.chatArea.scrollHeight;
   setBusy(true);
   let acc = "", raf = 0;
-  const paint = () => { raf = 0; body.innerHTML = md(acc); body.classList.add("cursor"); els.chatArea.scrollTop = els.chatArea.scrollHeight; };
+  const paint = () => { raf = 0; body.innerHTML = md(acc) + planHtml(m.plan) + actionsHtml(m.actions) + statusHtml(m.status); body.classList.add("cursor"); els.chatArea.scrollTop = els.chatArea.scrollHeight; };
   try {
     const { msgs, imgs } = buildMessages();
-    const r = await generate(msgs, imgs, { maxTokens: preferences.maxTokens, temperature: preferences.temperature }, (t) => { acc += t; if (!raf) raf = requestAnimationFrame(paint); });
-    m.text = r.text.trim() || tr("msg.empty"); m.tps = r.tps; m.model = loadedDef.name;
+    const show = (t) => { acc += t; if (!raf) raf = requestAnimationFrame(paint); };
+    const r = loadedDef.kind === "api"
+      ? await generateApi(msgs, {
+        text: show,
+        actions: (actions) => { m.actions = [...actions]; if (!raf) raf = requestAnimationFrame(paint); },
+        plan: (plan) => { m.plan = structuredClone(plan); if (!raf) raf = requestAnimationFrame(paint); },
+        status: (status) => { m.status = status; if (!raf) raf = requestAnimationFrame(paint); },
+      })
+      : await generate(msgs, imgs, { maxTokens: preferences.maxTokens, temperature: preferences.temperature }, show);
+    m.text = r.text.trim() || (r.actions?.length ? "" : tr("msg.empty")); m.tps = r.tps; m.model = loadedDef.name;
+    if (r.actions?.length) m.actions = r.actions;
+    if (r.plan?.length) m.plan = r.plan;
   } catch (e) {
     console.error(e); m.text = tr("msg.error", { message: e?.message || e }); m.error = true;
   } finally {
     cancelAnimationFrame(raf);
+    delete m.status;   // what the agent was doing is not kept
     current.messages.push(m); current.updated = Date.now();
     convs.sort((a, b) => b.updated - a.updated);
     await idb.put(current); setBusy(false); renderChat(); els.messageInput.focus();
@@ -570,7 +1004,7 @@ function autosize() {
 els.messageInput.addEventListener("input", autosize);
 els.messageInput.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(); } });
 els.sendButton.addEventListener("click", send);
-els.stopButton.addEventListener("click", () => stopper.interrupt());
+els.stopButton.addEventListener("click", () => (abort ? abort.abort() : stopper.interrupt()));
 
 // ---------- Image attachment (downscaled so history does not balloon) ----------
 function showPreview() {
@@ -683,8 +1117,9 @@ i18n.onChange(() => {
 // ---------- Start ----------
 await openWanted();
 showSelected(); renderChat();
+if (MODEL?.kind === "api") { loadedDef = MODEL; els.modelPicker.classList.add("ok"); }
 // Auto-load only the last model that loaded successfully.
-if (gpuOk && lsGet("muai.autoload") === "1" && preferences.model) loadModel();
+if (gpuOk && lsGet("muai.autoload") === "1" && MODEL && MODEL.kind !== "api") loadModel();
 
 // Signed in (now or later): bring the chats of the storage here.
 pullChats();

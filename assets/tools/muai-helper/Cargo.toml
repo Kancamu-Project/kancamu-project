@@ -1,0 +1,16 @@
+[package]
+name = "muai-helper"
+version = "0.2.0"
+edition = "2021"
+description = "A small program on your PC that lets muAI (kancamu.site/muai/) write, read, and list files in one folder that you choose."
+license = "MIT"
+
+[dependencies]
+tiny_http = "0.12"
+serde_json = "1"
+getrandom = "0.2"
+
+[profile.release]
+opt-level = "s"
+lto = true
+strip = true

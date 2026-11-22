@@ -35,7 +35,7 @@ Plain HTML, CSS, and JavaScript. No framework, no build step, no special server.
 | Youmu | The sign-in, the profile, and the settings of every app | `youmu/` |
 | Assetmu | Shows every asset of the apps: colours (they follow the theme), the colour and icon of each app, icons, fonts, sizes, and files | `assetmu/` |
 | Kitmu | The UI kit of the apps: the templates, the helpers, and the popups, each with the code to copy and a way to try it | `kitmu/` |
-| muAI | AI models that run directly in the browser | `muai/` |
+| muAI | AI models that run directly in the browser, or an OpenAI-compatible API (OpenAI, OpenRouter, Ollama, LM Studio…) that works as an agent: with `muai-helper` it plans a long task and does it step by step, listing, searching, reading, writing, and editing files in one folder of your PC | `muai/` |
 | ArtCraft | Seven creative and productivity apps: DeckCraft, EffectCraft, FilmCraft, GridCraft, PhotoCraft, VectorCraft, WordCraft | `artcraft/<name>/` |
 
 The directory also lists TraceDraw, an open source vector editor from another publisher. TraceDraw is an outside site, so it is only linked.
@@ -73,7 +73,7 @@ assets/          Shared assets, in folders
   images/        The images that are content of the site (the splash screen): WebP, compressed, with the original beside each as <name>_raw
   icons/         Every SVG icon of the main site, Drivemu, and muAI (universal names)
 favicon.png      Site icon
-assets/tools/    What helps to make the project: og-cards.mjs makes the preview.png of the main website and of every app from their cards (node assets/tools/og-cards.mjs); the cards are shown all at once in the section Previews of Assetmu, where each can be saved as an image; seo.mjs makes sitemap.xml, robots.txt, and the title, the canonical address, the structured data, and the noscript text of every page (node assets/tools/seo.mjs)
+assets/tools/    What helps to make the project: og-cards.mjs makes the preview.png of the main website and of every app from their cards (node assets/tools/og-cards.mjs); the cards are shown all at once in the section Previews of Assetmu, where each can be saved as an image; muai-helper/ is the Rust program that lets muAI work with the files of one folder of your PC (one command in a terminal downloads and runs it, and muAI connects by itself: see its README), with its install scripts and the workflow that releases it (`.github/workflows/muai-helper-release.yml`); seo.mjs makes sitemap.xml, robots.txt, and the title, the canonical address, the structured data, and the noscript text of every page (node assets/tools/seo.mjs)
 preview.png      Open Graph image (1200x630): the card of the main website, which is its splash screen (node assets/tools/og-cards.mjs kancamu), made again when the splash changes, with the number after ?v= raised in the og:image of index.html
 RULES.md         Project rules
 assetmu/         Assetmu: shows every asset (colours, icons, fonts, sizes, files) and the colour and icon of each app
@@ -90,7 +90,7 @@ mujs/           JavaScript lessons (units, lessons and tests are in data.json; t
 lingomu/        Language lessons (courses, units and lessons are in data.json; the progress is in the lingomu folder)
 picmu/          Images and videos in the browser (WebGPU, nothing is uploaded), two tools in tabs: remove the background (RMBG 1.4, BiRefNet lite, MODNet) and upscale (Swin2SR, x2 and x4, a tile at a time); images and videos (frame by frame, saved as WebM, MP4, GIF or a ZIP of PNG frames; a removed background is transparent, white, black or any colour); can take a file from the Drive and save the result to it; every tool has its own model, chosen in the page or in the account app
 transmu/        Translator in the browser (Transformers.js; Opus-MT, NLLB-200 or M2M100, chosen in a select; nothing is uploaded); Opus-MT uses English as the bridge between two other languages
-muai/            AI in the browser
+muai/            AI in the browser, or through an OpenAI-compatible API; the key of the API and the token of muai-helper stay in this browser (localStorage), never in the synced settings
 muos/            Desktop in the browser
 CNAME            The kancamu.site domain for GitHub Pages
 ```

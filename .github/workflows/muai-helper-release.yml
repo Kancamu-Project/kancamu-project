@@ -1,0 +1,85 @@
+# Builds muai-helper for every system and makes a release when a tag "muai-helper-v<version>" is pushed (the version is the one of Cargo.toml):
+#   git tag muai-helper-v0.2.0 && git push origin muai-helper-v0.2.0
+# The release has the programs; the workflow also writes their SHA-256 in assets/tools/muai-helper/latest.txt on main, which is what install.ps1 and install.sh read
+# (so the program comes from GitHub and its checksum from kancamu.site: both must be changed to put a wrong program on a computer).
+name: muai-helper release
+
+on:
+  push:
+    tags: ["muai-helper-v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - { key: windows-x64, os: windows-latest, target: x86_64-pc-windows-msvc, ext: ".exe", test: true }
+          - { key: linux-x64, os: ubuntu-latest, target: x86_64-unknown-linux-gnu, ext: "", test: true }
+          - { key: linux-arm64, os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu, ext: "", test: true }
+          - { key: macos-arm64, os: macos-latest, target: aarch64-apple-darwin, ext: "", test: true }
+          - { key: macos-x64, os: macos-latest, target: x86_64-apple-darwin, ext: "", test: false }   # made on the arm runner (the tests would need Rosetta)
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: The version of the tag is the one of Cargo.toml
+        shell: bash
+        run: |
+          tag="${GITHUB_REF_NAME#muai-helper-v}"
+          crate="$(grep -m1 '^version' assets/tools/muai-helper/Cargo.toml | cut -d'"' -f2)"
+          if [ "$tag" != "$crate" ]; then echo "The tag is $tag but Cargo.toml says $crate"; exit 1; fi
+      - name: Rust target
+        run: rustup target add ${{ matrix.target }}
+      - name: Test
+        if: ${{ matrix.test }}
+        working-directory: assets/tools/muai-helper
+        run: cargo test --target ${{ matrix.target }}
+      - name: Build
+        working-directory: assets/tools/muai-helper
+        run: cargo build --release --target ${{ matrix.target }}
+      - name: Name the program
+        shell: bash
+        run: |
+          mkdir out
+          cp "assets/tools/muai-helper/target/${{ matrix.target }}/release/muai-helper${{ matrix.ext }}" "out/muai-helper-${{ matrix.key }}${{ matrix.ext }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: muai-helper-${{ matrix.key }}
+          path: out/*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+      - name: Release, and the checksums on main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version="${GITHUB_REF_NAME#muai-helper-v}"
+          base="https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}"
+          {
+            echo "version $version"
+            for file in out/muai-helper-*; do
+              name="$(basename "$file")"
+              key="${name#muai-helper-}"; key="${key%.exe}"
+              echo "$key $(sha256sum "$file" | cut -d' ' -f1) $base/$name"
+            done
+          } > latest.txt
+          cat latest.txt
+          gh release create "$GITHUB_REF_NAME" out/muai-helper-* --title "muai-helper $version" --notes "The program that lets muAI work with the files of a folder of your PC. Do not download it by hand: use the command in muAI (see assets/tools/muai-helper/README.md). The SHA-256 of every program is in latest.txt."
+          cp latest.txt assets/tools/muai-helper/latest.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/tools/muai-helper/latest.txt
+          git commit -m "muai-helper $version: the checksums of the release"
+          git push origin HEAD:main

@@ -64,7 +64,39 @@ body.resizing .sidebar { transition: none; }
 .attachment-thumbnail { border-radius: var(--border-radius-small); }
 #chat-title { flex: 1; min-width: 0; font-weight: 700; font-size: var(--font-size-large);overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #menu-button { display: none; }
-#model-picker { width: 100%; }
+.model-row { display: flex; gap: var(--gap-small); }
+#model-picker { flex: 1; min-width: 0; width: 100%; }
+/* The connections (a sheet) and what the model did with files */
+.connection-form { display: flex; flex-direction: column; gap: var(--gap-small); }
+.connection-title { margin: var(--gap-small) 0 0; font-size: var(--font-size-medium); }
+.connection-field { display: flex; flex-direction: column; gap: var(--gap-small); }
+.connection-label { font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; color: var(--fg-1); }
+.connection-field input { width: 100%; min-width: 0; }
+.connection-check { display: flex; align-items: center; justify-content: flex-start; gap: var(--gap-small); height: var(--height); text-align: start; }
+.connection-row { display: flex; justify-content: flex-end; gap: var(--gap-small); }
+.connection-row button { width: calc(var(--height) * 4); }
+.connection-row:empty { display: none; }
+#connection-button.connected { color: var(--ok); border-color: var(--ok); }
+.connection-status { color: var(--fg-1); font-size: var(--font-size-small); overflow-wrap: anywhere; }
+.connection-status.ok { color: var(--ok); }
+.connection-command { display: flex; gap: var(--gap-small); }
+.connection-command input { flex: 1; min-width: 0; font-family: "JetBrains Mono", monospace; font-size: var(--font-size-extra-small); }
+.connection-command button { flex: none; width: calc(var(--height) * 3); }
+.connection-advanced { display: flex; flex-direction: column; gap: var(--gap-small); }
+.connection-advanced summary { cursor: pointer; color: var(--fg-1); font-size: var(--font-size-small); margin-bottom: var(--gap-small); }
+.markdown .tool-log { list-style: none; margin: var(--gap-small) 0 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--unit) * 0.5); font-size: var(--font-size-small); }
+.markdown .tool-log li { padding-inline-start: var(--padding-medium); border-inline-start: var(--border-width-thick) solid var(--border); }
+.markdown .tool-log li.ok { border-color: var(--ok); }
+.markdown .tool-log li.failed { border-color: var(--danger); color: var(--danger); }
+/* The plan of an agent and what it is doing */
+.markdown .plan { margin: var(--gap-small) 0 0; padding: var(--padding-small) var(--padding-medium); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); }
+.markdown .plan-title { font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; color: var(--fg-1); }
+.markdown .plan ul { list-style: none; margin: calc(var(--unit) * 0.5) 0 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--unit) * 0.5); font-size: var(--font-size-small); }
+.markdown .plan li { display: flex; gap: var(--gap-small); }
+.markdown .plan li.done { color: var(--fg-1); }
+.markdown .plan li.doing { color: var(--yellow); }
+.markdown .plan-mark { flex: none; }
+.markdown .agent-status { margin-top: var(--gap-small); color: var(--fg-1); font-size: var(--font-size-small); }
 #model-picker.ok { color: var(--ok); border-color: var(--ok); }
 #model-picker.unchosen { color: var(--danger); border-color: var(--danger); }
 #model-picker.loading { color: var(--yellow); border-color: var(--yellow); }
@@ -115,18 +147,8 @@ font-size: var(--font-size-extra-small);text-transform: uppercase; color: var(--
 .composer { display: flex; align-items: flex-end; gap: var(--gap-small); }
 #message-input { flex: 1; min-width: 0; height: var(--height); min-height: var(--height); max-height: calc(var(--height) * 2); padding: var(--padding-small) var(--padding-medium); resize: none; line-height: calc(var(--unit) * 5); overflow-y: auto; }
 
-/* Dialog */
-dialog {
-  position: fixed; inset: 50% auto auto 50%; transform: translate(-50%, -50%);
-  width: min(calc(var(--unit) * 200), calc(calc(var(--vw) * 100) - calc(var(--unit) * 12))); max-height: calc(calc(var(--vh) * 100) - calc(var(--unit) * 12)); overflow-y: auto;
-  color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--fg-1);
-}
+/* The dialogs and the sheets are the shared ones (assets/css/style.css): muAI has none of its own */
 [hidden] { display: none !important; }
-dialog::backdrop { background: color-mix(in srgb, var(--black) 60%, transparent); }
-dialog form, .dialog-body { display: flex; flex-direction: column; gap: var(--gap-medium); padding: var(--padding-extra-large); }
-dialog h2 { font-size: var(--font-size-large); font-weight: 700;}
-dialog label { display: flex; flex-direction: column; gap: var(--gap-small); }
-dialog textarea { min-height: calc(var(--unit) * 30); padding: var(--padding-medium); line-height: 1.5; resize: vertical; }
 
 .sidebar-overlay { display: none; }
 @media (max-width: 48rem) {

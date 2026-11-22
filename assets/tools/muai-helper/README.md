@@ -1,0 +1,91 @@
+# muai-helper
+
+A small program for your PC that lets **muAI** (`https://kancamu.site/muai/`) write, edit, read, list, and search text files in **one folder that you choose**. With it an API model of muAI works as an **agent**: it can plan a long task and do it step by step by itself.
+
+A web page cannot write to your disk by itself, so muAI asks this program. It listens on `127.0.0.1` only (this PC, never the network). Only the models of the **OpenAI-compatible API** in muAI can use it (they are the ones that can ask for tools); the models that run in the browser cannot.
+
+## Run it (one command)
+
+Open a terminal **in the folder where you want the AI to work** (it is the only folder muAI can use), and paste:
+
+```powershell
+irm https://kancamu.site/assets/tools/muai-helper/install.ps1 | iex
+```
+
+on Windows (PowerShell), or
+
+```sh
+curl -fsSL https://kancamu.site/assets/tools/muai-helper/install.sh | sh
+```
+
+on macOS and Linux. The script downloads muai-helper (a release of this project on GitHub), checks its SHA-256, keeps it in `%LOCALAPPDATA%muai-helper` (Windows) or `~/.local/share/muai-helper`, and runs it for that folder. The same command later just runs it (it downloads again only when there is a new version).
+
+muAI looks for the program by itself (every few seconds, on `127.0.0.1:47615`) and connects: **you copy no address and no token**. The first time, the program asks in its terminal whether to allow muAI (`https://kancamu.site`): type `y`. The answer is kept in a file (`%APPDATA%muai-helperallowed-origins.json`, or `~/.config/muai-helper/allowed-origins.json`), so the next time it connects without asking. When the program is started again it has a new token, and muAI takes it by itself.
+
+The scripts are short and made to be read: `install.ps1` and `install.sh` in this folder. They change nothing but that folder (no setting, no registry, no PATH); to remove the program, delete it. If you do not want to run a script from the internet, read it first (`irm <address>` without `| iex` shows it), or build the program yourself:
+
+## Build it yourself
+
+You need [Rust](https://rustup.rs). From this folder:
+
+```powershell
+cargo build --release
+.	argeteleasemuai-helper.exe --dir C:UsersyouDocumentsmuai-files
+```
+
+(without `--dir` it uses the folder where you are). It prints the address and the token.
+
+Options:
+
+| Option | What it does |
+| --- | --- |
+| `--dir <folder>` | The one folder muAI may use (the folder where you are, when it is not given). The root of a drive and your home folder are refused (too much for an AI), unless `--allow-broad`. |
+| `--port <number>` | The port (default `47615`, the one muAI looks at). |
+| `--token <text>` | Your own token (at least 16 characters). Without it a random one is made at every start. |
+| `--origin <address>` | Another web page that may use it, for example `--origin http://127.0.0.1:8123` to try muAI on your own computer (the variable `MUAI_ORIGINS`, with addresses separated by commas, does the same). `https://kancamu.site` is always in the list. |
+| `--yes` | Allow the origins of the list without asking (less safe: for a computer where the program has no terminal). |
+| `--allow-broad` | Allow the root of a drive or your home folder. |
+
+## For the maker: a new version
+
+The programs are made by GitHub (`.github/workflows/muai-helper-release.yml`) when a tag is pushed. Change `version` in `Cargo.toml`, commit, and:
+
+```sh
+git tag muai-helper-v0.2.0
+git push origin muai-helper-v0.2.0
+```
+
+The workflow tests and builds for Windows, Linux (x64 and arm64), and macOS (arm64 and x64), makes the release, and writes the SHA-256 of every program in `latest.txt` on `main`, which is what the scripts read: the program comes from GitHub and its checksum from kancamu.site, so both must be changed to put a wrong program on a computer. Until the first release the command says that `latest.txt` is not there.
+
+## What keeps it safe
+
+- It listens on `127.0.0.1` only, and the `Host` of a request must be this PC (a defence against DNS rebinding).
+- Every request needs the token (`Authorization: Bearer <token>`). A page gets the token by itself (`POST /pair`) only if its origin is allowed by you in the terminal; `GET /ping` is open to the allowed origins and tells only that the program is here, its version, the folder, and whether the token that was sent is good.
+- A web page can use it only from an allowed origin; a page from another site is refused.
+- A path is relative to the folder: no `..`, no drive letter (`C:`), no leading slash, no reserved Windows names (`CON`, `NUL`…), and no link that leads out of the folder.
+- A file is written whole into a temporary file and then renamed. An existing file is replaced only when the request says `"overwrite": true`, and muAI asks you first: for every change, once for each task (the default), or never, as you choose in its connections.
+- A request is at most 8 MB, a file that is read at most 1 MB and must be UTF-8 text, a file after an edit or an append at most 10 MB, and a list gives at most 500 entries (a search looks at 5000 files at most, and does not follow links).
+
+What it does **not** do: it is not a sandbox for a program that already runs on your PC with your rights, and what muAI reads with `read_file` goes to the API that you use, like the rest of the chat. Choose a folder that has nothing you do not want to share, and stop the program (Ctrl+C) when you do not use it.
+
+## The operations
+
+All are `POST` with a JSON body (`GET /ping` has none) and the token:
+
+| Address | Body | Answer |
+| --- | --- | --- |
+| `GET /ping` | | `{ name, version, folder, authorized, approved }` (no token needed) |
+| `POST /pair` | | `{ token, folder }` for an origin that the user allowed (202 `{ status: "pending" }` while the terminal waits for the answer, 403 `{ status: "denied" }`); a page only |
+| `POST /write` | `{ path, content, overwrite?, append? }` | `{ ok, path, bytes, created }` (409 when the file exists and neither `overwrite` nor `append` is true) |
+| `POST /edit` | `{ path, old, new, replace_all? }` | `{ ok, path, replacements, bytes }` (the text `old` must be in the file once, or `replace_all` must be true: 409 when it is found more than once, 404 when it is not found) |
+| `POST /read` | `{ path, offset?, limit? }` | `{ path, content, bytes, total_lines }` (with `offset` and `limit`, only those lines, and `from` and `to`) |
+| `POST /list` | `{ path?, recursive? }` | `{ path, entries: [{ name, type, bytes }], truncated }` (`recursive` gives the whole tree; `.git` and `node_modules` are listed but not entered) |
+| `POST /search` | `{ query, path?, max? }` | `{ query, matches: [{ path, line, text }], truncated }` (the lines that have the text, capitals do not matter; at most 300) |
+
+An error is `{ "error": "…" }` with its status (400 the path is refused, 401 the token, 403 the origin or the host, 404, 409, 413, 415).
+
+## Tests
+
+```powershell
+cargo test
+```
