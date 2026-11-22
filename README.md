@@ -46,10 +46,11 @@ assets/          Shared assets, in folders
     page.css        The page: the header, the footer, the main, and the sidebar with its drawer
   js/            The scripts
     theme.js        Applies the saved theme before the page shows, to avoid a flash
+    cleanup.js      Deletes what older versions of the code left in the browser (keys of localStorage, databases, caches that are listed in it; nothing else, because muOS and ArtCraft share the origin)
     i18n.js         Loads a web's data.json and applies the chosen language (en-US, zh-CN, ar-SA)
     account.js      The shared GitHub sign-in ("Sign in with GitHub"): get, signInWithGitHub, signOut, onChange, and the dialog (open, bind) that embeds /youmu
     settings.js     The settings of every web (get, set, onChange, listen): written by the account web and by the controls of a web
-    storage.js      The shared data storage: one private repository (<id>-data), one branch per app (drivemu, muai); muAI keeps conversations/ and files/ on its branch
+    storage.js      The shared data storage: one private repository (<id>-data) on its default branch, and a folder per app in AppData (AppData/drivemu, AppData/muai); muAI keeps conversations/ and files/ in its folder
     transfer.js     Files of the Drive dragged out of a web: pictures as real pictures (any web takes them), other files as a link (the webs of Kancamu take them)
     popup.js        The shared popups: the question and message dialog (popups.ask, popups.tell) and the toasts (popups.toast); the button texts are in popup.json. No web uses alert, confirm, or prompt
     components.js   The helpers of the components (element, icon, formatSize, menu, popover, calendar, dataTable, questionnaire, and more)
@@ -68,10 +69,10 @@ kitmu/          Kitmu: the UI kit (templates of assets/css/components.css, helpe
 youmu/       The account web, shown in a dialog by every other web; the query string picks the page: ?page=login, ?page=profile, ?page=settings&app=<app>. All settings of all webs (language, theme, and the settings, models, and data of each app) are set here
 artcraft/        The eight ArtCraft apps (downloaded by update.ps1)
 drivemu/         File storage on GitHub
-gallemu/        Gallery of the photos and videos of the Drive (reads the drivemu branch, read only)
-spotimu/        Music player for the audio files of the Drive (reads the drivemu branch, read only)
-mujs/           JavaScript lessons (units, lessons and tests are in data.json; the code runs in a sandboxed frame, sandbox.js; the progress is on the mujs branch)
-lingomu/        Language lessons (courses, units and lessons are in data.json; the progress is on the lingomu branch)
+gallemu/        Gallery of the photos and videos of the Drive (reads the folder of Drivemu, read only)
+spotimu/        Music player for the audio files of the Drive (reads the folder of Drivemu, read only)
+mujs/           JavaScript lessons (units, lessons and tests are in data.json; the code runs in a sandboxed frame, sandbox.js; the progress is in the mujs folder)
+lingomu/        Language lessons (courses, units and lessons are in data.json; the progress is in the lingomu folder)
 murmbg/         Background remover in the browser (WebGPU, nothing is uploaded) with three models (RMBG 1.4, BiRefNet lite, MODNet); images and videos (frame by frame, saved as WebM, MP4, GIF or a ZIP of PNG frames; the background is transparent, white, black or any colour); can take a file from the Drive and save the result to it
 transmu/        Translator in the browser (Transformers.js; Opus-MT, NLLB-200 or M2M100, chosen in a select; nothing is uploaded); Opus-MT uses English as the bridge between two other languages
 muai/            AI in the browser

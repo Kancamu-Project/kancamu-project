@@ -220,10 +220,11 @@ When two webs need the same new thing, it is added to the template and to Kitmu,
 /assets/js/popup.js - the shared popups: dialogs (ask, tell), sheets and drawers (sheet), the command (command), and toasts (toast) (shown in Kitmu).
 /assets/js/theme.js - applies the saved theme before the page shows.
 /assets/js/i18n.js - loads data.json, applies the chosen language, and follows changes from other webs.
+/assets/js/cleanup.js - deletes the data that older versions of the code left in the browser (the names that are listed in it).
 /assets/js/account.js - the shared GitHub sign-in (get, signInWithGitHub, finishSignIn, signOut, onChange, open, bind).
 /assets/js/transfer.js - files dragged from a web to the tab of another one (drag, receive).
 /assets/js/settings.js - the settings of every web (get, set, onChange, listen); the account web and the controls of a web write them.
-/assets/js/storage.js - the shared data storage: one repository, one branch per app (connect, readFile, writeFile).
+/assets/js/storage.js - the shared data storage: one repository, one branch, one folder per app in AppData (connect, readFile, writeFile).
 /assets/data/brand.json - the id, the name, and the highlighted word of the brand.
 /assets/data/kit.json - the texts that the tags kit-* have on their own (the account button, the copyright, previous and next), in every language.
 /assets/icons - holds every svg icon for the GUI, do not use emoji.
@@ -254,11 +255,13 @@ The sign-in is "Sign in with GitHub" (an OAuth App, scope repo): account.signInW
 
 #### 5. Data Storage
 The data of a user is kept in one private GitHub repository named after the brand: <id>-data, with the "id" of assets/data/brand.json (today kancamu-data), in the account of the signed-in user.
-Every app keeps its data on its own branch, named after the app: Drivemu on drivemu, muAI on muai, and so on. An app only reads and writes its own branch, never another one, and never the default branch.
-One exception: some apps work on the files of the Drive, so they use the drivemu branch. Gallemu and Spotimu (whose content is the photos, videos, and audio of the Drive) only read it, with storage.tree and storage.readBinary. muRMBG reads images from it and saves its results into it with storage.writeBinary, as new files; it replaces a file only when the user agrees, and it never deletes. No other app reads or writes another branch.
-Drivemu uses the root of its branch as the root of the drive. A new drive starts with the folders Documents, Images, Videos, and Audio (each kept by an empty .gitkeep), and the sidebar lists the folders at the root.
+There is one branch, the default one (main), and the data of every app is in a folder of its own inside the folder AppData: AppData/drivemu, AppData/muai, AppData/lingomu, and so on. An app only reads and writes its own folder, never the folder of another app and never anything outside AppData. The limit of the size (5 GB, a recommendation of GitHub) is of the whole repository, so every app shares it.
+One exception: some apps work on the files of the Drive, so they use the folder of Drivemu (AppData/drivemu). Gallemu and Spotimu (whose content is the photos, videos, and audio of the Drive) only read it, with storage.tree and storage.readBinary. muRMBG reads images from it and saves its results into it with storage.writeBinary, as new files; it replaces a file only when the user agrees, and it never deletes. No other app reads or writes the folder of another app.
+Drivemu uses its folder (AppData/drivemu) as the root of the drive. A new drive starts with the folders Documents, Images, Videos, and Audio (each kept by an empty .gitkeep), and the sidebar lists the folders at the root.
 muAI keeps a chat per file in conversations/<id>.json, loaded when the chat is opened, and the files attached to chats in files/<sha256>, named by the hash of their content, so a file is stored once whatever chat it was attached in.
-A web gets its branch from assets/js/storage.js: storage.connect("<app>") creates the repository and the branch when they are not there yet, and storage.readFile, storage.writeFile, storage.list, storage.readBinary, storage.writeBinary, and storage.removeFile work with its files. It does not build its own repository name.
+A web gets its folder from assets/js/storage.js: storage.connect("<app>") creates the repository when it is not there yet, and storage.readFile, storage.writeFile, storage.list, storage.tree, storage.readBinary, storage.writeBinary, and storage.removeFile work with the files of the folder (the paths are inside it; the storage adds AppData/<app>/). It does not build its own repository name or path. Two apps may save at the same moment on the one branch: the storage tries a save again when GitHub answers 409, and so does Drivemu for its commits.
+The reset of an app deletes the data in its own folder only: the reset of Drivemu empties AppData/drivemu and makes the default folders again, the deletion of the chats of muAI and the reset of the progress of Lingomu and muJS delete their own files. A reset never touches the folder of another app.
+What the code keeps in the browser (localStorage, sessionStorage, IndexedDB, Cache Storage) is named after the web that keeps it ("<app>.settings", "lingomu.progress", the database "muai"), except theme, lang, and account, which are shared. When the code stops using a key, a database, or a cache, its name is added to the lists of assets/js/cleanup.js, which every web loads and which deletes those names from the browser of the user. It deletes only what is listed: muOS and the apps of ArtCraft run on the same origin and keep their own data in the same places.
 
 #### 6. ArtCraft
 Never edit the files inside /artcraft/<app>: they are the official builds and are replaced on every update.
