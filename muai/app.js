@@ -32,7 +32,7 @@ let MODEL = MODELS.find((m) => m.id === settings.get("muai", DEFAULTS).model) ||
 
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
-  "model-picker","load-status","progress-box","progress-fill","progress-text","load-error","chat","message-input",
+  "model-picker","chat","message-input",
   "send-button","stop-button","chat-area","attach-button","image-file-input","attachment-preview","attachment-preview-image","attachment-preview-name","remove-attachment-button","chat-list","chat-search",
   "new-chat-button","chat-title","export-button","menu-button",
   "sidebar-overlay","main","welcome-message","sidebar","sidebar-resizer",
@@ -68,13 +68,13 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, 
 const lsGet = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
 const icon = (n) => `<span class="icon icon-${n}"></span>`;
-// A question in the dialog shared by every web (assets/js/popup.js): true or false, or the text the user typed (null when cancelled).
+// A question in the dialog shared by every app (assets/js/popup.js): true or false, or the text the user typed (null when cancelled).
 const ask = (options) => popups.ask(options);
 
 // ---------- Settings ----------
-// They are set in the account web (the settings button opens it); muAI only reads them, and follows a change.
+// They are set in the account app (the settings button opens it); muAI only reads them, and follows a change.
 let preferences = settings.get("muai", DEFAULTS);
-// The page and the account web both set the model and the width of the sidebar: they write the same settings, and each follows the other.
+// The page and the account app both set the model and the width of the sidebar: they write the same settings, and each follows the other.
 const savePreferences = (values) => { preferences = { ...preferences, ...values }; settings.set("muai", preferences); };
 settings.onChange("muai", DEFAULTS, (changed) => {
   const modelChanged = changed.model !== preferences.model, widthChanged = changed.sideWidth !== preferences.sideWidth;
@@ -188,7 +188,7 @@ async function pullChats() {
         listChanged = true;
       } else if (!c.sha && !c.unloaded && !remoteIds.has(c.id)) dirty.add(c.id);   // never saved to the storage yet
     }
-    if (listChanged) { convs.sort((a, b) => b.updated - a.updated); renderList(); renderChat(); }
+    if (listChanged) { convs.sort((a, b) => b.updated - a.updated); await openWanted(); renderList(); renderChat(); }
     scheduleSync();
   } catch (error) { console.warn("[sync]", error); }
 }
@@ -216,6 +216,15 @@ async function loadChat(c) {
 
 let convs = (await idb.all()).sort((a, b) => b.updated - a.updated);
 let current = null;          // active chat (null = not created yet)
+// The chat that is open is also in the address (?chat=<id>), so a reload opens it again (assets/js/url.js). A chat that is only in the storage (not here yet) is opened when it arrives.
+let wantedChat = urlState.get("chat");
+async function openWanted() {
+  const chat = wantedChat && convs.find((c) => c.id === wantedChat);
+  if (!chat || current) return;
+  wantedChat = "";
+  await loadChat(chat);
+  current = chat;
+}
 let processor = null, tokenizer = null, model = null;
 let loadedDef = null;        // definition of the model currently loaded
 let pendingImage = null;     // data URL
@@ -225,14 +234,7 @@ const stopper = new InterruptableStoppingCriteria();
 // ---------- WebGPU ----------
 let gpuOk = false;
 try { if (navigator.gpu && (await navigator.gpu.requestAdapter())) gpuOk = true; } catch {}
-function renderGpu() {
-  if (!gpuOk) els.loadError.textContent = tr("gpu.unsupported");
-}
-if (!gpuOk) {
-  els.loadStatus.classList.remove("hidden");
-  els.loadError.classList.remove("hidden");
-}
-renderGpu();
+if (!gpuOk) popups.toast(tr("gpu.unsupported"), { kind: "error" });
 
 // ---------- Light markdown (safe: all text is escaped first) ----------
 function md(src) {
@@ -353,6 +355,7 @@ function renderChat() {
   if (!empty) current.messages.forEach((m, i) => els.chat.appendChild(makeMsgEl(m, i).row));
   els.chatArea.scrollTop = els.chatArea.scrollHeight;
   setTitle(); renderList();
+  if (current) urlState.set({ chat: current.id });
 }
 els.chat.addEventListener("click", async (e) => {
   const btn = e.target.closest("button"); if (!btn) return;
@@ -377,7 +380,7 @@ els.chat.addEventListener("click", async (e) => {
 
 function newChat() {
   if (busy) return;
-  current = null; renderChat(); closeSide(); els.messageInput.focus();
+  current = null; wantedChat = ""; urlState.set({ chat: "" }); renderChat(); closeSide(); els.messageInput.focus();
 }
 async function openConv(c) {
   if (busy) return popups.toast(tr("toast.wait"), { kind: "warning" });
@@ -408,9 +411,7 @@ async function loadModel() {
   if (busy || loading) return;
   loading = true;
   const def = MODEL;
-  els.loadStatus.classList.remove("hidden");
-  els.loadError.classList.add("hidden"); els.progressBox.classList.remove("hidden");
-  els.progressFill.style.width = "0%"; els.progressText.textContent = tr("progress.preparing");
+  const note = popups.toast(tr("progress.preparing"), { duration: 0, progress: 0 });   // the download and the preparing of the model: a popup with a bar
   renderModelPicker(tr("load.loading", { name: def.name }));
   const files = new Map();
   const onProgress = (info) => {
@@ -418,9 +419,8 @@ async function loadModel() {
       files.set(info.file, { loaded: info.loaded, total: info.total });
       let l = 0, t = 0; for (const f of files.values()) { l += f.loaded; t += f.total; }
       const pct = t ? (l / t) * 100 : 0;
-      els.progressFill.style.width = pct.toFixed(1) + "%";
-      els.progressText.textContent = tr("load.progress", { loaded: (l / 1e6).toFixed(0), total: (t / 1e6).toFixed(0), pct: pct.toFixed(0) });
-    } else if (info.status === "ready") els.progressText.textContent = tr("load.gpu");
+      note.set(tr("load.progress", { loaded: (l / 1e6).toFixed(0), total: (t / 1e6).toFixed(0), pct: pct.toFixed(0) }), pct / 100);
+    } else if (info.status === "ready") note.set(tr("load.gpu"));
   };
   try {
     const opts = { dtype: def.dtype ?? i18n.data.defaultDtype, device: "webgpu", progress_callback: onProgress };   // a model may name its own dtype in data.json
@@ -434,20 +434,18 @@ async function loadModel() {
       model = await AutoModelForCausalLM.from_pretrained(def.id, opts);
     }
     loadedDef = def;
-    els.progressText.textContent = tr("load.warm");
+    note.set(tr("load.warm"));
     await generate([{ role: "user", content: def.kind === "multi" ? [{ type: "text", text: "Hi" }] : "Hi" }], [], { maxTokens: 1, temperature: 0 });
     savePreferences({ model: def.id }); lsSet("muai.autoload", "1");
     els.modelPicker.classList.add("ok");
-    els.progressBox.classList.add("hidden"); els.loadStatus.classList.add("hidden");
     renderChat(); els.messageInput.focus();
   } catch (e) {
     console.error(e);
     try { await model?.dispose?.(); } catch {}
     model = null; processor = null; tokenizer = null; loadedDef = null;
-    els.loadError.textContent = tr("load.failed", { name: def.name, message: e?.message || e });
-    els.loadError.classList.remove("hidden");
-    els.progressBox.classList.add("hidden");
+    popups.toast(tr("load.failed", { name: def.name, message: e?.message || e }), { kind: "error" });
   } finally {
+    note.close();
     loading = false; renderModelPicker();
   }
 }
@@ -615,8 +613,8 @@ const toMarkdown = (c) => `# ${c.title}\n\n_${new Date(c.created).toLocaleString
   c.messages.map((m) => `**${m.role === "user" ? tr("export.you") : "muAI"}:**${m.image ? ` _${tr("export.imageAttached")}_` : ""}\n\n${m.text}`).join("\n\n---\n\n") + "\n";
 els.exportButton.addEventListener("click", () => current && components.download(`${current.title.replace(/[^\w-]+/g, "_") || "muai"}.markdown`, toMarkdown(current), "text/markdown"));
 // ---------- Settings ----------
-// The settings, the downloaded models, and the data are managed in the account web (the account button opens it). muAI shows what is left after it did something.
-// The sign-in is the account web, opened by assets/js/account.js.
+// The settings, the downloaded models, and the data are managed in the account app (the account button opens it). muAI shows what is left after it did something.
+// The sign-in is the account app, opened by assets/js/account.js.
 account.bind($("account-button"));
 settings.listen("muai", async (message) => {
   if (message.type === "modelDeleted") {
@@ -678,11 +676,12 @@ els.sidebarOverlay.addEventListener("click", closeSide);
 
 // ---------- Language ----------
 i18n.onChange(() => {
-  renderGpu(); showSelected();
+  showSelected();
   renderChat();
 });
 
 // ---------- Start ----------
+await openWanted();
 showSelected(); renderChat();
 // Auto-load only the last model that loaded successfully.
 if (gpuOk && lsGet("muai.autoload") === "1" && preferences.model) loadModel();

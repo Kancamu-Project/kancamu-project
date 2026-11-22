@@ -150,6 +150,16 @@
       "en-US": "All alternatives",
       "zh-CN": "所有替代对象",
       "ar-SA": "جميع البدائل"
+    },
+    "splash.tagline": {
+      "en-US": "Apps and tools, in one place.",
+      "zh-CN": "应用和工具，集中在一处。",
+      "ar-SA": "التطبيقات والأدوات في مكان واحد."
+    },
+    "splash.hint": {
+      "en-US": "Click or press a key to continue",
+      "zh-CN": "点击或按任意键继续",
+      "ar-SA": "انقر أو اضغط أي مفتاح للمتابعة"
     }
   },
   "categories": {
@@ -278,8 +288,8 @@
         "en-US": "Galle{highlight}"
       },
       "description": {
-        "en-US": "Your photos and videos, in one gallery.",
-        "zh-CN": "你的照片和视频，集中在一个图库里。",
+        "en-US": "Your images and videos, in one gallery.",
+        "zh-CN": "你的图片和视频，集中在一个图库里。",
         "ar-SA": "صورك ومقاطع الفيديو الخاصة بك في معرض واحد."
       },
       "highlight": {
@@ -377,21 +387,21 @@
       "alternatives": []
     },
     {
-      "id": "murmbg",
+      "id": "picmu",
       "name": {
-        "en-US": "{highlight}RMBG"
+        "en-US": "Pic{highlight}"
       },
       "description": {
-        "en-US": "Remove the background of an image or a video, right in your browser.",
-        "zh-CN": "直接在浏览器中移除图片或视频背景。",
-        "ar-SA": "أزل خلفية صورة أو فيديو مباشرة في متصفحك."
+        "en-US": "Remove the background of an image or a video, or upscale it, right in your browser.",
+        "zh-CN": "直接在浏览器中移除图片或视频的背景，或将其放大。",
+        "ar-SA": "أزل خلفية صورة أو فيديو، أو كبّرها، مباشرة في متصفحك."
       },
       "highlight": {
         "en-US": "{highlight}"
       },
       "publisher": "{brand}",
-      "url": "murmbg/",
-      "icon": "murmbg/favicon.png",
+      "url": "picmu/",
+      "icon": "picmu/favicon.png",
       "color": "#ef2142",
       "categories": [
         "official",
@@ -400,7 +410,9 @@
         "design"
       ],
       "alternatives": [
-        "remove.bg"
+        "remove.bg",
+        "Upscayl",
+        "Topaz Photo AI"
       ]
     },
     {
@@ -432,14 +444,42 @@
       ]
     },
     {
+      "id": "speechmu",
+      "name": {
+        "en-US": "Speech{highlight}"
+      },
+      "description": {
+        "en-US": "Turn speech into text and text into speech with AI, right in your browser.",
+        "zh-CN": "直接在浏览器中用 AI 把语音转成文字、把文字转成语音。",
+        "ar-SA": "حوّل الكلام إلى نص والنص إلى كلام بالذكاء الاصطناعي مباشرة في متصفحك."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "speechmu/",
+      "icon": "speechmu/favicon.png",
+      "color": "#ef2142",
+      "categories": [
+        "official",
+        "mobile",
+        "creative",
+        "design"
+      ],
+      "alternatives": [
+        "Otter.ai",
+        "Google Cloud Text-to-Speech"
+      ]
+    },
+    {
       "id": "youmu",
       "name": {
         "en-US": "You{highlight}"
       },
       "description": {
-        "en-US": "Your sign-in, your profile, and the settings of every web.",
-        "zh-CN": "你的登录、个人资料，以及每个网站的设置。",
-        "ar-SA": "تسجيل دخولك وملفك الشخصي وإعدادات كل المواقع."
+        "en-US": "Your sign-in, your profile, and the settings of every app.",
+        "zh-CN": "你的登录、个人资料，以及每个应用的设置。",
+        "ar-SA": "تسجيل دخولك وملفك الشخصي وإعدادات كل التطبيقات."
       },
       "highlight": {
         "en-US": "{highlight}"
@@ -461,9 +501,9 @@
         "en-US": "Asset{highlight}"
       },
       "description": {
-        "en-US": "Every colour, icon, font, and size of the webs, in one place.",
-        "zh-CN": "所有网站的颜色、图标、字体和尺寸，集中在一处。",
-        "ar-SA": "كل ألوان المواقع وأيقوناتها وخطوطها ومقاساتها في مكان واحد."
+        "en-US": "Every colour, icon, font, and size of the apps, in one place.",
+        "zh-CN": "所有应用的颜色、图标、字体和尺寸，集中在一处。",
+        "ar-SA": "كل ألوان التطبيقات وأيقوناتها وخطوطها ومقاساتها في مكان واحد."
       },
       "highlight": {
         "en-US": "{highlight}"
@@ -486,9 +526,9 @@
         "en-US": "Kit{highlight}"
       },
       "description": {
-        "en-US": "The UI kit of the webs: templates, helpers, and popups to copy.",
-        "zh-CN": "各网站的界面组件库：可复制的模板、辅助函数和弹窗。",
-        "ar-SA": "عدة واجهات المواقع: قوالب ودوال مساعدة ونوافذ منبثقة للنسخ."
+        "en-US": "The UI kit of the apps: templates, helpers, and popups to copy.",
+        "zh-CN": "各应用的界面组件库：可复制的模板、辅助函数和弹窗。",
+        "ar-SA": "عدة واجهات التطبيقات: قوالب ودوال مساعدة ونوافذ منبثقة للنسخ."
       },
       "highlight": {
         "en-US": "{highlight}"
@@ -788,5 +828,13 @@
         "Adobe Acrobat"
       ]
     }
-  ]
+  ],
+  "splash": {
+    "images": [
+      "assets/images/purplelady.webp",
+      "assets/images/siberius.webp",
+      "assets/images/cinnadust.webp"
+    ],
+    "seconds": 3
+  }
 }

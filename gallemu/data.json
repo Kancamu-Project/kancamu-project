@@ -1,11 +1,10 @@
 {
   "name": {
-    "en-US": "Galle{highlight} — your photos and videos",
-    "zh-CN": "Galle{highlight} — 你的照片和视频",
+    "en-US": "Galle{highlight} — your images and videos",
+    "zh-CN": "Galle{highlight} — 你的图片和视频",
     "ar-SA": "Galle{highlight} — صورك ومقاطع الفيديو"
   },
   "brandColor": "#1782db",
-  "storageFolder": "drivemu",
   "limits": {
     "thumbnailMaxMB": 8,
     "thumbnailSize": 320,
@@ -97,8 +96,8 @@
       "ar-SA": "ابحث بالاسم…"
     },
     "search.label": {
-      "en-US": "Search photos and videos",
-      "zh-CN": "搜索照片和视频",
+      "en-US": "Search images and videos",
+      "zh-CN": "搜索图片和视频",
       "ar-SA": "البحث في الصور والفيديو"
     },
     "refresh": {
@@ -112,8 +111,8 @@
       "ar-SA": "الألبوم"
     },
     "album.all": {
-      "en-US": "All photos and videos",
-      "zh-CN": "所有照片和视频",
+      "en-US": "All images and videos",
+      "zh-CN": "所有图片和视频",
       "ar-SA": "كل الصور والفيديو"
     },
     "album.root": {
@@ -162,13 +161,13 @@
       "ar-SA": "مساحتك كبيرة جدًا لعرضها كاملة، لذا بعض الملفات غير ظاهرة."
     },
     "loading": {
-      "en-US": "Loading your photos and videos…",
-      "zh-CN": "正在加载你的照片和视频…",
+      "en-US": "Loading your images and videos…",
+      "zh-CN": "正在加载你的图片和视频…",
       "ar-SA": "جارٍ تحميل صورك ومقاطع الفيديو…"
     },
     "empty.title": {
-      "en-US": "No photos or videos yet",
-      "zh-CN": "还没有照片或视频",
+      "en-US": "No images or videos yet",
+      "zh-CN": "还没有图片或视频",
       "ar-SA": "لا توجد صور أو فيديو بعد"
     },
     "empty.text": {
@@ -182,18 +181,18 @@
       "ar-SA": "لم يتم العثور على شيء"
     },
     "empty.noMatchesText": {
-      "en-US": "No photo or video matches \"{query}\" in this album.",
-      "zh-CN": "此相册中没有与“{query}”匹配的照片或视频。",
+      "en-US": "No image or video matches \"{query}\" in this album.",
+      "zh-CN": "此相册中没有与“{query}”匹配的图片或视频。",
       "ar-SA": "لا توجد صورة أو فيديو يطابق \"{query}\" في هذا الألبوم."
     },
     "signedout.title": {
-      "en-US": "Sign in to see your photos",
-      "zh-CN": "登录以查看你的照片",
+      "en-US": "Sign in to see your images",
+      "zh-CN": "登录以查看你的图片",
       "ar-SA": "سجّل الدخول لرؤية صورك"
     },
     "signedout.text": {
-      "en-US": "Your photos and videos are the ones in your Drive. Sign in once and they show up here.",
-      "zh-CN": "你的照片和视频就是云盘里的那些。登录一次，它们就会显示在这里。",
+      "en-US": "Your images and videos are the ones in your Drive. Sign in once and they show up here.",
+      "zh-CN": "你的图片和视频就是云盘里的那些。登录一次，它们就会显示在这里。",
       "ar-SA": "صورك ومقاطع الفيديو هي الموجودة في مساحتك. سجّل الدخول مرة واحدة وستظهر هنا."
     },
     "login.signIn": {

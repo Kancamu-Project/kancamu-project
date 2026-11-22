@@ -56,7 +56,7 @@ function readLocal() {
   try { return { ...blank(), ...JSON.parse(localStorage.getItem(PROGRESS_KEY)) }; } catch { return blank(); }
 }
 let progress = readLocal();
-let preferences = settings.get("mujs", defaults);   // the size of the code text: set in the account web
+let preferences = settings.get("mujs", defaults);   // the size of the code text: set in the account app
 
 function applyPreferences() {
   document.documentElement.style.setProperty("--editor-scale", String(preferences.editorScale));
@@ -85,7 +85,7 @@ function scheduleUpload() {
     try {
       const store = await openStore();
       if (store) await storage.writeFile(store, "progress.json", JSON.stringify(progress), "muJS: save progress");
-    } catch (error) { say(tr("sync.failed", { message: error.message }), true); }
+    } catch (error) { popups.toast(tr("sync.failed", { message: error.message }), { kind: "error" }); }
   }, 1500);
 }
 // The progress of the account and the one of this device: the newest one is kept.
@@ -101,7 +101,7 @@ async function download() {
       saveLocal();
       openLesson(current ? current.id : startingLesson().id);
     } else if (progress.updated > (remote?.updated || 0)) scheduleUpload();
-  } catch (error) { say(tr("sync.failed", { message: error.message }), true); }
+  } catch (error) { popups.toast(tr("sync.failed", { message: error.message }), { kind: "error" }); }
 }
 
 /* ---------- the sandbox: the code runs in a frame with no rights, in a worker ---------- */
@@ -148,7 +148,8 @@ async function execute(code, tests) {
 /* ---------- the list of lessons ---------- */
 const isDone = (lesson) => !!progress.done[lesson.id];
 // The page opens on the lesson that was open last, or on the first one that is not done.
-const startingLesson = () => lessons.find((lesson) => lesson.id === progress.last) || lessons.find((lesson) => !isDone(lesson)) || lessons[0];
+// The lesson that is open is also in the address (?lesson=...), so a reload opens it again (assets/js/url.js); the address wins over the last lesson of the progress.
+const startingLesson = () => lessons.find((lesson) => lesson.id === urlState.get("lesson")) || lessons.find((lesson) => lesson.id === progress.last) || lessons.find((lesson) => !isDone(lesson)) || lessons[0];
 
 let current = null;   // the lesson that is open
 const menu = components.drawer({ sidebar: els.sidebar, button: els.menuButton });
@@ -187,6 +188,7 @@ function openLesson(id) {
   const lesson = lessons.find((item) => item.id === id);
   if (!lesson) return;
   current = lesson;
+  urlState.set({ lesson: lesson.id });
   progress.last = lesson.id;
   saveLocal();
   const index = lessons.indexOf(lesson);

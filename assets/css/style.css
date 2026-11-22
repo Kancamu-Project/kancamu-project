@@ -1,5 +1,5 @@
-/* Styles shared by every web except muOS: fonts, colour tokens, reset and control basics.
-   Each web loads this file first, then its own layout.css. */
+/* Styles shared by every app except muOS: fonts, colour tokens, reset and control basics.
+   Each app loads this file first, then its own layout.css. */
 
 @font-face { font-family: "Inter"; font-weight: 400; font-display: swap; src: url("../fonts/inter-latin-400-normal.woff2") format("woff2"); }
 @font-face { font-family: "Inter"; font-weight: 700; font-display: swap; src: url("../fonts/inter-latin-700-normal.woff2") format("woff2"); }
@@ -33,7 +33,7 @@
     --ok: var(--green);
 
     /* The text on a fill of red, yellow, blue, green or danger: one role for all of them, dark in the dark theme and white in the light theme.
-       The text on a neutral fill is the opposite role (--accent-ink on --accent, --bg on --fg); the text on the colour of a web is --brand-ink (assets/js/i18n.js). */
+       The text on a neutral fill is the opposite role (--accent-ink on --accent, --bg on --fg); the text on the colour of an app is --brand-ink (assets/js/i18n.js). */
     --on-color: var(--black);
 
     /* The units. A layout.css writes no unit (rem, px, vh, vw): it writes calc(var(--unit) * n), a line as --border-width,
@@ -44,10 +44,11 @@
     --vw: 1vw;
     --vh: 1vh;
     --height: 2.4rem;
-    /* The scales. A web uses these, and does not write a size of its own where one of them fits. */
+    /* The scales. An app uses these, and does not write a size of its own where one of them fits. */
     --border-radius-small: 0.2rem;   /* small things: a tag, a thumbnail */
     --border-radius-medium: 0.3rem;  /* what stands alone: a button, an input, a select, a card */
     --border-radius-large: 0.4rem;   /* what floats above the page: a dialog, a menu, a toast */
+    --border-radius-extra-large: 0.8rem;   /* what is a picture in itself: the card of the splash screen */
     --gap-extra-small: 0.2rem;
     --gap-small: 0.4rem;             /* the default gap, between the items of a row, a list, or a card */
     --gap-medium: 0.8rem;            /* between areas: the blocks of a page or of a dialog */
@@ -63,7 +64,7 @@
     --icon-size-medium: 1.2rem;
     --icon-size-large: 1.6rem;       /* the mark of a logo */
     --icon-size-extra-large: 3.2rem; /* the icon of a project, a big icon */
-    --sidebar-width: 16rem;          /* the width of the sidebar of every web (a web whose sidebar can be dragged starts from it) */
+    --sidebar-width: 16rem;          /* the width of the sidebar of every app (an app whose sidebar can be dragged starts from it) */
     --font-size-extra-small: 0.6rem; /* labels, hints, tags */
     --font-size-small: 0.8rem;       /* the text of the page */
     --font-size-medium: 1rem;
@@ -175,7 +176,7 @@ a:hover {
     font-weight: 700;
 }
 
-/* The popups of every web (assets/js/popup.js): the question and message dialog, and the toasts. They are in the #popups element of the body, which has no box of its own. */
+/* The popups of every app (assets/js/popup.js): the question and message dialog, and the toasts. They are in the #popups element of the body, which has no box of its own. */
 .popups {
     display: contents;
 }
@@ -433,7 +434,7 @@ a:hover {
     mask-image: url(../icons/alert.svg);
 }
 
-.shared-toast.progress .shared-toast-icon {
+.shared-toast.with-bar .shared-toast-icon {
     -webkit-mask-image: url(../icons/upload.svg);
     mask-image: url(../icons/upload.svg);
 }
@@ -469,7 +470,7 @@ dialog {
 }
 
 /* Corners. An element that stands alone is rounded with --radius: a button, an input, a select, a textarea, a dialog, a menu.
-   An element that touches another one (a bar, a group of buttons, a row of a table) is square: its web sets border-radius: 0 on it. */
+   An element that touches another one (a bar, a group of buttons, a row of a table) is square: its app sets border-radius: 0 on it. */
 button,
 input,
 select,
@@ -579,7 +580,7 @@ button:hover:not(:disabled, .active, .on, .invert, .primary, .danger) {
     border-color: var(--fg-1);
 }
 
-/* The account web is shown in this dialog (assets/js/account.js). */
+/* The account app is shown in this dialog (assets/js/account.js). */
 dialog.account-dialog {
     width: min(56rem, calc(100vw - 2.4rem));
     padding: 0;
@@ -609,6 +610,51 @@ button.account.signed-in {
 
     & > * {
         display: none;
+    }
+}
+
+/* Effects (the Appearance page of the account app). An effect is a layer: a div of its own, directly in the body, that assets/js/theme.js adds when the effect is on and takes away
+   when it is off. It covers the page and takes no click. Nothing here styles another element, and no attribute or style is written on html, body, or any element of the page.
+   The amount of an effect, 0 to 100, is --effect-amount on its own div. */
+.effect {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+}
+
+/* The monochrome filters what is behind its layer (backdrop-filter), so no element of the page is touched; it lies under the noise */
+.effect-monochrome {
+    z-index: 2147483646;
+    -webkit-backdrop-filter: grayscale(calc(var(--effect-amount, 100) / 100));
+    backdrop-filter: grayscale(calc(var(--effect-amount, 100) / 100));
+}
+
+/* The noise is a fine grain. It blends as an overlay, so it looks the same on the dark and on the light theme. */
+.effect-noise {
+    z-index: 2147483647;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: calc(var(--unit) * 100);
+    mix-blend-mode: overlay;
+    opacity: calc(var(--effect-amount, 30) / 100);
+}
+
+/* The moving noise: the grain jumps a few times a second, like the grain of old film */
+.effect-noise.moving {
+    animation: noise-move 0.6s steps(1) infinite;
+}
+
+@keyframes noise-move {
+    0% { background-position: 0 0; }
+    17% { background-position: calc(var(--unit) * -37) calc(var(--unit) * 23); }
+    33% { background-position: calc(var(--unit) * 19) calc(var(--unit) * -41); }
+    50% { background-position: calc(var(--unit) * -53) calc(var(--unit) * -17); }
+    67% { background-position: calc(var(--unit) * 31) calc(var(--unit) * 47); }
+    83% { background-position: calc(var(--unit) * -11) calc(var(--unit) * 7); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .effect-noise.moving {
+        animation: none;
     }
 }
 

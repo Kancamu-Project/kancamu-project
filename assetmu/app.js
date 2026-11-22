@@ -1,4 +1,4 @@
-// Assetmu: shows every asset of the webs: the colours (read from the page, so they follow the theme), the colour and icon of every web, the icons, the fonts, the sizes, and the files. The templates, the helpers, and the popups are in Kitmu.
+// Assetmu: shows every asset of the apps: the colours (read from the page, so they follow the theme), the colour and icon of every app, the icons, the fonts, the sizes, and the files. The templates, the helpers, and the popups are in Kitmu.
 await i18n.load();
 i18n.selects();
 
@@ -85,36 +85,36 @@ function renderColours() {
   sections.colours.body.replaceChildren(group("colours.palette", "", palette), group("colours.roles", "colours.rolesHint", roles));
 }
 
-/* ---------- the webs: the icon, the name with its highlight, and the colour of each project of the main web ---------- */
+/* ---------- the apps: the icon, the name with its highlight, and the colour of each project of the main website ---------- */
 let projects = [];
 try { projects = (await (await fetch("../data.json", { cache: "no-store" })).json()).projects; } catch { /* the section stays empty */ }
 const fill = (text) => text.replaceAll("{highlight}", i18n.brand.highlight).replaceAll("{brand}", i18n.brand.name);
-function renderWebs() {
-  heading("webs");
+function renderApps() {
+  heading("apps");
   const rows = projects.map((project) => {
     const name = fill(i18n.pick(project.name));
     const highlight = fill(i18n.pick(project.highlight || {}));
     const at = highlight ? name.indexOf(highlight) : -1;
     const colour = project.color;   // the colour of a project is its own (a hex from its icon), not a colour of the palette: a project can come from outside
-    const row = element("button", "web-row");
+    const row = element("button", "app-row");
     row.type = "button";
-    const icon = element("span", "web-icon");
+    const icon = element("span", "app-icon");
     icon.style.backgroundImage = `url("${/^https?:/.test(project.icon) ? project.icon : `../${project.icon}`}")`;   // an icon can be a file of this site or an address (TraceDraw)
-    const label = element("span", "web-name");
+    const label = element("span", "app-name");
     const mark = element("span", "highlight", at < 0 ? "" : highlight);
     mark.style.color = colour;
     label.append(...(at < 0 ? [name] : [name.slice(0, at), mark, name.slice(at + highlight.length)]));
-    const chip = element("span", "web-colour");
-    const sample = element("span", "web-chip");
+    const chip = element("span", "app-colour");
+    const sample = element("span", "app-chip");
     sample.style.setProperty("--chip", colour);
     chip.append(sample, element("span", "", colour));
     row.append(icon, label, chip);
     row.addEventListener("click", () => copy(colour));
     return { name, row };
   });
-  const list = element("div", "web-list");
+  const list = element("div", "app-list");
   list.append(...rows.sort((a, b) => a.name.localeCompare(b.name, i18n.lang)).map((entry) => entry.row));
-  sections.webs.body.replaceChildren(list);
+  sections.apps.body.replaceChildren(list);
 }
 
 /* ---------- icons ---------- */
@@ -122,6 +122,7 @@ const search = element("input");
 search.type = "search";
 search.setAttribute("data-i18n-placeholder", "icons.search");
 search.setAttribute("data-i18n-label", "icons.searchLabel");
+search.value = urlState.get("q");   // the search and the section that is shown are in the address (?q=...&section=...), assets/js/url.js
 const searchbox = element("label", "searchbox");
 searchbox.append(element("span", "icon icon-search"), search);
 const count = element("span", "section-hint");
@@ -145,7 +146,7 @@ function renderIcons() {
   }) : [element("span", "empty", tr("icons.none"))]));
 }
 sections.icons.body.append(searchbox, count, iconGrid);
-search.addEventListener("input", renderIcons);
+search.addEventListener("input", () => { urlState.set({ q: search.value.trim() }); renderIcons(); });
 autocomplete.attach(search, { suggestions: () => icons });
 
 /* ---------- fonts ---------- */
@@ -214,16 +215,24 @@ function markSection() {
   let current = sectionOrder[0];
   for (const id of sectionOrder) if (sections[id].box.getBoundingClientRect().top <= top) current = id;
   for (const item of $("sidebar-nav").children) item.classList.toggle("on", item.dataset.section === current);
+  if (settled) urlState.set({ section: current === sectionOrder[0] ? "" : current });
 }
+let settled = false;   // the section of the address is gone to first; until then the scroll does not write it
 $("content").addEventListener("scroll", markSection);
 
 function renderAll() {
-  renderSide(); renderColours(); renderWebs(); renderIcons(); renderFonts(); renderSizes(); renderFiles();
+  renderSide(); renderColours(); renderApps(); renderIcons(); renderFonts(); renderSizes(); renderFiles();
 }
 renderAll();
 i18n.onChange(renderAll);
-// The values follow the theme: when it changes (here, or in another web), the colours are read again.
-new MutationObserver(() => { renderColours(); renderWebs(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+{   // the section of the address is shown (after the layout, when the fonts have their width)
+  const wanted = sections[urlState.get("section")];
+  const arrive = () => { wanted?.box.scrollIntoView({ block: "start" }); markSection(); settled = true; };
+  requestAnimationFrame(() => requestAnimationFrame(arrive));
+  document.fonts?.ready.then(() => { if (!settled) arrive(); else if (wanted) wanted.box.scrollIntoView({ block: "start" }); });
+}
+// The values follow the theme: when it changes (here, or in another app), the colours are read again.
+new MutationObserver(() => { renderColours(); renderApps(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
 // One button toggles the theme, to see the colours in both of them; its icon is the theme that a click gives (a sun in the dark theme).
 function markTheme() {

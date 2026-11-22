@@ -1,19 +1,19 @@
-// The GitHub sign-in shared by every web (they all run on one origin).
+// The GitHub sign-in shared by every app (they all run on one origin).
 // The account is kept in localStorage under the key "account" as { token, login, name, avatar }.
-// Sign in once in any web and every other web, open or opened later, knows it.
+// Sign in once in any app and every other app, open or opened later, knows it.
 // The sign-in is "Sign in with GitHub" (an OAuth App): account.signInWithGitHub() sends the whole page to GitHub, GitHub sends it back to youmu/callback.html,
 // and account.finishSignIn() trades the code for a token through the Worker of kancamu-auth (the only place that knows the client secret).
-// The token has the scope "repo" (assets/data/auth.json), because the storage of the webs is a private repository of the user.
-// A token that GitHub made to expire is not an account any more once it has: the webs ask for the sign-in again.
+// The token has the scope "repo" (assets/data/auth.json), because the storage of the apps is a private repository of the user.
+// A token that GitHub made to expire is not an account any more once it has: the apps ask for the sign-in again.
 //
-// The sign-in screen, the profile, and the settings of every web are pages of the account web (/youmu), chosen by the query string
+// The sign-in screen, the profile, and the settings of every app are pages of the account app (/youmu), chosen by the query string
 // (?page=login, ?page=profile, ?page=settings&app=<app>), so no other web builds its own:
-//   account.open()              opens the account web in a dialog over the current page: the profile, or the sign-in when there is no account
+//   account.open()              opens the account app in a dialog over the current page: the profile, or the sign-in when there is no account
 //   account.open("settings")    opens a page of it: "login", "profile", or "settings"
-//   account.bind(btn)           makes a button with the class "account" open the settings of the web (the profile or the sign-in when the web has none),
+//   account.bind(btn)           makes a button with the class "account" open the settings of the app (the profile or the sign-in when the app has none),
 //                               and show the avatar when signed in
-// A web has one button for all of it. The dialog knows the web that opened it (the first folder of the address, such as muai), so it opens on the settings
-// of that web; the sidebar of the account web has the profile and the settings of every other web.
+// An app has one button for all of it. The dialog knows the app that opened it (the first folder of the address, such as muai), so it opens on the settings
+// of that app; the sidebar of the account app has the profile and the settings of every other app.
 (() => {
     const PAGE = new URL("../../youmu/", document.currentScript.src).href;
     const KEY = "account";
@@ -130,7 +130,7 @@
             return pending.returnTo || "";
         },
 
-        // Saves an account that a web has already checked itself.
+        // Saves an account that an app has already checked itself.
         set(info) {
             try {
                 localStorage.setItem(KEY, JSON.stringify(info));
@@ -152,7 +152,7 @@
             }
         },
 
-        // Opens the account web in a dialog (it closes itself). page: "login", "profile", or "settings".
+        // Opens the account app in a dialog (it closes itself). page: "login", "profile", or "settings".
         open(page = "", app = location.pathname.split("/").filter(Boolean)[0] || "") {
             const url = new URL(PAGE);
             if (page) url.searchParams.set("page", page);
@@ -179,7 +179,7 @@
             frame.contentWindow?.postMessage({ type: "account:focus" }, location.origin);
         },
 
-        // A button with the class "account": it opens the dialog on the settings of this web, and shows the avatar once signed in.
+        // A button with the class "account": it opens the dialog on the settings of this app, and shows the avatar once signed in.
         bind(button) {
             const render = (user) => {
                 button.classList.toggle("signed-in", !!user);
@@ -190,7 +190,7 @@
             render(read());
         },
 
-        // Runs fn(account) after every change, also one made in another web.
+        // Runs fn(account) after every change, also one made in another app.
         onChange(fn) {
             listeners.push(fn);
         },

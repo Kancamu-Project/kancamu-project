@@ -1,0 +1,52 @@
+/* Speechmu: speech to text and text to speech with AI models that run in the browser. */
+.hidden { display: none !important; }
+
+/* Page */
+/* The page is the header, the main, and the footer, directly in the body. The padding and the gap are the ones of the body. */
+.main { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; }
+
+.header { height: var(--height); }
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
+.header-tools { height: 100%; }
+
+/* One panel at a time: the one of the tab */
+.panel { min-height: 0; display: flex; flex-direction: column; gap: var(--gap-small); }
+
+/* The selects, in a row */
+.field-bar { display: flex; flex-wrap: wrap; gap: var(--gap-small); }
+.field { flex: 1 1 calc(var(--height) * 6); display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--gap-small); min-width: 0; }
+.field-label { min-width: calc(var(--height) * 2); font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; color: var(--fg-1); white-space: nowrap; }
+.field select { width: 100%; min-width: 0; }
+
+.listen-actions, .speak-actions { display: flex; align-items: center; flex-wrap: wrap; gap: var(--gap-small); }
+.listen-actions .field-hint { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.speak-actions { justify-content: flex-end; }
+#record-button.recording { color: var(--danger); border-color: var(--danger); }
+
+/* The text, and the transcription */
+.pane { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: var(--gap-small); }
+.pane-bar { display: flex; align-items: center; gap: var(--gap-small); height: var(--height); }
+.pane-title { flex: 1; min-width: 0; font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; color: var(--fg-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pane-count { color: var(--fg-1); font-size: var(--font-size-extra-small); white-space: nowrap; }
+.pane-text {
+  flex: 1; min-height: calc(var(--unit) * 40); padding: var(--padding-medium); overflow-y: auto; resize: none;
+  font-size: var(--font-size-medium); white-space: pre-wrap; overflow-wrap: anywhere;
+  border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); background: var(--bg-1);
+}
+textarea.pane-text { color: var(--fg); }
+.pane-text:empty::before { content: attr(data-placeholder); color: var(--fg-1); }
+
+
+dialog { color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--border); padding: 0; }
+dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent); }
+
+@media (max-width: 48rem) {
+  .pane-text { min-height: calc(var(--unit) * 30); }
+}
+
+/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
+#choose-button { width: calc(var(--height) * 5); }
+#record-button { width: calc(var(--height) * 5); }
+#speak-button { width: calc(var(--height) * 4); }
+#stop-button { width: calc(var(--height) * 3); }
+#save-audio { width: calc(var(--height) * 4); }

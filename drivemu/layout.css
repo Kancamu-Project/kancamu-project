@@ -30,7 +30,7 @@ ul { list-style: none; }
 .call-to-action { height: calc(var(--unit) * 15); font-size: var(--font-size-medium); }
 .call-to-action .icon { --is: var(--icon-size-medium); }
 /* Logo = favicon.png (16x16 pixels). Shown at 2rem (exactly 2x) with pixelated rendering so the pixels stay sharp. */
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the web: its favicon (the rest is in assets/css/components.css) */
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
 :root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/components.css) */
 .logo.light { color: var(--accent-ink); }
 /* on the panel the orange icon needs a dark background for contrast; tile = 2rem icon + 0.6rem padding */

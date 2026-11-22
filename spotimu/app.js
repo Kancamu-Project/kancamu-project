@@ -1,4 +1,4 @@
-// Spotimu: the audio files of the user's Drive (the folder of Drivemu), with a player.
+// Spotimu: the audio files of the user's Drive, with a player.
 await i18n.load();
 i18n.selects();
 
@@ -13,7 +13,7 @@ const els = Object.fromEntries([
 const audio = els.audioElement;
 
 // The audio types, the limits, the first values of the settings, and the folder are in data.json.
-const { media, limits, mimeTypes, storageFolder, settings: { defaults }, repeatModes } = i18n.data;
+const { media, limits, mimeTypes, settings: { defaults }, repeatModes } = i18n.data;
 const AUDIO = new Set(media.audio);
 const ALL = "", ROOT = "/";   // the values of the album select: every album, and the files at the root of the Drive
 
@@ -30,7 +30,7 @@ const state = {
   now: null,       // the track that is loaded in the player
 };
 
-/* ---------- the playback settings (volume, shuffle, repeat): the player and the account web both set them, and each follows the other ---------- */
+/* ---------- the playback settings (volume, shuffle, repeat): the player and the account app both set them, and each follows the other ---------- */
 let playback = settings.get("spotimu", defaults);
 const saveSettings = () => settings.set("spotimu", playback);
 settings.onChange("spotimu", defaults, (changed) => { playback = changed; state.history = []; applySettings(); });
@@ -61,7 +61,7 @@ async function loadFiles() {
   state.phase = "loading";
   render();
   try {
-    if (!state.store || state.token !== signedIn.token) { state.store = await storage.connect(storageFolder); state.token = signedIn.token; }
+    if (!state.store || state.token !== signedIn.token) { state.store = await storage.drive(); state.token = signedIn.token; }
     const { files, truncated } = await storage.tree(state.store);
     state.truncated = truncated;
     state.items = files.filter((file) => AUDIO.has(extensionOf(file.path))).map((file) => {
@@ -80,16 +80,20 @@ async function loadFiles() {
 }
 
 /* ---------- the albums: the folders that hold audio files ---------- */
+// What is on the screen is also in the address (?album=...&q=...&sort=...), so a reload shows the same (assets/js/url.js). The albums are known when the files are loaded:
+// until then the album of the address waits, and nothing is written (the first render would write "every album").
+let wantedAlbum = urlState.get("album");
 function renderAlbums() {
   const counts = new Map();
   for (const item of state.items) counts.set(item.album || ROOT, (counts.get(item.album || ROOT) || 0) + 1);
-  const chosen = els.albumSelect.value;
+  const chosen = wantedAlbum ?? els.albumSelect.value;
   const option = (value, label) => Object.assign(document.createElement("option"), { value, textContent: label });
   els.albumSelect.replaceChildren(
     option(ALL, `${tr("album.all")} (${state.items.length})`),
     ...[...counts.keys()].sort((a, b) => a.localeCompare(b, i18n.lang, { numeric: true })).map((album) => option(album, `${album === ROOT ? tr("album.root") : album} (${counts.get(album)})`)),
   );
   els.albumSelect.value = counts.has(chosen) ? chosen : ALL;
+  if (state.phase === "ready") wantedAlbum = null;
 }
 const inAlbum = (item) => els.albumSelect.value === ALL || (item.album || ROOT) === els.albumSelect.value;
 const albumLabel = (item) => item.album || tr("album.root");
@@ -108,6 +112,7 @@ function render() {
   const signedOut = state.phase === "signedOut";
   els.refreshButton.disabled = signedOut || state.phase === "loading";
   els.albumSelect.disabled = !state.items.length;
+  if (ready) urlState.set({ album: els.albumSelect.value, q: els.musicSearch.value.trim(), sort: els.sortOrder.selectedIndex === 0 ? "" : els.sortOrder.value });
 
   els.trackList.classList.toggle("hidden", !state.shown.length || !ready);
   els.emptyState.classList.toggle("hidden", !!state.shown.length && ready);
@@ -288,4 +293,6 @@ applySettings();
 setPlayIcon();
 els.playerName.textContent = tr("player.nothing");
 els.playerTime.textContent = `${clock(0)} / ${clock(0)}`;
+els.musicSearch.value = urlState.get("q");
+if ([...els.sortOrder.options].some((option) => option.value === urlState.get("sort"))) els.sortOrder.value = urlState.get("sort");
 loadFiles();

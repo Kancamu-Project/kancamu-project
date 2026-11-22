@@ -1,8 +1,8 @@
-/* The components of the webs: what every web makes again, made once (the page itself is in page.css).
-   It is loaded after style.css, and before the layout.css of the web, which only adds what is its own.
+/* The components of the apps: what every app makes again, made once (the page itself is in page.css).
+   It is loaded after style.css, and before the layout.css of the app, which only adds what is its own.
    Kitmu shows each component, with the HTML to copy. The scripts that go with them are in components.js. */
 
-/* What is highlighted (a primary button, the item that is on, a checkbox that is checked, the spinner, the bars) has the colour of the web. A web whose highlight is white (or black, in the light theme)
+/* What is highlighted (a primary button, the item that is on, a checkbox that is checked, the spinner, the bars) has the colour of the app. An app whose highlight is white (or black, in the light theme)
    says so in its layout.css: :root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); } */
 :root {
     --highlight: var(--brand);
@@ -78,7 +78,7 @@
 .icon-warning { --icon: url("../icons/warning.svg"); }
 .icon-zap { --icon: url("../icons/zap.svg"); }
 
-/* ---------- Button: the plain one, primary (the colour of the web), ghost (no line until it is pointed), square (an icon only) ---------- */
+/* ---------- Button: the plain one, primary (the colour of the app), ghost (no line until it is pointed), square (an icon only) ---------- */
 button {
     display: flex;
     justify-content: center;
@@ -450,13 +450,13 @@ button.toggle.on {
     border-color: var(--fg);
 }
 
-/* ---------- Account button: its picture is the avatar of the signed-in account (assets/js/account.js sets it) ---------- */
+/* ---------- Account button: its image is the avatar of the signed-in account (assets/js/account.js sets it) ---------- */
 button.account.signed-in {
     background-size: cover;
     background-position: center;
 }
 
-/* ---------- Avatar: the picture of a person, or the letters of the name ---------- */
+/* ---------- Avatar: the image of a person, or the letters of the name ---------- */
 .avatar {
     display: flex;
     align-items: center;
@@ -518,7 +518,7 @@ button.account.signed-in {
     min-width: 0;
 }
 
-/* ---------- Item: a row with a picture, a title with a description, and actions ---------- */
+/* ---------- Item: a row with an image, a title with a description, and actions ---------- */
 .item {
     display: flex;
     align-items: center;
@@ -570,7 +570,7 @@ button.account.signed-in {
     min-width: 0;
 }
 
-/* ---------- Checkbox and radio: a square (or a circle) that is filled with the colour of the web when it is on ---------- */
+/* ---------- Checkbox and radio: a square (or a circle) that is filled with the colour of the app when it is on ---------- */
 input.checkbox,
 input.radio {
     -webkit-appearance: none;
@@ -858,15 +858,81 @@ input.radio:disabled {
     background: transparent;
 }
 
-/* ---------- Slider: a range input in the colour of the web ---------- */
+/* ---------- Slider: a range input. A track as thick as the progress, filled up to the knob with the colour of the app, and a knob like the knob of the switch.
+   --position (0 to 1, where the knob is) is kept by assets/js/components.js, because the browsers cannot paint "what is before the knob" of a track by themselves (Firefox can). ---------- */
 input.slider {
+    --position: 0;
+    --knob: calc(var(--unit) * 5);
+    --track: calc(var(--unit) * 2);
+    --filled: calc(var(--knob) / 2 + (100% - var(--knob)) * var(--position));   /* the knob moves inside the track: its centre goes from half a knob to the end less half a knob */
+    -webkit-appearance: none;
+    appearance: none;
     width: 100%;
-    height: auto;
+    height: var(--knob);
+    margin: 0;
     padding: 0;
     cursor: pointer;
-    accent-color: var(--highlight);
     background: transparent;
     border: 0;
+    border-radius: 0;
+}
+
+input.slider::-webkit-slider-runnable-track {
+    height: var(--track);
+    background: linear-gradient(to right, var(--highlight) var(--filled), var(--border) var(--filled));
+    border-radius: var(--border-radius-small);
+}
+
+input.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: var(--knob);
+    height: var(--knob);
+    margin-top: calc((var(--track) - var(--knob)) / 2);
+    background: var(--fg);
+    border: var(--border-width-thick) solid var(--bg);
+    border-radius: var(--border-radius-small);
+    box-shadow: 0 0 0 var(--border-width) var(--fg-1);
+    transition: background 0.2s;
+}
+
+input.slider::-moz-range-track {
+    height: var(--track);
+    background: var(--border);
+    border-radius: var(--border-radius-small);
+}
+
+input.slider::-moz-range-progress {
+    height: var(--track);
+    background: var(--highlight);
+    border-radius: var(--border-radius-small);
+}
+
+input.slider::-moz-range-thumb {
+    box-sizing: border-box;
+    width: var(--knob);
+    height: var(--knob);
+    background: var(--fg);
+    border: var(--border-width-thick) solid var(--bg);
+    border-radius: var(--border-radius-small);
+    box-shadow: 0 0 0 var(--border-width) var(--fg-1);
+    transition: background 0.2s;
+}
+
+:root[dir="rtl"] input.slider::-webkit-slider-runnable-track {
+    background: linear-gradient(to left, var(--highlight) var(--filled), var(--border) var(--filled));
+}
+
+input.slider:hover:not(:disabled)::-webkit-slider-thumb {
+    background: var(--highlight);
+}
+
+input.slider:hover:not(:disabled)::-moz-range-thumb {
+    background: var(--highlight);
+}
+
+input.slider:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }
 
 /* ---------- Input OTP: one input for each character of a code (assets/js/components.js: components.otp) ---------- */
@@ -1082,7 +1148,7 @@ input.slider {
     gap: var(--gap-small);
 }
 
-/* ---------- Chart: bars or a line, drawn in svg in the colour of the web (components.chart) ---------- */
+/* ---------- Chart: bars or a line, drawn in svg in the colour of the app (components.chart) ---------- */
 .chart {
     width: 100%;
     height: auto;

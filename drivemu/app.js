@@ -8,7 +8,7 @@ let STORAGE_LIMIT_KB, DEFAULT_FOLDERS, KEEP, MAX_FILE, THUMB_MAX, TYPES, ICON_OF
 const $ = (id) => document.getElementById(id);
 const tr = (key, params) => i18n.t(key, params);
 const S = {
-  token: '', user: null, owner: '', repo: '', branch: 'main', root: '', head: null,   // root: the folder of the drive in the repository (AppData/drivemu)
+  token: '', user: null, owner: '', repo: '', branch: 'main', root: '', system: [], head: null,   // root: where the drive starts in the repository (its root: Documents, Images, ... are next to AppData); system: the names at the root that the user did not make (AppData, README.md)
   path: [], rootFolders: [], items: [], visible: [], view: 'grid', sort: 'name', dir: 1, query: '',
   selected: new Set(), busy: false, repoSizeKB: 0, repoPrivate: true,
 };
@@ -29,7 +29,7 @@ const tile = (k, big = false) => { const t = element('span', 'file-tile kind-' +
 
 
 /* ---------- dialogs ---------- */
-// A question in the dialog shared by every web (assets/js/popup.js). input: the text to start from; the answer is true, or the trimmed text (null when cancelled).
+// A question in the dialog shared by every app (assets/js/popup.js). input: the text to start from; the answer is true, or the trimmed text (null when cancelled).
 async function ask({ title, text = '', input = null, ok }) {
   const answer = await popups.ask({ title, text, value: input, ok });
   return typeof answer === 'string' ? answer.trim() : answer || null;
@@ -96,7 +96,7 @@ async function listViaTree(dir) {
     .filter((t) => t.path.startsWith(prefix) && !t.path.slice(prefix.length).includes('/'))
     .map((t) => ({ name: t.path.slice(prefix.length), path: t.path, type: t.type === 'tree' ? 'dir' : 'file', size: t.size || 0, sha: t.sha }));
 }
-/* ---------- the account: one sign-in, shared with the other webs (assets/js/account.js) ---------- */
+/* ---------- the account: one sign-in, shared with the other apps (assets/js/account.js) ---------- */
 async function authenticate(token) {
   S.token = token;
   const res = await api('/user', { returnResponse: true });
@@ -107,18 +107,18 @@ async function authenticate(token) {
 // The default folders, all empty (a folder is kept by an empty .gitkeep file).
 async function createDefaultFolders() {
   const blob = await repoApi('/git/blobs', { method: 'POST', body: JSON.stringify({ content: '', encoding: 'utf-8' }) });
-  await commitTree(DEFAULT_FOLDERS.map((name) => ({ path: `${S.root}/${name}/${KEEP}`, mode: '100644', type: 'blob', sha: blob.sha })), 'Drivemu: create the default folders');
+  await commitTree(DEFAULT_FOLDERS.map((name) => ({ path: [S.root, name, KEEP].filter(Boolean).join('/'), mode: '100644', type: 'blob', sha: blob.sha })), 'Drivemu: create the default folders');
 }
 
-// Connects to the drivemu folder of the shared storage (assets/js/storage.js: AppData/drivemu), then makes sure the default folders are there.
+// Connects to the shared storage (assets/js/storage.js): the drive is the whole repository, shown like a file explorer (AppData is a folder in it like the others). Then makes sure the default folders are there.
 async function openStorage() {
-  const store = await storage.connect('drivemu');
-  S.owner = store.owner; S.repo = store.repo; S.branch = store.branch; S.root = store.root;
+  const store = await storage.drive();
+  S.owner = store.owner; S.repo = store.repo; S.branch = store.branch; S.root = store.root; S.system = store.system;
   S.repoPrivate = store.info.private; S.repoSizeKB = store.info.size || 0;
   S.head = null;
   let root = [];
   try { root = await repoApi(`${contentsOf(S.root)}?ref=${S.branch}`); } catch (e) { if (e.status !== 404) throw e; }
-  if (root.every((item) => item.name === KEEP)) await createDefaultFolders();   // a new, empty drive
+  if (root.every((item) => item.name === KEEP || S.system.includes(item.name))) await createDefaultFolders();   // a new drive: nothing yet but what GitHub and the apps made
   showApp();
 }
 
@@ -134,7 +134,7 @@ async function startFromAccount() {
     else showSignedOut(tr('login.couldNotConnect', { message: e.code === 'noWrite' ? tr('error.noWrite') : e.message }));
   }
 }
-// Back to the sign-in screen (the account was removed here or in another web).
+// Back to the sign-in screen (the account was removed here or in another app).
 function resetSession() { S.token = ''; S.user = null; S.items = []; S.rootFolders = []; showSignedOut(); }
 account.onChange(async (acc) => {
   if (!acc) { if (S.user) resetSession(); return; }
@@ -142,8 +142,11 @@ account.onChange(async (acc) => {
 });
 
 /* --- screens --- */
+// What is on the screen is also in the address (?path=Images/Cats&q=...&view=list&sort=size:-1), so a reload shows the same folder (assets/js/url.js): the first time the files are shown, they are the ones of the address.
+let fromAddress = { path: urlState.get('path'), query: urlState.get('q') };
 function showApp() {
-  S.path = []; S.query = ''; $('file-search').value = ''; S.selected.clear(); load();
+  S.path = fromAddress.path.split('/').filter(Boolean); S.query = fromAddress.query; S.restored = S.path.length > 0; fromAddress = { path: '', query: '' };
+  $('file-search').value = S.query; S.selected.clear(); load();
 }
 // Not signed in: the files page is shown as it is, empty, with an invitation to sign in.
 function showSignedOut(err = '') {
@@ -153,7 +156,7 @@ function showSignedOut(err = '') {
   if (err) popups.toast(err, { kind: "error" });
 }
 
-/* --- settings: set in the account web; the reset it does shows here --- */
+/* --- settings: set in the account app; the reset it does shows here --- */
 settings.listen('drivemu', (message) => {
   if (message.type !== 'reset') return;
   S.head = message.head; S.path = []; S.query = ''; $('file-search').value = '';
@@ -172,9 +175,11 @@ async function load() {
     S.items = items.filter((i) => i.name !== KEEP);
     if (!S.path.length) S.rootFolders = S.items.filter((i) => i.type === 'dir').map((i) => i.name);
   } catch (e) {
+    if (e.status === 404 && S.restored && S.path.length) { S.path = []; S.restored = false; return load(); }   // the folder of the address is not there (any more): the start
     if (e.status === 404) S.items = [];
     else { popups.toast(tr('load.failed', { message: e.message }), { kind: "error" }); S.items = []; }
   }
+  S.restored = false;
   $('loading').classList.add('hidden');
   render();
 }
@@ -267,6 +272,7 @@ function render() {
   $('view-grid-button').classList.toggle('on', S.view === 'grid');
   $('view-list-button').classList.toggle('on', S.view === 'list');
   $('sort-order').value = `${S.sort}:${S.dir}`;
+  if (S.user) urlState.set({ path: S.path.join('/'), q: S.query, view: S.view === 'grid' ? '' : S.view, sort: S.sort === 'name' && S.dir === 1 ? '' : `${S.sort}:${S.dir}` });
   $('new-button').disabled = !S.user;
   updateSelection();
   const files = S.items.filter((i) => i.type !== 'dir');
@@ -430,7 +436,7 @@ const readB64 = (file) => new Promise((res, rej) => {
   r.readAsDataURL(file);
 });
 
-// Accept a File or { file, rel } (rel = relative path, e.g. "Photos/a.jpg" when uploading a folder)
+// Accept a File or { file, rel } (rel = relative path, e.g. "Images/a.jpg" when uploading a folder)
 async function upload(input) {
   if (!S.user) return account.open();
   let files = [...input].map((x) => (x instanceof File ? { file: x, rel: x.webkitRelativePath || x.name } : x));
@@ -598,6 +604,9 @@ function refreshLanguage() {
   i18n.selects();
   i18n.onChange(refreshLanguage);
   try { S.view = localStorage.getItem('drivemu.view') || 'grid'; } catch { /* ignore */ }
+  if (['grid', 'list'].includes(urlState.get('view'))) S.view = urlState.get('view');   // the address wins
+  const [sortKey, sortDir] = urlState.get('sort').split(':');
+  if (['name', 'size', 'type'].includes(sortKey) && [-1, 1].includes(Number(sortDir))) { S.sort = sortKey; S.dir = Number(sortDir); }
   await startFromAccount();
 })();
 })();

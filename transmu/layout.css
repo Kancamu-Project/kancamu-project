@@ -11,7 +11,7 @@ button.active { background: var(--fg); color: var(--bg); border-color: var(--fg)
 .main { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto auto; }
 
 .header { height: var(--height); }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the web: its favicon (the rest is in assets/css/components.css) */
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
 .header-tools { height: 100%; }
 
 .model-bar { display: flex; align-items: center; gap: var(--gap-small); }
@@ -38,7 +38,6 @@ textarea.pane-text { color: var(--fg); }
 
 .actions { display: flex; justify-content: flex-end; gap: var(--gap-small); }
 
-#status.error { white-space: normal; }
 
 /* Settings */
 dialog { color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--border); padding: 0; }

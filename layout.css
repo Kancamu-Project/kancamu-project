@@ -107,10 +107,10 @@ body {
             transition: background 0.2s, padding-inline-end 0.2s;
 
             &:hover {
-                background: var(--bg-1);
+                background: color-mix(in srgb, var(--color) 7%, var(--bg));   /* the colour of its project, lighter than the tab that is shown (12%) */
             }
 
-            /* A file is over the tab, and the web of the tab takes it */
+            /* A file is over the tab, and the app of the tab takes it */
             &.drop-target {
                 background: var(--bg-1);
                 box-shadow: inset 0 0 0 var(--border-width-thick) var(--color);
@@ -124,7 +124,7 @@ body {
                 background: var(--bg);
 
                 &:hover {
-                    background: var(--bg-1);
+                    background: color-mix(in srgb, var(--color) 7%, var(--bg));
                 }
             }
 
@@ -734,4 +734,144 @@ button {
 /* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
 #reset-button {
     width: calc(var(--height) * 3);
+}
+
+/* Splash: a layer over the content for a moment when the site opens (it takes the click that closes it) */
+
+.splash {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--padding-large);
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    -webkit-backdrop-filter: blur(var(--unit));   /* a little blur of the page behind it */
+    backdrop-filter: blur(var(--unit));
+    transition: opacity 0.4s;
+    cursor: pointer;
+
+    &[hidden] { display: none; }
+    &.leaving { opacity: 0; }
+}
+
+/* The card is 5:3 (wide), and 3:5 on a narrow screen (tall). Two parts are the brand and three parts are the picture, so the picture is a square in both. */
+.splash-card {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    aspect-ratio: 5 / 3;
+    width: min(calc(var(--height) * 40 / 3), 100%, calc(var(--vh) * 80 * 5 / 3));   /* 13.33 heights wide, so 8 heights tall */
+    overflow: hidden;
+    background: var(--bg);
+    border: var(--border-width-thick) solid var(--border);   /* the dark gray of the lines, 2 thick, so the card stands out from the page behind it */
+    border-radius: var(--border-radius-extra-large);
+    animation: splash-in 0.5s;
+}
+
+.splash-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-medium);
+    min-width: 0;
+    padding: var(--padding-extra-large);
+}
+
+.splash-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-small);
+}
+
+.splash-mark {
+    flex: none;
+    width: var(--icon-size-large);   /* the mark of a logo, next to a name of --font-size-extra-large */
+    height: var(--icon-size-large);
+    background: url("favicon.png") center / contain no-repeat;
+    image-rendering: pixelated;
+}
+
+.splash-name {
+    font-size: var(--font-size-extra-large);
+    font-weight: 700;
+    line-height: 1;
+
+    & .highlight { color: var(--highlight, var(--blue)); }
+}
+
+.splash-tagline { color: var(--fg-1); }
+.splash-spacer { flex: 1; }
+.splash-hint, .splash-copyright { font-size: var(--font-size-extra-small); color: var(--fg-1); }
+
+/* The images of the splash (assets/images, the list of data.json, set by app.js): squares in a row that slides, covering their part of the card */
+.splash-art {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-1);
+}
+
+/* A gradient in the middle of the card: the card is 5 parts across (2 of the brand and 3 of the image), and the gradient is the third part, the one part that is in the middle,
+   where the brand meets the image: the colour of the brand fades into the image. One part is a third of the image (calc(100% / 3)), which is 3 heights.
+   On a narrow screen the card is 5 parts tall, and the gradient is the one part at the top of the image. */
+.splash-art::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: calc(100% / 3);
+    background: linear-gradient(to right, var(--bg), transparent);
+    pointer-events: none;
+}
+
+/* The dots of the images: at the bottom of the image, one for each image, and the one of the image that shows is lit */
+.splash-dots {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: var(--padding-medium);
+    display: flex;
+    justify-content: center;
+    gap: var(--gap-small);
+    pointer-events: none;
+}
+
+.splash-dot {
+    width: calc(var(--unit) * 2);
+    height: calc(var(--unit) * 2);
+    background: color-mix(in srgb, var(--white) 40%, transparent);
+    border-radius: var(--border-radius-large);
+    transition: background 0.3s;
+
+    &.on { background: var(--white); }
+}
+
+:root[dir="rtl"] .splash-art::after {
+    background: linear-gradient(to left, var(--bg), transparent);
+}
+
+.splash-track {
+    display: flex;
+    height: 100%;
+
+    &.moving { transition: transform 0.8s ease-in-out; }
+}
+
+.splash-slide {
+    flex: none;
+    width: 100%;
+    height: 100%;
+    background: center / cover no-repeat;
+}
+
+@keyframes splash-in {
+    from { opacity: 0; transform: scale(0.96); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .splash, .splash-card, .splash-track { animation: none; transition: none; }
+}
+
+@media (max-width: 48rem) {
+    .splash-card { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 2fr) minmax(0, 3fr); aspect-ratio: 3 / 5; width: min(calc(var(--height) * 7), 100%, calc(var(--vh) * 80 * 3 / 5)); }   /* 7 heights wide, so 11.67 heights tall */
+    .splash-info { padding: var(--padding-large); gap: var(--gap-small); }
+    .splash-art::after, :root[dir="rtl"] .splash-art::after { inset: 0 0 auto; width: auto; height: calc(100% / 3); background: linear-gradient(to bottom, var(--bg), transparent); }
 }

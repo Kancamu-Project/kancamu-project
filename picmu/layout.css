@@ -1,4 +1,4 @@
-/* muRMBG: removes the background of an image, in the browser, with WebGPU. */
+/* Picmu: removes the background of an image or a video, and upscales them, in the browser, with WebGPU. */
 .hidden { display: none !important; }
 .visually-hidden { position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none; }
 .spacer { flex: 1; }
@@ -10,10 +10,10 @@ button.active { background: var(--fg); color: var(--bg); border-color: var(--fg)
 
 /* Page */
 /* The page is the header, the main, and the footer, directly in the body. The padding and the gap are the ones of the body. */
-.main { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; }
+.main { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto; }
 
 .header { height: var(--height); }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the web: its favicon (the rest is in assets/css/components.css) */
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
 .header-tools { height: 100%; }
 
 .model-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small); }
@@ -59,23 +59,22 @@ button.active { background: var(--fg); color: var(--bg); border-color: var(--fg)
 .panes { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-small); }
 .pane { min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: var(--gap-small); }
 .pane-title { font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; color: var(--fg-1); }
-.picture {
+.image {
   flex: 1; min-height: calc(var(--unit) * 40); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large);
-  background: var(--picture, none) center / contain no-repeat, var(--bg-1);
+  background: var(--image, none) center / contain no-repeat, var(--bg-1);
 }
-/* A video and the frames of its result fill the picture */
-.picture video, .picture canvas { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: inherit; }
+/* A video and the frames of its result fill the image */
+.image video, .image canvas { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: inherit; }
 /* A transparent result shows a chessboard behind it, so the empty parts can be seen */
-.picture.background-transparent {
-  background: var(--picture, none) center / contain no-repeat,
+.image.background-transparent {
+  background: var(--image, none) center / contain no-repeat,
     conic-gradient(var(--bg-1) 25%, var(--bg) 0 50%, var(--bg-1) 0 75%, var(--bg) 0) 0 0 / calc(var(--unit) * 6) calc(var(--unit) * 6);
 }
-.picture.background-white { background: var(--picture, none) center / contain no-repeat, var(--white); }
-.picture.background-custom { background: var(--picture, none) center / contain no-repeat, var(--custom-colour); }
+.image.background-white { background: var(--image, none) center / contain no-repeat, var(--white); }
+.image.background-custom { background: var(--image, none) center / contain no-repeat, var(--custom-colour); }
 .swatch { width: var(--icon-size-small); height: var(--icon-size-small); flex: none; background: var(--custom-colour); border: var(--border-width) solid currentColor; border-radius: var(--border-radius-small); }
-.picture.background-black { background: var(--picture, none) center / contain no-repeat, var(--black); }
+.image.background-black { background: var(--image, none) center / contain no-repeat, var(--black); }
 
-#status.error { white-space: normal; }
 
 /* Settings */
 dialog { color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--border); padding: 0; }
@@ -84,7 +83,7 @@ dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent)
 @media (max-width: 48rem) {
   #background-switch button { padding-inline: var(--padding-small); }
   .panes { grid-template-columns: 1fr; overflow: auto; }
-  .picture { min-height: calc(var(--unit) * 70); }
+  .image { min-height: calc(var(--unit) * 70); }
 }
 
 /* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */

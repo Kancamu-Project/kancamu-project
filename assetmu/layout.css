@@ -1,4 +1,4 @@
-/* Assetmu: shows every asset of the webs (colours, icons, fonts, sizes, files). The assets are in ../assets. */
+/* Assetmu: shows every asset of the apps (colours, icons, fonts, sizes, files). The assets are in ../assets. */
 html, body { height: 100%; }
 .hidden { display: none !important; }
 .probe { position: absolute; visibility: hidden; pointer-events: none; }
@@ -9,7 +9,7 @@ html, body { height: 100%; }
 /* The page is the header, the sidebar, and the main, directly in the body. The padding and the gap are the ones of the body: the three elements have none. */
 .menu-button { display: none; }
 .logo { height: var(--height); }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the web: its favicon (the rest is in assets/css/components.css) */
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
 :root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/components.css) */
 
 .sidebar-nav { gap: var(--gap-small); }
@@ -36,13 +36,13 @@ html, body { height: 100%; }
 .swatch-name { font-weight: 700; }
 .swatch-value { color: var(--fg-1); font-size: var(--font-size-extra-small); }
 
-/* The webs: the icon, the name with its highlight, and the colour */
-.web-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 70), 1fr)); gap: var(--gap-small); }
-.web-row { justify-content: flex-start; gap: var(--gap-medium); padding: 0 var(--padding-medium); font-weight: 400; text-transform: none; }
-.web-icon { width: var(--icon-size-large); height: var(--icon-size-large); flex: none; background: center / contain no-repeat; image-rendering: pixelated; }
-.web-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; text-align: start; }
-.web-colour { flex: none; display: flex; align-items: center; gap: var(--gap-small); color: var(--fg-1); font-size: var(--font-size-extra-small); }
-.web-chip { width: var(--icon-size-small); height: var(--icon-size-small); background: var(--chip); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-small); }
+/* The apps: the icon, the name with its highlight, and the colour */
+.app-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 70), 1fr)); gap: var(--gap-small); }
+.app-row { justify-content: flex-start; gap: var(--gap-medium); padding: 0 var(--padding-medium); font-weight: 400; text-transform: none; }
+.app-icon { width: var(--icon-size-large); height: var(--icon-size-large); flex: none; background: center / contain no-repeat; image-rendering: pixelated; }
+.app-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; text-align: start; }
+.app-colour { flex: none; display: flex; align-items: center; gap: var(--gap-small); color: var(--fg-1); font-size: var(--font-size-extra-small); }
+.app-chip { width: var(--icon-size-small); height: var(--icon-size-small); background: var(--chip); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-small); }
 
 /* Icons */
 .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 32), 1fr)); gap: var(--gap-small); }

@@ -1,5 +1,5 @@
-/* The page of the webs: the header, the footer, the main, and the sidebar when there is one, directly in the body (RULES.md, Page Layout).
-   It is loaded after components.css by every web that is a page of this kind (the main website has its own page). Kitmu shows the page with its HTML. */
+/* The page of the apps: the header, the footer, the main, and the sidebar when there is one, directly in the body (RULES.md, Page Layout).
+   It is loaded after components.css by every app that is a page of this kind (the main website has its own page). Kitmu shows the page with its HTML. */
 
 /* ---------- Page: the header, the footer, the main, and the sidebar when there is one, directly in the body (RULES.md, Page Layout) ---------- */
 body {
@@ -39,7 +39,7 @@ body {
     font-weight: 700;
 }
 
-/* The image of the logo is the favicon of the web, set in its layout.css: .logo-mark { background-image: url("favicon.png"); } */
+/* The image of the logo is the favicon of the app, set in its layout.css: .logo-mark { background-image: url("favicon.png"); } */
 .logo-mark {
     width: var(--icon-size-large);
     height: var(--icon-size-large);
@@ -72,10 +72,6 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-#status.error {
-    color: var(--danger);
 }
 
 .main {

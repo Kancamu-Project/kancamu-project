@@ -1,16 +1,16 @@
-// TODO: this file and the main web work around what the browser does not give (see TODO.md, "Retest"). Retest it from time to time, to make it plain.
-// Files of the Drive that can be dragged out of a web, with the types of drag that the browsers know.
-//  - A picture is dragged as a real <img> with the whole picture, so the drop area of any web (ours or somebody else's) gets it as a file (dataTransfer.files), like a
-//    file of the computer. A page cannot put a file in a drag by itself (Chrome drops it), so the file is given to the browser as a picture: an invisible <img> lies over
+// TODO: this file and the main website work around what the browser does not give (see TODO.md, "Retest"). Retest it from time to time, to make it plain.
+// Files of the Drive that can be dragged out of an app, with the types of drag that the browsers know.
+//  - An image is dragged as a real <img> with the whole image, so the drop area of any app (ours or somebody else's) gets it as a file (dataTransfer.files), like a
+//    file of the computer. A page cannot put a file in a drag by itself (Chrome drops it), so the file is given to the browser as an image: an invisible <img> lies over
 //    the element, and is the thing that is dragged.
 //  - Any other file (a video, a document) is dragged as a link (text/uri-list) to the file, and its name (text/plain). The browsers have no drag that carries such a file
-//    to another site; the webs of Kancamu take the link and read the file from it (transfer.take).
+//    to another site; the apps of Kancamu take the link and read the file from it (transfer.take).
 // The file has to be there when the drag starts, so it is read from the Drive while the pointer is over the element.
 //   transfer.drag(element, source, region)   makes an element draggable as a file; source is { id, name, size, image, load }, or a function that gives it (for a
 //                                            viewer that shows one file after another); load() gives the Blob. region is a function that gives the part of the element
-//                                            where a picture is dragged (the whole element if left out).
-//   await transfer.take(event)               the files of a drop: the ones of the computer, a picture of the Drive, or a file of the Drive that came as a link
-//   The main web is told (a message to the parent page) which file a web drags, and gives it to the web of any tab as a real file (see app.js).
+//                                            where an image is dragged (the whole element if left out).
+//   await transfer.take(event)               the files of a drop: the ones of the computer, an image of the Drive, or a file of the Drive that came as a link
+//   The main website is told (a message to the parent page) which file an app drags, and gives it to the app of any tab as a real file (see app.js).
 //   transfer.dragging                        true while a file of this page is being dragged (a page does not take its own file)
 (() => {
     const LIMIT = 64 * 1024 * 1024;   // a bigger file is not dragged: it would take too long to read before the drag
@@ -45,7 +45,7 @@
             let handle = null;
             const sync = () => {
                 const dragged = current();
-                element.draggable = !!dragged && !dragged.image;   // a file that is not a picture is dragged by the element itself
+                element.draggable = !!dragged && !dragged.image;   // a file that is not an image is dragged by the element itself
                 if (!dragged || !dragged.image) { handle?.remove(); handle = null; if (dragged && !ready.has(dragged.id)) prepare(dragged, () => {}); return; }
                 const host = (region && region()) || element;
                 if (!handle || handle.parentNode !== host) {

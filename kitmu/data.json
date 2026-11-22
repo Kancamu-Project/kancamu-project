@@ -1,8 +1,8 @@
 {
   "name": {
-    "en-US": "Kit{highlight} — the UI kit of the webs",
-    "zh-CN": "Kit{highlight} — 各网站的界面组件库",
-    "ar-SA": "Kit{highlight} — عدة واجهات المواقع"
+    "en-US": "Kit{highlight} — the UI kit of the apps",
+    "zh-CN": "Kit{highlight} — 各应用的界面组件库",
+    "ar-SA": "Kit{highlight} — عدة واجهات التطبيقات"
   },
   "brandColor": "#1782db",
   "sectionOrder": [
@@ -71,9 +71,9 @@
       "ar-SA": "النوافذ المنبثقة"
     },
     "popups.hint": {
-      "en-US": "Everything that pops up is in assets/js/popup.js, and its look is in style.css: a web never makes a popup of its own, and never uses alert, confirm, or prompt. The kind is a colour with a meaning: green is good (success), blue is neutral (info), yellow is careful (warning), and red is bad or sensitive (error, or a deletion). A dialog takes text, title, ok, cancel, value, and kind; a toast takes kind, duration (0 stays until it is closed), and progress. Press Try to see each one.",
-      "zh-CN": "所有弹出内容都在 assets/js/popup.js 中，样式在 style.css 中：网站不得自行制作弹出内容，也不得使用 alert、confirm 或 prompt。类型（kind）是带含义的颜色：绿色表示好事（success），蓝色表示中性（info），黄色表示小心（warning），红色表示负面或敏感（error，或删除）。对话框可用 text、title、ok、cancel、value 和 kind；轻提示可用 kind、duration（0 表示保持到关闭）和 progress。点击“试一试”查看效果。",
-      "ar-SA": "كل ما يظهر فوق الصفحة موجود في assets/js/popup.js وشكله في style.css: لا ينشئ أي موقع نافذة منبثقة خاصة به ولا يستخدم alert أو confirm أو prompt. النوع (kind) لون له معنى: الأخضر للشيء الجيد (success) والأزرق للمحايد (info) والأصفر للحذر (warning) والأحمر للسلبي أو الحساس (error أو الحذف). يقبل مربع الحوار text وtitle وok وcancel وvalue وkind؛ ويقبل الإشعار القصير kind وduration (القيمة 0 تبقيه حتى يُغلق) وprogress. اضغط «جرّب» لترى كل واحد."
+      "en-US": "Everything that pops up is in assets/js/popup.js, and its look is in style.css: an app never makes a popup of its own, and never uses alert, confirm, or prompt. The kind is a colour with a meaning: green is good (success), blue is neutral (info), yellow is careful (warning), and red is bad or sensitive (error, or a deletion). A dialog takes text, title, ok, cancel, value, and kind; a toast takes kind, duration (0 stays until it is closed), and progress. Press Try to see each one.",
+      "zh-CN": "所有弹出内容都在 assets/js/popup.js 中，样式在 style.css 中：应用不得自行制作弹出内容，也不得使用 alert、confirm 或 prompt。类型（kind）是带含义的颜色：绿色表示好事（success），蓝色表示中性（info），黄色表示小心（warning），红色表示负面或敏感（error，或删除）。对话框可用 text、title、ok、cancel、value 和 kind；轻提示可用 kind、duration（0 表示保持到关闭）和 progress。点击“试一试”查看效果。",
+      "ar-SA": "كل ما يظهر فوق الصفحة موجود في assets/js/popup.js وشكله في style.css: لا ينشئ أي تطبيق نافذة منبثقة خاصة به ولا يستخدم alert أو confirm أو prompt. النوع (kind) لون له معنى: الأخضر للشيء الجيد (success) والأزرق للمحايد (info) والأصفر للحذر (warning) والأحمر للسلبي أو الحساس (error أو الحذف). يقبل مربع الحوار text وtitle وok وcancel وvalue وkind؛ ويقبل الإشعار القصير kind وduration (القيمة 0 تبقيه حتى يُغلق) وprogress. اضغط «جرّب» لترى كل واحد."
     },
     "popups.try": {
       "en-US": "Try",
@@ -241,9 +241,9 @@
       "ar-SA": "الدوال المساعدة"
     },
     "helpers.hint": {
-      "en-US": "The small functions that every web wrote again, made once in assets/js/components.js (loaded after i18n.js): components.element, icon, formatSize, extensionOf, status, drawer, and download.",
-      "zh-CN": "各网站原本重复编写的小函数，现在在 assets/js/components.js 中只写一次（在 i18n.js 之后加载）：components.element、icon、formatSize、extensionOf、status、drawer 和 download。",
-      "ar-SA": "الدوال الصغيرة التي كانت كل المواقع تكتبها من جديد صُنعت مرة واحدة في assets/js/components.js (يُحمَّل بعد i18n.js): components.element وicon وformatSize وextensionOf وstatus وdrawer وdownload."
+      "en-US": "The small functions that every app wrote again, made once in assets/js/components.js (loaded after i18n.js): components.element, icon, formatSize, extensionOf, status, drawer, and download.",
+      "zh-CN": "各应用原本重复编写的小函数，现在在 assets/js/components.js 中只写一次（在 i18n.js 之后加载）：components.element、icon、formatSize、extensionOf、status、drawer 和 download。",
+      "ar-SA": "الدوال الصغيرة التي كانت كل التطبيقات تكتبها من جديد صُنعت مرة واحدة في assets/js/components.js (يُحمَّل بعد i18n.js): components.element وicon وformatSize وextensionOf وstatus وdrawer وdownload."
     },
     "helpers.element.title": {
       "en-US": "Elements and icons",
@@ -271,9 +271,9 @@
       "ar-SA": "سطر الحالة"
     },
     "helpers.status.text": {
-      "en-US": "The function that writes in the status line of the footer; true as the second value makes it red.",
-      "zh-CN": "写入页脚状态行的函数；第二个参数为 true 时显示为红色。",
-      "ar-SA": "الدالة التي تكتب في سطر الحالة في التذييل؛ القيمة true الثانية تجعله أحمر."
+      "en-US": "The function that writes in the hint line of the footer (what the page tells about itself). A notice is not written there: it is a popup.",
+      "zh-CN": "写入页脚提示行的函数（页面对自身的说明）。通知不写在这里，而是弹出内容。",
+      "ar-SA": "الدالة التي تكتب في سطر التلميح في التذييل (ما تقوله الصفحة عن نفسها). الإشعار لا يُكتب هناك، بل هو نافذة منبثقة."
     },
     "helpers.drawer.title": {
       "en-US": "Sidebar drawer",
@@ -311,9 +311,9 @@
       "ar-SA": "يربط الزر بمحتواه: النقر يفتحه أو يغلقه ويتبعه aria-expanded. مع open: false يبدأ مغلقا."
     },
     "components.page.text": {
-      "en-US": "The header, the sidebar, the main, and the footer directly in the body, with #popups. The header, the sidebar, and the footer are the tags kit-header, kit-sidebar, and kit-footer: they build the logo, the buttons of the header, the list of the sidebar, and the copyright, so they are the same in every web. On a narrow screen the sidebar is hidden and the menu button opens it. The main has the border.",
-      "zh-CN": "页眉、侧栏、主区域和页脚直接放在 body 中，另有 #popups。页眉、侧栏和页脚是标签 kit-header、kit-sidebar 和 kit-footer：它们生成标志、页眉按钮、侧栏列表和版权信息，因此各网站完全一致。窄屏时侧栏隐藏，由菜单按钮打开。主区域有边框。",
-      "ar-SA": "الترويسة والشريط الجانبي والمحتوى والتذييل مباشرة في body مع #popups. والترويسة والشريط الجانبي والتذييل هي الوسوم kit-header وkit-sidebar وkit-footer: تبني الشعار وأزرار الترويسة وقائمة الشريط الجانبي وحقوق النشر، فتكون واحدة في كل موقع. في الشاشة الضيقة يُخفى الشريط الجانبي ويفتحه زر القائمة. المحتوى له حدّ."
+      "en-US": "The header, the sidebar, the main, and the footer directly in the body, with #popups. The header, the sidebar, and the footer are the tags kit-header, kit-sidebar, and kit-footer: they build the logo, the buttons of the header, the list of the sidebar, and the copyright, so they are the same in every app. On a narrow screen the sidebar is hidden and the menu button opens it. The main has the border.",
+      "zh-CN": "页眉、侧栏、主区域和页脚直接放在 body 中，另有 #popups。页眉、侧栏和页脚是标签 kit-header、kit-sidebar 和 kit-footer：它们生成标志、页眉按钮、侧栏列表和版权信息，因此各应用完全一致。窄屏时侧栏隐藏，由菜单按钮打开。主区域有边框。",
+      "ar-SA": "الترويسة والشريط الجانبي والمحتوى والتذييل مباشرة في body مع #popups. والترويسة والشريط الجانبي والتذييل هي الوسوم kit-header وkit-sidebar وkit-footer: تبني الشعار وأزرار الترويسة وقائمة الشريط الجانبي وحقوق النشر، فتكون واحدة في كل تطبيق. في الشاشة الضيقة يُخفى الشريط الجانبي ويفتحه زر القائمة. المحتوى له حدّ."
     },
     "components.pageSimple.text": {
       "en-US": "The header, the main, and the footer. The main has no border of its own: the parts inside it have theirs.",
@@ -321,9 +321,9 @@
       "ar-SA": "الترويسة والمحتوى والتذييل. ليس للمحتوى حدّ خاص به، فالأجزاء داخله لها حدودها."
     },
     "components.button.text": {
-      "en-US": "Plain, primary, ghost, danger (red, for what deletes), with an icon, an icon only (square), and disabled. Primary has the colour --highlight: the colour of the web, or white when the web sets it so. The label stays on one line.",
-      "zh-CN": "普通、主要、幽灵、危险（红色，用于删除操作）、带图标、仅图标（方形）和禁用。主要按钮使用 --highlight 颜色：默认是网站颜色，网站也可设为白色。文字保持单行。",
-      "ar-SA": "عادي ورئيسي وشبحي وخطر (أحمر لما يحذف) ومع أيقونة وبأيقونة فقط (مربع) ومعطّل. الرئيسي بلون --highlight: لون الموقع أو الأبيض إذا حدّده الموقع. يبقى النص في سطر واحد."
+      "en-US": "Plain, primary, ghost, danger (red, for what deletes), with an icon, an icon only (square), and disabled. Primary has the colour --highlight: the colour of the app, or white when the app sets it so. The label stays on one line.",
+      "zh-CN": "普通、主要、幽灵、危险（红色，用于删除操作）、带图标、仅图标（方形）和禁用。主要按钮使用 --highlight 颜色：默认是应用颜色，应用也可设为白色。文字保持单行。",
+      "ar-SA": "عادي ورئيسي وشبحي وخطر (أحمر لما يحذف) ومع أيقونة وبأيقونة فقط (مربع) ومعطّل. الرئيسي بلون --highlight: لون التطبيق أو الأبيض إذا حدّده التطبيق. يبقى النص في سطر واحد."
     },
     "components.inputGroup.text": {
       "en-US": "An input with the search icon at its start, as the tag kit-search: input-id is the id of the input, and the placeholder and the label can be translated (data-i18n-placeholder, data-i18n-label). It fills the free width of its row.",
@@ -331,9 +331,9 @@
       "ar-SA": "حقل إدخال بأيقونة البحث في بدايته، بالوسم kit-search: input-id هو معرّف الحقل، ويمكن ترجمة النص البديل والتسمية (data-i18n-placeholder وdata-i18n-label). يملأ العرض الحر لصفّه."
     },
     "components.progress.text": {
-      "en-US": "The width of .progress-fill is the progress. Its colour is the colour of the web.",
-      "zh-CN": ".progress-fill 的宽度就是进度，颜色为网站颜色。",
-      "ar-SA": "عرض .progress-fill هو التقدم، ولونه لون الموقع."
+      "en-US": "The width of .progress-fill is the progress. Its colour is the colour of the app.",
+      "zh-CN": ".progress-fill 的宽度就是进度，颜色为应用颜色。",
+      "ar-SA": "عرض .progress-fill هو التقدم، ولونه لون التطبيق."
     },
     "components.toggleGroup.text": {
       "en-US": "Buttons side by side where one is on (class on, the same name as the open item of the sidebar), like the list and grid views.",
@@ -416,9 +416,9 @@
       "ar-SA": "هناك أمر قيد التنفيذ ولا أحد يعرف كم سيستغرق."
     },
     "components.skeleton.text": {
-      "en-US": "A block that stands where the content will be, while it loads. Its size is given by the web.",
-      "zh-CN": "内容加载时占位的色块，大小由各网站决定。",
-      "ar-SA": "كتلة تقف مكان المحتوى أثناء تحميله. يحدد الموقع حجمها."
+      "en-US": "A block that stands where the content will be, while it loads. Its size is given by the app.",
+      "zh-CN": "内容加载时占位的色块，大小由各应用决定。",
+      "ar-SA": "كتلة تقف مكان المحتوى أثناء تحميله. يحدد التطبيق حجمها."
     },
     "components.buttonGroup.text": {
       "en-US": "Buttons side by side, joined into one.",
@@ -456,14 +456,14 @@
       "ar-SA": "حقل نص من عدة أسطر."
     },
     "components.nativeSelect.text": {
-      "en-US": "The tag select: it looks like a button and opens the menu of the kit, not the list of the browser. A web writes the select as always (its options, its value, the event change) and changes nothing else: every select of a page gets the menu, also the ones that are made later. data-native on a select keeps the list of the browser.",
-      "zh-CN": "标签 select：外观像按钮，打开的是组件库的菜单，而不是浏览器的列表。网站照常编写 select（选项、值、change 事件），无需其他改动：页面上的每个 select 都会使用该菜单，包括之后创建的。在 select 上加 data-native 则保留浏览器的列表。",
-      "ar-SA": "الوسم select: يبدو كزر ويفتح قائمة العدة لا قائمة المتصفح. يكتب الموقع الـ select كالمعتاد (خياراته وقيمته وحدث change) دون أي تغيير آخر: كل select في الصفحة يأخذ القائمة، وكذلك ما يُنشأ لاحقا. والسمة data-native على select تُبقي قائمة المتصفح."
+      "en-US": "The tag select: it looks like a button and opens the menu of the kit, not the list of the browser. An app writes the select as always (its options, its value, the event change) and changes nothing else: every select of a page gets the menu, also the ones that are made later. data-native on a select keeps the list of the browser.",
+      "zh-CN": "标签 select：外观像按钮，打开的是组件库的菜单，而不是浏览器的列表。应用照常编写 select（选项、值、change 事件），无需其他改动：页面上的每个 select 都会使用该菜单，包括之后创建的。在 select 上加 data-native 则保留浏览器的列表。",
+      "ar-SA": "الوسم select: يبدو كزر ويفتح قائمة العدة لا قائمة المتصفح. يكتب التطبيق الـ select كالمعتاد (خياراته وقيمته وحدث change) دون أي تغيير آخر: كل select في الصفحة يأخذ القائمة، وكذلك ما يُنشأ لاحقا. والسمة data-native على select تُبقي قائمة المتصفح."
     },
     "components.switch.text": {
-      "en-US": "A checkbox that looks like a switch (class switch). It takes the colour of the web when it is on.",
-      "zh-CN": "外观为开关的复选框（类 switch）。开启时使用网站颜色。",
-      "ar-SA": "مربع اختيار يشبه المفتاح (الصنف switch). يأخذ لون الموقع عند التشغيل."
+      "en-US": "A checkbox that looks like a switch (class switch). It takes the colour of the app when it is on.",
+      "zh-CN": "外观为开关的复选框（类 switch）。开启时使用应用颜色。",
+      "ar-SA": "مربع اختيار يشبه المفتاح (الصنف switch). يأخذ لون التطبيق عند التشغيل."
     },
     "components.preview": {
       "en-US": "Preview",
@@ -491,7 +491,7 @@
       "ar-SA": "صندوق بترويسة (عنوان ووصف) ومحتوى وتذييل."
     },
     "components.avatar.text": {
-      "en-US": "The picture of a person, or the letters of the name. Large is the class large.",
+      "en-US": "The image of a person, or the letters of the name. Large is the class large.",
       "zh-CN": "人物的图片，或名字的字母。大号使用类 large。",
       "ar-SA": "صورة شخص أو حروف الاسم. الحجم الكبير هو الصنف large."
     },
@@ -506,14 +506,14 @@
       "ar-SA": "صفوف وأعمدة من البيانات. عناوين الأعمدة بحروف كبيرة صغيرة."
     },
     "components.item.text": {
-      "en-US": "A row with a picture, a title with a description, and an action.",
+      "en-US": "A row with an image, a title with a description, and an action.",
       "zh-CN": "包含图片、标题与说明以及操作的一行。",
       "ar-SA": "صف بصورة وعنوان ووصف وإجراء."
     },
     "components.checkbox.text": {
-      "en-US": "A square that is filled with the colour of the web when it is on (an input with the class checkbox).",
-      "zh-CN": "开启时填充网站颜色的方框（类为 checkbox 的 input）。",
-      "ar-SA": "مربع يمتلئ بلون الموقع عند التشغيل (حقل إدخال بالصنف checkbox)."
+      "en-US": "A square that is filled with the colour of the app when it is on (an input with the class checkbox).",
+      "zh-CN": "开启时填充应用颜色的方框（类为 checkbox 的 input）。",
+      "ar-SA": "مربع يمتلئ بلون التطبيق عند التشغيل (حقل إدخال بالصنف checkbox)."
     },
     "components.radioGroup.text": {
       "en-US": "Several circles of which one is on (inputs with the class radio and the same name).",
@@ -616,7 +616,7 @@
       "ar-SA": "تعديل الملف الشخصي"
     },
     "demo.sheetText": {
-      "en-US": "Change your name and picture here.",
+      "en-US": "Change your name and image here.",
       "zh-CN": "在这里修改名称和头像。",
       "ar-SA": "غيّر اسمك وصورتك هنا."
     },
@@ -671,14 +671,14 @@
       "ar-SA": "نص مقال: العناوين والفقرات والاقتباسات والقوائم والشيفرة."
     },
     "components.direction.text": {
-      "en-US": "Everything follows the dir attribute (rtl or ltr), so a web works in Arabic with no other change. Press Flip to see it.",
-      "zh-CN": "所有内容都遵循 dir 属性（rtl 或 ltr），因此网站无需其他改动即可支持阿拉伯语。点击 Flip 查看。",
-      "ar-SA": "كل شيء يتبع الخاصية dir (rtl أو ltr)، فيعمل الموقع بالعربية دون تغيير آخر. اضغط Flip لترى."
+      "en-US": "Everything follows the dir attribute (rtl or ltr), so an app works in Arabic with no other change. Press Flip to see it.",
+      "zh-CN": "所有内容都遵循 dir 属性（rtl 或 ltr），因此应用无需其他改动即可支持阿拉伯语。点击 Flip 查看。",
+      "ar-SA": "كل شيء يتبع الخاصية dir (rtl أو ltr)، فيعمل التطبيق بالعربية دون تغيير آخر. اضغط Flip لترى."
     },
     "components.slider.text": {
-      "en-US": "A range input in the colour of the web.",
-      "zh-CN": "使用网站颜色的滑块输入。",
-      "ar-SA": "مؤشر نطاق بلون الموقع."
+      "en-US": "A range input in the colour of the app.",
+      "zh-CN": "使用应用颜色的滑块输入。",
+      "ar-SA": "مؤشر نطاق بلون التطبيق."
     },
     "components.inputOtp.text": {
       "en-US": "One input for each character of a code. Typing moves on, Backspace goes back, and a pasted code fills them all (components.otp).",
@@ -706,9 +706,9 @@
       "ar-SA": "زر يفتح تقويما في نافذة صغيرة ويعرض التاريخ المختار."
     },
     "components.chart.text": {
-      "en-US": "Bars or a line, drawn in svg in the colour of the web (components.chart).",
-      "zh-CN": "用网站颜色绘制的 svg 柱状图或折线图（components.chart）。",
-      "ar-SA": "أعمدة أو خط مرسوم بـ svg بلون الموقع (components.chart)."
+      "en-US": "Bars or a line, drawn in svg in the colour of the app (components.chart).",
+      "zh-CN": "用应用颜色绘制的 svg 柱状图或折线图（components.chart）。",
+      "ar-SA": "أعمدة أو خط مرسوم بـ svg بلون التطبيق (components.chart)."
     },
     "components.dataTable.text": {
       "en-US": "A table with a filter, a sort on each column, and pages (components.dataTable).",
@@ -761,9 +761,9 @@
       "ar-SA": "طريقة الاستخدام"
     },
     "guide.hint": {
-      "en-US": "How a web uses Kitmu, from the first line of its page to a new component. Each step has the code to copy.",
-      "zh-CN": "网站如何使用 Kitmu：从页面的第一行到新增组件。每一步都附有可复制的代码。",
-      "ar-SA": "كيف يستخدم الموقع Kitmu، من أول سطر في صفحته إلى مكوّن جديد. كل خطوة معها الشيفرة للنسخ."
+      "en-US": "How an app uses Kitmu, from the first line of its page to a new component. Each step has the code to copy.",
+      "zh-CN": "应用如何使用 Kitmu：从页面的第一行到新增组件。每一步都附有可复制的代码。",
+      "ar-SA": "كيف يستخدم التطبيق Kitmu، من أول سطر في صفحته إلى مكوّن جديد. كل خطوة معها الشيفرة للنسخ."
     },
     "guide.files.title": {
       "en-US": "1. Load the files",
@@ -771,9 +771,9 @@
       "ar-SA": "1. تحميل الملفات"
     },
     "guide.files.text": {
-      "en-US": "Every file is in the head, in this order: the styles (style.css, components.css, page.css, then the layout.css of the web), then theme.js, which has no defer because it must run before the page is shown, then the scripts with defer, and app.js last. page.css is only for a web that is a page with a header, a main, and a footer; the main website has its own page.",
-      "zh-CN": "所有文件都放在 head 中，顺序如下：样式（style.css、components.css、page.css，然后是网站自己的 layout.css），接着是 theme.js（不加 defer，因为它必须在页面显示前运行），再是带 defer 的脚本，最后是 app.js。page.css 只用于有页眉、主区域和页脚的网站；主网站有自己的页面。",
-      "ar-SA": "كل الملفات في head بهذا الترتيب: الأنماط (style.css وcomponents.css وpage.css ثم layout.css الخاص بالموقع)، ثم theme.js بلا defer لأنه يجب أن يعمل قبل ظهور الصفحة، ثم السكربتات مع defer، وأخيرا app.js. page.css لمواقع الصفحة ذات الترويسة والمحتوى والتذييل فقط؛ وللموقع الرئيسي صفحته الخاصة."
+      "en-US": "Every file is in the head, in this order: the styles (style.css, components.css, page.css, then the layout.css of the app), then theme.js, which has no defer because it must run before the page is shown, then the scripts with defer, and app.js last. page.css is only for an app that is a page with a header, a main, and a footer; the main website has its own page.",
+      "zh-CN": "所有文件都放在 head 中，顺序如下：样式（style.css、components.css、page.css，然后是应用自己的 layout.css），接着是 theme.js（不加 defer，因为它必须在页面显示前运行），再是带 defer 的脚本，最后是 app.js。page.css 只用于有页眉、主区域和页脚的应用；主网站有自己的页面。",
+      "ar-SA": "كل الملفات في head بهذا الترتيب: الأنماط (style.css وcomponents.css وpage.css ثم layout.css الخاص بالتطبيق)، ثم theme.js بلا defer لأنه يجب أن يعمل قبل ظهور الصفحة، ثم السكربتات مع defer، وأخيرا app.js. page.css لتطبيقات الصفحة ذات الترويسة والمحتوى والتذييل فقط؛ وللتطبيق الرئيسي صفحته الخاصة."
     },
     "guide.page.title": {
       "en-US": "2. Make the page",
@@ -781,9 +781,9 @@
       "ar-SA": "2. بناء الصفحة"
     },
     "guide.page.text": {
-      "en-US": "The body has the header, the main, and the footer (and the sidebar when there is one) directly in it, none of them wrapped, and the popups element at the end. The header, the sidebar, and the footer are tags: kit-header builds the logo and the buttons (theme, account, menu), kit-sidebar builds the list and keeps what you give it with slot=\"before\" or slot=\"after\", and kit-footer builds the status line and the copyright. Write only the content of the main; the ids and the classes are the same in every web, so page.css does the rest, on a wide screen and on a narrow one.",
-      "zh-CN": "body 里直接放页眉、主区域和页脚（有侧栏时再加侧栏），都不再包裹，末尾是 popups 元素。页眉、侧栏和页脚都是标签：kit-header 生成标志和按钮（主题、账户、菜单），kit-sidebar 生成列表并保留你用 slot=\"before\" 或 slot=\"after\" 放入的内容，kit-footer 生成状态行和版权信息。只需写主区域的内容；每个网站的 id 和类名都相同，所以 page.css 会处理其余部分，宽屏和窄屏都一样。",
-      "ar-SA": "يحتوي body مباشرة على الترويسة والمحتوى والتذييل (والشريط الجانبي إن وُجد) بلا تغليف، وعنصر popups في النهاية. والترويسة والشريط الجانبي والتذييل وسوم: kit-header يبني الشعار والأزرار (المظهر والحساب والقائمة)، وkit-sidebar يبني القائمة ويحتفظ بما تعطيه بـ slot=\"before\" أو slot=\"after\"، وkit-footer يبني سطر الحالة وحقوق النشر. اكتب محتوى المحتوى الرئيسي فقط؛ المعرّفات والأصناف نفسها في كل موقع، فيتولى page.css الباقي، في الشاشة الواسعة والضيقة."
+      "en-US": "The body has the header, the main, and the footer (and the sidebar when there is one) directly in it, none of them wrapped, and the popups element at the end. The header, the sidebar, and the footer are tags: kit-header builds the logo and the buttons (theme, account, menu), kit-sidebar builds the list and keeps what you give it with slot=\"before\" or slot=\"after\", and kit-footer builds the status line and the copyright. Write only the content of the main; the ids and the classes are the same in every app, so page.css does the rest, on a wide screen and on a narrow one.",
+      "zh-CN": "body 里直接放页眉、主区域和页脚（有侧栏时再加侧栏），都不再包裹，末尾是 popups 元素。页眉、侧栏和页脚都是标签：kit-header 生成标志和按钮（主题、账户、菜单），kit-sidebar 生成列表并保留你用 slot=\"before\" 或 slot=\"after\" 放入的内容，kit-footer 生成状态行和版权信息。只需写主区域的内容；每个应用的 id 和类名都相同，所以 page.css 会处理其余部分，宽屏和窄屏都一样。",
+      "ar-SA": "يحتوي body مباشرة على الترويسة والمحتوى والتذييل (والشريط الجانبي إن وُجد) بلا تغليف، وعنصر popups في النهاية. والترويسة والشريط الجانبي والتذييل وسوم: kit-header يبني الشعار والأزرار (المظهر والحساب والقائمة)، وkit-sidebar يبني القائمة ويحتفظ بما تعطيه بـ slot=\"before\" أو slot=\"after\"، وkit-footer يبني سطر الحالة وحقوق النشر. اكتب محتوى المحتوى الرئيسي فقط؛ المعرّفات والأصناف نفسها في كل تطبيق، فيتولى page.css الباقي، في الشاشة الواسعة والضيقة."
     },
     "guide.components.title": {
       "en-US": "3. Use the components",
@@ -791,9 +791,9 @@
       "ar-SA": "3. استخدام المكوّنات"
     },
     "guide.components.text": {
-      "en-US": "Find the component in the sections of this web and press Code. A component with one part is a class on an element: copy that line, and when the style changes, every web changes with it. A component with several parts is one tag, kit-alert and the like: write the tag, and its parts are built from assets/js/components.js, so nothing is copied again when the component changes. A text of a tag can be translated with data-i18n-heading and the like. A component that is made by script (the menu, the calendar, the data table) is called from components.js.",
-      "zh-CN": "在本网站的各个分类中找到组件并点击“代码”。只有一个部分的组件是元素上的一个类：复制那一行，样式变化时所有网站随之变化。由多个部分组成的组件是一个标签，如 kit-alert：写下标签，各部分由 assets/js/components.js 生成，组件变化时无需重新复制。标签的文字可用 data-i18n-heading 等翻译。由脚本生成的组件（菜单、日历、数据表）由 components.js 调用。",
-      "ar-SA": "ابحث عن المكوّن في أقسام هذا الموقع واضغط «الكود». المكوّن ذو الجزء الواحد صنف على عنصر: انسخ ذلك السطر، وعندما يتغير النمط يتغير معه كل موقع. والمكوّن ذو الأجزاء المتعددة وسم واحد مثل kit-alert: اكتب الوسم فتُبنى أجزاؤه من assets/js/components.js، فلا يُنسخ شيء من جديد عند تغير المكوّن. ويمكن ترجمة نص الوسم بـ data-i18n-heading ونحوه. والمكوّن الذي يُنشأ بسكربت (القائمة والتقويم وجدول البيانات) يُستدعى من components.js."
+      "en-US": "Find the component in the sections of this app and press Code. A component with one part is a class on an element: copy that line, and when the style changes, every app changes with it. A component with several parts is one tag, kit-alert and the like: write the tag, and its parts are built from assets/js/components.js, so nothing is copied again when the component changes. A text of a tag can be translated with data-i18n-heading and the like. A component that is made by script (the menu, the calendar, the data table) is called from components.js.",
+      "zh-CN": "在本应用的各个分类中找到组件并点击“代码”。只有一个部分的组件是元素上的一个类：复制那一行，样式变化时所有应用随之变化。由多个部分组成的组件是一个标签，如 kit-alert：写下标签，各部分由 assets/js/components.js 生成，组件变化时无需重新复制。标签的文字可用 data-i18n-heading 等翻译。由脚本生成的组件（菜单、日历、数据表）由 components.js 调用。",
+      "ar-SA": "ابحث عن المكوّن في أقسام هذا التطبيق واضغط «الكود». المكوّن ذو الجزء الواحد صنف على عنصر: انسخ ذلك السطر، وعندما يتغير النمط يتغير معه كل تطبيق. والمكوّن ذو الأجزاء المتعددة وسم واحد مثل kit-alert: اكتب الوسم فتُبنى أجزاؤه من assets/js/components.js، فلا يُنسخ شيء من جديد عند تغير المكوّن. ويمكن ترجمة نص الوسم بـ data-i18n-heading ونحوه. والمكوّن الذي يُنشأ بسكربت (القائمة والتقويم وجدول البيانات) يُستدعى من components.js."
     },
     "guide.colour.title": {
       "en-US": "4. The colour and the logo",
@@ -801,9 +801,9 @@
       "ar-SA": "4. اللون والشعار"
     },
     "guide.colour.text": {
-      "en-US": "The colour of a web is written once, as brandColor in its data.json, and the page takes it as --brand. Everything that is highlighted (the primary button, the item that is on, a checked box) has that colour. A web whose buttons are white says so with one line. The logo is the favicon of the web, and its path is the one thing a web writes for the template.",
-      "zh-CN": "网站颜色只在其 data.json 中以 brandColor 写一次，页面将其作为 --brand。所有高亮内容（主要按钮、选中项、勾选框）都使用该颜色。按钮为白色的网站只需一行声明。标志就是网站的 favicon，其路径是网站为模板写的唯一内容。",
-      "ar-SA": "يُكتب لون الموقع مرة واحدة، كـ brandColor في data.json، وتأخذه الصفحة كـ --brand. كل ما يُميَّز (الزر الرئيسي والعنصر المفعّل ومربع الاختيار) بهذا اللون. والموقع ذو الأزرار البيضاء يقول ذلك بسطر واحد. الشعار هو favicon الموقع، ومساره هو الشيء الوحيد الذي يكتبه الموقع للقالب."
+      "en-US": "The colour of an app is written once, as brandColor in its data.json, and the page takes it as --brand. Everything that is highlighted (the primary button, the item that is on, a checked box) has that colour. An app whose buttons are white says so with one line. The logo is the favicon of the app, and its path is the one thing an app writes for the template.",
+      "zh-CN": "应用颜色只在其 data.json 中以 brandColor 写一次，页面将其作为 --brand。所有高亮内容（主要按钮、选中项、勾选框）都使用该颜色。按钮为白色的应用只需一行声明。标志就是应用的 favicon，其路径是应用为模板写的唯一内容。",
+      "ar-SA": "يُكتب لون التطبيق مرة واحدة، كـ brandColor في data.json، وتأخذه الصفحة كـ --brand. كل ما يُميَّز (الزر الرئيسي والعنصر المفعّل ومربع الاختيار) بهذا اللون. والتطبيق ذو الأزرار البيضاء يقول ذلك بسطر واحد. الشعار هو favicon التطبيق، ومساره هو الشيء الوحيد الذي يكتبه التطبيق للقالب."
     },
     "guide.icons.title": {
       "en-US": "5. Icons",
@@ -821,19 +821,19 @@
       "ar-SA": "6. الرسائل والأسئلة والدوال المساعدة"
     },
     "guide.scripts.text": {
-      "en-US": "A web never makes a message box, a toast, or a menu of its own, and never uses alert, confirm, or prompt: popups.toast, popups.ask, popups.tell, popups.sheet, and popups.command are in Popups, and the helpers (menu, popover, status line, drawer, download, and more) are in Helpers.",
-      "zh-CN": "网站不得自行制作消息框、轻提示或菜单，也不得使用 alert、confirm 或 prompt：popups.toast、popups.ask、popups.tell、popups.sheet 和 popups.command 在“弹出内容”中，辅助函数（菜单、气泡框、状态行、抽屉、下载等）在“辅助脚本”中。",
-      "ar-SA": "لا ينشئ الموقع صندوق رسالة أو إشعارا قصيرا أو قائمة خاصة به، ولا يستخدم alert أو confirm أو prompt: popups.toast وpopups.ask وpopups.tell وpopups.sheet وpopups.command في «النوافذ المنبثقة»، والدوال المساعدة (القائمة والنافذة الصغيرة وسطر الحالة والدرج والتنزيل وغيرها) في «الدوال المساعدة»."
+      "en-US": "An app never makes a message box, a toast, or a menu of its own, and never uses alert, confirm, or prompt: popups.toast, popups.ask, popups.tell, popups.sheet, and popups.command are in Popups, and the helpers (menu, popover, status line, drawer, download, and more) are in Helpers.",
+      "zh-CN": "应用不得自行制作消息框、轻提示或菜单，也不得使用 alert、confirm 或 prompt：popups.toast、popups.ask、popups.tell、popups.sheet 和 popups.command 在“弹出内容”中，辅助函数（菜单、气泡框、状态行、抽屉、下载等）在“辅助脚本”中。",
+      "ar-SA": "لا ينشئ التطبيق صندوق رسالة أو إشعارا قصيرا أو قائمة خاصة به، ولا يستخدم alert أو confirm أو prompt: popups.toast وpopups.ask وpopups.tell وpopups.sheet وpopups.command في «النوافذ المنبثقة»، والدوال المساعدة (القائمة والنافذة الصغيرة وسطر الحالة والدرج والتنزيل وغيرها) في «الدوال المساعدة»."
     },
     "guide.rules.title": {
-      "en-US": "7. What the layout.css of a web has",
-      "zh-CN": "7. 网站的 layout.css 应包含什么",
-      "ar-SA": "7. ما يحتويه layout.css الخاص بالموقع"
+      "en-US": "7. What the layout.css of an app has",
+      "zh-CN": "7. 应用的 layout.css 应包含什么",
+      "ar-SA": "7. ما يحتويه layout.css الخاص بالتطبيق"
     },
     "guide.rules.text": {
-      "en-US": "Only what is its own: the content of its main, and nothing that a template already has. What touches another element is square. A control that does not change its size has a set width, a multiple of the height. The same thing has the same name in every web. When two webs need the same new thing, it is made once here, not copied from one web to the other. The RULES.md of the project has the full list.",
-      "zh-CN": "只写属于自己的内容：主区域里的内容，以及模板中没有的部分。相互紧挨的元素是方角。尺寸不变的控件有固定宽度，为高度的倍数。同一事物在每个网站中名称相同。两个网站需要同一个新东西时，在这里只做一次，不要从一个网站复制到另一个。完整列表见项目的 RULES.md。",
-      "ar-SA": "فقط ما يخصه: محتوى المحتوى الرئيسي، وليس فيه شيء موجود في القوالب. ما يلامس عنصرا آخر يكون مربع الزوايا. العنصر الذي لا يتغير حجمه له عرض محدد مضاعف للارتفاع. الشيء نفسه له الاسم نفسه في كل موقع. وعندما يحتاج موقعان الشيء الجديد نفسه يُصنع مرة واحدة هنا، لا يُنسخ من موقع إلى آخر. القائمة الكاملة في RULES.md للمشروع."
+      "en-US": "Only what is its own: the content of its main, and nothing that a template already has. What touches another element is square. A control that does not change its size has a set width, a multiple of the height. The same thing has the same name in every app. When two apps need the same new thing, it is made once here, not copied from one app to the other. The RULES.md of the project has the full list.",
+      "zh-CN": "只写属于自己的内容：主区域里的内容，以及模板中没有的部分。相互紧挨的元素是方角。尺寸不变的控件有固定宽度，为高度的倍数。同一事物在每个应用中名称相同。两个应用需要同一个新东西时，在这里只做一次，不要从一个应用复制到另一个。完整列表见项目的 RULES.md。",
+      "ar-SA": "فقط ما يخصه: محتوى المحتوى الرئيسي، وليس فيه شيء موجود في القوالب. ما يلامس عنصرا آخر يكون مربع الزوايا. العنصر الذي لا يتغير حجمه له عرض محدد مضاعف للارتفاع. الشيء نفسه له الاسم نفسه في كل تطبيق. وعندما يحتاج تطبيقان الشيء الجديد نفسه يُصنع مرة واحدة هنا، لا يُنسخ من تطبيق إلى آخر. القائمة الكاملة في RULES.md للمشروع."
     },
     "guide.add.title": {
       "en-US": "8. Add a component to Kitmu",
@@ -841,14 +841,14 @@
       "ar-SA": "8. إضافة مكوّن إلى Kitmu"
     },
     "guide.add.text": {
-      "en-US": "Write its style in assets/css/components.css (and its helper, if it has one, in assets/js/components.js), then add its item to kitmu/data.json: a name, a group, the height of its demo, the HTML (and the script), and its text in every language. It shows here with Preview and Code, and the web that needs it uses it from there.",
-      "zh-CN": "把样式写入 assets/css/components.css（如有辅助函数，写入 assets/js/components.js），然后在 kitmu/data.json 中添加条目：名称、分组、演示高度、HTML（以及脚本），以及各语言的文字。它会在这里以“预览”和“代码”显示，需要它的网站直接从这里使用。",
-      "ar-SA": "اكتب نمطه في assets/css/components.css (ودالته المساعدة، إن وُجدت، في assets/js/components.js)، ثم أضف عنصره إلى kitmu/data.json: اسما ومجموعة وارتفاع العرض التوضيحي وHTML (والسكربت) ونصه بكل اللغات. يظهر هنا مع «معاينة» و«الكود»، ويستخدمه الموقع الذي يحتاجه من هنا."
+      "en-US": "Write its style in assets/css/components.css (and its helper, if it has one, in assets/js/components.js), then add its item to kitmu/data.json: a name, a group, the height of its demo, the HTML (and the script), and its text in every language. It shows here with Preview and Code, and the app that needs it uses it from there.",
+      "zh-CN": "把样式写入 assets/css/components.css（如有辅助函数，写入 assets/js/components.js），然后在 kitmu/data.json 中添加条目：名称、分组、演示高度、HTML（以及脚本），以及各语言的文字。它会在这里以“预览”和“代码”显示，需要它的应用直接从这里使用。",
+      "ar-SA": "اكتب نمطه في assets/css/components.css (ودالته المساعدة، إن وُجدت، في assets/js/components.js)، ثم أضف عنصره إلى kitmu/data.json: اسما ومجموعة وارتفاع العرض التوضيحي وHTML (والسكربت) ونصه بكل اللغات. يظهر هنا مع «معاينة» و«الكود»، ويستخدمه التطبيق الذي يحتاجه من هنا."
     },
     "components.tag": {
-      "en-US": "A component of several parts is one tag, kit-…: it builds its parts from assets/js/components.js, so when the component changes, every web changes with it and nothing is copied again. Put what goes in a part in a child with slot=\"footer\", \"actions\", and so on. From a script: components.make(name, attributes, children).",
-      "zh-CN": "由多个部分组成的组件是一个标签 kit-…：它的各部分由 assets/js/components.js 生成，因此组件变化时，所有网站随之变化，无需重新复制。放入某个部分的内容写成带 slot=\"footer\"、\"actions\" 等的子元素。在脚本中：components.make(名称, 属性, 子元素)。",
-      "ar-SA": "المكوّن ذو الأجزاء المتعددة وسم واحد kit-…: يبني أجزاءه من assets/js/components.js، فعندما يتغير المكوّن يتغير معه كل موقع دون نسخ جديد. ما يدخل في جزء يُكتب كابن بالخاصية slot=\"footer\" أو \"actions\" وهكذا. ومن سكربت: components.make(الاسم، الخصائص، الأبناء)."
+      "en-US": "A component of several parts is one tag, kit-…: it builds its parts from assets/js/components.js, so when the component changes, every app changes with it and nothing is copied again. Put what goes in a part in a child with slot=\"footer\", \"actions\", and so on. From a script: components.make(name, attributes, children).",
+      "zh-CN": "由多个部分组成的组件是一个标签 kit-…：它的各部分由 assets/js/components.js 生成，因此组件变化时，所有应用随之变化，无需重新复制。放入某个部分的内容写成带 slot=\"footer\"、\"actions\" 等的子元素。在脚本中：components.make(名称, 属性, 子元素)。",
+      "ar-SA": "المكوّن ذو الأجزاء المتعددة وسم واحد kit-…: يبني أجزاءه من assets/js/components.js، فعندما يتغير المكوّن يتغير معه كل تطبيق دون نسخ جديد. ما يدخل في جزء يُكتب كابن بالخاصية slot=\"footer\" أو \"actions\" وهكذا. ومن سكربت: components.make(الاسم، الخصائص، الأبناء)."
     },
     "helpers.make.title": {
       "en-US": "Components as tags",
@@ -896,9 +896,9 @@
       "ar-SA": "الصفحات"
     },
     "pages.hint": {
-      "en-US": "A page is made of the parts of the page (the header, the sidebar, the main, and the footer), so it is not one component of the list. These are the two pages that a web starts from: with a sidebar, and without one.",
-      "zh-CN": "页面由页面部件（页眉、侧边栏、主体和页脚）组成，因此它不是列表中的单个组件。这里是网站的两种起点页面：有侧边栏的和没有侧边栏的。",
-      "ar-SA": "الصفحة مكوّنة من أجزاء الصفحة (الترويسة والشريط الجانبي والمحتوى والتذييل)، لذلك ليست مكوّنا واحدا في القائمة. هاتان هما الصفحتان اللتان يبدأ منهما الموقع: بشريط جانبي وبدونه."
+      "en-US": "A page is made of the parts of the page (the header, the sidebar, the main, and the footer), so it is not one component of the list. These are the two pages that an app starts from: with a sidebar, and without one.",
+      "zh-CN": "页面由页面部件（页眉、侧边栏、主体和页脚）组成，因此它不是列表中的单个组件。这里是应用的两种起点页面：有侧边栏的和没有侧边栏的。",
+      "ar-SA": "الصفحة مكوّنة من أجزاء الصفحة (الترويسة والشريط الجانبي والمحتوى والتذييل)، لذلك ليست مكوّنا واحدا في القائمة. هاتان هما الصفحتان اللتان يبدأ منهما التطبيق: بشريط جانبي وبدونه."
     }
   },
   "helpers": [
@@ -908,11 +908,15 @@
     },
     {
       "id": "format",
-      "code": "components.formatSize(1536000);   // \"1.5 MB\"\ncomponents.extensionOf(\"Photo.PNG\");   // \"png\""
+      "code": "components.formatSize(1536000);   // \"1.5 MB\"\ncomponents.extensionOf(\"Image.PNG\");   // \"png\""
     },
     {
       "id": "status",
-      "code": "const say = components.status(document.getElementById(\"status\"));\nsay(\"Saved.\");\nsay(\"Failed.\", true);"
+      "code": "const say = components.status(document.getElementById(\"status\"));\nsay(\"Choose a file.\");"
+    },
+    {
+      "id": "url",
+      "code": "const folder = urlState.get(\"path\");   // \"Images/Cats\", or \"\" when it is not in the address\nurlState.set({ path: \"Images\", view: \"\", q: \"cat\" });   // \"\" takes a parameter away"
     },
     {
       "id": "drawer",
@@ -920,7 +924,7 @@
     },
     {
       "id": "download",
-      "code": "components.download(\"notes.txt\", \"Hello\", \"text/plain\");\ncomponents.download(\"picture.png\", blob);"
+      "code": "components.download(\"notes.txt\", \"Hello\", \"text/plain\");\ncomponents.download(\"image.png\", blob);"
     },
     {
       "id": "expand",
@@ -970,7 +974,7 @@
     },
     {
       "id": "sheet",
-      "code": "await popups.sheet({ title: \"Edit profile\", text: \"Change your name and picture here.\", side: \"end\" });"
+      "code": "await popups.sheet({ title: \"Edit profile\", text: \"Change your name and image here.\", side: \"end\" });"
     },
     {
       "id": "drawer",
@@ -1171,7 +1175,7 @@
       "id": "table",
       "name": "Table",
       "height": 190,
-      "html": "<table class=\"table\">\n  <thead><tr><th>Name</th><th>Type</th><th>Size</th></tr></thead>\n  <tbody>\n    <tr><td>photo.png</td><td>Image</td><td>1.5 MB</td></tr>\n    <tr><td>notes.txt</td><td>Text</td><td>2 KB</td></tr>\n    <tr><td>song.mp3</td><td>Audio</td><td>4.2 MB</td></tr>\n  </tbody>\n</table>",
+      "html": "<table class=\"table\">\n  <thead><tr><th>Name</th><th>Type</th><th>Size</th></tr></thead>\n  <tbody>\n    <tr><td>image.png</td><td>Image</td><td>1.5 MB</td></tr>\n    <tr><td>notes.txt</td><td>Text</td><td>2 KB</td></tr>\n    <tr><td>song.mp3</td><td>Audio</td><td>4.2 MB</td></tr>\n  </tbody>\n</table>",
       "tags": [
         "display",
         "class",
@@ -1209,7 +1213,7 @@
       "name": "Data Table",
       "height": 400,
       "html": "<div id=\"files\"></div>",
-      "script": "const rows = [\n  { name: \"photo.png\", type: \"Image\", size: \"1.5 MB\" },\n  { name: \"notes.txt\", type: \"Text\", size: \"2 KB\" },\n  { name: \"song.mp3\", type: \"Audio\", size: \"4.2 MB\" },\n  { name: \"movie.mp4\", type: \"Video\", size: \"120 MB\" },\n  { name: \"report.pdf\", type: \"PDF\", size: \"800 KB\" },\n  { name: \"logo.svg\", type: \"Image\", size: \"6 KB\" },\n];\ndocument.getElementById(\"files\").append(components.dataTable({\n  columns: [{ key: \"name\", label: \"Name\" }, { key: \"type\", label: \"Type\" }, { key: \"size\", label: \"Size\" }],\n  rows,\n  pageSize: 4,\n}).element);",
+      "script": "const rows = [\n  { name: \"image.png\", type: \"Image\", size: \"1.5 MB\" },\n  { name: \"notes.txt\", type: \"Text\", size: \"2 KB\" },\n  { name: \"song.mp3\", type: \"Audio\", size: \"4.2 MB\" },\n  { name: \"movie.mp4\", type: \"Video\", size: \"120 MB\" },\n  { name: \"report.pdf\", type: \"PDF\", size: \"800 KB\" },\n  { name: \"logo.svg\", type: \"Image\", size: \"6 KB\" },\n];\ndocument.getElementById(\"files\").append(components.dataTable({\n  columns: [{ key: \"name\", label: \"Name\" }, { key: \"type\", label: \"Type\" }, { key: \"size\", label: \"Size\" }],\n  rows,\n  pageSize: 4,\n}).element);",
       "tags": [
         "display",
         "script",
@@ -1569,7 +1573,7 @@
       "id": "hoverCard",
       "name": "Hover Card",
       "height": 260,
-      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <span class=\"hover-card\">\n    <button type=\"button\"><span>@kancamu</span></button>\n    <span class=\"hover-card-content\"><span class=\"avatar\">KM</span><strong>Kancamu</strong><span>One account for every web.</span></span>\n  </span>\n</div>",
+      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <span class=\"hover-card\">\n    <button type=\"button\"><span>@kancamu</span></button>\n    <span class=\"hover-card-content\"><span class=\"avatar\">KM</span><strong>Kancamu</strong><span>One account for every app.</span></span>\n  </span>\n</div>",
       "tags": [
         "overlays",
         "class",
@@ -1685,7 +1689,7 @@
     },
     {
       "id": "page",
-      "code": "<body>\n  <kit-header id=\"header\" theme menu></kit-header>\n  <kit-sidebar id=\"sidebar\">...</kit-sidebar>   <!-- only when the web has a sidebar -->\n  <div id=\"main\" class=\"main\" style=\"padding: var(--padding-large)\">...</div>\n  <kit-footer id=\"footer\" status></kit-footer>\n  <div id=\"popups\" class=\"popups\"></div>\n</body>"
+      "code": "<body>\n  <kit-header id=\"header\" theme menu></kit-header>\n  <kit-sidebar id=\"sidebar\">...</kit-sidebar>   <!-- only when the app has a sidebar -->\n  <div id=\"main\" class=\"main\" style=\"padding: var(--padding-large)\">...</div>\n  <kit-footer id=\"footer\" status></kit-footer>\n  <div id=\"popups\" class=\"popups\"></div>\n</body>"
     },
     {
       "id": "components",
@@ -1693,7 +1697,7 @@
     },
     {
       "id": "colour",
-      "code": "/* layout.css */\n.logo-mark { background-image: url(\"favicon.png\"); }\n\n/* only for a web whose buttons are white */\n:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }"
+      "code": "/* layout.css */\n.logo-mark { background-image: url(\"favicon.png\"); }\n\n/* only for an app whose buttons are white */\n:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }"
     },
     {
       "id": "icons",
@@ -1833,14 +1837,14 @@
       "id": "page",
       "name": "Sidebar",
       "height": 420,
-      "html": "<kit-header id=\"header\" theme menu name='Name<span class=\"highlight\">mu</span>'></kit-header>\n<kit-sidebar id=\"sidebar\">\n  <span class=\"sidebar-title\">Section</span>\n  <button class=\"sidebar-item on\" type=\"button\"><span>First item</span></button>\n  <button class=\"sidebar-item\" type=\"button\"><span>Second item</span></button>\n  <button class=\"sidebar-item\" type=\"button\"><span>Third item</span></button>\n  <div class=\"sidebar-summary\" slot=\"after\">A box of numbers</div>\n</kit-sidebar>\n<div id=\"main\" class=\"main\" style=\"padding: var(--padding-large)\">\n  <div class=\"topbar\">\n    <button class=\"primary\" type=\"button\"><span class=\"icon icon-plus\"></span><span>New</span></button>\n    <button type=\"button\"><span>Other</span></button>\n  </div>\n  <p>The content of the web.</p>\n</div>\n<kit-footer id=\"footer\" status brand=\"Kancamu\"></kit-footer>\n<div id=\"popups\" class=\"popups\"></div>",
+      "html": "<kit-header id=\"header\" theme menu name='Name<span class=\"highlight\">mu</span>'></kit-header>\n<kit-sidebar id=\"sidebar\">\n  <span class=\"sidebar-title\">Section</span>\n  <button class=\"sidebar-item on\" type=\"button\"><span>First item</span></button>\n  <button class=\"sidebar-item\" type=\"button\"><span>Second item</span></button>\n  <button class=\"sidebar-item\" type=\"button\"><span>Third item</span></button>\n  <div class=\"sidebar-summary\" slot=\"after\">A box of numbers</div>\n</kit-sidebar>\n<div id=\"main\" class=\"main\" style=\"padding: var(--padding-large)\">\n  <div class=\"topbar\">\n    <button class=\"primary\" type=\"button\"><span class=\"icon icon-plus\"></span><span>New</span></button>\n    <button type=\"button\"><span>Other</span></button>\n  </div>\n  <p>The content of the app.</p>\n</div>\n<kit-footer id=\"footer\" status brand=\"Kancamu\"></kit-footer>\n<div id=\"popups\" class=\"popups\"></div>",
       "script": "document.getElementById(\"status\").textContent = \"3 items\";"
     },
     {
       "id": "pageSimple",
       "name": "Page",
       "height": 320,
-      "html": "<kit-header id=\"header\" theme name='Name<span class=\"highlight\">mu</span>'></kit-header>\n<div id=\"main\" class=\"main\" style=\"padding: var(--padding-large)\">\n  <div class=\"topbar\">\n    <button class=\"primary\" type=\"button\"><span>Start</span></button>\n  </div>\n  <p>The content of the web. With no sidebar, the main has no border of its own.</p>\n</div>\n<kit-footer id=\"footer\" brand=\"Kancamu\"></kit-footer>\n<div id=\"popups\" class=\"popups\"></div>"
+      "html": "<kit-header id=\"header\" theme name='Name<span class=\"highlight\">mu</span>'></kit-header>\n<div id=\"main\" class=\"main\" style=\"padding: var(--padding-large)\">\n  <div class=\"topbar\">\n    <button class=\"primary\" type=\"button\"><span>Start</span></button>\n  </div>\n  <p>The content of the app. With no sidebar, the main has no border of its own.</p>\n</div>\n<kit-footer id=\"footer\" brand=\"Kancamu\"></kit-footer>\n<div id=\"popups\" class=\"popups\"></div>"
     }
   ]
 }

@@ -10,30 +10,28 @@ const tr = (key, params) => i18n.t(key, params);
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
   "model-select", "source-language", "target-language", "swap-button", "source-text", "source-count", "clear-button", "target-text", "copy-button",
-  "translate-button", "stop-button", "progress", "progress-fill", "status",
+  "translate-button", "stop-button", "status",
   "account-button"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
 // The languages, the models, and how a text is cut are in data.json.
 const { translationLanguages: languages, models, engine, settings: { defaults }, sentenceMarks, noSpaceLanguages, punctuation } = i18n.data;
-const preferences = settings.get("transmu", defaults);   // the model and the two languages: set here and in the account web
+const preferences = settings.get("transmu", defaults);   // the model and the two languages: set here and in the account app
+// What is on the screen is also in the address (?model=...&from=...&to=...&text=...), so a reload shows the same (assets/js/url.js); the address wins over the settings.
+const TEXT_LIMIT = 500;   // a longer text does not go in the address
 const SENTENCE = new RegExp(`(?:[^${sentenceMarks}\\n]|[${sentenceMarks}](?=\\d))+[${sentenceMarks}]*\\s*|[${sentenceMarks}]+`, "g");   // a mark with a digit after it (3.5) does not end a sentence
 
 const known = (code, fallback) => (languages.some((language) => language.code === code) ? code : fallback);
 const state = {
-  model: models.find((model) => model.id === preferences.model) || models[0],   // the model that is chosen
-  source: known(preferences.source, defaults.source),
-  target: known(preferences.target, defaults.target),
+  model: models.find((model) => model.id === (urlState.get("model") || preferences.model)) || models[0],   // the model that is chosen
+  source: known(urlState.get("from") || preferences.source, defaults.source),
+  target: known(urlState.get("to") || preferences.target, defaults.target),
   engines: new Map(),   // the models that are loaded: "en-zh" -> translator
   busy: false,
   stop: false,
 };
 
-const say = components.status(els.status);
-function setProgress(percent) {
-  els.progress.classList.toggle("hidden", percent === null);
-  if (percent !== null) els.progressFill.style.width = `${percent}%`;
-}
+const say = components.status(els.status);   // only the hint of the page: every notice (work, result, error) is a popup
 const languageOf = (code) => languages.find((language) => language.code === code);
 
 /* ---------- the models: one for each direction, and English in the middle when neither language is English ---------- */
@@ -49,19 +47,24 @@ function stepsOf(from, to) {
 async function loadTranslator({ key, modelId }) {
   if (state.engines.has(key)) return state.engines.get(key);
   const files = new Map();
+  let note = null;   // the popup of the loading (a download, or the files read from the cache): made when the first news of it comes, so no popup when the model is already in memory
+  const show = (text, fraction) => (note ? note.set(text, fraction) : (note = popups.toast(text, { duration: 0, progress: fraction ?? 0 })));
   const progress_callback = (info) => {
     if (info.status === "progress" && info.file) {
       files.set(info.file, { loaded: info.loaded, total: info.total });
       let loaded = 0, total = 0;
       for (const file of files.values()) { loaded += file.loaded; total += file.total; }
       const percent = total ? Math.round((loaded / total) * 100) : 0;
-      setProgress(percent);
-      say(tr("status.loadingModel", { model: modelId.split("/").pop(), percent }));
-    } else if (info.status === "ready") say(tr("status.preparingModel"));
+      show(tr("status.loadingModel", { model: modelId.split("/").pop(), percent }), percent / 100);
+    } else if (info.status === "ready") show(tr("status.preparingModel"));
   };
-  const translator = await pipeline("translation", modelId, { device: engine.device, dtype: state.model.dtype, progress_callback });
-  state.engines.set(key, translator);
-  return translator;
+  try {
+    const translator = await pipeline("translation", modelId, { device: engine.device, dtype: state.model.dtype, progress_callback });
+    state.engines.set(key, translator);
+    return translator;
+  } finally {
+    note?.close();
+  }
 }
 
 /* ---------- cutting a text into sentences ---------- */
@@ -81,37 +84,38 @@ const punctuate = (text, code) => (punctuation[code] || []).reduce((result, [pat
 async function translate() {
   if (state.busy) return;
   const text = els.sourceText.value.trim();
-  if (!text) return say(tr("error.empty"), true);
+  if (!text) return void popups.toast(tr("error.empty"), { kind: "error" });
   const steps = stepsOf(state.source, state.target);
-  if (!steps.length) { showTarget(text); return say(tr("status.same")); }
+  if (!steps.length) { showTarget(text); return void popups.toast(tr("status.same"), { kind: "info" }); }
   state.busy = true;
   state.stop = false;
   setBusy(true);
   const started = performance.now();
+  let note = null;   // the popup of the work, with a bar: one for the whole translation
   try {
     const translators = [];
     for (const step of steps) translators.push(await loadTranslator(step));
-    setProgress(null);
     const parts = pieces(text);
     const lines = [];   // the translated pieces of every line
     const separator = noSpaceLanguages.includes(state.target) ? "" : " ";
     let done = 0;
     for (const part of parts) {
       if (state.stop) break;
-      say(tr("status.translating", { done: done + 1, total: parts.length }));
-      setProgress(Math.round((done / parts.length) * 100));
+      const working = tr("status.translating", { done: done + 1, total: parts.length });
+      if (note) note.set(working, done / parts.length); else note = popups.toast(working, { duration: 0, progress: done / parts.length });
       let translated = part.text;
       for (const [index, translator] of translators.entries()) translated = (await translator(translated, { ...steps[index].options, max_new_tokens: engine.maxNewTokens }))[0].translation_text;
       (lines[part.lineIndex] ||= []).push(punctuate(translated, state.target));
       done++;
       showTarget(Array.from(text.split("\n"), (_, index) => (lines[index] || []).join(separator)).join("\n"));
     }
-    say(tr(state.stop ? "status.stopped" : "status.done", { seconds: i18n.number((performance.now() - started) / 1000, { maximumFractionDigits: 1 }), done, total: parts.length }));
+    note?.close();
+    popups.toast(tr(state.stop ? "status.stopped" : "status.done", { seconds: i18n.number((performance.now() - started) / 1000, { maximumFractionDigits: 1 }), done, total: parts.length }), { kind: state.stop ? "warning" : "success" });
   } catch (error) {
     console.error(error);
-    say(tr("error.failed", { message: error.message || error }), true);
+    popups.toast(tr("error.failed", { message: error.message || error }), { kind: "error" });
   } finally {
-    setProgress(null);
+    note?.close();
     state.busy = false;
     setBusy(false);
   }
@@ -129,13 +133,16 @@ els.stopButton.addEventListener("click", () => { state.stop = true; });
 els.sourceText.addEventListener("keydown", (event) => {
   if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) { event.preventDefault(); translate(); }
 });
-els.sourceText.addEventListener("input", renderCount);
+els.sourceText.addEventListener("input", () => { renderCount(); urlState.set({ text: els.sourceText.value.length <= TEXT_LIMIT ? els.sourceText.value : "" }); });
 function renderCount() {
   els.sourceCount.textContent = tr("count", { count: i18n.number(els.sourceText.value.length) });
 }
 
-/* ---------- the settings: the page and the account web both set them, and each follows the other ---------- */
-const savePreferences = () => settings.set("transmu", { model: state.model.id, source: state.source, target: state.target });
+/* ---------- the settings: the page and the account app both set them, and each follows the other ---------- */
+const savePreferences = () => {
+  settings.set("transmu", { model: state.model.id, source: state.source, target: state.target });
+  urlState.set({ model: state.model.id, from: state.source, to: state.target });
+};
 settings.onChange("transmu", defaults, (changed) => {
   if (state.busy) return;
   state.model = models.find((model) => model.id === changed.model) || state.model;
@@ -145,7 +152,7 @@ settings.onChange("transmu", defaults, (changed) => {
   buildLanguages();
 });
 
-// The account web deleted the files of a model: what is loaded is let go, and it downloads again when it is used.
+// The account app deleted the files of a model: what is loaded is let go, and it downloads again when it is used.
 settings.listen("transmu", (message) => { if (message.type === "modelDeleted") state.engines.clear(); });
 
 /* ---------- the model that is chosen ---------- */
@@ -194,11 +201,11 @@ els.clearButton.addEventListener("click", () => {
 
 /* ---------- copying the translation ---------- */
 els.copyButton.addEventListener("click", async () => {
-  try { await navigator.clipboard.writeText(els.targetText.textContent); popups.toast(tr("toast.copied")); } catch (error) { say(tr("error.failed", { message: error.message }), true); }
+  try { await navigator.clipboard.writeText(els.targetText.textContent); popups.toast(tr("toast.copied")); } catch (error) { popups.toast(tr("error.failed", { message: error.message }), { kind: "error" }); }
 });
 
 /* ---------- the settings ---------- */
-account.bind(els.accountButton);   // the profile and the settings are in the account web
+account.bind(els.accountButton);   // the profile and the settings are in the account app
 
 function renderTexts() {
   buildModels();
@@ -209,4 +216,5 @@ function renderTexts() {
 i18n.onChange(renderTexts);
 
 buildLanguages();
+els.sourceText.value = urlState.get("text");
 renderTexts();

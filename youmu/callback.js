@@ -17,8 +17,7 @@ const safe = (address) => {
 
 function fail(code) {
     $("callback-working").hidden = true;
-    $("callback-error").heading = i18n.t(`error.${code}`);
-    $("callback-error").hidden = false;
+    popups.toast(i18n.t(`error.${code}`), { kind: "error" });   // the error is a popup, like every notice
     $("callback-back").href = home;
     $("callback-back").hidden = false;
 }

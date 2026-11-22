@@ -1,5 +1,5 @@
-// Everything that pops up over the page, in every web: the questions and messages (dialogs) and the short notes (toasts).
-// A web never uses alert, confirm, or prompt of the browser, and never makes a popup of its own. The look is in assets/css/style.css (.shared-dialog*, .shared-toast*), the same in every web.
+// Everything that pops up over the page, in every app: the questions and messages (dialogs) and the short notes (toasts).
+// An app never uses alert, confirm, or prompt of the browser, and never makes a popup of its own. The look is in assets/css/style.css (.shared-dialog*, .shared-toast*), the same in every app.
 //
 // A dialog, which waits for an answer:
 //   if (await popups.ask({ text: "Delete this chat?", ok: "Delete" })) { ... }       true when the user confirms, false when not
@@ -204,7 +204,7 @@
 
     function toast(text, { progress = null, kind = progress === null ? "success" : "info", duration = kind === "error" || kind === "warning" ? TOAST_TIME_LONG : TOAST_TIME } = {}) {
         list ??= buildList();
-        const note = part("div", `shared-toast ${kind}` + (progress === null ? "" : " progress"), list);
+        const note = part("div", `shared-toast ${kind}` + (progress === null ? "" : " with-bar"), list);
         part("span", "shared-toast-icon", note);
         const label = part("span", "shared-toast-text", note);
         label.textContent = text;

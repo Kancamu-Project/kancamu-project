@@ -1,8 +1,8 @@
 {
   "name": {
-    "en-US": "Asset{highlight} — every asset of the webs",
-    "zh-CN": "Asset{highlight} — 所有网站的资源",
-    "ar-SA": "Asset{highlight} — كل موارد المواقع"
+    "en-US": "Asset{highlight} — every asset of the apps",
+    "zh-CN": "Asset{highlight} — 所有应用的资源",
+    "ar-SA": "Asset{highlight} — كل موارد التطبيقات"
   },
   "brandColor": "#1cc93d",
   "palette": [
@@ -147,7 +147,7 @@
   ],
   "sectionOrder": [
     "colours",
-    "webs",
+    "apps",
     "icons",
     "fonts",
     "sizes",
@@ -265,9 +265,9 @@
     {
       "name": "css/page.css",
       "description": {
-        "en-US": "The page: the header, the footer, the main, and the sidebar with its drawer (every web but the main website).",
-        "zh-CN": "页面：页眉、页脚、主区域和带抽屉的侧栏（除主网站外的所有网站）。",
-        "ar-SA": "الصفحة: الترويسة والتذييل والمحتوى والشريط الجانبي مع درجه (كل المواقع ما عدا الموقع الرئيسي)."
+        "en-US": "The page: the header, the footer, the main, and the sidebar with its drawer (every app but the main website).",
+        "zh-CN": "页面：页眉、页脚、主区域和带抽屉的侧栏（除主网站外的所有应用）。",
+        "ar-SA": "الصفحة: الترويسة والتذييل والمحتوى والشريط الجانبي مع درجه (كل التطبيقات ما عدا الموقع الرئيسي)."
       }
     },
     {
@@ -281,17 +281,17 @@
     {
       "name": "js/theme.js",
       "description": {
-        "en-US": "Applies the saved theme before the page shows, and follows a change from another web.",
-        "zh-CN": "在页面显示前应用已保存的主题，并跟随其他网站的更改。",
-        "ar-SA": "يطبّق المظهر المحفوظ قبل ظهور الصفحة ويتبع التغيير من موقع آخر."
+        "en-US": "Applies the saved theme before the page shows, and follows a change from another app.",
+        "zh-CN": "在页面显示前应用已保存的主题，并跟随其他应用的更改。",
+        "ar-SA": "يطبّق المظهر المحفوظ قبل ظهور الصفحة ويتبع التغيير من تطبيق آخر."
       }
     },
     {
       "name": "js/i18n.js",
       "description": {
-        "en-US": "Loads data.json, picks the language, applies it, and sets the colour of the web (--brand and --brand-ink).",
-        "zh-CN": "加载 data.json，选择并应用语言，并设置网站颜色（--brand 和 --brand-ink）。",
-        "ar-SA": "يحمّل data.json ويختار اللغة ويطبّقها ويضبط لون الموقع (--brand و --brand-ink)."
+        "en-US": "Loads data.json, picks the language, applies it, and sets the colour of the app (--brand and --brand-ink).",
+        "zh-CN": "加载 data.json，选择并应用语言，并设置应用颜色（--brand 和 --brand-ink）。",
+        "ar-SA": "يحمّل data.json ويختار اللغة ويطبّقها ويضبط لون التطبيق (--brand و --brand-ink)."
       }
     },
     {
@@ -321,33 +321,33 @@
     {
       "name": "js/account.js",
       "description": {
-        "en-US": "The shared GitHub sign-in and the button that opens the account web.",
-        "zh-CN": "共享的 GitHub 登录，以及打开账户网站的按钮。",
-        "ar-SA": "تسجيل الدخول المشترك إلى GitHub والزر الذي يفتح موقع الحساب."
+        "en-US": "The shared GitHub sign-in and the button that opens the account app.",
+        "zh-CN": "共享的 GitHub 登录，以及打开账户应用的按钮。",
+        "ar-SA": "تسجيل الدخول المشترك إلى GitHub والزر الذي يفتح تطبيق الحساب."
       }
     },
     {
       "name": "js/settings.js",
       "description": {
-        "en-US": "The settings of every web: read, save, follow, and the messages of the account web.",
-        "zh-CN": "所有网站的设置：读取、保存、跟随，以及账户网站的消息。",
-        "ar-SA": "إعدادات كل المواقع: القراءة والحفظ والمتابعة ورسائل موقع الحساب."
+        "en-US": "The settings of every app: read, save, follow, and the messages of the account app.",
+        "zh-CN": "所有应用的设置：读取、保存、跟随，以及账户应用的消息。",
+        "ar-SA": "إعدادات كل التطبيقات: القراءة والحفظ والمتابعة ورسائل تطبيق الحساب."
       }
     },
     {
       "name": "js/transfer.js",
       "description": {
-        "en-US": "Files dragged from a web to the tab of another one (transfer.drag and transfer.receive).",
-        "zh-CN": "从一个网站拖到另一个网站标签页的文件（transfer.drag 和 transfer.receive）。",
-        "ar-SA": "ملفات تُسحب من موقع إلى تبويب موقع آخر (transfer.drag وtransfer.receive)."
+        "en-US": "Files dragged from an app to the tab of another one (transfer.drag and transfer.receive).",
+        "zh-CN": "从一个应用拖到另一个应用标签页的文件（transfer.drag 和 transfer.receive）。",
+        "ar-SA": "ملفات تُسحب من تطبيق إلى تبويب تطبيق آخر (transfer.drag وtransfer.receive)."
       }
     },
     {
       "name": "js/storage.js",
       "description": {
-        "en-US": "The GitHub storage: one repository, one folder for each web (in AppData).",
-        "zh-CN": "GitHub 存储：一个仓库，每个网站在 AppData 中有一个文件夹。",
-        "ar-SA": "تخزين GitHub: مستودع واحد ومجلد لكل موقع (داخل AppData)."
+        "en-US": "The GitHub storage: one repository, one folder for each app (in AppData).",
+        "zh-CN": "GitHub 存储：一个仓库，每个应用在 AppData 中有一个文件夹。",
+        "ar-SA": "تخزين GitHub: مستودع واحد ومجلد لكل تطبيق (داخل AppData)."
       }
     },
     {
@@ -418,10 +418,10 @@
       "zh-CN": "颜色",
       "ar-SA": "الألوان"
     },
-    "section.webs": {
-      "en-US": "Webs",
-      "zh-CN": "网站",
-      "ar-SA": "المواقع"
+    "section.apps": {
+      "en-US": "Apps",
+      "zh-CN": "应用",
+      "ar-SA": "التطبيقات"
     },
     "section.icons": {
       "en-US": "Icons",
@@ -463,10 +463,10 @@
       "zh-CN": "组件使用的颜色，会随主题变化。",
       "ar-SA": "ما تستخدمه المكونات. تتغير مع المظهر."
     },
-    "webs.hint": {
-      "en-US": "The icon and the colour of every web of the site. The colour is a hex, or the name of a colour of the palette.",
-      "zh-CN": "站点中每个网站的图标和颜色。颜色是十六进制值，或调色板中的颜色名。",
-      "ar-SA": "أيقونة ولون كل موقع. اللون قيمة سداسية أو اسم لون من اللوحة."
+    "apps.hint": {
+      "en-US": "The icon and the colour of every app of the site. The colour is a hex, or the name of a colour of the palette.",
+      "zh-CN": "站点中每个应用的图标和颜色。颜色是十六进制值，或调色板中的颜色名。",
+      "ar-SA": "أيقونة ولون كل تطبيق. اللون قيمة سداسية أو اسم لون من اللوحة."
     },
     "icons.hint": {
       "en-US": "Every icon is an SVG file in assets/icons that follows the colour of the text. Click one to copy its file name.",
@@ -494,9 +494,9 @@
       "ar-SA": "لا توجد أيقونة بهذا الاسم."
     },
     "fonts.hint": {
-      "en-US": "style.css loads both fonts, so every web has them: Inter for the text and JetBrains Mono for code. muOS also loads JetBrains Mono itself. The files are in assets/fonts.",
-      "zh-CN": "style.css 加载这两种字体，所有网站都可使用：Inter 用于文字，JetBrains Mono 用于代码。muOS 也自行加载 JetBrains Mono。文件在 assets/fonts 中。",
-      "ar-SA": "يحمّل style.css الخطين معا فتستخدمهما كل المواقع: Inter للنص وJetBrains Mono للشيفرة. ويحمّل muOS الخط JetBrains Mono بنفسه أيضا. الملفات في assets/fonts."
+      "en-US": "style.css loads both fonts, so every app has them: Inter for the text and JetBrains Mono for code. muOS also loads JetBrains Mono itself. The files are in assets/fonts.",
+      "zh-CN": "style.css 加载这两种字体，所有应用都可使用：Inter 用于文字，JetBrains Mono 用于代码。muOS 也自行加载 JetBrains Mono。文件在 assets/fonts 中。",
+      "ar-SA": "يحمّل style.css الخطين معا فتستخدمهما كل التطبيقات: Inter للنص وJetBrains Mono للشيفرة. ويحمّل muOS الخط JetBrains Mono بنفسه أيضا. الملفات في assets/fonts."
     },
     "fonts.sample": {
       "en-US": "The quick brown fox jumps over the lazy dog 0123456789",

@@ -14,7 +14,7 @@ html, body {
 
 /* The page is the template (assets/css/components.css): the header, the sidebar, the main, and the footer. Here is only what is Youmu's own. */
 .logo-mark {
-    background-image: url("favicon.png");   /* the logo of the web: its favicon */
+    background-image: url("favicon.png");   /* the logo of the app: its favicon */
 }
 
 .sidebar-nav {
@@ -35,7 +35,14 @@ html, body {
     gap: var(--gap-small);
 
     & > .sidebar-item {
-        text-transform: none;   /* the name of a web keeps its capitals (muAI) */
+        text-transform: none;   /* the name of an app keeps its capitals (muAI) */
+
+        /* the tint of the button that is shown, and the line at its start, are the colour of the app (--app-colour, set by app.js; the appearance has none, and keeps the gray and the green).
+           The hover stays the gray of every sidebar (assets/css/page.css). */
+        &.on {
+            background: color-mix(in srgb, var(--app-colour, var(--fg)) 16%, transparent);
+            border-inline-start-color: var(--app-colour, var(--highlight));   /* the line at the start of the app that is shown */
+        }
     }
 
     & .app-icon {
@@ -48,7 +55,7 @@ html, body {
 }
 
 .main { gap: 0; overflow: hidden; & > .topbar {
-        justify-content: flex-end; border-bottom: var(--border-width) solid var(--border); & > select {
+        justify-content: flex-end; gap: 0; border-bottom: var(--border-width) solid var(--border); & > select {   /* the controls touch: a line between them, no gap */
             width: calc(var(--height) * 4); }
 
         & > :is(select, button) {
@@ -312,23 +319,43 @@ html, body {
     flex-direction: column;
     gap: var(--gap-small);
 
+    & > .downloaded-group {
+        font-size: var(--font-size-extra-small);
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--fg-1);
+    }
+
     & > .downloaded-model {
         display: flex;
         flex-direction: row;
         align-items: center;
         gap: var(--gap-small);
 
-        & > .downloaded-model-name {
+        & > .downloaded-model-text {
             flex: 1;
             min-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            display: flex;
+            flex-direction: column;
+
+            & > .downloaded-model-name {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
         }
 
         & > .downloaded-model-size {
             color: var(--fg-1);
             white-space: nowrap;
+        }
+
+        & > :is(.radio, .badge) {
+            flex: none;
+        }
+
+        & .downloaded-model-name {
+            cursor: pointer;
         }
     }
 }
@@ -370,8 +397,4 @@ body.callback {
     align-items: center;
     gap: var(--gap-small);
     color: var(--fg-1);
-}
-
-.callback-box > kit-alert {
-    align-self: stretch;
 }

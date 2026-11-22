@@ -1,10 +1,10 @@
-// The small helpers that every web wrote again, made once. They go with the templates of components.css; Kitmu shows each of them.
+// The small helpers that every app wrote again, made once. They go with the templates of components.css; Kitmu shows each of them.
 //   components.element("div", "card", "Text")                  an element with a class and a text
 //   components.icon("trash")                                   <span class="icon icon-trash"></span>
 //   components.formatSize(1536000)                             "1.5 MB", with the numbers of the language of the page
-//   components.extensionOf("Photo.PNG")                        "png" (an empty text when there is no dot)
+//   components.extensionOf("Image.PNG")                        "png" (an empty text when there is no dot)
 //   const say = components.status(document.getElementById("status"));
-//   say("Saved."); say("Failed.", true);                       the status line, red for an error
+//   say("Choose a file.");                                     the hint line of the footer (a notice is a popup: popups.toast)
 //   const menu = components.drawer({ sidebar, button });       the sidebar that opens over the main on a narrow screen
 //   menu.set(true);                                            opens it (Escape closes it and gives the focus back to the button)
 //   components.download("notes.txt", "Hello", "text/plain");   saves a text or a Blob as a file
@@ -21,10 +21,10 @@
 //   components.scroller(container);                             follow() keeps the end in view only while the reader is at the end
 //   components.questionnaire({ items, labels, onSubmit });      questions one after another, with choices
 //   <kit-alert kind="error" heading="Failed">The text.</kit-alert>   a component with several parts is one tag: kit-alert, kit-card, kit-item, kit-empty, kit-attachment, kit-message.
-//                                                               It builds its parts, so a change of the component reaches every web; the attributes are properties too (element.heading = "...").
+//                                                               It builds its parts, so a change of the component reaches every app; the attributes are properties too (element.heading = "...").
 //   components.make("alert", { kind: "error", heading: "Failed" }, ["The text."])   the same from a script
 //   The parts of the page are tags too: <kit-header theme menu>, <kit-sidebar>, <kit-footer status>; and kit-collapsible, kit-breadcrumbs, kit-tabs, kit-pagination,
-//   kit-trace-line, kit-marker, kit-field, kit-search. Their texts that are the same in every web (the account button, the copyright) are in assets/data/kit.json.
+//   kit-trace-line, kit-marker, kit-field, kit-search. Their texts that are the same in every app (the account button, the copyright) are in assets/data/kit.json.
 //   components.closeOverlay();                                  closes the menu or the popover that is open
 //   components.popover({ anchor, content });                    a panel with anything in it, under a button; both close on Escape, on a click outside, on a scroll
 (() => {
@@ -53,12 +53,10 @@
         return `${number(value)} ${units[index]}`;
     }
 
-    // The function that writes in the status line: say(text), or say(text, true) for an error.
+    // The function that writes in the hint line of the footer: say(text). It is for what the page tells about itself (what to do first, how many items there are);
+    // a notice (work that goes on, a result, an error) is a popup, popups.toast in assets/js/popup.js.
     function status(node) {
-        return (text, isError = false) => {
-            node.textContent = text;
-            node.classList.toggle("error", isError);
-        };
+        return (text) => { node.textContent = text; };
     }
 
     // The sidebar that is hidden on a narrow screen and opened over the main by the menu button.
@@ -256,7 +254,7 @@
     }
 
     /* ---------- the tag <select>: it opens the menu of the kit, not the list of the browser ---------- */
-    // The select keeps its value, its options, and its change event, so a web changes nothing; only the list that opens is the menu of the kit (a second click, Escape, and the arrows work as in every menu).
+    // The select keeps its value, its options, and its change event, so an app changes nothing; only the list that opens is the menu of the kit (a second click, Escape, and the arrows work as in every menu).
     // Every <select> of a page gets it (the ones that are made later too); data-native keeps the list of the browser.
     function enhanceSelect(native) {
         if (native.dataset.kitSelect !== undefined || native.hasAttribute("data-native")) return;
@@ -295,9 +293,27 @@
             choose();
         });
     }
+    // The slider keeps --position (0 to 1) of its knob, for the CSS of assets/css/components.css that paints the track up to it. An app sets the value (and the end) from its code,
+    // which does not fire "input": the value of the element is watched, and so are min and max.
+    const placeSlider = (input) => {
+        const min = Number(input.min || 0);
+        const max = Number(input.max || 100);
+        input.style.setProperty("--position", max > min ? String(Math.min(1, Math.max(0, (Number(input.value) - min) / (max - min)))) : "0");
+    };
+    function enhanceSlider(input) {
+        if (input.dataset.kitSlider !== undefined) return;
+        input.dataset.kitSlider = "";
+        const own = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value");
+        Object.defineProperty(input, "value", { configurable: true, get() { return own.get.call(this); }, set(next) { own.set.call(this, next); placeSlider(this); } });
+        input.addEventListener("input", () => placeSlider(input));
+        new MutationObserver(() => placeSlider(input)).observe(input, { attributes: true, attributeFilter: ["min", "max", "value", "step"] });
+        placeSlider(input);
+    }
     const enhanceSelects = (root) => {
         if (root.matches?.("select")) enhanceSelect(root);
         root.querySelectorAll?.("select").forEach(enhanceSelect);
+        if (root.matches?.("input.slider")) enhanceSlider(root);
+        root.querySelectorAll?.("input.slider").forEach(enhanceSlider);
     };
     enhanceSelects(document);
     new MutationObserver((records) => records.forEach((record) => record.addedNodes.forEach((node) => node.nodeType === 1 && enhanceSelects(node)))).observe(document.documentElement, { childList: true, subtree: true });
@@ -650,7 +666,7 @@
         return { element: box, answers };
     }
 
-    /* ---------- the elements kit-*: one tag builds a component that has several parts, so a change of the component reaches every web ---------- */
+    /* ---------- the elements kit-*: one tag builds a component that has several parts, so a change of the component reaches every app ---------- */
     const KIND_ICON = { success: "check", info: "info", warning: "warning", error: "alert" };
 
     // The texts of the parts that the page parts have on their own (the account button, the copyright): assets/data/kit.json, in every language.
@@ -828,7 +844,7 @@
 
     /* the parts of the page: the header, the sidebar, and the footer */
     defineElement("header", ["theme", "menu", "menu-label", "menu-text", "no-account", "name"], (host, { refresh }) => {
-        // a new language only changes the texts: the buttons stay, because the web has tied its scripts to them
+        // a new language only changes the texts: the buttons stay, because the app has tied its scripts to them
         if (refresh && host.querySelector(".header-tools")) {
             const names = { "theme-button": "theme", "account-button": "account", "menu-button": "menu" };
             for (const button of host.querySelectorAll(".header-tools button")) {
@@ -874,7 +890,7 @@
     }, { texts: true });
 
     defineElement("sidebar", ["tablist", "label"], (host, { content, slots }) => {
-        const kept = host.querySelector(":scope > #sidebar-nav");   // the web writes in the list: it stays the same element
+        const kept = host.querySelector(":scope > #sidebar-nav");   // the app writes in the list: it stays the same element
         const nav = kept ?? element("div", "sidebar-nav");
         nav.id = "sidebar-nav";
         if (host.hasAttribute("tablist")) nav.setAttribute("role", "tablist");
@@ -902,7 +918,7 @@
         link.target = "_top";
         parts.push(link);
         host.id ||= "footer";
-        // the status line is written by the web: keep what it wrote
+        // the status line is written by the app: keep what it wrote
         const old = host.querySelector("#status");
         if (old && parts[0]?.id === "status") parts[0] = old;
         host.replaceChildren(...parts);

@@ -131,16 +131,6 @@
     },
     "fields": [
       {
-        "id": "model",
-        "type": "select",
-        "optionsFrom": {
-          "list": "models",
-          "value": "id",
-          "label": "name"
-        },
-        "label": "model.label"
-      },
-      {
         "id": "source",
         "type": "select",
         "optionsFrom": {
@@ -163,18 +153,13 @@
     ],
     "models": {
       "cache": "transformers-cache",
-      "repos": [
-        {
-          "pattern": "^Xenova/opus-mt-"
-        },
-        {
-          "list": "models",
-          "key": "model"
-        }
-      ]
+      "choose": "model",
+      "list": "models",
+      "repo": "model",
+      "repoTemplate": "modelTemplate"
     },
     "panels": [
-      "downloadedModels"
+      "modelList"
     ]
   },
   "sentenceMarks": ".!?。！？؟",
@@ -382,19 +367,14 @@
       "ar-SA": "الحساب"
     },
     "set.models.label": {
-      "en-US": "Downloaded models",
-      "zh-CN": "已下载的模型",
-      "ar-SA": "النماذج المنزّلة"
+      "en-US": "Models",
+      "zh-CN": "模型",
+      "ar-SA": "النماذج"
     },
     "set.models.hint": {
-      "en-US": "The model files are kept in this browser. Delete one to free the space; it downloads again when you use it.",
-      "zh-CN": "模型文件保存在此浏览器中。删除可释放空间；再次使用时会重新下载。",
-      "ar-SA": "تُحفظ ملفات النماذج في هذا المتصفح. احذف نموذجًا لتحرير المساحة؛ وسيُنزَّل مرة أخرى عند استخدامه."
-    },
-    "set.models.empty": {
-      "en-US": "No model is downloaded.",
-      "zh-CN": "没有已下载的模型。",
-      "ar-SA": "لا يوجد نموذج منزَّل."
+      "en-US": "Choose the model that translates. The files of a model are kept in this browser: delete them to free the space, and the model downloads again when you use it.",
+      "zh-CN": "选择用于翻译的模型。模型文件保存在此浏览器中：删除后可释放空间，再次使用时会重新下载。",
+      "ar-SA": "اختر النموذج المستخدم. تُحفظ ملفات النموذج في هذا المتصفح: احذفها لتحرير المساحة، وسيُنزَّل النموذج مجددا عند استخدامه."
     },
     "confirm.deleteModel": {
       "en-US": "Delete the downloaded files of {name} ({size})? They will download again when you use it.",
@@ -410,6 +390,16 @@
       "en-US": "Delete",
       "zh-CN": "删除",
       "ar-SA": "حذف"
+    },
+    "models.downloaded": {
+      "en-US": "Downloaded",
+      "zh-CN": "已下载",
+      "ar-SA": "تم التنزيل"
+    },
+    "models.notDownloaded": {
+      "en-US": "Not downloaded",
+      "zh-CN": "未下载",
+      "ar-SA": "غير منزَّل"
     }
   }
 }

@@ -1,5 +1,5 @@
-// Kitmu: the UI kit of the webs: the components (assets/css/components.css), the helpers (assets/js/components.js), and the popups (assets/js/popup.js), each with the code to copy and a way to try it.
-// The tabs: Components (the list: every component as a card with its name and its preview, narrowed down by the search and the tags), Pages (what is made of several components), How to use, Helpers, and Popups (each kept in the address as #pages, #guide, #helpers, #popups).
+// Kitmu: the UI kit of the apps: the components (assets/css/components.css), the helpers (assets/js/components.js), and the popups (assets/js/popup.js), each with the code to copy and a way to try it.
+// The tabs: Components (the list: every component as a card with its name and its preview, narrowed down by the search and the tags), Pages (what is made of several components), How to use, Helpers, and Popups (each kept in the address as ?view=pages, ?view=guide, ?view=helpers, ?view=popups).
 await i18n.load();
 i18n.selects();
 
@@ -11,18 +11,14 @@ const { pages } = i18n.data;
 const views = ["components", "pages", "guide", "helpers", "popups"];
 const single = new Set(["pages", "guide"]);   // the views whose cards are one under another, each as wide as the page (the others are columns)
 
-/* ---------- the search and the tags, as in the directory: they are in the address (?q=...&tag=...) ---------- */
+/* ---------- the search and the tags, as in the directory: they are in the address (?q=...&tag=...), and so is the tab (?view=pages), assets/js/url.js ---------- */
 const params = new URLSearchParams(location.search);
 const filter = { q: params.get("q") || "", tag: tagDocs[params.get("tag")] ? params.get("tag") : "all" };
 const filtering = () => filter.q.trim() !== "" || filter.tag !== "all";
 const tagLabel = (key) => (tagDocs[key] ? i18n.pick(tagDocs[key]) : key);
-let view = views.includes(location.hash.slice(1)) ? location.hash.slice(1) : "components";
+let view = views.includes(params.get("view")) ? params.get("view") : "components";
 function save() {
-  const query = new URLSearchParams();
-  if (filter.q) query.set("q", filter.q);
-  if (filter.tag !== "all") query.set("tag", filter.tag);
-  const search = query.toString();
-  history.replaceState(null, "", `${location.pathname}${search ? `?${search}` : ""}${view === "components" ? "" : `#${view}`}`);
+  urlState.set({ q: filter.q, tag: filter.tag === "all" ? "" : filter.tag, view: view === "components" ? "" : view });
 }
 
 /* ---------- the views: built once, filled again when the language or the theme changes ---------- */
@@ -76,7 +72,7 @@ function card(key, title, chips, { preview, code = null }) {
   return box;
 }
 
-/* ---------- templates: each one in a page of its own (so nothing of this web changes it), with the HTML to copy ---------- */
+/* ---------- templates: each one in a page of its own (so nothing of this app changes it), with the HTML to copy ---------- */
 // What makes a demo work: the expandable parts open and close, a toggle stays pressed, and one button of a toggle group is on.
 const DEMO_SCRIPT = `
 document.querySelectorAll(".section-toggle").forEach((toggle) => !toggle.closest("kit-collapsible") && components.expand({ toggle, body: toggle.nextElementSibling, open: toggle.getAttribute("aria-expanded") !== "false" }));
@@ -98,11 +94,11 @@ function component(doc) {
   return card(`component.${doc.id}`, doc.name, doc.tags ?? [], { preview: [frame], code: [element("span", "doc-text", tr(`components.${doc.id}.text`)), ...note, code] });
 }
 
-/* ---------- the guide: how a web uses Kitmu, one step after another, with the code to copy ---------- */
+/* ---------- the guide: how an app uses Kitmu, one step after another, with the code to copy ---------- */
 const guideItem = (step) => card(`guide.${step.id}`, tr(`guide.${step.id}.title`), [], { preview: [element("span", "doc-text", tr(`guide.${step.id}.text`))], code: step.code ? [element("pre", "doc-code", step.code)] : null });
 
 /* ---------- helpers: the small scripts of components.js, with the code and what it gives ---------- */
-const helperResult = { format: () => `${components.formatSize(1536000)} · ${components.extensionOf("Photo.PNG")}` };
+const helperResult = { format: () => `${components.formatSize(1536000)} · ${components.extensionOf("Image.PNG")}` };
 function helperItem(helper) {
   const preview = [element("span", "doc-text", tr(`helpers.${helper.id}.text`))];
   if (helperResult[helper.id]) preview.push(element("span", "doc-text", `${tr("helpers.result")}: ${helperResult[helper.id]()}`));
@@ -221,8 +217,7 @@ function renderAll() {
 }
 renderAll();
 i18n.onChange(renderAll);
-window.addEventListener("hashchange", () => { const next = location.hash.slice(1); if (views.includes(next) && next !== view) { view = next; renderTabs(); showView(); } });
-// The demos of the templates follow the theme: when it changes (here, or in another web), they are made again.
+// The demos of the templates follow the theme: when it changes (here, or in another app), they are made again.
 new MutationObserver(() => { for (const entry of entries) entry.node = entry.make(); boxes.components.body.replaceChildren(...entries.map((entry) => entry.node)); applyFilter(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
 // One button toggles the theme, to see the kit in both of them; its icon is the theme that a click gives (a sun in the dark theme).

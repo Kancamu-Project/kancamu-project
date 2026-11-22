@@ -1,7 +1,7 @@
-// The account web: the sign-in, the profile, and the settings of every web. The query string says which page shows:
+// The account app: the sign-in, the profile, and the settings of every app. The query string says which page shows:
 //   ?page=login  ?page=profile  ?page=settings&app=<app>
-// Any web opens it with its account button, account.open() (assets/js/account.js), which embeds this page in a dialog.
-// The settings of a web are described in its data.json ("settings": fields, defaults, and panels), and are only changed here.
+// Any app opens it with its account button, account.open() (assets/js/account.js), which embeds this page in a dialog.
+// The settings of an app are described in its data.json ("settings": fields, defaults, and panels), and are only changed here.
 import { panels } from "./panels.js";
 
 const { element } = components;
@@ -9,7 +9,7 @@ const $ = (id) => document.getElementById(id);
 const t = (key) => i18n.t(key);
 const embedded = window.parent !== window;
 const query = new URLSearchParams(location.search);
-const state = { page: query.get("page") || "", app: query.get("app") || "", appData: null, apps: [], loaded: false, run: 0 };   // apps: the webs that have settings, { id, name, icon, data }
+const state = { page: query.get("page") || "", app: query.get("app") || "", appData: null, apps: [], loaded: false, run: 0 };   // apps: the apps that have settings, { id, name, icon, data }
 
 // What GitHub tells about the account and the token, fetched once per token.
 let details = null;
@@ -100,7 +100,7 @@ function renderDetails() {
 /* ---------- the pages ---------- */
 // The page that shows: the settings when asked, else the profile when signed in, else the sign-in.
 const pageNow = () => (state.page === "settings" && (selectedApp() || !state.loaded) ? "settings" : account.get() ? "profile" : "login");
-// The web whose settings show: the one asked, when it has settings.
+// The app whose settings show: the one asked, when it has settings.
 const selectedApp = () => (state.apps.some((app) => app.id === state.app && app.data?.settings) ? state.app : "");
 
 function render() {
@@ -131,35 +131,33 @@ function render() {
     if (page === "settings") renderSettings();
 }
 
-// The sidebar: the account, and every web (its button is disabled when the web has no settings yet).
+// The sidebar: the account, and every app (its button is disabled when the app has no settings yet).
 function renderSide(page, selected) {
     const mark = (tab, on) => { tab.classList.toggle("on", on); tab.setAttribute("aria-selected", on); };
     mark($("account-tab"), page !== "settings");
     $("sidebar-apps").replaceChildren(...state.apps.map((app) => {
         const item = element("button", "sidebar-item");
         item.type = "button";
-        const icon = element("span", "app-icon");
-        icon.style.backgroundImage = `url("../${app.icon}")`;
+        if (app.color) item.style.setProperty("--app-colour", app.color);   // the tint of its button is the colour of the app
+        const icon = element("span", app.glyph ? `icon icon-${app.glyph}` : "app-icon");   // the appearance has a glyph of the kit; an app has its own icon
+        if (!app.glyph) icon.style.backgroundImage = `url("../${app.icon}")`;
         const name = element("span", "app-name");
         const highlight = element("span", "highlight", app.parts[1]);
         highlight.style.color = app.color;   // the colour of the project (a hex, or the name of a colour of the page)
         name.append(app.parts[0], highlight, app.parts[2]);
         item.append(icon, name);
-        item.disabled = !app.data?.settings;   // a web that has no settings yet
+        item.disabled = !app.data?.settings;   // an app that has no settings yet
         mark(item, page === "settings" && selected === app.id);
         item.addEventListener("click", () => showPage("settings", app.id));
         return item;
     }));
 }
 
-// An item of the sidebar changes the page without loading this web again, and the address follows.
+// An item of the sidebar changes the page without loading this app again, and the address follows.
 function showPage(page, app = "") {
     state.page = page;
     state.app = app;
-    const url = new URL(location.href);
-    url.searchParams.set("page", page);
-    if (app) url.searchParams.set("app", app); else url.searchParams.delete("app");
-    history.replaceState(null, "", url);
+    urlState.set({ page, app });
     render();
 }
 $("account-tab").addEventListener("click", () => showPage("account"));
@@ -176,7 +174,7 @@ const appData = async (app) => {
         return null;
     }
 };
-// Every web of the brand, with its data.json when it has one: { id, name, icon, data }. A web has settings when its data.json has a "settings" part.
+// Every app of the brand, with its data.json when it has one: { id, name, icon, data }. An app has settings when its data.json has a "settings" part.
 async function loadApps() {
     let projects = [];
     try { projects = (await (await fetch("../data.json", { cache: "no-store" })).json()).projects; } catch { return []; }
@@ -184,16 +182,22 @@ async function loadApps() {
     const found = await Promise.all(projects.filter((project) => project.publisher === "{brand}").map(async (project) => {
         const folder = /^[a-z0-9-]+\/$/.test(project.url || "") ? project.url.slice(0, -1) : "";
         const name = fill(i18n.pick(project.name));
-        const highlight = fill(i18n.pick(project.highlight || {}));   // the highlighted part of the name (the "mu"), found in it like the main web does
+        const highlight = fill(i18n.pick(project.highlight || {}));   // the highlighted part of the name (the "mu"), found in it like the main website does
         const at = highlight ? name.indexOf(highlight) : -1;
         const parts = at < 0 ? [name, "", ""] : [name.slice(0, at), highlight, name.slice(at + highlight.length)];
         return { id: folder || project.id, name, parts, color: /^#/.test(project.color) ? project.color : `var(--${project.color})`, icon: project.icon, data: folder ? await appData(folder) : null };
     }));
-    // The webs that have settings first, then the ones that have none (their buttons are disabled), each group by name.
-    return found.sort((a, b) => Number(!a.data?.settings) - Number(!b.data?.settings) || a.name.localeCompare(b.name, i18n.lang));
+    // The apps that have settings first, then the ones that have none (their buttons are disabled), each group by name.
+    found.sort((a, b) => Number(!a.data?.settings) - Number(!b.data?.settings) || a.name.localeCompare(b.name, i18n.lang));
+    // Before them, the appearance of every app (the effects, assets/data/appearance.json): it belongs to no app, and is set like the settings of one.
+    try {
+        const data = await (await fetch("../assets/data/appearance.json", { cache: "no-store" })).json();
+        found.unshift({ id: "appearance", name: i18n.pick(data.ui.name), parts: [i18n.pick(data.ui.name), "", ""], glyph: "sliders", data });
+    } catch { /* the page is left out */ }
+    return found;
 }
 
-// A text of the web that is being set, in the language of the page.
+// A text of the app that is being set, in the language of the page.
 const appText = (key, params = {}) => (state.appData.ui?.[key] ? i18n.pick(state.appData.ui[key]) : key).replace(/\{(\w+)\}/g, (_, name) => params[name] ?? "");
 
 
@@ -214,8 +218,8 @@ window.addEventListener("storage", (event) => {
     if (event.key === "theme" || event.key === null) markTheme();
 });
 
-// The options of a select: written in the field ("options": [{ value, label }]), or taken from a list of the data.json of the web
-// ("optionsFrom": { "list": "video.formats", "value": "id", "label": "name" }, a list of plain values has no value and label, and "labelPrefix" makes the label a text of the web).
+// The options of a select: written in the field ("options": [{ value, label }]), or taken from a list of the data.json of the app
+// ("optionsFrom": { "list": "video.formats", "value": "id", "label": "name" }, a list of plain values has no value and label, and "labelPrefix" makes the label a text of the app).
 function optionsOf(definition) {
     const from = definition.optionsFrom;
     const items = definition.options || (from.list.split(".").reduce((node, key) => node?.[key], state.appData) || []).map((item) => {
@@ -234,7 +238,7 @@ function collapsible(box) {
     return part;
 }
 
-// A field of the web that is being set: a label, a hint, and a control. The value is saved at once, kept in range.
+// A field of the app that is being set: a label, a hint, and a control. The value is saved at once, kept in range.
 function field(definition, values, save) {
     const box = element("label", `setting-field ${definition.type}`);
     const label = element("span", "field-label", appText(definition.label));
@@ -246,6 +250,8 @@ function field(definition, values, save) {
     } else {
         control = element("input");
         control.type = definition.type;
+        if (definition.type === "range") control.className = "slider";   // the slider of the kit
+        if (definition.type === "checkbox") control.className = "checkbox";   // the checkbox of the kit
     }
     for (const name of ["min", "max", "step"]) if (definition[name] !== undefined) control[name] = definition[name];
     if (definition.type === "checkbox") control.checked = !!values[definition.id];
@@ -271,7 +277,7 @@ async function renderSettings() {
     const config = state.appData.settings;
     const nodes = [];
     const defaults = config.defaults || {};
-    if (config.fields?.length) {   // the values of the web, under its name
+    if (config.fields?.length) {   // the values of the app, under its name
         const save = (definition, control) => {
             let value;
             if (definition.type === "checkbox") value = control.checked;
@@ -304,13 +310,12 @@ async function renderSettings() {
     });
     page.replaceChildren(...nodes);
     await Promise.all(waiting);
-    if (state.run === run && !page.textContent.trim()) page.append(element("span", "hint", t("settings.empty")));   // the panels of a web that need the account show nothing without it
+    if (state.run === run && !page.textContent.trim()) page.append(element("span", "hint", t("settings.empty")));   // the panels of an app that need the account show nothing without it
 }
 
-// The error under the button of the sign-in: the alert of the kit, shown when it has a text
+// The error of the sign-in is a popup, like every notice
 function showLoginError(message) {
-    $("login-error").heading = message;
-    $("login-error").hidden = !message;
+    if (message) popups.toast(message, { kind: "error" });
 }
 
 // "Sign in with GitHub": the whole page goes to GitHub, and comes back to callback.html (assets/js/account.js)
@@ -344,7 +349,7 @@ window.addEventListener("message", (event) => {
 });
 
 await i18n.load();
-loadApps().then((found) => { state.apps = found; state.loaded = true; render(); });   // the sidebar fills in when the webs are known; the page does not wait for it
+loadApps().then((found) => { state.apps = found; state.loaded = true; render(); });   // the sidebar fills in when the apps are known; the page does not wait for it
 account.onChange(render);
 i18n.onChange(render);
 i18n.selects();   // the language select in the header

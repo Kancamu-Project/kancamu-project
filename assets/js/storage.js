@@ -1,8 +1,11 @@
-// The GitHub storage shared by the webs that keep data for the user (they all run on one origin).
+// The GitHub storage shared by the apps that keep data for the user (they all run on one origin).
 // One private repository named after the brand (<id>-data, with the id of assets/data/brand.json), on its default branch (main).
-// Every app has a folder of its own in the folder AppData: AppData/drivemu, AppData/muai, and so on. An app only touches its own folder,
+// Every app has a folder of its own in the folder AppData: AppData/drivemu, AppData/muai, AppData/lingomu, and so on. An app only touches its own folder,
 // and the paths that it gives are inside that folder (the folder is added here), so "a.json" of muai is AppData/muai/a.json in the repository.
+// The Drive is not the folder of an app: it is the whole repository, as Drivemu shows it like a file explorer (Documents, Images, Videos, and Audio are next to AppData,
+// and AppData is a folder like the others in it). storage.drive() opens it, and its paths are the ones of the repository.
 //   const store = await storage.connect("muai");           opens the folder of the app, creating the repository when it is not there yet
+//   const drive = await storage.drive();                   opens the whole repository (the Drive)
 //   const text = await storage.readFile(store, "a.json");  the text of a file of the folder, or null
 //   await storage.writeFile(store, "a.json", text);        saves a file of the folder, and gives its new sha
 //   await storage.list(store, "folder");                   [{ name, sha }] of a folder inside the folder of the app
@@ -10,13 +13,17 @@
 //   await storage.readBinary(store, "a.jpg");              the bytes of a file (a Uint8Array), or null
 //   await storage.writeBinary(store, "a.jpg", bytes);      saves bytes
 //   await storage.removeFile(store, "a.json");             deletes a file
-// store.root is the whole folder of the app in the repository ("AppData/muai"), for a web that works with the git data API itself (Drivemu, the reset of the account web).
+// store.root is the whole folder of the app in the repository ("AppData/muai", and "" for the Drive), and store.system (for the Drive) the names at the root of the repository
+// that are not files that the user made: AppData and README.md, and store.own (for the Drive) the folder of the data of Drivemu itself, AppData/drivemu.
+// An app that works with the git data API itself (Drivemu, the reset of the account app) uses them.
+// The repository is made without a README: its first commit is the empty file AppData/.gitkeep.
 // Two apps may save at the same moment on the same branch: GitHub then answers 409, and a save or a delete is tried again.
 // The account (assets/js/account.js) must be signed in.
 (() => {
     const BRAND = new URL("../data/brand.json", document.currentScript.src).href;
     const API = "https://api.github.com";
     const APPS = "AppData";   // the folder that holds the folders of the apps
+    const SYSTEM = [APPS, "README.md"];   // at the root of the repository, what is not a file that the user made: the folders of the apps, and the file that GitHub makes
     const TRIES = 4;          // a save that meets another save (409) is tried this many times
 
     const fail = (code, message = code) => Object.assign(new Error(message), { code });
@@ -56,8 +63,11 @@
     const toBase64 = (text) => bytesToBase64(new TextEncoder().encode(text));
 
     // The path of a file of the app, as the repository has it
-    const inRepo = (store, path) => `${store.root}/${path}`.replace(/\/+$/, "");
-    const contentsUrl = (store, path) => `/repos/${store.owner}/${store.repo}/contents/${encode(inRepo(store, path))}`;
+    const inRepo = (store, path) => [store.root, path].filter(Boolean).join("/").replace(/\/+$/, "");
+    const contentsUrl = (store, path) => {
+        const full = inRepo(store, path);
+        return `/repos/${store.owner}/${store.repo}/contents${full ? `/${encode(full)}` : ""}`;
+    };
 
     // The same thing is done again when another save got in first
     async function again(task) {
@@ -73,21 +83,38 @@
 
     const storage = {
         // Opens the folder of an app. Rejects with an error whose code is "signedOut", "noWrite", or "failed".
-        async connect(app) {
+        connect(app) {
+            return storage.open(app, `${APPS}/${app}`);
+        },
+
+        // Opens the whole repository: the Drive, as a file explorer shows it.
+        async drive() {
+            const store = await storage.open("drivemu", "");
+            store.system = SYSTEM;
+            store.own = `${APPS}/drivemu`;   // the folder of the data of Drivemu itself (a json file, say): the reset of the Drive deletes it too
+            return store;
+        },
+
+        async open(app, root) {
             const account = window.account?.get();
             if (!account) throw fail("signedOut");
             const brand = await (await fetch(BRAND, { cache: "no-store" })).json();
-            const store = { token: account.token, owner: account.login, repo: `${brand.id}-data`, app, root: `${APPS}/${app}` };
+            const store = { token: account.token, owner: account.login, repo: `${brand.id}-data`, app, root };
 
             try {
                 store.info = await json(store, `/repos/${store.owner}/${store.repo}`);
             } catch (error) {
                 if (error.status !== 404) throw error;
-                store.info = await json(store, "/user/repos", {
-                    method: "POST",
-                    body: JSON.stringify({ name: store.repo, private: true, auto_init: true, description: `${brand.name} data` }),
-                });
-                await wait(1500); // GitHub needs a moment to set the repository up
+                try {
+                    store.info = await json(store, "/user/repos", {
+                        method: "POST",
+                        body: JSON.stringify({ name: store.repo, private: true, description: `${brand.name} data` }),   // no auto_init: GitHub would add a README.md that nobody asked for
+                    });
+                    await wait(1500); // GitHub needs a moment to set the repository up
+                } catch (create) {
+                    if (create.status !== 422) throw create;   // the name is taken: another page made the repository a moment ago
+                    store.info = await json(store, `/repos/${store.owner}/${store.repo}`);
+                }
             }
             if (!store.info.permissions?.push) throw fail("noWrite");
             store.branch = store.info.default_branch || "main";
@@ -96,16 +123,18 @@
             return store;
         },
 
-        // The branch has a commit: a repository that was made empty gets one (the first file makes the branch).
+        // The branch has a commit. A repository that was just made is empty, and the git data API (what Drivemu uses for many files at once) does not work in an empty one
+        // (it answers 409; GitHub says so and gives the way out, the contents API, in https://docs.github.com/en/rest/guides/using-the-rest-api-to-interact-with-your-git-database):
+        // the first commit is made here, through the contents API, with an empty file in AppData (the first file of any app that comes after goes next to it).
         async ensureBranch(store) {
             try {
                 await call(store, `/repos/${store.owner}/${store.repo}/git/ref/heads/${encodeURIComponent(store.branch)}`);
             } catch (error) {
                 if (error.status !== 404 && error.status !== 409) throw error;
                 try {
-                    await call(store, `/repos/${store.owner}/${store.repo}/contents/README.md`, { method: "PUT", body: JSON.stringify({ message: "Initialize", content: "" }) });
+                    await call(store, `/repos/${store.owner}/${store.repo}/contents/${APPS}/.gitkeep`, { method: "PUT", body: JSON.stringify({ message: "Initialize", content: "" }) });
                 } catch (put) {
-                    if (put.status !== 422) throw put;   // the file is there: another page made it first
+                    if (put.status !== 422 && put.status !== 409) throw put;   // the file is there: another page made it first
                 }
             }
         },
@@ -138,6 +167,10 @@
         // The paths are inside the folder of the app. truncated is true when the folder is too big for GitHub to list in one answer.
         async tree(store) {
             const base = `/repos/${store.owner}/${store.repo}/git/trees`;
+            if (!store.root) {   // the Drive: the whole repository
+                const whole = await json(store, `${base}/${encodeURIComponent(store.branch)}?recursive=1`);
+                return { files: whole.tree.filter((item) => item.type === "blob").map(({ path, size }) => ({ path, size })), truncated: !!whole.truncated };
+            }
             // the folder of the app is found one folder at a time, so the files of the other apps are not listed with it
             let sha = encodeURIComponent(store.branch);
             for (const name of store.root.split("/")) {

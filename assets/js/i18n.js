@@ -1,7 +1,7 @@
-// Language support shared by every web (except muOS and ArtCraft).
-// A web keeps its texts in its own data.json:
+// Language support shared by every app (except muOS and ArtCraft).
+// An app keeps its texts in its own data.json:
 //   { "name": { "en-US": "..." }, "languages": [{ "code", "name", "dir" }], "ui": { "key": { "en-US": "...", ... } } }
-// The rest of the data of the web is in the same file too (the projects of the main web, the models of muAI, the file types of Drivemu): app.js reads it from i18n.data.
+// The rest of the data of the app is in the same file too (the projects of the main website, the models of muAI, the file types of Drivemu): app.js reads it from i18n.data.
 // Mark elements in the HTML with data-i18n (text), data-i18n-html (text with <b>/<i>, from our own data.json),
 // data-i18n-title, data-i18n-placeholder, or data-i18n-label (aria-label), then call i18n.load().
 // A tag kit-* (assets/js/components.js) takes a text for any of its attributes the same way: data-i18n-heading="key" gives heading the text of the key.
@@ -33,7 +33,7 @@
             return this.data;
         },
 
-        // The colour of the web (brandColor in its data.json, taken from its icon) is --brand, and the colour of the text on it is --brand-ink:
+        // The colour of the app (brandColor in its data.json, taken from its icon) is --brand, and the colour of the text on it is --brand-ink:
         // white when it reads well on that colour (a contrast of 3 or more), else dark.
         applyBrandColour() {
             const hex = this.data?.brandColor;
@@ -158,7 +158,7 @@
         },
     };
 
-    // Another web of this site changed the language: follow it.
+    // Another app of this site changed the language: follow it.
     window.addEventListener("storage", (event) => {
         if ((event.key !== KEY && event.key !== null) || !i18n.data) return;
         const code = i18n.resolve();

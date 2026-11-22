@@ -1,8 +1,8 @@
 {
   "name": {
-    "en-US": "{highlight}RMBG — remove backgrounds in your browser",
-    "zh-CN": "{highlight}RMBG — 在浏览器中移除背景",
-    "ar-SA": "{highlight}RMBG — أزل الخلفيات في متصفحك"
+    "en-US": "Pic{highlight} — remove backgrounds and upscale in your browser",
+    "zh-CN": "Pic{highlight} — 在浏览器中移除背景和放大",
+    "ar-SA": "Pic{highlight} — أزل الخلفيات وكبّر الصور في متصفحك"
   },
   "brandColor": "#ef2142",
   "models": [
@@ -17,7 +17,10 @@
         "en-US": "any object, the most exact",
         "zh-CN": "任何物体，最精确",
         "ar-SA": "أي جسم، الأدق"
-      }
+      },
+      "tool": "cutout",
+      "group": "models.group.cutout",
+      "choose": "model"
     },
     {
       "id": "wonfy/BiRefNet_lite-ONNX-webgpu",
@@ -29,7 +32,10 @@
         "en-US": "sharp edges and fine hair",
         "zh-CN": "边缘锐利，发丝细腻",
         "ar-SA": "حواف حادة وشعر دقيق"
-      }
+      },
+      "tool": "cutout",
+      "group": "models.group.cutout",
+      "choose": "model"
     },
     {
       "id": "Xenova/modnet",
@@ -40,10 +46,60 @@
         "en-US": "portraits, small and fast",
         "zh-CN": "人像，小而快",
         "ar-SA": "الصور الشخصية، صغير وسريع"
+      },
+      "tool": "cutout",
+      "group": "models.group.cutout",
+      "choose": "model"
+    },
+    {
+      "id": "Xenova/swin2SR-lightweight-x2-64",
+      "name": "Swin2SR lite ×2",
+      "tool": "upscale",
+      "loader": "upscale",
+      "dtype": "fp32",
+      "scale": 2,
+      "mb": 8,
+      "choose": "upscaleModel",
+      "group": "models.group.upscale",
+      "hint": {
+        "en-US": "twice as big, very small and fast",
+        "zh-CN": "放大 2 倍，非常小而快",
+        "ar-SA": "ضعف الحجم، صغير جدًا وسريع"
+      }
+    },
+    {
+      "id": "Xenova/swin2SR-classical-sr-x2-64",
+      "name": "Swin2SR ×2",
+      "tool": "upscale",
+      "loader": "upscale",
+      "dtype": "fp32",
+      "scale": 2,
+      "mb": 54,
+      "choose": "upscaleModel",
+      "group": "models.group.upscale",
+      "hint": {
+        "en-US": "twice as big, sharper details",
+        "zh-CN": "放大 2 倍，细节更清晰",
+        "ar-SA": "ضعف الحجم، تفاصيل أوضح"
+      }
+    },
+    {
+      "id": "Xenova/swin2SR-realworld-sr-x4-64-bsrgan-psnr",
+      "name": "Swin2SR real-world ×4",
+      "tool": "upscale",
+      "loader": "upscale",
+      "dtype": "fp32",
+      "scale": 4,
+      "mb": 53,
+      "choose": "upscaleModel",
+      "group": "models.group.upscale",
+      "hint": {
+        "en-US": "four times as big, for real images with noise",
+        "zh-CN": "放大 4 倍，适合有噪点的真实图片",
+        "ar-SA": "أربعة أضعاف الحجم، للصور الحقيقية ذات التشويش"
       }
     }
   ],
-  "storageFolder": "drivemu",
   "saveFolder": "Images",
   "media": {
     "image": [
@@ -83,7 +139,10 @@
     "black",
     "custom"
   ],
-  "downloadSuffix": "-no-background",
+  "downloadSuffix": {
+    "cutout": "-no-background",
+    "upscale": "-upscaled"
+  },
   "languages": [
     {
       "code": "en-US",
@@ -103,9 +162,9 @@
   ],
   "ui": {
     "logo": {
-      "en-US": "<span class=\"highlight\">{highlight}</span>RMBG",
-      "zh-CN": "<span class=\"highlight\">{highlight}</span>RMBG",
-      "ar-SA": "<span class=\"highlight\">{highlight}</span>RMBG"
+      "en-US": "Pic<span class=\"highlight\">{highlight}</span>",
+      "zh-CN": "Pic<span class=\"highlight\">{highlight}</span>",
+      "ar-SA": "Pic<span class=\"highlight\">{highlight}</span>"
     },
     "copyright": {
       "en-US": "© {brand}",
@@ -128,9 +187,9 @@
       "ar-SA": "أفلت صورة أو مقطع فيديو هنا"
     },
     "drop.text": {
-      "en-US": "or paste an image (Ctrl+V), or choose a file. It never leaves your device: the model runs in your browser with WebGPU. A video is cut frame by frame; WebM and MP4 keep its sound.",
+      "en-US": "or paste an image (Ctrl+V), or choose a file. It never leaves your device: the models run in your browser with WebGPU. A video is done frame by frame; WebM and MP4 keep its sound.",
       "zh-CN": "也可以粘贴图片（Ctrl+V）或选择文件。文件不会离开你的设备：模型通过 WebGPU 在浏览器中运行。视频会逐帧处理；WebM 和 MP4 会保留声音。",
-      "ar-SA": "أو الصق صورة (Ctrl+V) أو اختر ملفًا. لا يغادر جهازك أبدًا: يعمل النموذج في متصفحك عبر WebGPU. يُعالج الفيديو إطارًا بإطار، ويحتفظ WebM وMP4 بصوته."
+      "ar-SA": "أو الصق صورة (Ctrl+V) أو اختر ملفًا. لا يغادر جهازك أبدًا: تعمل النماذج في متصفحك عبر WebGPU. يُعالج الفيديو إطارًا بإطار، ويحتفظ WebM وMP4 بصوته."
     },
     "choose": {
       "en-US": "Choose file",
@@ -177,11 +236,6 @@
       "zh-CN": "新文件",
       "ar-SA": "ملف جديد"
     },
-    "status.idle": {
-      "en-US": "Choose an image or a video to remove its background.",
-      "zh-CN": "选择一张图片或一个视频来移除背景。",
-      "ar-SA": "اختر صورة أو فيديو لإزالة خلفيته."
-    },
     "status.loadingModel": {
       "en-US": "Loading the model… {percent}%",
       "zh-CN": "正在加载模型… {percent}%",
@@ -192,11 +246,6 @@
       "zh-CN": "正在你的显卡上准备模型…",
       "ar-SA": "جارٍ تجهيز النموذج على بطاقة الرسوميات…"
     },
-    "status.processing": {
-      "en-US": "Removing the background…",
-      "zh-CN": "正在移除背景…",
-      "ar-SA": "جارٍ إزالة الخلفية…"
-    },
     "status.done": {
       "en-US": "Done in {seconds} s · {width} × {height}",
       "zh-CN": "完成，用时 {seconds} 秒 · {width} × {height}",
@@ -206,11 +255,6 @@
       "en-US": "WebGPU is not available in this browser, so the model cannot run. Use a recent Chrome or Edge.",
       "zh-CN": "此浏览器不支持 WebGPU，模型无法运行。请使用较新的 Chrome 或 Edge。",
       "ar-SA": "WebGPU غير متاح في هذا المتصفح، لذا لا يمكن تشغيل النموذج. استخدم Chrome أو Edge حديثًا."
-    },
-    "error.notImage": {
-      "en-US": "This file is not an image or a video.",
-      "zh-CN": "此文件不是图片或视频。",
-      "ar-SA": "هذا الملف ليس صورة ولا فيديو."
     },
     "error.failed": {
       "en-US": "Could not remove the background: {message}",
@@ -328,7 +372,7 @@
       "ar-SA": "إطارات/ث"
     },
     "video.fps": {
-      "en-US": "Frames per second to cut, for videos",
+      "en-US": "Frames per second to process, for videos",
       "zh-CN": "视频每秒处理的帧数",
       "ar-SA": "عدد الإطارات في الثانية للفيديو"
     },
@@ -346,11 +390,6 @@
       "en-US": "Stop",
       "zh-CN": "停止",
       "ar-SA": "إيقاف"
-    },
-    "status.frame": {
-      "en-US": "Removing the background… frame {done} of {total}",
-      "zh-CN": "正在移除背景… 第 {done} / {total} 帧",
-      "ar-SA": "جارٍ إزالة الخلفية… الإطار {done} من {total}"
     },
     "status.encoding": {
       "en-US": "Making the file… frame {done} of {total}",
@@ -393,19 +432,14 @@
       "ar-SA": "جارٍ إنشاء GIF… الإطار {done} من {total}"
     },
     "set.models.label": {
-      "en-US": "Downloaded models",
-      "zh-CN": "已下载的模型",
-      "ar-SA": "النماذج المنزّلة"
+      "en-US": "Models",
+      "zh-CN": "模型",
+      "ar-SA": "النماذج"
     },
     "set.models.hint": {
-      "en-US": "The model files are kept in this browser. Delete one to free the space; it downloads again when you use it.",
-      "zh-CN": "模型文件保存在此浏览器中。删除可释放空间；再次使用时会重新下载。",
-      "ar-SA": "تُحفظ ملفات النماذج في هذا المتصفح. احذف نموذجًا لتحرير المساحة؛ وسيُنزَّل مرة أخرى عند استخدامه."
-    },
-    "set.models.empty": {
-      "en-US": "No model is downloaded.",
-      "zh-CN": "没有已下载的模型。",
-      "ar-SA": "لا يوجد نموذج منزَّل."
+      "en-US": "Choose the model of each tool. The files of a model are kept in this browser: delete them to free the space, and the model downloads again when you use it.",
+      "zh-CN": "为每个工具选择模型。模型文件保存在此浏览器中：删除后可释放空间，再次使用时会重新下载。",
+      "ar-SA": "اختر نموذج كل أداة. تُحفظ ملفات النموذج في هذا المتصفح: احذفها لتحرير المساحة، وسيُنزَّل النموذج مجددا عند استخدامه."
     },
     "confirm.deleteModel": {
       "en-US": "Delete the downloaded files of {name} ({size})? They will download again when you use it.",
@@ -421,6 +455,86 @@
       "en-US": "Delete",
       "zh-CN": "删除",
       "ar-SA": "حذف"
+    },
+    "models.downloaded": {
+      "en-US": "Downloaded",
+      "zh-CN": "已下载",
+      "ar-SA": "تم التنزيل"
+    },
+    "models.notDownloaded": {
+      "en-US": "Not downloaded",
+      "zh-CN": "未下载",
+      "ar-SA": "غير منزَّل"
+    },
+    "tab.cutout": {
+      "en-US": "Remove background",
+      "zh-CN": "移除背景",
+      "ar-SA": "إزالة الخلفية"
+    },
+    "tab.upscale": {
+      "en-US": "Upscale",
+      "zh-CN": "放大",
+      "ar-SA": "تكبير"
+    },
+    "status.idle.cutout": {
+      "en-US": "Choose an image or a video to remove its background.",
+      "zh-CN": "选择一张图片或一个视频来移除背景。",
+      "ar-SA": "اختر صورة أو فيديو لإزالة خلفيته."
+    },
+    "status.idle.upscale": {
+      "en-US": "Choose an image or a video to make it bigger and sharper.",
+      "zh-CN": "选择一张图片或一个视频，把它放大并变得更清晰。",
+      "ar-SA": "اختر صورة أو فيديو لتكبيره وجعله أكثر وضوحًا."
+    },
+    "status.processing.cutout": {
+      "en-US": "Removing the background…",
+      "zh-CN": "正在移除背景…",
+      "ar-SA": "جارٍ إزالة الخلفية…"
+    },
+    "status.processing.upscale": {
+      "en-US": "Upscaling… part {done} of {total}",
+      "zh-CN": "正在放大… 第 {done} / {total} 块",
+      "ar-SA": "جارٍ التكبير… الجزء {done} من {total}"
+    },
+    "status.frame.cutout": {
+      "en-US": "Removing the background… frame {done} of {total}",
+      "zh-CN": "正在移除背景… 第 {done} / {total} 帧",
+      "ar-SA": "جارٍ إزالة الخلفية… الإطار {done} من {total}"
+    },
+    "status.frame.upscale": {
+      "en-US": "Upscaling… frame {done} of {total}",
+      "zh-CN": "正在放大… 第 {done} / {total} 帧",
+      "ar-SA": "جارٍ التكبير… الإطار {done} من {total}"
+    },
+    "status.stopped": {
+      "en-US": "Stopped.",
+      "zh-CN": "已停止。",
+      "ar-SA": "تم الإيقاف."
+    },
+    "error.tooLarge": {
+      "en-US": "This image would be {width} × {height} after the upscale, which is too big for the browser. Use a smaller image or the ×2 model.",
+      "zh-CN": "放大后此图片将达到 {width} × {height}，浏览器无法处理。请使用更小的图片或 ×2 模型。",
+      "ar-SA": "ستصبح هذه الصورة {width} × {height} بعد التكبير، وهذا أكبر مما يتحمله المتصفح. استخدم صورة أصغر أو نموذج ×2."
+    },
+    "error.tooLargeVideo": {
+      "en-US": "The {frames} frames would be {width} × {height} each after the upscale, which is too much for the memory. Use fewer frames per second, a shorter video, or the ×2 model.",
+      "zh-CN": "放大后 {frames} 帧每帧达到 {width} × {height}，内存无法容纳。请降低帧率、使用更短的视频或 ×2 模型。",
+      "ar-SA": "ستكون {frames} إطارًا بحجم {width} × {height} لكل إطار بعد التكبير، وهذا أكثر مما تتحمله الذاكرة. استخدم عددًا أقل من الإطارات في الثانية أو فيديو أقصر أو نموذج ×2."
+    },
+    "models.group.cutout": {
+      "en-US": "Remove background",
+      "zh-CN": "移除背景",
+      "ar-SA": "إزالة الخلفية"
+    },
+    "models.group.upscale": {
+      "en-US": "Upscale",
+      "zh-CN": "放大",
+      "ar-SA": "تكبير"
+    },
+    "error.notImage": {
+      "en-US": "This file is not an image or a video.",
+      "zh-CN": "此文件不是图片或视频。",
+      "ar-SA": "هذا الملف ليس صورة ولا فيديو."
     }
   },
   "video": {
@@ -473,6 +587,8 @@
   },
   "settings": {
     "defaults": {
+      "tool": "cutout",
+      "upscaleModel": "Xenova/swin2SR-lightweight-x2-64",
       "model": "briaai/RMBG-1.4",
       "fps": 10,
       "format": "webm",
@@ -480,16 +596,6 @@
       "customColour": "#00b140"
     },
     "fields": [
-      {
-        "id": "model",
-        "type": "select",
-        "optionsFrom": {
-          "list": "models",
-          "value": "id",
-          "label": "name"
-        },
-        "label": "model.label"
-      },
       {
         "id": "background",
         "type": "select",
@@ -525,15 +631,18 @@
     ],
     "models": {
       "cache": "transformers-cache",
-      "repos": [
-        {
-          "list": "models",
-          "key": "id"
-        }
-      ]
+      "choose": "model",
+      "list": "models",
+      "repo": "id"
     },
     "panels": [
-      "downloadedModels"
+      "modelList"
     ]
+  },
+  "upscale": {
+    "tile": 128,
+    "overlap": 16,
+    "maxPixels": 64000000,
+    "maxVideoBytes": 1500000000
   }
 }

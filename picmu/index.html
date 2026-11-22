@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="layout.css">
 <script src="../assets/js/theme.js"></script>
 <script defer src="../assets/js/cleanup.js"></script>
+<script defer src="../assets/js/url.js"></script>
 <script defer src="../assets/js/i18n.js"></script>
 <script defer src="../assets/js/popup.js"></script>
 <script defer src="../assets/js/components.js"></script>
@@ -26,6 +27,8 @@
 
 <kit-header id="header"></kit-header>
 <div id="main" class="main">
+
+  <div id="views"></div>
 
   <div class="model-bar">
     <label class="model-field model-field-main">
@@ -65,17 +68,16 @@
       <div class="panes">
         <div class="pane">
           <span class="pane-title" data-i18n="original"></span>
-          <div id="original-picture" class="picture" role="img"></div>
+          <div id="original-image" class="image" role="img"></div>
         </div>
         <div class="pane">
           <span class="pane-title" data-i18n="result"></span>
-          <div id="result-picture" class="picture transparent" role="img"></div>
+          <div id="result-image" class="image transparent" role="img"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="progress hidden" id="progress"><div id="progress-fill" class="progress-fill"></div></div>
 
 </div>
 <kit-footer id="footer" status></kit-footer>

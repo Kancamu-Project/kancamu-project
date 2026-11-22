@@ -27,6 +27,7 @@
 <script defer src="assets/js/components.js"></script>
 <script defer src="assets/js/autocomplete.js"></script>
 <script defer src="assets/js/account.js"></script>
+<script defer src="assets/js/settings.js"></script>
 <script defer src="app.js"></script>
 </head>
 <body>
@@ -75,6 +76,21 @@
     </div>
     <div id="footer" class="footer">
         <a href="/" target="_top" data-i18n="copyright"></a>
+    </div>
+    <div id="splash" class="splash" hidden>
+        <div class="splash-card">
+            <div class="splash-info">
+                <div class="splash-brand">
+                    <div class="splash-mark"></div>
+                    <span class="splash-name"></span>
+                </div>
+                <span class="splash-tagline" data-i18n="splash.tagline"></span>
+                <div class="splash-spacer"></div>
+                <span class="splash-hint" data-i18n="splash.hint"></span>
+                <span class="splash-copyright" data-i18n="copyright"></span>
+            </div>
+            <div class="splash-art" aria-hidden="true"></div>
+        </div>
     </div>
     <div id="popups" class="popups"></div>
 </body>

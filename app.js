@@ -10,6 +10,7 @@ const state = {
     view: "grid",
     tabs: [],
     active: null,
+    frames: {},   // the query string of the app in each open tab (what the app says about itself, assets/js/url.js): id -> "path=Images&view=list"
 };
 
 function saveFilters() {
@@ -22,6 +23,7 @@ function saveFilters() {
     if (state.view !== "grid") params.set("view", state.view);
     if (state.tabs.length) params.set("tabs", state.tabs.join(","));
     if (state.active !== state.home) params.set("tab", state.active);
+    for (const id of state.tabs) if (state.frames[id]) params.set(`s.${id}`, state.frames[id]);   // a reload opens every app as it was
     const search = params.toString();
     history.replaceState(null, "", location.pathname + (search ? `?${search}` : "") + location.hash);
     syncControls();
@@ -41,6 +43,7 @@ function restoreFilters() {
     state.tabs = [...new Set((params.get("tabs") || "").split(","))].filter(
         (id) => known.includes(id) && id !== state.home
     );
+    for (const id of state.tabs) if (params.get(`s.${id}`)) state.frames[id] = params.get(`s.${id}`);
     const active = params.get("tab");
     state.active = allTabs().includes(active) ? active : state.home;
 }
@@ -195,7 +198,7 @@ function syncViewer() {
     document.getElementById("footer").hidden = !onHome;
 
     viewer.querySelectorAll("iframe").forEach((frame) => {
-        if (!state.tabs.includes(frame.dataset.id)) frame.remove();
+        if (!state.tabs.includes(frame.dataset.id)) { frame.remove(); delete state.frames[frame.dataset.id]; }
     });
     state.tabs.forEach((id) => {
         const project = findProject(id);
@@ -204,7 +207,7 @@ function syncViewer() {
         if (!frame) {
             frame = createElement("iframe");
             frame.dataset.id = id;
-            frame.src = project.url;
+            frame.src = project.url + (state.frames[id] ? `?${state.frames[id]}` : "");
             frame.allow = "fullscreen; clipboard-write";
             viewer.appendChild(frame);
         }
@@ -212,6 +215,15 @@ function syncViewer() {
         frame.hidden = id !== state.active;
     });
 }
+
+// An app in a tab says what is on its screen (assets/js/url.js): its query string is kept in the address of this page, so a reload opens it the same.
+window.addEventListener("message", (event) => {
+    if (event.origin !== location.origin || event.data?.type !== "kancamu:url" || typeof event.data.search !== "string") return;
+    const frame = [...document.querySelectorAll("#viewer iframe")].find((candidate) => candidate.contentWindow === event.source);
+    if (!frame || !state.tabs.includes(frame.dataset.id)) return;
+    if (event.data.search) state.frames[frame.dataset.id] = event.data.search; else delete state.frames[frame.dataset.id];
+    saveFilters();
+});
 
 function syncControls() {
     document.getElementById("reset-button").hidden =
@@ -452,6 +464,60 @@ function createListHeader() {
     return header;
 }
 
+/* ---------- the splash: a layer over the content for a moment when the site opens ---------- */
+// Its images (data.json, "splash") slide one after another every few seconds, in the order of the list (and not at all when the device asks for less motion). The content is loaded behind it.
+// It stays until the user clicks or presses a key, and the user can turn it off in the Appearance page of the account app (the setting "splash").
+async function showSplash({ images, seconds }) {   // the first image is the first of the list
+    const splash = document.getElementById("splash");
+    if (settings.get("appearance").splash === false) return;
+    const order = images;
+    // the splash opens with its images ready, not empty
+    await Promise.all(order.map((source) => { const preload = new Image(); preload.src = source; return preload.decode().catch(() => {}); }));
+    const track = createElement("div", "splash-track");
+    track.append(...order.map((source) => {
+        const slide = createElement("div", "splash-slide");
+        slide.style.backgroundImage = `url(${JSON.stringify(source)})`;
+        return slide;
+    }));
+    // the dots tell which image shows (and how many there are); the slides keep their place in the list, because the track turns round
+    track.querySelectorAll(".splash-slide").forEach((slide, index) => { slide.dataset.index = index; });
+    const dots = createElement("div", "splash-dots");
+    dots.setAttribute("aria-hidden", "true");
+    dots.append(...order.map(() => createElement("span", "splash-dot")));
+    const mark = (index) => [...dots.children].forEach((dot, at) => dot.classList.toggle("on", at === index));
+    mark(0);
+    splash.querySelector(".splash-art").replaceChildren(track, dots);
+    // every few seconds the track slides by one image, and the image that left goes to the end of it: the images go round without end
+    const settle = () => {
+        if (!track.classList.contains("moving")) return;
+        track.classList.remove("moving");
+        track.append(track.firstElementChild);
+        track.style.transform = "";
+    };
+    const slide = () => {
+        settle();
+        track.getBoundingClientRect();   // the track is in its place before it moves
+        track.classList.add("moving");
+        mark(Number(track.children[1].dataset.index));   // the image that comes
+        track.style.transform = `translateX(${document.documentElement.dir === "rtl" ? 100 : -100}%)`;
+        setTimeout(settle, parseFloat(getComputedStyle(track).transitionDuration) * 1000 + 50);   // a timer, not "transitionend": the browser does not send it when it does not draw (a hidden tab)
+    };
+    const timer = order.length > 1 && !matchMedia("(prefers-reduced-motion: reduce)").matches ? setInterval(slide, seconds * 1000) : 0;
+    splash.querySelector(".splash-name").replaceChildren(createNameElement(i18n.brand.name, i18n.brand.highlight));
+    splash.hidden = false;
+    let closed = false;
+    const close = () => {
+        if (closed) return;
+        closed = true;
+        clearInterval(timer);
+        document.removeEventListener("keydown", close);
+        splash.classList.add("leaving");
+        setTimeout(() => { splash.hidden = true; splash.classList.remove("leaving"); }, 400);
+    };
+    splash.addEventListener("pointerdown", close);
+    document.addEventListener("keydown", close);
+}
+
 async function loadData() {
     const data = await i18n.load();
 
@@ -463,6 +529,7 @@ async function loadData() {
     renderAll();
     syncControls();
     syncViewer();
+    showSplash(data.splash);
 }
 
 function load() {
@@ -502,12 +569,12 @@ i18n.onChange(() => {
     renderAll();
 });
 
-/* ---------- a file of the Drive dragged to any web ---------- */
+/* ---------- a file of the Drive dragged to any app ---------- */
 // TODO: this is a workaround (see TODO.md, "Retest"); retest from time to time whether a plain drag with the file works, and delete this then.
-// A page cannot put a file in a drag (the browser keeps only a picture), but the webs run in frames of this page, and this page is the one that knows what is dragged:
-// the web that drags a file says it (assets/js/transfer.js), and every drag event that goes into the frame of another web, with no file in it, is given again with the real
-// file in it, as if it came from the file explorer. So the drop area of any web (ours or somebody else's) gets the file, whatever its kind.
-let carried = null;   // { name, file }: the file that a web is dragging now
+// A page cannot put a file in a drag (the browser keeps only an image), but the apps run in frames of this page, and this page is the one that knows what is dragged:
+// the app that drags a file says it (assets/js/transfer.js), and every drag event that goes into the frame of another app, with no file in it, is given again with the real
+// file in it, as if it came from the file explorer. So the drop area of any app (ours or somebody else's) gets the file, whatever its kind.
+let carried = null;   // { name, file }: the file that an app is dragging now
 window.addEventListener("message", (event) => {
     if (event.origin !== location.origin || event.data?.type !== "kancamu:drag") return;
     if (!event.data.on) { carried = null; return; }
@@ -537,8 +604,8 @@ function bridge(frame) {
 }
 document.getElementById("viewer").addEventListener("load", (event) => { if (event.target.tagName === "IFRAME") bridge(event.target); }, true);
 
-/* ---------- a dragged file opens the web that takes it ---------- */
-// A file (of the Drive, dragged from Drivemu or Gallemu, or of the computer) that waits over the tab of any web opens that web; the file is then dropped
+/* ---------- a dragged file opens the app that takes it ---------- */
+// A file (of the Drive, dragged from Drivemu or Gallemu, or of the computer) that waits over the tab of any app opens that app; the file is then dropped
 // in the drop area of the page. The tab itself does not take the drop.
 const isFile = (event) => ["Files", "text/uri-list"].some((type) => event.dataTransfer.types.includes(type));
 const projectOfTab = (event) => {
@@ -572,7 +639,7 @@ document.getElementById("theme-button").addEventListener("click", () => {
     } catch {}
 });
 
-// Account: the sign-in is the account web, opened by assets/js/account.js.
+// Account: the sign-in is the account app, opened by assets/js/account.js.
 account.bind(document.getElementById("account-button"));
 
 document.getElementById("publisher-filter").addEventListener("change", (event) => {

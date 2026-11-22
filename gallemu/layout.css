@@ -1,4 +1,4 @@
-/* Gallemu: the photos and videos of the Drive, in one gallery. */
+/* Gallemu: the images and videos of the Drive, in one gallery. */
 .hidden { display: none !important; }
 
 /* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
@@ -12,14 +12,14 @@ button.active { background: var(--fg); color: var(--bg); border-color: var(--fg)
 .main { display: grid; grid-template-rows: auto minmax(0, 1fr); }
 
 .header { height: var(--height); }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the web: its favicon (the rest is in assets/css/components.css) */
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
 :root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/components.css) */
 .header-tools { height: 100%; }
 
 .toolbar { display: flex; flex-wrap: wrap; gap: var(--gap-small); }
 .toolbar select { width: calc(var(--height) * 6); max-width: 100%; }
 
-/* The gallery: a grid of tiles, each a square photo or a video */
+/* The gallery: a grid of tiles, each a square image or a video */
 .gallery { position: relative; min-height: 0; overflow: auto; padding: var(--padding-medium); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); }
 .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--unit) * 45)), 1fr)); gap: var(--gap-small); }
 .tile {
@@ -37,7 +37,7 @@ button.active { background: var(--fg); color: var(--bg); border-color: var(--fg)
 }
 .tile:hover .tile-name, .tile:focus-visible .tile-name { opacity: 1; }
 
-/* The viewer: one photo or video at a time */
+/* The viewer: one image or video at a time */
 dialog { color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--border); padding: 0; }
 dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent); }
 .viewer-dialog { width: min(calc(var(--vw) * 96), calc(var(--unit) * 480)); height: calc(var(--vh) * 92); }

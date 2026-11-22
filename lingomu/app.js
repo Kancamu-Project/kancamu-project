@@ -36,7 +36,7 @@ function readLocal() {
   try { return { ...blank(), ...JSON.parse(localStorage.getItem(PROGRESS_KEY)) }; } catch { return blank(); }
 }
 let progress = readLocal();
-let preferences = settings.get("lingomu", defaults);   // the daily goal and the speech: set in the account web
+let preferences = settings.get("lingomu", defaults);   // the daily goal and the speech: set in the account app
 
 const dayOf = (offset = 0) => {
   const date = new Date();
@@ -67,7 +67,7 @@ function scheduleUpload() {
     try {
       const store = await openStore();
       if (store) await storage.writeFile(store, "progress.json", JSON.stringify(progress), "Lingomu: save progress");
-    } catch (error) { say(tr("sync.failed", { message: error.message }), true); }
+    } catch (error) { popups.toast(tr("sync.failed", { message: error.message }), { kind: "error" }); }
   }, 1500);
 }
 // The progress of the account and the one of this device: the newest one is kept.
@@ -83,22 +83,24 @@ async function download() {
       try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); } catch { /* ignore */ }
       renderAll();
     } else if (progress.updated > (remote?.updated || 0)) scheduleUpload();
-  } catch (error) { say(tr("sync.failed", { message: error.message }), true); }
+  } catch (error) { popups.toast(tr("sync.failed", { message: error.message }), { kind: "error" }); }
 }
 
 /* ---------- the courses ---------- */
 // Every course is offered, whatever the language of the page.
 const availableCourses = () => courses;
+// The course and the lesson that are shown are also in the address (?course=...&lesson=...), so a reload shows the same (assets/js/url.js); the address wins until the user chooses a course.
+let courseWish = urlState.get("course");
 const currentCourse = () => {
   const offered = availableCourses();
-  return offered.find((course) => course.id === progress.course) || offered[0];
+  return offered.find((course) => course.id === (courseWish || progress.course)) || offered[0];
 };
 function buildCourseSelect() {
   const chosen = currentCourse();
   els.courseSelect.replaceChildren(...availableCourses().map((course) => Object.assign(element("option"), { value: course.id, textContent: i18n.pick(course.name) })));
   if (chosen) els.courseSelect.value = chosen.id;
 }
-els.courseSelect.addEventListener("change", () => { progress.course = els.courseSelect.value; save(); selectedId = ""; renderPath(); });
+els.courseSelect.addEventListener("change", () => { courseWish = ""; progress.course = els.courseSelect.value; save(); selectedId = ""; renderPath(); });
 
 /* ---------- the lessons ---------- */
 const lessonsOf = () => units.flatMap((unit, unitIndex) => unit.lessons.map((lesson) => ({ ...lesson, unit, unitIndex })));
@@ -113,7 +115,7 @@ function renderStats() {
   els.goalFill.style.width = `${Math.min(100, Math.round((earned / goal) * 100))}%`;
 }
 
-let selectedId = "";   // the lesson that the main part shows
+let selectedId = urlState.get("lesson");   // the lesson that the main part shows
 let view = "overview";
 const isLocked = (course, all, lesson) => {
   const index = all.findIndex((item) => item.id === lesson.id);
@@ -187,6 +189,7 @@ function renderPath() {
   if (!all.some((item) => item.id === selectedId)) selectedId = (all.find((item) => !timesDone(course, item.id)) || all[0]).id;
   renderSidebar(course, all);
   renderOverview(course, all);
+  urlState.set({ course: course.id, lesson: selectedId });
 }
 function renderAll() {
   buildCourseSelect();

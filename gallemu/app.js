@@ -1,4 +1,4 @@
-// Gallemu: the photos and videos of the user's Drive (the folder of Drivemu), in one gallery.
+// Gallemu: the images and videos of the user's Drive, in one gallery.
 await i18n.load();
 i18n.selects();
 
@@ -12,7 +12,7 @@ const els = Object.fromEntries([
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
 // The media types, the limits and the folder are in data.json.
-const { media, limits, mimeTypes, storageFolder } = i18n.data;
+const { media, limits, mimeTypes } = i18n.data;
 const KIND_OF = new Map(Object.entries(media).flatMap(([kind, extensions]) => extensions.map((extension) => [extension, kind])));
 const ALL = "", ROOT = "/";   // the values of the album select: every album, and the files at the root of the Drive
 
@@ -21,7 +21,7 @@ const state = {
   store: null,
   phase: "signedOut",   // signedOut, loading, ready, or failed
   truncated: false,
-  items: [],       // every photo and video: { path, name, album, size, kind }
+  items: [],       // every image and video: { path, name, album, size, kind }
   shown: [],       // what the album, the search and the sort leave
   viewIndex: -1,
 };
@@ -37,7 +37,7 @@ async function loadFiles() {
   state.phase = "loading";
   render();
   try {
-    if (!state.store || state.token !== signedIn.token) { state.store = await storage.connect(storageFolder); state.token = signedIn.token; }
+    if (!state.store || state.token !== signedIn.token) { state.store = await storage.drive(); state.token = signedIn.token; }
     const { files, truncated } = await storage.tree(state.store);
     state.truncated = truncated;
     state.items = files.filter((file) => KIND_OF.has(extensionOf(file.path))).map((file) => {
@@ -55,23 +55,27 @@ async function loadFiles() {
   render();
 }
 
-/* ---------- the albums: the folders that hold photos or videos ---------- */
+/* ---------- the albums: the folders that hold images or videos ---------- */
+// What is on the screen is also in the address (?album=...&q=...&sort=...), so a reload shows the same (assets/js/url.js). The albums are known when the files are loaded:
+// until then the album of the address waits, and nothing is written (the first render would write "every album").
+let wantedAlbum = urlState.get("album");
 function renderAlbums() {
   const counts = new Map();
   for (const item of state.items) counts.set(item.album || ROOT, (counts.get(item.album || ROOT) || 0) + 1);
-  const chosen = els.albumSelect.value;
+  const chosen = wantedAlbum ?? els.albumSelect.value;
   const option = (value, label) => Object.assign(document.createElement("option"), { value, textContent: label });
   els.albumSelect.replaceChildren(
     option(ALL, `${tr("album.all")} (${state.items.length})`),
     ...[...counts.keys()].sort((a, b) => a.localeCompare(b, i18n.lang, { numeric: true })).map((album) => option(album, `${album === ROOT ? tr("album.root") : album} (${counts.get(album)})`)),
   );
   els.albumSelect.value = counts.has(chosen) ? chosen : ALL;
+  if (state.phase === "ready") wantedAlbum = null;
 }
 const inAlbum = (item) => els.albumSelect.value === ALL || (item.album || ROOT) === els.albumSelect.value;
 
 /* ---------- the grid ---------- */
-const thumbnails = new Map();   // path -> the address of its small picture
-let generation = 0;             // changes at every render, so a picture that finishes late does not land on a tile that is gone
+const thumbnails = new Map();   // path -> the address of its small image
+let generation = 0;             // changes at every render, so an image that finishes late does not land on a tile that is gone
 
 function render() {
   generation++;
@@ -87,6 +91,7 @@ function render() {
   const signedOut = state.phase === "signedOut";
   els.refreshButton.disabled = signedOut || state.phase === "loading";
   els.albumSelect.disabled = !state.items.length;
+  if (ready) urlState.set({ album: els.albumSelect.value, q: els.gallerySearch.value.trim(), sort: els.sortOrder.selectedIndex === 0 ? "" : els.sortOrder.value });
 
   els.galleryGrid.classList.toggle("hidden", !state.shown.length || !ready);
   els.emptyState.classList.toggle("hidden", !!state.shown.length && ready);
@@ -121,12 +126,12 @@ function makeTile(item, index) {
     else observer.observe(tile);
   }
   tile.addEventListener("click", () => openViewer(index));
-  transfer.drag(tile, () => fileOf(item));   // the picture can be dragged out of the page, as a file
+  transfer.drag(tile, () => fileOf(item));   // the image can be dragged out of the page, as a file
   return tile;
 }
 const showThumbnail = (tile, url) => { tile.style.backgroundImage = `url("${url}")`; tile.classList.add("loaded"); };
 
-/* The small pictures are made when a tile comes near the screen, a few at a time. */
+/* The small images are made when a tile comes near the screen, a few at a time. */
 const queue = [];
 let active = 0;
 const observer = new IntersectionObserver((entries) => {
@@ -157,7 +162,7 @@ async function makeThumbnail({ tile, generation: made }) {
       canvas.getContext("2d").drawImage(bitmap, 0, 0);
       bitmap.close();
       url = URL.createObjectURL(await new Promise((resolve) => canvas.toBlob(resolve, "image/webp", 0.8)));
-    } catch { url = URL.createObjectURL(blob); }   // a picture the browser cannot shrink (an SVG, for one) is shown as it is
+    } catch { url = URL.createObjectURL(blob); }   // an image the browser cannot shrink (an SVG, for one) is shown as it is
     thumbnails.set(item.path, url);
     if (made === generation) showThumbnail(tile, url);
   } catch { /* the tile keeps its icon */ }
@@ -217,7 +222,7 @@ async function wholeFileUrl(item) {
   }
   return opened.get(item.path);
 }
-// What the viewer shows can be dragged out of the page too (a picture as a picture, a video as a link)
+// What the viewer shows can be dragged out of the page too (an image as an image, a video as a link)
 for (const media of [els.viewerImage, els.viewerVideo]) {
   transfer.drag(media, () => {
     const item = state.shown[state.viewIndex];
@@ -263,4 +268,6 @@ els.emptyActionButton.addEventListener("click", () => account.open());
 account.onChange((signedIn) => { if ((signedIn?.token || "") !== state.token) loadFiles(); });
 i18n.onChange(() => { render(); if (els.viewerDialog.open) showCurrent(); });
 
+els.gallerySearch.value = urlState.get("q");
+if ([...els.sortOrder.options].some((option) => option.value === urlState.get("sort"))) els.sortOrder.value = urlState.get("sort");
 loadFiles();
