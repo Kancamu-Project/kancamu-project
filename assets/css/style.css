@@ -43,6 +43,7 @@
     --border-width-thick: 2px;
     --vw: 1vw;
     --vh: 1vh;
+    --cqw: 1cqw;   /* a hundredth of the width of the container (a card of Assetmu): calc(var(--cqw) * n), so a card is the same at any width */
     --height: 2.4rem;
     /* The scales. An app uses these, and does not write a size of its own where one of them fits. */
     --border-radius-small: 0.2rem;   /* small things: a tag, a thumbnail */

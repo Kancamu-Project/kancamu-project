@@ -72,8 +72,8 @@ assets/          Shared assets, in folders
   images/        The images that are content of the site (the splash screen): WebP, compressed, with the original beside each as <name>_raw
   icons/         Every SVG icon of the main site, Drivemu, and muAI (universal names)
 favicon.png      Site icon
-tools/           Scripts that make files of the project (og-cards.mjs makes the preview.png of every app: node tools/og-cards.mjs)
-preview.png      Open Graph image (1200x630): a screenshot of the directory, update it when the page changes a lot
+assets/tools/    What helps to make the project: og-cards.mjs makes the preview.png of the main website and of every app from their cards (node assets/tools/og-cards.mjs); the cards are shown all at once in the section Previews of Assetmu, where each can be saved as an image
+preview.png      Open Graph image (1200x630): the card of the main website, which is its splash screen (node assets/tools/og-cards.mjs kancamu), made again when the splash changes, with the number after ?v= raised in the og:image of index.html
 RULES.md         Project rules
 assetmu/         Assetmu: shows every asset (colours, icons, fonts, sizes, files) and the colour and icon of each app
 kitmu/          Kitmu: the UI kit (templates of assets/css/components.css, helpers of assets/js/components.js, popups of assets/js/popup.js)

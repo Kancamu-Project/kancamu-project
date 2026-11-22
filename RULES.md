@@ -122,7 +122,7 @@ Every script is in the head, none is in the body. A script has defer (a script w
 The only script without defer is assets/js/theme.js, which comes first: it must run before the page is shown, so that the page does not flash in the wrong theme.
 
 #### 9. Open Graph
-Every app has the Open Graph tags (and the card of Twitter) in the head of its index.html, so a link to it shows a title, a text, and an image where it is shared: og:type, og:site_name, og:title, og:description, og:url, og:image (with its type, width, height, and alt), and twitter:card summary_large_image. The title and the description are the name and the description of the app in the main data.json, in English: the sites that read the tags do not run scripts, so these are the one text of an app that is in its index.html and not in its data.json (the page of the app is still in every language). The image is the preview.png of the folder of the app (1200 x 630), made by tools/og-cards.mjs from the icon, the name, the description, and the colour of the app; when it changes, make it again and raise the number after "?v=" in og:image, so the sites that keep the old image in their cache ask for the new one. A new app gets its tags and its preview.png when it is made, like it gets its entry in the main data.json.
+Every app has the Open Graph tags (and the card of Twitter) in the head of its index.html, so a link to it shows a title, a text, and an image where it is shared: og:type, og:site_name, og:title, og:description, og:url, og:image (with its type, width, height, and alt), and twitter:card summary_large_image. The title and the description are the name and the description of the app in the main data.json, in English: the sites that read the tags do not run scripts, so these are the one text of an app that is in its index.html and not in its data.json (the page of the app is still in every language). The image is the preview.png of the folder of the app (1200 x 630), made from the card of the app, an element of the section Previews of Assetmu (its code in assetmu/app.js and its style in assetmu/layout.css, so the folder of the app keeps only its own files): the card is the one source of the previews, it can be saved as an image there (Save as image), and assets/tools/og-cards.mjs takes the picture of each card to make all the preview.png files at once. The card of the main website is its splash screen; when it changes, make it again and raise the number after "?v=" in og:image, so the sites that keep the old image in their cache ask for the new one. A new app gets its tags and its preview.png when it is made, like it gets its entry in the main data.json.
 
 ## CSS
 
@@ -130,7 +130,8 @@ Every app has the Open Graph tags (and the card of Twitter) in the head of its i
 Only assets/css/style.css writes a length unit (rem, px, vh, vw). A layout.css writes none:
 a size is calc(var(--unit) * n), where --unit is 0.2rem (so a size is a multiple of 0.2rem, and half a unit is * 0.5), or a variable of the scales (--height, --gap-*, --padding-*, --font-size-*, --border-radius-*);
 a line is var(--border-width) (1px) or var(--border-width-thick) (2px);
-a viewport length is calc(var(--vw) * n) or calc(var(--vh) * n).
+a viewport length is calc(var(--vw) * n) or calc(var(--vh) * n);
+a length that is a share of the width of its container (a card of Assetmu, which has container-type: inline-size) is calc(var(--cqw) * n).
 Not covered: the breakpoints of @media (CSS cannot use a variable there, so they are written in rem), percentages, 0, times (s, ms), and angles.
 In assets/css/style.css, use rem and not px, except for the lines. Do not use em. 1rem = 16px.
 
@@ -248,7 +249,7 @@ Check an app in more than one size, not in one: a wide and tall window, a wide a
 /assets/data/appearance.json - the Appearance page of the account app: the splash screen of the main website and the effects, with their defaults and texts, in every language.
 /assets/data/kit.json - the texts that the tags kit-* have on their own (the account button, the copyright, previous and next), in every language.
 /assets/icons - holds every svg icon for the GUI, do not use emoji.
-/tools - scripts that make files of the project and are not part of an app: tools/og-cards.mjs makes the preview.png of the apps (see HTML 9).
+/assets/tools - what helps to make the project and is not an app: assets/tools/og-cards.mjs makes the preview.png of the main website and of the apps from their cards in Assetmu (see HTML 9).
 /assets/images - the images that are content of the site, such as the ones of the splash screen: every image is made once, compressed, in the one format of the folder (WebP), and the original is kept beside it with the ending _raw (cinnadust_raw.jpg, cinnadust.webp). The apps use the compressed ones, never the _raw ones.
 /assets/fonts - holds the fonts.
 Each app has its own folder in the root with index.html, layout.css, app.js, and data.json (the root itself is the main website).

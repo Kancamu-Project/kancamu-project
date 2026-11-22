@@ -148,6 +148,7 @@
   "sectionOrder": [
     "colours",
     "apps",
+    "previews",
     "icons",
     "fonts",
     "sizes",
@@ -567,6 +568,31 @@
       "en-US": "Sections",
       "zh-CN": "栏目",
       "ar-SA": "الأقسام"
+    },
+    "section.previews": {
+      "en-US": "Previews",
+      "zh-CN": "预览",
+      "ar-SA": "المعاينات"
+    },
+    "previews.hint": {
+      "en-US": "How a link to the main website and to every app looks where it is shared (Open Graph). Each card is an element made here: save it as an image, and put the image in the folder of the app as preview.png.",
+      "zh-CN": "指向主网站和每个应用的链接在分享处的样子（Open Graph）。每张卡片都是在这里制作的元素：把它保存为图片，并作为 preview.png 放入对应应用的文件夹。",
+      "ar-SA": "شكل الرابط إلى الموقع الرئيسي وإلى كل تطبيق حيث يُشارك (Open Graph). كل بطاقة عنصر يُصنع هنا: احفظها كصورة وضعها في مجلد التطبيق باسم preview.png."
+    },
+    "previews.save": {
+      "en-US": "Save as image",
+      "zh-CN": "保存为图片",
+      "ar-SA": "حفظ كصورة"
+    },
+    "previews.saved": {
+      "en-US": "Saved {name}",
+      "zh-CN": "已保存 {name}",
+      "ar-SA": "تم حفظ {name}"
+    },
+    "previews.failed": {
+      "en-US": "The image could not be made: {message}",
+      "zh-CN": "无法生成图片：{message}",
+      "ar-SA": "تعذّر إنشاء الصورة: {message}"
     }
   }
 }
