@@ -34,24 +34,9 @@
       "ar-SA": "تسجيل الدخول"
     },
     "hint": {
-      "en-US": "Sign in once with a GitHub personal access token (classic). Every web of {brand} will know it, so you do not have to sign in again.",
-      "zh-CN": "使用 GitHub 个人访问令牌（经典）登录一次。{brand} 的所有网站都会自动识别，无需再次登录。",
-      "ar-SA": "سجّل الدخول مرة واحدة برمز وصول شخصي (classic) من GitHub. ستتعرف عليه كل مواقع {brand}، فلا تحتاج إلى تسجيل الدخول مرة أخرى."
-    },
-    "token": {
-      "en-US": "Personal access token (classic)",
-      "zh-CN": "个人访问令牌（经典）",
-      "ar-SA": "رمز الوصول الشخصي (classic)"
-    },
-    "create": {
-      "en-US": "Create a token",
-      "zh-CN": "创建令牌",
-      "ar-SA": "إنشاء رمز"
-    },
-    "signIn": {
-      "en-US": "Sign in",
-      "zh-CN": "登录",
-      "ar-SA": "تسجيل الدخول"
+      "en-US": "Sign in with your GitHub account. Every web of {brand} will know it, so you do not have to sign in again.",
+      "zh-CN": "使用你的 GitHub 账户登录。{brand} 的所有网站都会自动识别，无需再次登录。",
+      "ar-SA": "سجّل الدخول بحسابك في GitHub. ستتعرف عليه كل مواقع {brand}، فلا تحتاج إلى تسجيل الدخول مرة أخرى."
     },
     "signOut": {
       "en-US": "Sign out",
@@ -67,21 +52,6 @@
       "en-US": "Close tab",
       "zh-CN": "关闭标签页",
       "ar-SA": "إغلاق التبويب"
-    },
-    "error.empty": {
-      "en-US": "Enter your token.",
-      "zh-CN": "请输入令牌。",
-      "ar-SA": "أدخل الرمز."
-    },
-    "error.classic": {
-      "en-US": "Only personal access tokens (classic) work for now.",
-      "zh-CN": "目前仅支持个人访问令牌（经典）。",
-      "ar-SA": "يعمل رمز الوصول الشخصي (classic) فقط حاليًا."
-    },
-    "error.invalid": {
-      "en-US": "GitHub did not accept this token.",
-      "zh-CN": "GitHub 不接受此令牌。",
-      "ar-SA": "لم يقبل GitHub هذا الرمز."
     },
     "error.failed": {
       "en-US": "Could not reach GitHub. Try again.",
@@ -178,16 +148,6 @@
       "zh-CN": "到期时间",
       "ar-SA": "تاريخ الانتهاء"
     },
-    "tokenKind.classic": {
-      "en-US": "Classic personal access token",
-      "zh-CN": "经典个人访问令牌",
-      "ar-SA": "رمز وصول شخصي كلاسيكي"
-    },
-    "tokenKind.other": {
-      "en-US": "Access token",
-      "zh-CN": "访问令牌",
-      "ar-SA": "رمز الوصول"
-    },
     "copyright": {
       "en-US": "© {brand}",
       "zh-CN": "© {brand}",
@@ -232,10 +192,46 @@
       "en-US": "Menu",
       "zh-CN": "菜单",
       "ar-SA": "القائمة"
+    },
+    "signInGitHub": {
+      "en-US": "Sign in with GitHub",
+      "zh-CN": "使用 GitHub 登录",
+      "ar-SA": "تسجيل الدخول عبر GitHub"
+    },
+    "error.config": {
+      "en-US": "The sign-in is not set up for this address yet.",
+      "zh-CN": "此地址尚未配置登录。",
+      "ar-SA": "لم يُعدّ تسجيل الدخول لهذا العنوان بعد."
+    },
+    "error.state": {
+      "en-US": "This sign-in is no longer valid. Start it again.",
+      "zh-CN": "此次登录已失效，请重新开始。",
+      "ar-SA": "لم يعد تسجيل الدخول هذا صالحا. ابدأ من جديد."
+    },
+    "error.exchange": {
+      "en-US": "GitHub did not give a token. Try again.",
+      "zh-CN": "GitHub 未提供令牌，请重试。",
+      "ar-SA": "لم يعطِ GitHub رمزا. حاول مرة أخرى."
+    },
+    "error.denied": {
+      "en-US": "The sign-in was cancelled on GitHub.",
+      "zh-CN": "已在 GitHub 上取消登录。",
+      "ar-SA": "أُلغي تسجيل الدخول في GitHub."
+    },
+    "callback.working": {
+      "en-US": "Signing you in…",
+      "zh-CN": "正在登录…",
+      "ar-SA": "جارٍ تسجيل الدخول…"
+    },
+    "callback.back": {
+      "en-US": "Back",
+      "zh-CN": "返回",
+      "ar-SA": "رجوع"
+    },
+    "tokenKind.oauth": {
+      "en-US": "Token of the sign-in with GitHub",
+      "zh-CN": "GitHub 登录令牌",
+      "ar-SA": "رمز تسجيل الدخول عبر GitHub"
     }
-  },
-  "token": {
-    "createUrl": "https://github.com/settings/tokens/new",
-    "scopes": "repo"
   }
 }

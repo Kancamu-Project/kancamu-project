@@ -35,15 +35,13 @@
     </div>
 
     <div class="content" tabindex="-1">
-      <form id="token-form" autocomplete="off">
+      <div id="login-page">
         <span class="hint" data-i18n="hint"></span>
-        <input id="token-input" type="password" autocomplete="off" spellcheck="false" data-i18n-placeholder="token" data-i18n-label="token">
-        <span id="token-error" class="token-error-message" role="alert"></span>
+        <kit-alert id="login-error" kind="error" hidden></kit-alert>
         <div class="form-actions">
-          <button id="create-token-button" type="button"><span class="icon icon-external"></span><span data-i18n="create"></span></button>
-          <button type="submit" class="primary"><span data-i18n="signIn"></span></button>
+          <button id="github-button" class="primary" type="button"><span class="icon icon-github"></span><span data-i18n="signInGitHub"></span></button>
         </div>
-      </form>
+      </div>
 
       <div id="account-profile">
         <div class="profile-card">

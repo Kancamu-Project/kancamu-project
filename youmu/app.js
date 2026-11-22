@@ -63,7 +63,7 @@ function renderDetails() {
     const link = user.html_url ? Object.assign(element("a", "", user.html_url.replace("https://", "")), { href: user.html_url, target: "_blank", rel: "noopener" }) : null;
     const date = (value) => (value ? i18n.date(value, { year: "numeric", month: "long", day: "numeric" }) : "");
     const scopes = details.scopes.length ? element("span", "scope-chips") : null;
-    details.scopes.forEach((scope) => scopes.append(element("span", "scope-chip", scope)));
+    details.scopes.forEach((scope) => scopes.append(element("span", "badge", scope)));
     // The numbers of the account, as a row of tiles
     const numbers = [
         [t("publicRepos"), user.public_repos],
@@ -87,7 +87,7 @@ function renderDetails() {
             [t("plan"), user.plan && user.plan.name],
         ])),
         collapsible(section(t("tokenTitle"), [
-            [t("tokenType"), t(details.token.startsWith("ghp_") ? "tokenKind.classic" : "tokenKind.other")],
+            [t("tokenType"), t("tokenKind.oauth")],
             [t("tokenValue"), `…${details.token.slice(-4)}`],
             [t("scopes"), scopes],
             [t("apiLeft"), details.remaining && i18n.t("apiLeftValue", { remaining: details.remaining, limit: details.limit })],
@@ -107,7 +107,7 @@ function render() {
     const user = account.get();
     const page = pageNow();
     const selected = selectedApp();
-    $("token-form").hidden = page !== "login";
+    $("login-page").hidden = page !== "login";
     $("account-profile").hidden = page !== "profile";
     $("settings-page").hidden = page !== "settings";
     renderSide(page, selected);
@@ -307,24 +307,26 @@ async function renderSettings() {
     if (state.run === run && !page.textContent.trim()) page.append(element("span", "hint", t("settings.empty")));   // the panels of a web that need the account show nothing without it
 }
 
-$("token-form").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const submit = $("token-form").querySelector("[type=submit]");
-    $("token-error").textContent = "";
-    submit.disabled = true;
+// The error under the button of the sign-in: the alert of the kit, shown when it has a text
+function showLoginError(message) {
+    $("login-error").heading = message;
+    $("login-error").hidden = !message;
+}
+
+// "Sign in with GitHub": the whole page goes to GitHub, and comes back to callback.html (assets/js/account.js)
+$("github-button").addEventListener("click", async () => {
+    const button = $("github-button");
+    showLoginError("");
+    button.disabled = true;
     try {
-        await account.signIn($("token-input").value);
-        $("token-input").value = "";
+        await account.signInWithGitHub();
     } catch (failure) {
-        $("token-error").textContent = t(`error.${failure.code || "failed"}`);
+        showLoginError(t(`error.${failure.code || "failed"}`));
+        button.disabled = false;
     }
-    submit.disabled = false;
 });
 
 $("sign-out-button").addEventListener("click", () => account.signOut());
-
-// Opens GitHub with the "repo" scope already selected.
-$("create-token-button").addEventListener("click", () => window.open(`${i18n.data.token.createUrl}?scopes=${i18n.data.token.scopes}&description=${encodeURIComponent(i18n.brand.name)}`, "_blank", "noopener"));
 
 $("close-button").hidden = !embedded;
 $("close-button").addEventListener("click", () => window.parent.postMessage({ type: "account:close" }, location.origin));
@@ -336,7 +338,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 // The first control, so the keyboard works at once when the dialog opens.
-const focusFirst = () => (pageNow() === "login" ? $("token-input") : document.querySelector(".content")).focus({ preventScroll: true });
+const focusFirst = () => (pageNow() === "login" ? $("github-button") : document.querySelector(".content")).focus({ preventScroll: true });
 window.addEventListener("message", (event) => {
     if (event.origin === location.origin && event.data?.type === "account:focus") focusFirst();
 });

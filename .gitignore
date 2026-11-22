@@ -7,6 +7,12 @@ node_modules/
 # Local only
 muos/_references/
 
+# Secrets: never committed (the GitHub OAuth client secret of the sign-in lives here)
+.dev.vars
+.env
+.env.*
+*.secret
+
 # Operating system files
 .DS_Store
 Thumbs.db

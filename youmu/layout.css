@@ -60,7 +60,7 @@ html, body {
             outline: none; }
     }; }
 
-#token-form, #settings-page {
+#login-page, #settings-page {
     display: flex;
     flex-direction: column;
     gap: var(--gap-medium);
@@ -84,18 +84,6 @@ html, body {
 
 .hint {
     color: var(--fg-1);
-}
-
-#token-input {
-    width: 100%;
-}
-
-.token-error-message {
-    color: var(--danger);
-
-    &:empty {
-        display: none;
-    }
 }
 
 .form-actions {
@@ -187,11 +175,6 @@ html, body {
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: var(--gap-small);
-
-    & > .scope-chip {
-        padding: 0 var(--padding-small);
-        border: var(--border-width) solid var(--border);
-    }
 }
 
 /* The profile: a card, a row of numbers, and parts that open and close; like the settings page, it has no padding of its own */
@@ -358,12 +341,37 @@ html, body {
 }
 
 /* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
-#create-token-button {
-    width: calc(var(--height) * 5);
-}
-#token-form button[type="submit"] {
-    width: calc(var(--height) * 3);
+#github-button {
+    width: calc(var(--height) * 6);
 }
 #sign-out-button {
     width: calc(var(--height) * 4);
+}
+
+/* The page where GitHub sends the user back after the sign-in (callback.html): a box in the middle, while the token is being asked for */
+body.callback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100%;
+}
+
+.callback-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-large);
+    width: min(calc(var(--height) * 14), 100%);
+    padding: var(--padding-extra-large);
+}
+
+.callback-working {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-small);
+    color: var(--fg-1);
+}
+
+.callback-box > kit-alert {
+    align-self: stretch;
 }
