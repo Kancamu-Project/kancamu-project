@@ -13,6 +13,7 @@ Plain HTML, CSS, and JavaScript. No framework, no build step, no special server.
 - Dark and light themes. The chosen theme and language are remembered by the browser. A change in one app is followed live by all the others, muOS included.
 - Three languages: English, 简体中文, and العربية (right to left).
 - Two pages, About and Terms and conditions, and a link to support Kancamu (Saweria, the address is in data.json, "support"), with their buttons in the footer of the main website. Their texts are in the main data.json ("pages"), in the three languages, and the page that is open is in the address (?page=terms).
+- Every app has Open Graph tags and its own preview image, so a link to it looks right where it is shared.
 - A splash screen: when the main website opens, a layer with the logo, the name, and three images (they slide every few seconds, in order) shows until a click or a key; it can be turned off in the Appearance page of the account app.
 - Effects, set in the Appearance page of the account app and shared by every app (except muOS and ArtCraft): today a noise (a fine grain over the page, with an amount and an option to make it move) and a monochrome (the colour taken out, with an amount). An effect is only a layer over the page: a div of its own in the body, which takes no click and changes no element of the page (no style or attribute on any other element), and the noise stays still when the device asks for less motion.
 
@@ -29,6 +30,7 @@ Plain HTML, CSS, and JavaScript. No framework, no build step, no special server.
 | Picmu | Removes the background of an image or a video, and upscales an image or a video (x2 and x4), with models that run on the graphics card (WebGPU) | `picmu/` |
 | Transmu | Translates text between eight languages with AI models that run in the browser (Opus-MT, NLLB-200, M2M100) | `transmu/` |
 | Speechmu | Turns speech into text (Whisper: tiny, base, small) and text into speech (MMS voices and the voices of the device) with AI models that run in the browser; eight languages | `speechmu/` |
+| Hashmu | Hashes a text or a file (MD5, SHA-1, SHA-256, SHA-384, SHA-512, and HMAC), encrypts a text with a passphrase (AES-256-GCM), makes passwords and keys, and encodes (Base64, Hex, URL); all in the browser | `hashmu/` |
 | Youmu | The sign-in, the profile, and the settings of every app | `youmu/` |
 | Assetmu | Shows every asset of the apps: colours (they follow the theme), the colour and icon of each app, icons, fonts, sizes, and files | `assetmu/` |
 | Kitmu | The UI kit of the apps: the templates, the helpers, and the popups, each with the code to copy and a way to try it | `kitmu/` |
@@ -70,11 +72,13 @@ assets/          Shared assets, in folders
   images/        The images that are content of the site (the splash screen): WebP, compressed, with the original beside each as <name>_raw
   icons/         Every SVG icon of the main site, Drivemu, and muAI (universal names)
 favicon.png      Site icon
+tools/           Scripts that make files of the project (og-cards.mjs makes the preview.png of every app: node tools/og-cards.mjs)
 preview.png      Open Graph image (1200x630): a screenshot of the directory, update it when the page changes a lot
 RULES.md         Project rules
 assetmu/         Assetmu: shows every asset (colours, icons, fonts, sizes, files) and the colour and icon of each app
 kitmu/          Kitmu: the UI kit (templates of assets/css/components.css, helpers of assets/js/components.js, popups of assets/js/popup.js)
 speechmu/       Speech to text (Transformers.js, Whisper; a file or the microphone; saved as text or SRT subtitles) and text to speech (MMS voices that download once, and the voices of the device; saved as WAV); nothing is uploaded
+hashmu/         Hashing and cryptography in the browser (the Web Crypto API; nothing is uploaded): hashes of a text or a file, HMAC, encrypting a text, random passwords and keys, and Base64, Hex, and URL encoding; what the user types in a field is never in the address
 youmu/       The account app, shown in a dialog by every other app; the query string picks the page: ?page=login, ?page=profile, ?page=settings&app=<app>. All settings of all apps (language, theme, and the settings, models, and data of each app) are set here
 artcraft/        The eight ArtCraft apps (downloaded by update.ps1)
 drivemu/         File storage on GitHub

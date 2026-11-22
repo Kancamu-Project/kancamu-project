@@ -507,6 +507,32 @@
       ]
     },
     {
+      "id": "hashmu",
+      "name": {
+        "en-US": "Hash{highlight}"
+      },
+      "description": {
+        "en-US": "Hash a text or a file, encrypt, make passwords, and encode, right in your browser.",
+        "zh-CN": "直接在浏览器中计算文字或文件的哈希、加密、生成密码和编码。",
+        "ar-SA": "احسب تجزئة نص أو ملف، وشفّر، وولّد كلمات مرور، ورمّز، مباشرة في متصفحك."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "hashmu/",
+      "icon": "hashmu/favicon.png",
+      "color": "#ef2142",
+      "categories": [
+        "official",
+        "mobile",
+        "tools"
+      ],
+      "alternatives": [
+        "CyberChef"
+      ]
+    },
+    {
       "id": "youmu",
       "name": {
         "en-US": "You{highlight}"

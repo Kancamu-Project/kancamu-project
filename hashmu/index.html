@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<meta name="description" content="Hash a text or a file, encrypt, make passwords, and encode, right in your browser.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kancamu">
+<meta property="og:title" content="Hashmu">
+<meta property="og:description" content="Hash a text or a file, encrypt, make passwords, and encode, right in your browser.">
+<meta property="og:url" content="https://kancamu.site/hashmu/">
+<meta property="og:image" content="https://kancamu.site/hashmu/preview.png?v=1">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Hashmu: Hash a text or a file, encrypt, make passwords, and encode, right in your browser.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+<meta name="theme-color" content="#1a1a1b">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/page.css">
+<link rel="stylesheet" href="layout.css">
+<script src="../assets/js/theme.js"></script>
+<script defer src="../assets/js/cleanup.js"></script>
+<script defer src="../assets/js/url.js"></script>
+<script defer src="../assets/js/i18n.js"></script>
+<script defer src="../assets/js/popup.js"></script>
+<script defer src="../assets/js/components.js"></script>
+<script defer src="../assets/js/account.js"></script>
+<script defer src="../assets/js/settings.js"></script>
+<script type="module" src="app.js"></script>
+</head>
+<body>
+
+<kit-header id="header"></kit-header>
+<div id="main" class="main">
+
+  <div id="views"></div>
+
+  <!-- Hash -->
+  <section id="hash-panel" class="panel">
+    <div id="hash-source" class="segmented-control" role="group" data-i18n-label="tab.hash">
+      <button id="source-text" type="button" class="on"><span data-i18n="hash.text"></span></button>
+      <button id="source-file" type="button"><span data-i18n="hash.file"></span></button>
+    </div>
+    <textarea id="hash-text" class="pane-text" dir="auto" data-i18n-placeholder="hash.placeholder" data-i18n-label="hash.text"></textarea>
+    <div id="hash-file" class="file-bar hidden">
+      <button id="choose-button" class="primary" type="button"><span class="icon icon-upload"></span><span data-i18n="hash.choose"></span></button>
+      <span id="file-name" class="field-hint"></span>
+      <input id="file-input" type="file" hidden>
+    </div>
+    <div class="field-bar">
+      <label class="field">
+        <span class="field-label" data-i18n="hash.key"></span>
+        <input id="hash-key" type="password" autocomplete="off" data-i18n-placeholder="hash.keyPlaceholder" data-i18n-label="hash.key">
+      </label>
+      <label class="field">
+        <span class="field-label" data-i18n="hash.format"></span>
+        <select id="hash-format" data-i18n-label="hash.format"></select>
+      </label>
+    </div>
+    <label class="field">
+      <span class="field-label" data-i18n="hash.compare"></span>
+      <input id="hash-compare" type="text" autocomplete="off" spellcheck="false" data-i18n-placeholder="hash.comparePlaceholder" data-i18n-label="hash.compare">
+    </label>
+    <div id="hash-results" class="results"></div>
+  </section>
+
+  <!-- Encrypt -->
+  <section id="encrypt-panel" class="panel hidden">
+    <div id="encrypt-mode" class="segmented-control" role="group" data-i18n-label="tab.encrypt">
+      <button id="mode-encrypt" type="button" class="on"><span data-i18n="encrypt.encrypt"></span></button>
+      <button id="mode-decrypt" type="button"><span data-i18n="encrypt.decrypt"></span></button>
+    </div>
+    <label class="field">
+      <span class="field-label" data-i18n="encrypt.passphrase"></span>
+      <input id="encrypt-passphrase" type="password" autocomplete="off" data-i18n-label="encrypt.passphrase">
+    </label>
+    <div class="pane">
+      <div class="pane-bar"><span class="pane-title" data-i18n="encrypt.input"></span></div>
+      <textarea id="encrypt-input" class="pane-text" dir="auto" data-i18n-label="encrypt.input"></textarea>
+    </div>
+    <div class="actions">
+      <span id="encrypt-hint" class="field-hint"></span>
+      <button id="encrypt-run" class="primary" type="button"><span class="icon icon-zap"></span><span id="encrypt-run-label"></span></button>
+    </div>
+    <div class="pane">
+      <div class="pane-bar">
+        <span class="pane-title" data-i18n="encrypt.output"></span>
+        <button id="encrypt-copy" class="ghost square" type="button" disabled data-i18n-title="copy" data-i18n-label="copy"><span class="icon icon-copy"></span></button>
+      </div>
+      <div id="encrypt-output" class="pane-text selectable" role="textbox" aria-readonly="true" tabindex="0" dir="auto" data-i18n-label="encrypt.output"></div>
+    </div>
+  </section>
+
+  <!-- Generate -->
+  <section id="generate-panel" class="panel hidden">
+    <label class="field">
+      <span class="field-label" data-i18n="generate.type"></span>
+      <select id="generate-type" data-i18n-label="generate.type"></select>
+    </label>
+    <div id="password-options" class="options">
+      <label class="field">
+        <span class="field-label"><span data-i18n="generate.length"></span>: <span id="length-value"></span></span>
+        <input id="generate-length" class="slider" type="range" min="8" max="128" step="1" data-i18n-label="generate.length">
+      </label>
+      <div class="checks">
+        <label class="check"><input id="generate-lowercase" class="checkbox" type="checkbox"><span data-i18n="generate.lowercase"></span></label>
+        <label class="check"><input id="generate-uppercase" class="checkbox" type="checkbox"><span data-i18n="generate.uppercase"></span></label>
+        <label class="check"><input id="generate-digits" class="checkbox" type="checkbox"><span data-i18n="generate.digits"></span></label>
+        <label class="check"><input id="generate-symbols" class="checkbox" type="checkbox"><span data-i18n="generate.symbols"></span></label>
+      </div>
+    </div>
+    <div class="pane">
+      <div class="pane-bar">
+        <span class="pane-title" data-i18n="generate.output"></span>
+        <span id="generate-entropy" class="pane-count"></span>
+        <button id="generate-copy" class="ghost square" type="button" disabled data-i18n-title="copy" data-i18n-label="copy"><span class="icon icon-copy"></span></button>
+      </div>
+      <div id="generate-output" class="pane-text selectable mono" role="textbox" aria-readonly="true" tabindex="0" dir="ltr" data-i18n-label="generate.output"></div>
+    </div>
+    <div class="actions">
+      <button id="generate-run" class="primary" type="button"><span class="icon icon-refresh"></span><span data-i18n="generate.run"></span></button>
+    </div>
+  </section>
+
+  <!-- Encode -->
+  <section id="encode-panel" class="panel hidden">
+    <label class="field">
+      <span class="field-label" data-i18n="encode.format"></span>
+      <select id="encode-format" data-i18n-label="encode.format"></select>
+    </label>
+    <div class="pane">
+      <div class="pane-bar"><span class="pane-title" data-i18n="encode.input"></span></div>
+      <textarea id="encode-input" class="pane-text" dir="auto" data-i18n-placeholder="encode.placeholder" data-i18n-label="encode.input"></textarea>
+    </div>
+    <div class="actions">
+      <button id="encode-run" class="primary" type="button"><span class="icon icon-arrow-down"></span><span data-i18n="encode.encode"></span></button>
+      <button id="decode-run" type="button"><span class="icon icon-arrow-up"></span><span data-i18n="encode.decode"></span></button>
+    </div>
+    <div class="pane">
+      <div class="pane-bar">
+        <span class="pane-title" data-i18n="encode.output"></span>
+        <button id="encode-copy" class="ghost square" type="button" disabled data-i18n-title="copy" data-i18n-label="copy"><span class="icon icon-copy"></span></button>
+      </div>
+      <div id="encode-output" class="pane-text selectable mono" role="textbox" aria-readonly="true" tabindex="0" dir="auto" data-i18n-label="encode.output"></div>
+    </div>
+  </section>
+
+</div>
+<kit-footer id="footer" status></kit-footer>
+
+<div id="popups" class="popups"></div>
+</body>
+</html>

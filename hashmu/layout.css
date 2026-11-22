@@ -1,0 +1,75 @@
+/* Hashmu: hashing and cryptography in the browser. */
+.hidden { display: none !important; }
+
+/* Page */
+/* The page is the header, the main, and the footer, directly in the body. The padding and the gap are the ones of the body. */
+.main { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; }
+
+.header { height: var(--height); }
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
+.header-tools { height: 100%; }
+
+/* One panel at a time: the one of the tab */
+.panel { min-height: 0; display: flex; flex-direction: column; gap: var(--gap-small); overflow-y: auto; }
+
+/* A field: its label and its control */
+.field-bar { display: flex; flex-wrap: wrap; gap: var(--gap-small); }
+/* In a row of fields (.field-bar) a field takes its share of the width; anywhere else it keeps the height of its content (a flex basis is a height in a column) */
+.field-bar > .field { flex: 1 1 calc(var(--height) * 6); }
+.field { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--gap-small); min-width: 0; }
+.field-label { min-width: calc(var(--height) * 2); font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; color: var(--fg-1); white-space: nowrap; }
+.field :is(input, select) { width: 100%; min-width: 0; }
+.panel > :not(.pane) { flex: none; }   /* only the text boxes grow in a panel: a field, a bar, or a row of buttons keeps its own height */
+.field-hint { flex: 1; min-width: 0; color: var(--fg-1); font-size: var(--font-size-extra-small); }
+
+.file-bar, .actions { display: flex; align-items: center; flex-wrap: wrap; gap: var(--gap-small); }
+.file-bar .field-hint { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.actions { justify-content: flex-end; }
+
+/* The text */
+/* A text box takes the free height of the panel, but never less than its own height (so the parts of the panel do not lie over each other when the window is low) */
+.pane { flex: 1 0 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--gap-small); }
+.pane-bar { display: flex; align-items: center; gap: var(--gap-small); height: var(--height); }
+.pane-title { flex: 1; min-width: 0; font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; color: var(--fg-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pane-count { color: var(--fg-1); font-size: var(--font-size-extra-small); white-space: nowrap; }
+.pane-text {
+  flex: 1; min-height: calc(var(--unit) * 24); padding: var(--padding-medium); overflow-y: auto; resize: none;
+  font-size: var(--font-size-medium); white-space: pre-wrap; overflow-wrap: anywhere;
+  border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); background: var(--bg-1);
+}
+textarea.pane-text { color: var(--fg); }
+#hash-text { flex: none; height: calc(var(--unit) * 24); }   /* the hashes are what matters: they are under the text, not under a tall box */
+.mono { font-family: "JetBrains Mono", monospace; }
+
+/* The hashes: a row for each algorithm */
+.results { display: flex; flex-direction: column; gap: var(--gap-small); }
+.result-row {
+  display: grid; grid-template-columns: calc(var(--height) * 2.5) minmax(0, 1fr) var(--height); align-items: center; gap: var(--gap-small);
+  padding: var(--padding-small) var(--padding-small) var(--padding-small) var(--padding-medium);
+  border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium);
+}
+.result-row.match { border-color: var(--ok); }
+.result-name { font-weight: 700; }
+.result-value { min-width: 0; font-family: "JetBrains Mono", monospace; font-size: var(--font-size-small); overflow-wrap: anywhere; }
+.result-note { display: block; color: var(--fg-1); font-family: inherit; font-size: var(--font-size-extra-small); }
+
+/* The options of a password */
+.options { display: flex; flex-direction: column; gap: var(--gap-small); }
+.checks { display: flex; flex-wrap: wrap; gap: var(--gap-medium); }
+.check { display: flex; align-items: center; gap: var(--gap-small); }
+
+dialog { color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--border); padding: 0; }
+dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent); }
+
+@media (max-width: 48rem) {
+  .pane-text { min-height: calc(var(--unit) * 20); }
+  .result-row { grid-template-columns: minmax(0, 1fr) var(--height); }
+  .result-name { grid-column: 1 / -1; }
+}
+
+/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
+#choose-button { width: calc(var(--height) * 5); }
+#encrypt-run { width: calc(var(--height) * 4); }
+#generate-run { width: calc(var(--height) * 4); }
+#encode-run, #decode-run { width: calc(var(--height) * 4); }
+#hash-source button, #encrypt-mode button { width: calc(var(--height) * 3); }
