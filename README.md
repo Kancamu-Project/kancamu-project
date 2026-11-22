@@ -31,6 +31,7 @@ Plain HTML, CSS, and JavaScript. No framework, no build step, no special server.
 | Transmu | Translates text between eight languages with AI models that run in the browser (Opus-MT, NLLB-200, M2M100) | `transmu/` |
 | Speechmu | Turns speech into text (Whisper: tiny, base, small) and text into speech (MMS voices and the voices of the device) with AI models that run in the browser; eight languages | `speechmu/` |
 | Hashmu | Hashes a text or a file (MD5, SHA-1, SHA-256, SHA-384, SHA-512, and HMAC), encrypts a text with a passphrase (AES-256-GCM), makes passwords and keys, and encodes (Base64, Hex, URL); all in the browser | `hashmu/` |
+| Searchmu | The advanced search of Google: fields for the words, the exact phrase, the words to leave out, a range of numbers, the language, the region, the last update, a site, a type of file, and usage rights; the results of Google show in a frame beside the fields | `searchmu/` |
 | Youmu | The sign-in, the profile, and the settings of every app | `youmu/` |
 | Assetmu | Shows every asset of the apps: colours (they follow the theme), the colour and icon of each app, icons, fonts, sizes, and files | `assetmu/` |
 | Kitmu | The UI kit of the apps: the templates, the helpers, and the popups, each with the code to copy and a way to try it | `kitmu/` |
@@ -72,13 +73,14 @@ assets/          Shared assets, in folders
   images/        The images that are content of the site (the splash screen): WebP, compressed, with the original beside each as <name>_raw
   icons/         Every SVG icon of the main site, Drivemu, and muAI (universal names)
 favicon.png      Site icon
-assets/tools/    What helps to make the project: og-cards.mjs makes the preview.png of the main website and of every app from their cards (node assets/tools/og-cards.mjs); the cards are shown all at once in the section Previews of Assetmu, where each can be saved as an image
+assets/tools/    What helps to make the project: og-cards.mjs makes the preview.png of the main website and of every app from their cards (node assets/tools/og-cards.mjs); the cards are shown all at once in the section Previews of Assetmu, where each can be saved as an image; seo.mjs makes sitemap.xml, robots.txt, and the title, the canonical address, the structured data, and the noscript text of every page (node assets/tools/seo.mjs)
 preview.png      Open Graph image (1200x630): the card of the main website, which is its splash screen (node assets/tools/og-cards.mjs kancamu), made again when the splash changes, with the number after ?v= raised in the og:image of index.html
 RULES.md         Project rules
 assetmu/         Assetmu: shows every asset (colours, icons, fonts, sizes, files) and the colour and icon of each app
 kitmu/          Kitmu: the UI kit (templates of assets/css/components.css, helpers of assets/js/components.js, popups of assets/js/popup.js)
 speechmu/       Speech to text (Transformers.js, Whisper; a file or the microphone; saved as text or SRT subtitles) and text to speech (MMS voices that download once, and the voices of the device; saved as WAV); nothing is uploaded
 hashmu/         Hashing and cryptography in the browser (the Web Crypto API; nothing is uploaded): hashes of a text or a file, HMAC, encrypting a text, random passwords and keys, and Base64, Hex, and URL encoding; what the user types in a field is never in the address
+searchmu/       The advanced search of Google: the fields make a query and the filters of Google, and its results are shown in a frame (what the user types in a field is never in the address)
 youmu/       The account app, shown in a dialog by every other app; the query string picks the page: ?page=login, ?page=profile, ?page=settings&app=<app>. All settings of all apps (language, theme, and the settings, models, and data of each app) are set here
 artcraft/        The eight ArtCraft apps (downloaded by update.ps1)
 drivemu/         File storage on GitHub

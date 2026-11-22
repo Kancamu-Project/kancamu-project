@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Searchmu — Advanced search of Google, with the results beside the fields.</title>
+<meta name="description" content="Advanced search of Google, with the results beside the fields.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kancamu">
+<meta property="og:title" content="Searchmu">
+<meta property="og:description" content="Advanced search of Google, with the results beside the fields.">
+<meta property="og:url" content="https://kancamu.site/searchmu/">
+<meta property="og:image" content="https://kancamu.site/searchmu/preview.png?v=1">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Searchmu: Advanced search of Google, with the results beside the fields.">
+<meta name="twitter:card" content="summary_large_image">
+<!-- seo -->
+<link rel="canonical" href="https://kancamu.site/searchmu/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Searchmu","url":"https://kancamu.site/searchmu/","description":"Advanced search of Google, with the results beside the fields.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","image":"https://kancamu.site/searchmu/preview.png","isPartOf":{"@id":"https://kancamu.site/#website"},"publisher":{"@type":"Organization","name":"Kancamu","url":"https://kancamu.site/"}}</script>
+<!-- /seo -->
+<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+<meta name="theme-color" content="#1a1a1b">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/page.css">
+<link rel="stylesheet" href="layout.css">
+<script src="../assets/js/theme.js"></script>
+<script defer src="../assets/js/cleanup.js"></script>
+<script defer src="../assets/js/url.js"></script>
+<script defer src="../assets/js/i18n.js"></script>
+<script defer src="../assets/js/popup.js"></script>
+<script defer src="../assets/js/components.js"></script>
+<script defer src="../assets/js/account.js"></script>
+<script defer src="../assets/js/settings.js"></script>
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<!-- seo-body -->
+<noscript>
+  <h1>Searchmu</h1>
+  <p>Advanced search of Google, with the results beside the fields.</p>
+  <p><a href="../">Kancamu</a></p>
+  <p>This page needs JavaScript.</p>
+</noscript>
+<!-- /seo-body -->
+
+<kit-header id="header"></kit-header>
+<div id="main" class="main" data-view="filters">
+
+  <div id="views"></div>
+
+  <!-- The fields of the advanced search -->
+  <form id="filters" class="panel filters" autocomplete="off">
+    <div class="group-title" data-i18n="group.words"></div>
+    <label class="field">
+      <span class="field-label" data-i18n="field.all"></span>
+      <input id="all" type="text" dir="auto" spellcheck="false" data-i18n-placeholder="field.all.placeholder" data-i18n-label="field.all">
+    </label>
+    <label class="field">
+      <span class="field-label" data-i18n="field.exact"></span>
+      <input id="exact" type="text" dir="auto" spellcheck="false" data-i18n-placeholder="field.exact.placeholder" data-i18n-label="field.exact">
+    </label>
+    <label class="field">
+      <span class="field-label" data-i18n="field.any"></span>
+      <input id="any" type="text" dir="auto" spellcheck="false" data-i18n-placeholder="field.any.placeholder" data-i18n-label="field.any">
+    </label>
+    <label class="field">
+      <span class="field-label" data-i18n="field.none"></span>
+      <input id="none" type="text" dir="auto" spellcheck="false" data-i18n-placeholder="field.none.placeholder" data-i18n-label="field.none">
+    </label>
+    <div class="field">
+      <span class="field-label" data-i18n="field.range"></span>
+      <div class="range">
+        <input id="from" type="number" inputmode="decimal" data-i18n-label="field.range">
+        <span class="range-to" data-i18n="field.range.to"></span>
+        <input id="to" type="number" inputmode="decimal" data-i18n-label="field.range.to">
+      </div>
+    </div>
+
+    <div class="group-title" data-i18n="group.narrow"></div>
+    <label class="field">
+      <span class="field-label" data-i18n="field.language"></span>
+      <select id="language" data-i18n-label="field.language"></select>
+    </label>
+    <label class="field">
+      <span class="field-label" data-i18n="field.region"></span>
+      <select id="region" data-i18n-label="field.region"></select>
+    </label>
+    <label class="field">
+      <span class="field-label" data-i18n="field.updated"></span>
+      <select id="updated" data-i18n-label="field.updated"></select>
+    </label>
+    <label class="field">
+      <span class="field-label" data-i18n="field.site"></span>
+      <input id="site" type="text" dir="ltr" spellcheck="false" autocapitalize="off" data-i18n-placeholder="field.site.placeholder" data-i18n-label="field.site">
+    </label>
+    <label class="field">
+      <span class="field-label" data-i18n="field.terms"></span>
+      <select id="terms" data-i18n-label="field.terms"></select>
+    </label>
+    <label class="field">
+      <span class="field-label" data-i18n="field.filetype"></span>
+      <select id="filetype" data-i18n-label="field.filetype"></select>
+    </label>
+    <label class="field">
+      <span class="field-label" data-i18n="field.rights"></span>
+      <select id="rights" data-i18n-label="field.rights"></select>
+    </label>
+    <label class="field">
+      <span class="field-label" data-i18n="field.num"></span>
+      <select id="num" data-i18n-label="field.num"></select>
+    </label>
+    <div class="field">
+      <span class="field-label" data-i18n="field.safe"></span>
+      <label class="check"><input id="safe" class="checkbox" type="checkbox"><span data-i18n="field.safe.on"></span></label>
+    </div>
+
+    <div class="query">
+      <span class="field-label" data-i18n="query.label"></span>
+      <div id="query" class="query-text mono" dir="ltr" role="textbox" aria-readonly="true" tabindex="0"></div>
+    </div>
+    <div class="actions">
+      <button id="reset-button" type="button" data-i18n-label="action.reset"><span class="icon icon-trash"></span><span data-i18n="action.reset"></span></button>
+      <button id="copy-button" type="button" data-i18n-label="action.copy"><span class="icon icon-copy"></span><span data-i18n="action.copy"></span></button>
+      <button id="search-button" class="primary" type="submit" data-i18n-label="action.search"><span class="icon icon-search"></span><span data-i18n="action.search"></span></button>
+    </div>
+  </form>
+
+  <!-- The results of Google -->
+  <section id="results" class="panel results-panel">
+    <div class="pane-bar">
+      <span class="pane-title" data-i18n="frame.title"></span>
+      <button id="open-button" class="ghost" type="button" disabled data-i18n-label="action.open"><span class="icon icon-external"></span><span data-i18n="action.open"></span></button>
+    </div>
+    <div class="frame">
+      <iframe id="frame" class="hidden" title="Google" referrerpolicy="no-referrer"></iframe>
+      <div id="frame-empty" class="frame-empty">
+        <span class="icon icon-search"></span>
+        <span data-i18n="frame.empty"></span>
+      </div>
+    </div>
+    <div class="field-hint" data-i18n="frame.hint"></div>
+  </section>
+
+</div>
+<kit-footer id="footer" status></kit-footer>
+
+<div id="popups" class="popups"></div>
+</body>
+</html>

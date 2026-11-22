@@ -533,6 +533,32 @@
       ]
     },
     {
+      "id": "searchmu",
+      "name": {
+        "en-US": "Search{highlight}"
+      },
+      "description": {
+        "en-US": "Advanced search of Google, with the results beside the fields.",
+        "zh-CN": "Google 高级搜索，结果显示在字段旁边。",
+        "ar-SA": "البحث المتقدم في Google، مع النتائج بجانب الحقول."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "searchmu/",
+      "icon": "searchmu/favicon.png",
+      "color": "#1782db",
+      "categories": [
+        "official",
+        "mobile",
+        "tools"
+      ],
+      "alternatives": [
+        "Google Advanced Search"
+      ]
+    },
+    {
       "id": "youmu",
       "name": {
         "en-US": "You{highlight}"
@@ -639,9 +665,9 @@
         "en-US": "{brand}"
       },
       "description": {
-        "en-US": "Directory of apps and tools.",
-        "zh-CN": "应用与工具目录。",
-        "ar-SA": "دليل التطبيقات والأدوات."
+        "en-US": "Apps and tools, in one place.",
+        "zh-CN": "应用和工具，集中在一处。",
+        "ar-SA": "التطبيقات والأدوات في مكان واحد."
       },
       "highlight": {
         "en-US": "{highlight}"
