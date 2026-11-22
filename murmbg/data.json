@@ -43,7 +43,7 @@
       }
     }
   ],
-  "storageBranch": "drivemu",
+  "storageFolder": "drivemu",
   "saveFolder": "Images",
   "media": {
     "image": [

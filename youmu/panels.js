@@ -191,8 +191,8 @@ function restoreDefaults({ app, t, ask, announce }) {
 }
 
 /* ---------- Drivemu ---------- */
-// The drive is the drivemu branch of the storage: how much of it is used, and the reset.
-// The branch is opened once for the panels (opening it asks GitHub, and two panels need it).
+// The drive is the folder of Drivemu in the storage (AppData/drivemu): how much of the storage is used, and the reset of the drive.
+// The folder is opened once for the panels (opening it asks GitHub, and two panels need it).
 let drive = { token: "", store: null };
 function driveStore() {
     const signedIn = account.get();
@@ -212,7 +212,8 @@ async function driveUsage({ data, t }) {
     }
     return store ? panel(t("set.storage"), "", box) : element("span");
 }
-// The reset: every file and folder is deleted, and the default folders are made again, in one commit (git data API).
+// The reset: every file and folder of the drive is deleted, and the default folders are made again, in one commit (git data API). Only the folder of Drivemu is touched:
+// the folders of the other apps (the chats of muAI, the progress of the lessons) stay as they are.
 async function driveReset({ data, t, ask, toast, announce }) {
     const store = await driveStore();
     if (!store) return element("span");
@@ -236,8 +237,9 @@ async function driveReset({ data, t, ask, toast, announce }) {
             const commit = await call(`/git/commits/${ref.object.sha}`);
             const tree = await call(`/git/trees/${commit.tree.sha}?recursive=1`);
             const empty = await call("/git/blobs", { method: "POST", body: JSON.stringify({ content: "", encoding: "utf-8" }) });
-            const entries = tree.tree.filter((item) => item.type === "blob" && item.path !== keep).map((item) => ({ path: item.path, mode: item.mode, type: "blob", sha: null }));
-            entries.push(...data.drive.defaultFolders.map((name) => ({ path: `${name}/${keep}`, mode: "100644", type: "blob", sha: empty.sha })));
+            const inside = `${store.root}/`;   // AppData/drivemu/
+            const entries = tree.tree.filter((item) => item.type === "blob" && item.path.startsWith(inside) && item.path !== inside + keep).map((item) => ({ path: item.path, mode: item.mode, type: "blob", sha: null }));
+            entries.push(...data.drive.defaultFolders.map((name) => ({ path: `${inside}${name}/${keep}`, mode: "100644", type: "blob", sha: empty.sha })));
             const newTree = await call("/git/trees", { method: "POST", body: JSON.stringify({ base_tree: commit.tree.sha, tree: entries }) });
             const newCommit = await call("/git/commits", { method: "POST", body: JSON.stringify({ message: "Drivemu: reset", tree: newTree.sha, parents: [ref.object.sha] }) });
             await call(`/git/refs/heads/${store.branch}`, { method: "PATCH", body: JSON.stringify({ sha: newCommit.sha }) });
@@ -250,7 +252,7 @@ async function driveReset({ data, t, ask, toast, announce }) {
 }
 
 /* ---------- Lingomu and muJS ---------- */
-// The progress of a web (Lingomu, muJS) is kept in this browser ("<app>.progress") and, once signed in, on the branch of the web (progress.json): the reset deletes both.
+// The progress of a web (Lingomu, muJS) is kept in this browser ("<app>.progress") and, once signed in, in the folder of the web (progress.json): the reset deletes both.
 function progressReset({ app, t, ask, toast, announce }) {
     const reset = button("refresh", t("progress.reset"), "danger");
     reset.addEventListener("click", async () => {

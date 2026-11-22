@@ -1,4 +1,4 @@
-// Gallemu: the photos and videos of the user's Drive (the drivemu branch), in one gallery.
+// Gallemu: the photos and videos of the user's Drive (the folder of Drivemu), in one gallery.
 await i18n.load();
 i18n.selects();
 
@@ -11,8 +11,8 @@ const els = Object.fromEntries([
   "viewer-previous-button", "viewer-next-button", "account-button"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-// The media types, the limits and the branch are in data.json.
-const { media, limits, mimeTypes, storageBranch } = i18n.data;
+// The media types, the limits and the folder are in data.json.
+const { media, limits, mimeTypes, storageFolder } = i18n.data;
 const KIND_OF = new Map(Object.entries(media).flatMap(([kind, extensions]) => extensions.map((extension) => [extension, kind])));
 const ALL = "", ROOT = "/";   // the values of the album select: every album, and the files at the root of the Drive
 
@@ -37,7 +37,7 @@ async function loadFiles() {
   state.phase = "loading";
   render();
   try {
-    if (!state.store || state.token !== signedIn.token) { state.store = await storage.connect(storageBranch); state.token = signedIn.token; }
+    if (!state.store || state.token !== signedIn.token) { state.store = await storage.connect(storageFolder); state.token = signedIn.token; }
     const { files, truncated } = await storage.tree(state.store);
     state.truncated = truncated;
     state.items = files.filter((file) => KIND_OF.has(extensionOf(file.path))).map((file) => {

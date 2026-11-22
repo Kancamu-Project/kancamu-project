@@ -345,9 +345,9 @@
     {
       "name": "js/storage.js",
       "description": {
-        "en-US": "The GitHub storage: one repository, one branch for each web.",
-        "zh-CN": "GitHub 存储：一个仓库，每个网站一个分支。",
-        "ar-SA": "تخزين GitHub: مستودع واحد وفرع لكل موقع."
+        "en-US": "The GitHub storage: one repository, one folder for each web (in AppData).",
+        "zh-CN": "GitHub 存储：一个仓库，每个网站在 AppData 中有一个文件夹。",
+        "ar-SA": "تخزين GitHub: مستودع واحد ومجلد لكل موقع (داخل AppData)."
       }
     },
     {

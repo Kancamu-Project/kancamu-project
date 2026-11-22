@@ -1,6 +1,6 @@
 // muJS: lessons that teach JavaScript. Each lesson explains one idea, gives a task, and has a code editor that runs the code.
 // The units, the lessons, their tests, and the words to colour are in data.json. The code runs in a sandboxed frame (sandbox.js), never in this page.
-// The progress (lessons done, the code that was written) is kept in this browser, and on the mujs branch of the storage once the user is signed in.
+// The progress (lessons done, the code that was written) is kept in this browser, and in the mujs folder of the storage once the user is signed in.
 
 await i18n.load();
 
@@ -15,7 +15,7 @@ const els = Object.fromEntries([
   "outcome", "outcome-text", "tests", "next-button", "status"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-const { units, limits, storageBranch, syntax, settings: { defaults } } = i18n.data;
+const { units, limits, storageFolder, syntax, settings: { defaults } } = i18n.data;
 const lessons = units.flatMap((unit) => unit.lessons.map((lesson) => ({ ...lesson, unit })));
 
 const say = components.status(els.status);
@@ -75,7 +75,7 @@ const sync = { store: null, token: "", timer: 0 };
 async function openStore() {
   const signedIn = account.get();
   if (!signedIn) return null;
-  if (!sync.store || sync.token !== signedIn.token) { sync.store = await storage.connect(storageBranch); sync.token = signedIn.token; }
+  if (!sync.store || sync.token !== signedIn.token) { sync.store = await storage.connect(storageFolder); sync.token = signedIn.token; }
   return sync.store;
 }
 function scheduleUpload() {

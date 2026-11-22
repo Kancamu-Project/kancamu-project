@@ -107,7 +107,7 @@ const idb = {
 };
 if (!db) popups.toast(tr("toast.storage"), { kind: "warning" });
 
-// ---------- Sync: signed in, the chats are also kept on the muai branch of the user's storage (assets/js/storage.js) ----------
+// ---------- Sync: signed in, the chats are also kept in the muai folder of the user's storage (assets/js/storage.js) ----------
 // conversations/<id>.json  one file per chat, loaded when the chat is opened
 // files/<sha256>           the files attached to the chats, named by their hash, so a file is kept once whatever chat it came from
 const CHATS = "conversations", FILES = "files";

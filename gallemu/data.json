@@ -5,7 +5,7 @@
     "ar-SA": "Galle{highlight} — صورك ومقاطع الفيديو"
   },
   "brandColor": "#1782db",
-  "storageBranch": "drivemu",
+  "storageFolder": "drivemu",
   "limits": {
     "thumbnailMaxMB": 8,
     "thumbnailSize": 320,

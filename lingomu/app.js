@@ -1,5 +1,5 @@
 // Lingomu: short lessons that teach the words of a language. The courses, the units, the lessons, and the rules of a lesson are in data.json.
-// The progress (lessons done, XP, streak) is kept in this browser, and on the lingomu branch of the storage once the user is signed in.
+// The progress (lessons done, XP, streak) is kept in this browser, and in the lingomu folder of the storage once the user is signed in.
 
 await i18n.load();
 
@@ -13,7 +13,7 @@ const els = Object.fromEntries([
   "result-view", "result-title", "result-lines", "result-retry-button", "result-continue-button", "status"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-const { lesson: rules, concepts, courses, units, storageBranch, settings: { defaults } } = i18n.data;
+const { lesson: rules, concepts, courses, units, storageFolder, settings: { defaults } } = i18n.data;
 // A word of a course is a text, or { text, roman } for a script with a reading aid (pinyin, romaji, ...): the aid is shown, and can be typed instead of the script.
 const wordText = (course, id) => (typeof course.words[id] === "string" ? course.words[id] : course.words[id].text);
 const wordRoman = (course, id) => (typeof course.words[id] === "string" ? "" : course.words[id].roman);
@@ -57,7 +57,7 @@ const sync = { store: null, token: "", timer: 0 };
 async function openStore() {
   const signedIn = account.get();
   if (!signedIn) return null;
-  if (!sync.store || sync.token !== signedIn.token) { sync.store = await storage.connect(storageBranch); sync.token = signedIn.token; }
+  if (!sync.store || sync.token !== signedIn.token) { sync.store = await storage.connect(storageFolder); sync.token = signedIn.token; }
   return sync.store;
 }
 function scheduleUpload() {

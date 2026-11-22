@@ -16,8 +16,8 @@ const els = Object.fromEntries([
   "drive-dialog", "drive-close-button", "drive-search", "drive-list", "drive-message"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-// The models, the backgrounds, the Drive branch and folder, and the image types are in data.json.
-const { models, backgrounds, downloadSuffix, storageBranch, saveFolder, media, mimeTypes, video, settings: { defaults } } = i18n.data;
+// The models, the backgrounds, the Drive folder, the folder to save in, and the image types are in data.json.
+const { models, backgrounds, downloadSuffix, storageFolder, saveFolder, media, mimeTypes, video, settings: { defaults } } = i18n.data;
 const preferences = settings.get("murmbg", defaults);   // the model, the frames per second, the format, and the background: set here and in the account web
 const MEDIA_TYPES = new Set([...media.image, ...media.video]);   // what the Drive list shows
 
@@ -33,7 +33,7 @@ const state = {
   playId: 0,         // changes to stop the playing of the frames
   stop: false,       // the user stopped the cutting of a video
   busy: false,
-  store: null,       // the drivemu branch, opened when the Drive is first needed
+  store: null,       // the folder of Drivemu, opened when the Drive is first needed
   token: "",         // the token the store was opened with
   name: "",          // the name of the image, without its extension
   original: "",      // the address of the original picture
@@ -554,7 +554,7 @@ els.zipButton.addEventListener("click", async () => {
 async function openDrive() {
   const signedIn = account.get();
   if (!signedIn) { account.open(); return null; }
-  if (!state.store || state.token !== signedIn.token) { state.store = await storage.connect(storageBranch); state.token = signedIn.token; }
+  if (!state.store || state.token !== signedIn.token) { state.store = await storage.connect(storageFolder); state.token = signedIn.token; }
   return state.store;
 }
 let driveImages = [];   // { path, name, folder, size }

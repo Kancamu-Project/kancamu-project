@@ -8,7 +8,7 @@ let STORAGE_LIMIT_KB, DEFAULT_FOLDERS, KEEP, MAX_FILE, THUMB_MAX, TYPES, ICON_OF
 const $ = (id) => document.getElementById(id);
 const tr = (key, params) => i18n.t(key, params);
 const S = {
-  token: '', user: null, owner: '', repo: '', branch: 'main', head: null,
+  token: '', user: null, owner: '', repo: '', branch: 'main', root: '', head: null,   // root: the folder of the drive in the repository (AppData/drivemu)
   path: [], rootFolders: [], items: [], visible: [], view: 'grid', sort: 'name', dir: 1, query: '',
   selected: new Set(), busy: false, repoSizeKB: 0, repoPrivate: true,
 };
@@ -16,7 +16,7 @@ const S = {
 /* ---------- utilities ---------- */
 const { element, icon, extensionOf } = components;
 const enc = (p) => p.split('/').map(encodeURIComponent).join('/');
-const fullPath = (...parts) => [...S.path, ...parts].filter(Boolean).join('/');
+const fullPath = (...parts) => [S.root, ...S.path, ...parts].filter(Boolean).join('/');   // the path in the repository
 const contentsOf = (path) => `/contents${path ? '/' + enc(path) : ''}`;
 const kind = (it) => {
   if (it.type === 'dir') return 'folder';
@@ -60,15 +60,24 @@ async function api(path, opts = {}) {
 }
 const repoApi = (p, opts) => api(`/repos/${S.owner}/${S.repo}${p}`, opts);
 
-// One commit for many changes (git data API)
+// One commit for many changes (git data API). The branch is shared with the other apps: when one of them committed in the meantime, the branch cannot move to this
+// commit (422, "not a fast forward"), so the commit is made again on top of theirs.
 async function commitTree(entries, message) {
-  const ref = await repoApi(`/git/ref/heads/${S.branch}`);
-  const parent = ref.object.sha;
-  const commit = await repoApi(`/git/commits/${parent}`);
-  const tree = await repoApi('/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: commit.tree.sha, tree: entries }) });
-  const nc = await repoApi('/git/commits', { method: 'POST', body: JSON.stringify({ message, tree: tree.sha, parents: [parent] }) });
-  await repoApi(`/git/refs/heads/${S.branch}`, { method: 'PATCH', body: JSON.stringify({ sha: nc.sha }) });
-  S.head = nc.sha; // read straight from this commit: not affected by caching or branch replication lag
+  for (let attempt = 1; ; attempt++) {
+    const ref = await repoApi(`/git/ref/heads/${S.branch}`);
+    const parent = ref.object.sha;
+    const commit = await repoApi(`/git/commits/${parent}`);
+    const tree = await repoApi('/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: commit.tree.sha, tree: entries }) });
+    const nc = await repoApi('/git/commits', { method: 'POST', body: JSON.stringify({ message, tree: tree.sha, parents: [parent] }) });
+    try {
+      await repoApi(`/git/refs/heads/${S.branch}`, { method: 'PATCH', body: JSON.stringify({ sha: nc.sha }) });
+    } catch (e) {
+      if ((e.status === 422 || e.status === 409) && attempt < 4) { await new Promise((resolve) => setTimeout(resolve, 300 * attempt)); continue; }
+      throw e;
+    }
+    S.head = nc.sha; // read straight from this commit: not affected by caching or branch replication lag
+    return;
+  }
 }
 // Every blob (file) under a folder
 async function blobsUnder(prefix) {
@@ -98,18 +107,18 @@ async function authenticate(token) {
 // The default folders, all empty (a folder is kept by an empty .gitkeep file).
 async function createDefaultFolders() {
   const blob = await repoApi('/git/blobs', { method: 'POST', body: JSON.stringify({ content: '', encoding: 'utf-8' }) });
-  await commitTree(DEFAULT_FOLDERS.map((name) => ({ path: `${name}/${KEEP}`, mode: '100644', type: 'blob', sha: blob.sha })), 'Drivemu: create the default folders');
+  await commitTree(DEFAULT_FOLDERS.map((name) => ({ path: `${S.root}/${name}/${KEEP}`, mode: '100644', type: 'blob', sha: blob.sha })), 'Drivemu: create the default folders');
 }
 
-// Connects to the drivemu branch of the shared storage (assets/js/storage.js), then makes sure the root folder is there.
+// Connects to the drivemu folder of the shared storage (assets/js/storage.js: AppData/drivemu), then makes sure the default folders are there.
 async function openStorage() {
   const store = await storage.connect('drivemu');
-  S.owner = store.owner; S.repo = store.repo; S.branch = store.branch;
+  S.owner = store.owner; S.repo = store.repo; S.branch = store.branch; S.root = store.root;
   S.repoPrivate = store.info.private; S.repoSizeKB = store.info.size || 0;
   S.head = null;
   let root = [];
-  try { root = await repoApi(`${contentsOf('')}?ref=${S.branch}`); } catch (e) { if (e.status !== 404) throw e; }
-  if (root.every((item) => item.name === KEEP)) await createDefaultFolders();   // a new, empty branch
+  try { root = await repoApi(`${contentsOf(S.root)}?ref=${S.branch}`); } catch (e) { if (e.status !== 404) throw e; }
+  if (root.every((item) => item.name === KEEP)) await createDefaultFolders();   // a new, empty drive
   showApp();
 }
 
@@ -205,7 +214,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && $('sidebar').classList.contains('open') && $('menu-button').offsetParent) { setSide(false); $('menu-button').focus(); }
 });
 
-// The sidebar: the folders at the root of the branch (the last list read at the root), and the root itself.
+// The sidebar: the folders at the root of the drive (the last list read at the root), and the root itself.
 function renderSide() {
   const nav = $('sidebar-nav'), box = $('usage');
   document.body.classList.toggle('plain', !S.user);   // signed out: only the name, settings, and profile show

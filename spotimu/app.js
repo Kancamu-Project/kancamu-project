@@ -1,4 +1,4 @@
-// Spotimu: the audio files of the user's Drive (the drivemu branch), with a player.
+// Spotimu: the audio files of the user's Drive (the folder of Drivemu), with a player.
 await i18n.load();
 i18n.selects();
 
@@ -12,8 +12,8 @@ const els = Object.fromEntries([
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 const audio = els.audioElement;
 
-// The audio types, the limits, the first values of the settings, and the branch are in data.json.
-const { media, limits, mimeTypes, storageBranch, settings: { defaults }, repeatModes } = i18n.data;
+// The audio types, the limits, the first values of the settings, and the folder are in data.json.
+const { media, limits, mimeTypes, storageFolder, settings: { defaults }, repeatModes } = i18n.data;
 const AUDIO = new Set(media.audio);
 const ALL = "", ROOT = "/";   // the values of the album select: every album, and the files at the root of the Drive
 
@@ -61,7 +61,7 @@ async function loadFiles() {
   state.phase = "loading";
   render();
   try {
-    if (!state.store || state.token !== signedIn.token) { state.store = await storage.connect(storageBranch); state.token = signedIn.token; }
+    if (!state.store || state.token !== signedIn.token) { state.store = await storage.connect(storageFolder); state.token = signedIn.token; }
     const { files, truncated } = await storage.tree(state.store);
     state.truncated = truncated;
     state.items = files.filter((file) => AUDIO.has(extensionOf(file.path))).map((file) => {

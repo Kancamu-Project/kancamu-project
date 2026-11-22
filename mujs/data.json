@@ -5,7 +5,7 @@
     "ar-SA": "{highlight}JS — تعلّم جافاسكربت"
   },
   "brandColor": "#f89520",
-  "storageBranch": "mujs",
+  "storageFolder": "mujs",
   "limits": {
     "timeoutMs": 3000,
     "maxLines": 200
