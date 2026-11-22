@@ -1,4 +1,4 @@
-//! muai-helper: lets muAI (https://kancamu.site/muai/) write, edit, read, list, and search files on this PC, in ONE folder that you choose.
+//! muai-helper: lets muAI (https://kancamu.site/muai/) write, edit, read, list, and search files on this PC, in ONE folder that you choose (in muAI, with its file explorer).
 //!
 //! A web page cannot write to your disk by itself, so muAI asks this small program, which runs on your PC and listens on 127.0.0.1 only.
 //! What keeps it safe:
@@ -11,7 +11,8 @@
 //!   - a file is written whole into a temporary file and then renamed, and an existing file is replaced only when the request says so.
 //!
 //! Usage:  muai-helper [--dir <folder>] [--port 47615] [--origin <address>]... [--token <text>] [--yes] [--allow-broad]
-//!   --dir          the one folder muAI may use (the folder where you are, when it is not given)
+//!   --dir          the one folder muAI may use, and muAI cannot change it. Without it no folder is chosen at the start (or it is the last one that was chosen in muAI),
+//!                  and the user chooses the folder in muAI: a file explorer that shows only the names of folders, and the one folder of the work is the folder that is chosen
 //!   --yes          allow the origins of the list without asking (less safe: for a computer without a terminal)
 //!   --allow-broad  allow the root of a drive or your home folder as the folder (it is refused otherwise: it is too much)
 
@@ -31,18 +32,30 @@ const MAX_READ: u64 = 1024 * 1024; // a file that is read
 const MAX_LIST: usize = 500; // the entries of a folder that are listed
 
 struct Config {
-    root: PathBuf, // the folder, as the system names it (no links)
+    root: Mutex<Option<PathBuf>>, // the folder of the work, as the system names it (no links); none until it is chosen
     token: String,
     port: u16,
     origins: Vec<String>,
     yes: bool,                          // the origins of the list are allowed without asking
+    locked: bool,                       // the folder was given with --dir: muAI cannot change it
+    allow_broad: bool,                  // the root of a drive and the home folder are allowed
+    memory: Option<PathBuf>,            // the file that keeps the last folder that was chosen in muAI
     approvals: Arc<Mutex<Approvals>>,   // the origins that were allowed (kept in a file), refused, or are waiting for an answer
 }
 
 impl Config {
     fn new(root: PathBuf, token: String, port: u16, origins: Vec<String>) -> Config {
-        Config { root, token, port, origins, yes: false, approvals: Arc::new(Mutex::new(Approvals::default())) }
+        Config { root: Mutex::new(Some(root)), token, port, origins, yes: false, locked: false, allow_broad: false, memory: None, approvals: Arc::new(Mutex::new(Approvals::default())) }
     }
+}
+
+/// The folder of the work, or why there is none
+fn active_root(config: &Config) -> Result<PathBuf, (u16, String)> {
+    config.root.lock().unwrap_or_else(|poisoned| poisoned.into_inner()).clone().ok_or((409, "no folder is chosen yet: choose the project folder in muAI".to_string()))
+}
+
+fn folder_text(config: &Config) -> Option<String> {
+    config.root.lock().unwrap_or_else(|poisoned| poisoned.into_inner()).as_deref().map(display)
 }
 
 /* ---------- the pairing: muAI gets the token by itself, after the user allowed its origin in the terminal ---------- */
@@ -101,28 +114,40 @@ impl Approvals {
     }
 }
 
-fn approvals_file() -> Option<PathBuf> {
+fn config_folder() -> Option<PathBuf> {
     let base = std::env::var_os("APPDATA")
         .map(PathBuf::from)
         .or_else(|| std::env::var_os("XDG_CONFIG_HOME").map(PathBuf::from))
         .or_else(|| std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".config")))?;
-    Some(base.join("muai-helper").join("allowed-origins.json"))
+    Some(base.join("muai-helper"))
+}
+
+fn approvals_file() -> Option<PathBuf> {
+    config_folder().map(|folder| folder.join("allowed-origins.json"))
+}
+
+fn memory_file() -> Option<PathBuf> {
+    config_folder().map(|folder| folder.join("last-folder.txt"))
+}
+
+fn home_dir() -> Option<PathBuf> {
+    ["USERPROFILE", "HOME"].iter().filter_map(|name| std::env::var_os(name)).map(PathBuf::from).find(|path| path.is_dir())
 }
 
 static PROMPT: Mutex<()> = Mutex::new(()); // one question at a time in the terminal
 
 /// The question in the terminal. It is asked in a thread, so the requests go on (the page asks again until it has the answer).
-fn ask_in_terminal(approvals: Arc<Mutex<Approvals>>, origin: String, folder: String) {
+fn ask_in_terminal(approvals: Arc<Mutex<Approvals>>, origin: String, folder: String) {   // the folder is shown to the user: it can be "no folder yet"
     std::thread::spawn(move || {
         let _one_at_a_time = PROMPT.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
         let answer = if std::io::stdin().is_terminal() {
-            print!("\n>>> The page {origin} asks to use this folder:\n    {folder}\n    Allow it? (y/N) ");
+            print!("\n>>> The page {origin} asks to connect to muai-helper (folder: {folder}).\n    It will choose the folder of the work in its file explorer. Allow it? (y/N) ");
             let _ = std::io::stdout().flush();
             let mut line = String::new();
             let _ = std::io::stdin().lock().read_line(&mut line);
             line.trim().eq_ignore_ascii_case("y") || line.trim().eq_ignore_ascii_case("yes")
         } else {
-            println!("\nThe page {origin} asks to use this folder, but there is no terminal to ask in. Start it again in a terminal, or with --yes.");
+            println!("\nThe page {origin} asks to connect, but there is no terminal to ask in. Start it again in a terminal, or with --yes.");
             false
         };
         let mut approvals = approvals.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
@@ -141,7 +166,7 @@ fn ask_in_terminal(approvals: Arc<Mutex<Approvals>>, origin: String, folder: Str
 fn pair_status(config: &Config, origin: &str) -> Pairing {
     let (status, ask) = config.approvals.lock().unwrap_or_else(|poisoned| poisoned.into_inner()).register(origin, config.yes);
     if ask {
-        ask_in_terminal(config.approvals.clone(), origin.to_string(), display(&config.root));
+        ask_in_terminal(config.approvals.clone(), origin.to_string(), folder_text(config).unwrap_or_else(|| "none yet".to_string()));
     }
     status
 }
@@ -150,7 +175,7 @@ fn main() {
     let config = match parse_args(std::env::args().skip(1).collect()) {
         Ok(config) => config,
         Err(message) => {
-            eprintln!("{message}\n\nUsage: muai-helper --dir <folder> [--port {DEFAULT_PORT}] [--origin <address>]... [--token <text>]");
+            eprintln!("{message}\n\nUsage: muai-helper [--dir <folder>] [--port {DEFAULT_PORT}] [--origin <address>]... [--token <text>] [--yes] [--allow-broad]");
             std::process::exit(2);
         }
     };
@@ -163,7 +188,7 @@ fn main() {
         }
     };
     println!("muai-helper {} is running.", env!("CARGO_PKG_VERSION"));
-    println!("  Folder : {}", display(&config.root));
+    println!("  Folder : {}", folder_text(&config).unwrap_or_else(|| "none yet: choose it in muAI (the project folder button)".to_string()));
     println!("  Address: http://{address}");
     println!("  Token  : {}", config.token);
     println!("  Origins: {}", config.origins.join(", "));
@@ -194,25 +219,36 @@ fn parse_args(args: Vec<String>) -> Result<Config, String> {
             other => return Err(format!("unknown option: {other}")),
         }
     }
-    // without --dir it is the folder where the program was started: the folder of the project
-    let dir = match dir {
-        Some(dir) => dir,
-        None => std::env::current_dir().map_err(|error| format!("the folder where you are cannot be read: {error}"))?.to_string_lossy().to_string(),
+    // with --dir the folder is fixed; without it the user chooses it in muAI (the last one that was chosen is kept, so it is there when the program is started again)
+    let memory = memory_file();
+    let root = match &dir {
+        Some(dir) => {
+            let root = fs::canonicalize(dir).map_err(|error| format!("the folder {dir} cannot be used: {error}"))?;
+            if !root.is_dir() {
+                return Err(format!("{dir} is not a folder"));
+            }
+            if !allow_broad && is_broad(&root) {
+                return Err(format!("{} is the root of a drive or your home folder: that is too much for an AI. Give a project folder, or add --allow-broad if you really want it.", display(&root)));
+            }
+            Some(root)
+        }
+        None => memory
+            .as_ref()
+            .and_then(|file| fs::read_to_string(file).ok())
+            .and_then(|text| fs::canonicalize(text.trim()).ok())
+            .filter(|path| path.is_dir() && (allow_broad || !is_broad(path))),
     };
-    let root = fs::canonicalize(&dir).map_err(|error| format!("the folder {dir} cannot be used: {error}"))?;
-    if !root.is_dir() {
-        return Err(format!("{dir} is not a folder"));
-    }
-    if !allow_broad && is_broad(&root) {
-        return Err(format!("{} is the root of a drive or your home folder: that is too much for an AI. Go to a project folder first (or give --dir), or add --allow-broad if you really want it.", display(&root)));
-    }
     let token = match token {
         Some(token) if token.len() >= 16 => token,
         Some(_) => return Err("--token must have at least 16 characters".to_string()),
         None => random_token(),
     };
-    let mut config = Config::new(root, token, port, origins);
+    let mut config = Config::new(PathBuf::new(), token, port, origins);
+    *config.root.lock().unwrap_or_else(|poisoned| poisoned.into_inner()) = root;
     config.yes = yes;
+    config.locked = dir.is_some();
+    config.allow_broad = allow_broad;
+    config.memory = memory;
     config.approvals = Arc::new(Mutex::new(Approvals::load(approvals_file())));
     Ok(config)
 }
@@ -345,10 +381,11 @@ fn read_text(target: &Path, limit: u64) -> Result<String, (u16, String)> {
 }
 
 fn write_file(config: &Config, body: &Value) -> Done {
+    let root = active_root(config)?;
     let content = text(body, "content")?;
     let overwrite = body.get("overwrite").and_then(Value::as_bool).unwrap_or(false);
     let append = body.get("append").and_then(Value::as_bool).unwrap_or(false);
-    let target = resolve(&config.root, text(body, "path")?, false).map_err(|message| (BAD, message))?;
+    let target = resolve(&root, text(body, "path")?, false).map_err(|message| (BAD, message))?;
     let existed = target.exists();
     if target.is_dir() {
         return Err((409, "a folder has this name".into()));
@@ -359,7 +396,7 @@ fn write_file(config: &Config, body: &Value) -> Done {
     let parent = target.parent().ok_or((BAD, "the path has no folder".to_string()))?;
     fs::create_dir_all(parent).map_err(io_error)?;
     // inside the folder again after the folders were made (a link could have been put there meanwhile)
-    if !fs::canonicalize(parent).map_err(io_error)?.starts_with(&config.root) {
+    if !fs::canonicalize(parent).map_err(io_error)?.starts_with(&root) {
         return Err((BAD, "the path leads out of the folder".into()));
     }
     if append {
@@ -369,23 +406,24 @@ fn write_file(config: &Config, body: &Value) -> Done {
         }
         let mut file = fs::OpenOptions::new().create(true).append(true).open(&target).map_err(io_error)?;
         file.write_all(content.as_bytes()).map_err(io_error)?;
-        println!("append {} (+{} bytes)", relative_name(&config.root, &target), content.len());
-        return Ok(json!({ "ok": true, "path": relative_name(&config.root, &target), "bytes": content.len(), "created": !existed, "appended": true }));
+        println!("append {} (+{} bytes)", relative_name(&root, &target), content.len());
+        return Ok(json!({ "ok": true, "path": relative_name(&root, &target), "bytes": content.len(), "created": !existed, "appended": true }));
     }
     atomic_write(&target, content)?;
-    println!("write {} ({} bytes{})", relative_name(&config.root, &target), content.len(), if existed { ", replaced" } else { "" });
-    Ok(json!({ "ok": true, "path": relative_name(&config.root, &target), "bytes": content.len(), "created": !existed }))
+    println!("write {} ({} bytes{})", relative_name(&root, &target), content.len(), if existed { ", replaced" } else { "" });
+    Ok(json!({ "ok": true, "path": relative_name(&root, &target), "bytes": content.len(), "created": !existed }))
 }
 
 /// Replaces a text of a file by another one: the text must be found once (or replace_all must be true), so an edit never lands in the wrong place.
 fn edit_file(config: &Config, body: &Value) -> Done {
+    let root = active_root(config)?;
     let old = text(body, "old")?;
     let new = text(body, "new")?;
     let replace_all = body.get("replace_all").and_then(Value::as_bool).unwrap_or(false);
     if old.is_empty() {
         return Err((BAD, "\"old\" is empty".into()));
     }
-    let target = resolve(&config.root, text(body, "path")?, false).map_err(|message| (BAD, message))?;
+    let target = resolve(&root, text(body, "path")?, false).map_err(|message| (BAD, message))?;
     let content = read_text(&target, MAX_FILE)?;
     let found = content.matches(old).count();
     if found == 0 {
@@ -400,18 +438,19 @@ fn edit_file(config: &Config, body: &Value) -> Done {
     }
     atomic_write(&target, &edited)?;
     let replacements = if replace_all { found } else { 1 };
-    println!("edit  {} ({replacements} replaced)", relative_name(&config.root, &target));
-    Ok(json!({ "ok": true, "path": relative_name(&config.root, &target), "replacements": replacements, "bytes": edited.len() }))
+    println!("edit  {} ({replacements} replaced)", relative_name(&root, &target));
+    Ok(json!({ "ok": true, "path": relative_name(&root, &target), "replacements": replacements, "bytes": edited.len() }))
 }
 
 /// A whole file, or only some of its lines: "offset" (the first line, from 1) and "limit" (how many lines)
 fn read_file(config: &Config, body: &Value) -> Done {
-    let target = resolve(&config.root, text(body, "path")?, false).map_err(|message| (BAD, message))?;
+    let root = active_root(config)?;
+    let target = resolve(&root, text(body, "path")?, false).map_err(|message| (BAD, message))?;
     let content = read_text(&target, MAX_READ)?;
     let offset = body.get("offset").and_then(Value::as_u64).unwrap_or(1).max(1) as usize;
     let limit = body.get("limit").and_then(Value::as_u64).map(|n| n as usize);
     let total = content.lines().count();
-    let path = relative_name(&config.root, &target);
+    let path = relative_name(&root, &target);
     println!("read  {path} ({} bytes)", content.len());
     if offset == 1 && limit.is_none() {
         return Ok(json!({ "path": path, "content": content, "bytes": content.len(), "total_lines": total }));
@@ -445,9 +484,10 @@ fn walk(dir: &Path, depth: usize, out: &mut Vec<(PathBuf, bool, u64)>) {
 }
 
 fn list_files(config: &Config, body: &Value) -> Done {
+    let root = active_root(config)?;
     let relative = body.get("path").and_then(Value::as_str).unwrap_or("");
     let recursive = body.get("recursive").and_then(Value::as_bool).unwrap_or(false);
-    let target = resolve(&config.root, relative, true).map_err(|message| (BAD, message))?;
+    let target = resolve(&root, relative, true).map_err(|message| (BAD, message))?;
     let mut entries: Vec<(String, bool, u64)> = if recursive {
         let mut found = Vec::new();
         walk(&target, 0, &mut found);
@@ -470,9 +510,9 @@ fn list_files(config: &Config, body: &Value) -> Done {
     };
     let truncated = entries.len() > MAX_LIST;
     entries.truncate(MAX_LIST);
-    println!("list  /{}{}", relative_name(&config.root, &target), if recursive { " (all)" } else { "" });
+    println!("list  /{}{}", relative_name(&root, &target), if recursive { " (all)" } else { "" });
     Ok(json!({
-        "path": relative_name(&config.root, &target),
+        "path": relative_name(&root, &target),
         "entries": entries.iter().map(|(name, dir, bytes)| json!({ "name": name, "type": if *dir { "dir" } else { "file" }, "bytes": if *dir { Value::Null } else { json!(bytes) } })).collect::<Vec<_>>(),
         "truncated": truncated,
     }))
@@ -480,12 +520,13 @@ fn list_files(config: &Config, body: &Value) -> Done {
 
 /// The lines that have a text (without caring for capitals), in the files under a folder; the files that are not UTF-8 text or are big are left
 fn search_files(config: &Config, body: &Value) -> Done {
+    let root = active_root(config)?;
     let query = text(body, "query")?;
     if query.is_empty() {
         return Err((BAD, "\"query\" is empty".into()));
     }
     let limit = body.get("max").and_then(Value::as_u64).unwrap_or(100).clamp(1, 300) as usize;
-    let target = resolve(&config.root, body.get("path").and_then(Value::as_str).unwrap_or(""), true).map_err(|message| (BAD, message))?;
+    let target = resolve(&root, body.get("path").and_then(Value::as_str).unwrap_or(""), true).map_err(|message| (BAD, message))?;
     let needle = query.to_lowercase();
     let mut files = Vec::new();
     if target.is_file() {
@@ -507,12 +548,102 @@ fn search_files(config: &Config, body: &Value) -> Done {
                     truncated = true;
                     break 'files;
                 }
-                matches.push(json!({ "path": relative_name(&config.root, &path), "line": index + 1, "text": line.trim().chars().take(200).collect::<String>() }));
+                matches.push(json!({ "path": relative_name(&root, &path), "line": index + 1, "text": line.trim().chars().take(200).collect::<String>() }));
             }
         }
     }
     println!("search \"{query}\" ({} found)", matches.len());
     Ok(json!({ "query": query, "matches": matches, "truncated": truncated }))
+}
+
+/// The folder of the work is chosen here (by muAI, in its file explorer), unless it was given with --dir
+fn set_folder(config: &Config, body: &Value) -> Done {
+    if config.locked {
+        return Err((403, "the folder was given with --dir when the program was started: start it without --dir to choose it in muAI".into()));
+    }
+    let requested = text(body, "path")?;
+    let real = fs::canonicalize(requested).map_err(|error| (404, format!("the folder cannot be used: {error}")))?;
+    if !real.is_dir() {
+        return Err((BAD, "it is not a folder".into()));
+    }
+    if !config.allow_broad && is_broad(&real) {
+        return Err((BAD, "the root of a drive and your home folder are too much for an AI: choose a project folder".into()));
+    }
+    *config.root.lock().unwrap_or_else(|poisoned| poisoned.into_inner()) = Some(real.clone());
+    if let Some(file) = &config.memory {
+        if let Some(parent) = file.parent() {
+            let _ = fs::create_dir_all(parent);
+        }
+        let _ = fs::write(file, display(&real));
+    }
+    println!("folder {}", display(&real));
+    Ok(json!({ "ok": true, "folder": display(&real) }))
+}
+
+/// The places to start from in the file explorer: the home folder and its usual folders, and the drives
+fn places() -> Vec<(String, String)> {
+    let mut found = Vec::new();
+    if let Some(home) = home_dir() {
+        found.push(("Home".to_string(), display(&home)));
+        for name in ["Desktop", "Documents", "Downloads"] {
+            let folder = home.join(name);
+            if folder.is_dir() {
+                found.push((name.to_string(), display(&folder)));
+            }
+        }
+    }
+    if cfg!(windows) {
+        for letter in 'A'..='Z' {
+            let drive = format!("{letter}:\\");
+            if Path::new(&drive).exists() {
+                found.push((format!("{letter}:"), drive));
+            }
+        }
+    } else {
+        found.push(("/".to_string(), "/".to_string()));
+    }
+    found
+}
+
+/// The folders (only their names) inside a folder, for the file explorer of muAI; with no path, the places to start from
+fn browse(body: &Value) -> Done {
+    let requested = body.get("path").and_then(Value::as_str).unwrap_or("");
+    let places = places().into_iter().map(|(name, path)| json!({ "name": name, "path": path })).collect::<Vec<_>>();
+    if requested.is_empty() {
+        return Ok(json!({ "path": "", "parent": null, "entries": [], "places": places }));
+    }
+    if requested.contains('\0') || !Path::new(requested).is_absolute() {
+        return Err((BAD, "the path must be a whole path of a folder".into()));
+    }
+    let real = fs::canonicalize(requested).map_err(|_| (404, "no such folder".to_string()))?;
+    if !real.is_dir() {
+        return Err((BAD, "it is not a folder".into()));
+    }
+    let reader = fs::read_dir(&real).map_err(|error| (403, format!("the folder cannot be read: {error}")))?;
+    let mut folders: Vec<(String, String)> = reader
+        .filter_map(Result::ok)
+        .filter_map(|entry| {
+            let name = entry.file_name().to_string_lossy().to_string();
+            if name.starts_with('.') || name.starts_with('$') {
+                return None;
+            }
+            let path = entry.path();
+            if !fs::metadata(&path).ok()?.is_dir() {
+                return None;
+            }
+            Some((name, display(&path)))
+        })
+        .collect();
+    folders.sort_by(|a, b| a.0.to_lowercase().cmp(&b.0.to_lowercase()));
+    let truncated = folders.len() > 1000;
+    folders.truncate(1000);
+    Ok(json!({
+        "path": display(&real),
+        "parent": real.parent().map(display),
+        "entries": folders.iter().map(|(name, path)| json!({ "name": name, "path": path })).collect::<Vec<_>>(),
+        "truncated": truncated,
+        "places": places,
+    }))
 }
 
 /* ---------- the requests ---------- */
@@ -575,14 +706,14 @@ fn handle(config: &Config, mut request: Request) {
     // /ping tells that the program is here (a page that is allowed can see it, with the folder and whether its token is good); /pair gives the token to an origin that the user allowed
     if method == Method::Get && path == "/ping" {
         let approved = allowed.map(|origin| config.approvals.lock().unwrap_or_else(|poisoned| poisoned.into_inner()).approved.contains(origin)).unwrap_or(false);
-        return answer(request, 200, json!({ "name": "muai-helper", "version": env!("CARGO_PKG_VERSION"), "folder": display(&config.root), "authorized": same(&token, &config.token), "approved": approved }), allowed);
+        return answer(request, 200, json!({ "name": "muai-helper", "version": env!("CARGO_PKG_VERSION"), "folder": folder_text(config), "locked": config.locked, "browse": true, "authorized": same(&token, &config.token), "approved": approved }), allowed);
     }
     if method == Method::Post && path == "/pair" {
         let Some(origin) = allowed else {
             return answer(request, BAD, json!({ "error": "pairing is for a web page: give the token with --token" }), None);
         };
         return match pair_status(config, origin) {
-            Pairing::Approved => answer(request, 200, json!({ "token": config.token, "folder": display(&config.root) }), allowed),
+            Pairing::Approved => answer(request, 200, json!({ "token": config.token, "folder": folder_text(config) }), allowed),
             Pairing::Pending => answer(request, 202, json!({ "status": "pending" }), allowed),
             Pairing::Denied => answer(request, 403, json!({ "status": "denied" }), allowed),
         };
@@ -607,6 +738,8 @@ fn handle(config: &Config, mut request: Request) {
         "/list" => list_files(config, &body),
         "/edit" => edit_file(config, &body),
         "/search" => search_files(config, &body),
+        "/browse" => browse(&body),
+        "/folder" => set_folder(config, &body),
         _ => Err((404, "no such operation".to_string())),
     };
     match done {
@@ -811,6 +944,59 @@ b
         if let Some(home) = std::env::var_os("USERPROFILE").or_else(|| std::env::var_os("HOME")) {
             assert!(is_broad(&fs::canonicalize(home).unwrap()));
         }
+    }
+
+    #[test]
+    fn the_file_explorer_shows_only_folders() {
+        let root = folder("browse");
+        fs::create_dir_all(root.join("beta/inner")).unwrap();
+        fs::create_dir_all(root.join("Alpha")).unwrap();
+        fs::create_dir_all(root.join(".hidden")).unwrap();
+        fs::write(root.join("file.txt"), "x").unwrap();
+        let shown = browse(&json!({ "path": display(&root) })).unwrap();
+        let names: Vec<&str> = shown["entries"].as_array().unwrap().iter().map(|e| e["name"].as_str().unwrap()).collect();
+        assert_eq!(names, vec!["Alpha", "beta"]); // no file, no hidden folder, in alphabetical order
+        assert_eq!(shown["parent"].as_str().unwrap(), display(root.parent().unwrap()));
+        // a path that goes in a folder and back is the same folder
+        let back = browse(&json!({ "path": display(&root.join("beta").join("..")) })).unwrap();
+        assert_eq!(back["path"], shown["path"]);
+        // the start: places, and no entries
+        let start = browse(&json!({})).unwrap();
+        assert_eq!(start["path"], "");
+        assert!(!start["places"].as_array().unwrap().is_empty());
+        // not a whole path, not a folder, not there
+        assert_eq!(browse(&json!({ "path": "relative/folder" })).unwrap_err().0, 400);
+        assert_eq!(browse(&json!({ "path": display(&root.join("file.txt")) })).unwrap_err().0, 400);
+        assert_eq!(browse(&json!({ "path": display(&root.join("nope")) })).unwrap_err().0, 404);
+    }
+
+    #[test]
+    fn the_folder_is_chosen_once_and_not_too_broad() {
+        let root = folder("choose");
+        fs::create_dir_all(root.join("project")).unwrap();
+        let mut config = Config::new(root.clone(), "x".repeat(16), 1, vec![]);
+        *config.root.lock().unwrap() = None;
+        assert_eq!(active_root(&config).unwrap_err().0, 409); // no folder yet: the operations refuse
+        assert_eq!(read_file(&config, &json!({ "path": "a.txt" })).unwrap_err().0, 409);
+        let memory = root.join("remember").join("last.txt");
+        config.memory = Some(memory.clone());
+        let chosen = set_folder(&config, &json!({ "path": display(&root.join("project")) })).unwrap();
+        assert!(chosen["folder"].as_str().unwrap().ends_with("project"));
+        assert!(active_root(&config).unwrap().ends_with("project"));
+        assert!(fs::read_to_string(memory).unwrap().ends_with("project")); // kept for the next start
+        assert!(write_file(&config, &json!({ "path": "in.txt", "content": "x" })).is_ok());
+        assert!(root.join("project").join("in.txt").exists());
+        // too broad, not a folder, not there
+        let mut top = root.clone();
+        while let Some(parent) = top.parent() {
+            top = parent.to_path_buf();
+        }
+        assert_eq!(set_folder(&config, &json!({ "path": display(&top) })).unwrap_err().0, 400);
+        assert_eq!(set_folder(&config, &json!({ "path": display(&root.join("project").join("in.txt")) })).unwrap_err().0, 400);
+        assert_eq!(set_folder(&config, &json!({ "path": display(&root.join("nope")) })).unwrap_err().0, 404);
+        // given with --dir: muAI cannot change it
+        config.locked = true;
+        assert_eq!(set_folder(&config, &json!({ "path": display(&root) })).unwrap_err().0, 403);
     }
 
     #[test]

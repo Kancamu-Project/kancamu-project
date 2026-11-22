@@ -1,4 +1,4 @@
-# muai-helper for Windows: gets the program that lets muAI work with the files of this PC, and runs it in the folder where you are.
+# muai-helper for Windows: gets the program that lets muAI work with the files of this PC, and runs it.
 #
 #   irm https://kancamu.site/assets/tools/muai-helper/install.ps1 | iex
 #
@@ -7,17 +7,17 @@
 #   2. looks in C:\Users\<you>\kancamu\muai: is the program there already, and has it the SHA-256 of latest.txt? Then it runs it at once, without downloading;
 #   3. if it is not there, or its SHA-256 is another one (a new version), it downloads the program from the address of latest.txt (kancamu.site, the folder bin/ of this one),
 #      checks that what it downloaded has the SHA-256 of latest.txt (it stops if it has not), keeps it in that folder, and writes the new SHA-256 in muai-helper.json beside it;
-#   4. runs it for the folder where you are (it is the only folder that muAI can use).
+#   4. runs it, right away (nothing else to start). muAI finds it and connects by itself; the project folder (the only folder that muAI can use) is chosen in muAI, with the button of the folder.
 # When kancamu.site cannot be reached, the program that is already there is run, if it still has the SHA-256 that muai-helper.json says.
 # It changes nothing else: no setting, no registry, no PATH. To remove it, delete the folder C:\Users\<you>\kancamu\muai.
-# A folder other than the current one: set $env:MUAI_DIR first. For tests, $env:MUAI_SITE is the address that holds latest.txt.
+# To fix the folder from here (muAI then cannot change it): set $env:MUAI_DIR first. For tests, $env:MUAI_SITE is the address that holds latest.txt.
 
 function Start-MuaiHelper {
     $ErrorActionPreference = "Stop"
     $ProgressPreference = "SilentlyContinue"
     [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
     $site = if ($env:MUAI_SITE) { $env:MUAI_SITE.TrimEnd("/") } else { "https://kancamu.site/assets/tools/muai-helper" }
-    $folder = if ($env:MUAI_DIR) { $env:MUAI_DIR } else { (Get-Location).Path }
+    $dirArguments = if ($env:MUAI_DIR) { @("--dir", $env:MUAI_DIR) } else { @() }   # without it the folder is chosen in muAI
     $appFolder = Join-Path $env:USERPROFILE "kancamu\muai"
     $exe = Join-Path $appFolder "muai-helper.exe"
     $record = Join-Path $appFolder "muai-helper.json"   # what was installed: { "version", "sha256" }
@@ -32,8 +32,8 @@ function Start-MuaiHelper {
         try {
             $running = Invoke-RestMethod -Uri "http://127.0.0.1:47615/ping" -TimeoutSec 2
             if ($running.name -eq "muai-helper") {
-                Write-Host "muai-helper is already running (folder: $($running.folder))." -ForegroundColor Yellow
-                Write-Host "Close it (Ctrl+C in its terminal) to start it in this folder: $folder"
+                Write-Host "muai-helper is already running (folder: $(if ($running.folder) { $running.folder } else { "none yet" }))." -ForegroundColor Yellow
+                Write-Host "Nothing to do here: muAI connects to it by itself. Close it (Ctrl+C in its terminal) only to start it again."
                 return
             }
         } catch { }
@@ -50,8 +50,8 @@ function Start-MuaiHelper {
         } catch {
             if ($here -and $written -and $written.sha256 -eq $here) {
                 Write-Host "kancamu.site cannot be reached: the program that is here is run (version $($written.version))." -ForegroundColor Yellow
-                Write-Host "Running muai-helper for the folder: $folder"
-                & $exe --dir $folder
+                Write-Host "Running muai-helper. Choose the project folder in muAI."
+                & $exe @dirArguments
                 return
             }
             if ($here) { throw "latest.txt cannot be read from $site, and the program here has not the SHA-256 that was written when it was installed, so it is not run ($($_.Exception.Message))." }
@@ -87,8 +87,8 @@ function Start-MuaiHelper {
             }
         }
 
-        Write-Host "Running muai-helper $version for the folder: $folder"
-        & $exe --dir $folder
+        Write-Host "Running muai-helper $version. Choose the project folder in muAI."
+        & $exe @dirArguments
     } catch {
         Write-Host "muai-helper: $($_.Exception.Message)" -ForegroundColor Red
     }

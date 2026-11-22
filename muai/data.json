@@ -534,9 +534,9 @@
       "ar-SA": "ملفات هذا الجهاز"
     },
     "conn.helper.hint": {
-      "en-US": "Paste a command in a terminal, in the folder where you want the AI to work. It downloads muai-helper and runs it; muAI finds it and connects by itself (the first time you allow it in the terminal). The AI can use only that folder. Only the API models can use it.",
-      "zh-CN": "在终端中粘贴一条命令，位置要在你希望 AI 工作的文件夹里。它会下载并运行 muai-helper；muAI 会自己找到它并连接（第一次需要你在终端中允许）。AI 只能使用那个文件夹。只有 API 模型可以使用它。",
-      "ar-SA": "الصق أمرًا في الطرفية داخل المجلد الذي تريد أن يعمل فيه الذكاء الاصطناعي. ينزّل muai-helper ويشغّله؛ ويجده muAI ويتصل به تلقائيًا (في المرة الأولى تسمح به في الطرفية). لا يستطيع الذكاء الاصطناعي استخدام غير ذلك المجلد. نماذج API فقط تستطيع استخدامه."
+      "en-US": "Paste a command in a terminal. It downloads muai-helper and starts it by itself; this window finds it and connects (the first time, allow it in the terminal). Then choose the project folder here: it is the only folder the AI can use. Only the API models can use it.",
+      "zh-CN": "在终端中粘贴一条命令。它会下载并自动启动 muai-helper；此窗口会找到它并连接（第一次需要在终端中允许）。然后在这里选择项目文件夹：它是 AI 唯一能使用的文件夹。只有 API 模型可以使用它。",
+      "ar-SA": "الصق أمرًا في الطرفية. ينزّل muai-helper ويشغّله تلقائيًا؛ وتجده هذه النافذة وتتصل به (في المرة الأولى تسمح به في الطرفية). ثم اختر مجلد المشروع هنا: هو المجلد الوحيد الذي يستطيع الذكاء الاصطناعي استخدامه. نماذج API فقط تستطيع استخدامه."
     },
     "conn.helperUrl": {
       "en-US": "Address of muai-helper",
@@ -784,14 +784,99 @@
       "ar-SA": "muai-helper لا يعمل. الصق أحد الأوامر أدناه في الطرفية."
     },
     "helper.approve": {
-      "en-US": "muai-helper asks you to allow this page. Look at the terminal where it runs (folder: {folder}) and type y.",
-      "zh-CN": "muai-helper 请你允许此页面。请查看它运行的终端（文件夹：{folder}）并输入 y。",
-      "ar-SA": "يطلب muai-helper أن تسمح بهذه الصفحة. انظر إلى الطرفية التي يعمل فيها (المجلد: {folder}) واكتب y."
+      "en-US": "muai-helper asks you to allow this page. Look at the terminal where it runs and type y.",
+      "zh-CN": "muai-helper 请你允许此页面。请查看它运行的终端并输入 y。",
+      "ar-SA": "يطلب muai-helper أن تسمح بهذه الصفحة. انظر إلى الطرفية التي يعمل فيها واكتب y."
     },
     "helper.denied": {
       "en-US": "muai-helper did not allow this page. Start it again to allow it, or press Connect.",
       "zh-CN": "muai-helper 未允许此页面。重新启动它并允许，或点击“连接”。",
       "ar-SA": "لم يسمح muai-helper بهذه الصفحة. شغّله من جديد واسمح بها، أو اضغط اتصال."
+    },
+    "helper.title": {
+      "en-US": "muai-helper",
+      "zh-CN": "muai-helper",
+      "ar-SA": "muai-helper"
+    },
+    "helper.waiting": {
+      "en-US": "Looking for muai-helper… (this window looks every second)",
+      "zh-CN": "正在查找 muai-helper…（此窗口每秒查找一次）",
+      "ar-SA": "جارٍ البحث عن muai-helper… (تبحث هذه النافذة كل ثانية)"
+    },
+    "helper.connectedShort": {
+      "en-US": "muai-helper {version} is connected.",
+      "zh-CN": "muai-helper {version} 已连接。",
+      "ar-SA": "تم الاتصال بـ muai-helper {version}."
+    },
+    "helper.connectedNoFolder": {
+      "en-US": "muai-helper is connected. No project folder yet.",
+      "zh-CN": "muai-helper 已连接。还没有项目文件夹。",
+      "ar-SA": "تم الاتصال بـ muai-helper. لا يوجد مجلد مشروع بعد."
+    },
+    "helper.old": {
+      "en-US": "This muai-helper is an old version: paste the command again to get the new one.",
+      "zh-CN": "这个 muai-helper 是旧版本：再次粘贴命令即可获取新版本。",
+      "ar-SA": "هذا الإصدار من muai-helper قديم: الصق الأمر مرة أخرى للحصول على الجديد."
+    },
+    "folder.choose": {
+      "en-US": "Choose the project folder",
+      "zh-CN": "选择项目文件夹",
+      "ar-SA": "اختر مجلد المشروع"
+    },
+    "folder.current": {
+      "en-US": "Project folder: {folder}",
+      "zh-CN": "项目文件夹：{folder}",
+      "ar-SA": "مجلد المشروع: {folder}"
+    },
+    "folder.none": {
+      "en-US": "No folder is chosen yet.",
+      "zh-CN": "还没有选择文件夹。",
+      "ar-SA": "لم يُختر مجلد بعد."
+    },
+    "folder.locked": {
+      "en-US": "The folder was fixed when muai-helper was started (--dir): muAI cannot change it.",
+      "zh-CN": "文件夹在启动 muai-helper 时已固定（--dir）：muAI 无法更改。",
+      "ar-SA": "تم تثبيت المجلد عند تشغيل muai-helper (--dir): لا يستطيع muAI تغييره."
+    },
+    "explorer.title": {
+      "en-US": "Project folder",
+      "zh-CN": "项目文件夹",
+      "ar-SA": "مجلد المشروع"
+    },
+    "explorer.places": {
+      "en-US": "This PC",
+      "zh-CN": "这台电脑",
+      "ar-SA": "هذا الجهاز"
+    },
+    "explorer.up": {
+      "en-US": "Up",
+      "zh-CN": "上一级",
+      "ar-SA": "أعلى"
+    },
+    "explorer.use": {
+      "en-US": "Use this folder",
+      "zh-CN": "使用此文件夹",
+      "ar-SA": "استخدم هذا المجلد"
+    },
+    "explorer.empty": {
+      "en-US": "No folders here.",
+      "zh-CN": "这里没有文件夹。",
+      "ar-SA": "لا توجد مجلدات هنا."
+    },
+    "explorer.truncated": {
+      "en-US": "Only the first 1000 folders are shown.",
+      "zh-CN": "只显示前 1000 个文件夹。",
+      "ar-SA": "تُعرض أول 1000 مجلد فقط."
+    },
+    "explorer.chosen": {
+      "en-US": "The project folder is now {folder}",
+      "zh-CN": "项目文件夹现在是 {folder}",
+      "ar-SA": "مجلد المشروع الآن هو {folder}"
+    },
+    "explorer.failed": {
+      "en-US": "The folder cannot be used: {message}",
+      "zh-CN": "无法使用该文件夹：{message}",
+      "ar-SA": "تعذّر استخدام المجلد: {message}"
     }
   },
   "models": [

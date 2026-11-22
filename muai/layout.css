@@ -76,7 +76,21 @@ body.resizing .sidebar { transition: none; }
 .connection-row { display: flex; justify-content: flex-end; gap: var(--gap-small); }
 .connection-row button { width: calc(var(--height) * 4); }
 .connection-row:empty { display: none; }
-#connection-button.connected { color: var(--ok); border-color: var(--ok); }
+#helper-button.connected { color: var(--ok); border-color: var(--ok); }
+#folder-button { max-width: calc(var(--height) * 8); }
+#folder-button > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#folder-button.unset { color: var(--yellow); border-color: var(--yellow); }
+.connection-path { padding: var(--padding-small) var(--padding-medium); overflow-wrap: anywhere; font-family: "JetBrains Mono", monospace; font-size: var(--font-size-small); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); background: var(--bg-1); }
+.helper-state { padding: 0; }
+/* The file explorer of the project folder */
+.explorer { display: flex; flex-direction: column; gap: var(--gap-small); }
+.explorer-path { padding: var(--padding-small) var(--padding-medium); overflow-wrap: anywhere; font-family: "JetBrains Mono", monospace; font-size: var(--font-size-small); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); background: var(--bg-1); }
+.explorer-bar { display: flex; gap: var(--gap-small); }
+.explorer-bar button { width: calc(var(--height) * 4); }
+.explorer-list { display: flex; flex-direction: column; gap: calc(var(--unit) * 0.5); max-height: calc(var(--vh) * 40); overflow-y: auto; }
+.explorer-row { justify-content: flex-start; gap: var(--gap-medium); padding: 0 var(--padding-medium); font-weight: 400; text-transform: none; text-align: start; }
+.explorer-row > span:last-child, .explorer-row { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 48rem) { .topbar > button > span:not(.icon) { display: none; } }
 .connection-status { color: var(--fg-1); font-size: var(--font-size-small); overflow-wrap: anywhere; }
 .connection-status.ok { color: var(--ok); }
 .connection-command { display: flex; gap: var(--gap-small); }

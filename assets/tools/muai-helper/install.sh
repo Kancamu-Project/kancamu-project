@@ -1,5 +1,5 @@
 #!/bin/sh
-# muai-helper for macOS and Linux: gets the program that lets muAI work with the files of this computer, and runs it in the folder where you are.
+# muai-helper for macOS and Linux: gets the program that lets muAI work with the files of this computer, and runs it.
 #
 #   curl -fsSL https://kancamu.site/assets/tools/muai-helper/install.sh | sh
 #
@@ -8,16 +8,15 @@
 #   2. looks in ~/kancamu/muai: is the program there already, and has it the SHA-256 of latest.txt? Then it runs it at once, without downloading;
 #   3. if it is not there, or its SHA-256 is another one (a new version), it downloads the program from the address of latest.txt (kancamu.site, the folder bin/ of this one),
 #      checks that what it downloaded has the SHA-256 of latest.txt (it stops if it has not), keeps it in that folder, and writes the new SHA-256 in muai-helper.json beside it;
-#   4. runs it for the folder where you are (it is the only folder that muAI can use).
+#   4. runs it, right away (nothing else to start). muAI finds it and connects by itself; the project folder (the only folder that muAI can use) is chosen in muAI, with the button of the folder.
 # When kancamu.site cannot be reached, the program that is already there is run, if it still has the SHA-256 that muai-helper.json says.
 # It changes nothing else: no setting, no PATH. To remove it, delete the folder ~/kancamu/muai.
-# A folder other than the current one: MUAI_DIR=/path ... For tests: MUAI_SITE is the address that holds latest.txt, MUAI_HOME the folder of the program, and MUAI_PLATFORM names the system.
+# To fix the folder from here (muAI then cannot change it): MUAI_DIR=/path ... For tests: MUAI_SITE is the address that holds latest.txt, MUAI_HOME the folder of the program, and MUAI_PLATFORM names the system.
 set -eu
 
 main() {
   site="${MUAI_SITE:-https://kancamu.site/assets/tools/muai-helper}"
   site="${site%/}"
-  folder="${MUAI_DIR:-$PWD}"
   home="${MUAI_HOME:-$HOME/kancamu/muai}"
   bin="$home/muai-helper"
   record="$home/muai-helper.json"   # what was installed: { "version", "sha256" }
@@ -43,9 +42,9 @@ main() {
   else echo "muai-helper: sha256sum or shasum is needed to check the program" >&2; return 1; fi
 
   run() {
-    echo "Running muai-helper $1 for the folder: $folder"
+    echo "Running muai-helper $1. Choose the project folder in muAI."
     # the script came through a pipe, so the program asks its question (allow muAI?) in the terminal, not in the pipe
-    if (: </dev/tty) 2>/dev/null; then exec "$bin" --dir "$folder" </dev/tty; else exec "$bin" --dir "$folder"; fi
+    if (: </dev/tty) 2>/dev/null; then exec "$bin" ${MUAI_DIR:+--dir "$MUAI_DIR"} </dev/tty; else exec "$bin" ${MUAI_DIR:+--dir "$MUAI_DIR"}; fi
   }
   save_record() {
     printf '{\n  "version": "%s",\n  "sha256": "%s",\n  "installed": "%s"\n}\n' "$1" "$2" "$(date '+%Y-%m-%dT%H:%M:%S')" > "$record"
@@ -54,7 +53,7 @@ main() {
 
   # already running (in another terminal)? then muAI finds it by itself
   if curl -fsS -m 2 "http://127.0.0.1:47615/ping" 2>/dev/null | grep -q '"muai-helper"'; then
-    echo "muai-helper is already running. Close it (Ctrl+C in its terminal) to start it in this folder: $folder"
+    echo "muai-helper is already running: nothing to do here, muAI connects to it by itself."
     return 0
   fi
 

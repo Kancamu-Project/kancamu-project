@@ -1,6 +1,6 @@
 [package]
 name = "muai-helper"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 description = "A small program on your PC that lets muAI (kancamu.site/muai/) write, read, and list files in one folder that you choose."
 license = "MIT"

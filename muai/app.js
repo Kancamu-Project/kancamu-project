@@ -41,6 +41,7 @@ const readConnection = () => {
 let connection = readConnection();
 const apiReady = () => !!(connection.baseUrl.trim() && connection.model.trim());
 const helperReady = () => !!(connection.helperUrl.trim() && connection.helperToken.trim());
+const agentReady = () => helperReady() && !!helperInfo?.folder;   // the model gets the tools only when muai-helper is connected and a project folder is chosen
 const apiDef = () => ({ id: "api", name: connection.model, kind: "api", mb: 0 });   // the API is a model of the picker too: kind "api" = an OpenAI-compatible server
 const chosenId = settings.get("muai", DEFAULTS).model;   // null until the user chooses one (the choice is one of the settings)
 
@@ -48,7 +49,7 @@ let MODEL = chosenId === "api" ? (apiReady() ? apiDef() : null) : MODELS.find((m
 
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
-  "model-picker","connection-button","chat","message-input",
+  "model-picker","connection-button","helper-button","folder-button","folder-label","chat","message-input",
   "send-button","stop-button","chat-area","attach-button","image-file-input","attachment-preview","attachment-preview-image","attachment-preview-name","remove-attachment-button","chat-list","chat-search",
   "new-chat-button","chat-title","export-button","menu-button",
   "sidebar-overlay","main","welcome-message","sidebar","sidebar-resizer",
@@ -541,12 +542,17 @@ const saveConnection = () => { try { localStorage.setItem(CONNECTION_KEY, JSON.s
 let helperInfo = null;       // { folder, version } while muai-helper is found and its token is good
 let helperPairing = null;    // the pairing that is going on
 let helperDenied = false;    // the user said no in the terminal: it is not asked again until the page is opened again, or the user presses Connect
+let onHelperChange = null;   // the window of muai-helper, when it is open, draws itself again when the state changes
+const lastName = (path) => path.split(/[\\/]/).filter(Boolean).pop() || path;
 function showHelper(info) {
   helperInfo = info;
-  els.connectionButton.classList.toggle("connected", !!info);
-  els.connectionButton.title = info ? tr("helper.connected", { folder: info.folder }) : tr("conn.button");
-  const status = document.getElementById("helper-status");
-  if (status) { status.textContent = info ? tr("helper.connected", { folder: info.folder }) : tr("helper.notFound"); status.classList.toggle("ok", !!info); }
+  els.helperButton.classList.toggle("connected", !!info);
+  els.helperButton.title = info ? tr(info.folder ? "helper.connected" : "helper.connectedNoFolder", { folder: info.folder }) : tr("helper.title");
+  els.folderButton.classList.toggle("hidden", !info);   // the button of the project folder is there when muai-helper is connected
+  els.folderButton.classList.toggle("unset", !!info && !info.folder);
+  els.folderLabel.textContent = info?.folder ? lastName(info.folder) : tr("folder.choose");
+  els.folderButton.title = info?.folder ? tr("folder.current", { folder: info.folder }) : tr("folder.choose");
+  onHelperChange?.();
 }
 async function pingHelper(url, token) {
   try {
@@ -579,7 +585,7 @@ function connectHelper({ force = false, quiet = false } = {}) {
           return true;
         }
         if (data.status === "denied") { helperDenied = true; showHelper(null); popups.toast(tr("helper.denied"), { kind: "warning" }); return false; }
-        if (attempt === 0) popups.toast(tr("helper.approve", { folder: info.folder }), { kind: "info", duration: 10000 });
+        if (attempt === 0) popups.toast(tr("helper.approve"), { kind: "info", duration: 10000 });
         await sleep(1500);
       }
       return false;
@@ -669,7 +675,7 @@ const statusHtml = (status) => (status ? `<div class="agent-status">${esc(status
 
 function buildApiMessages() {
   const msgs = [];
-  const system = [preferences.system.trim(), helperReady() ? AGENT_NOTE : ""].filter(Boolean).join("\n\n");
+  const system = [preferences.system.trim(), agentReady() ? AGENT_NOTE : ""].filter(Boolean).join("\n\n");
   if (system) msgs.push({ role: "system", content: system });
   let hist = current.messages.filter((m) => !m.error).slice(-preferences.ctx);
   while (hist.length && hist[0].role !== "user") hist.shift();
@@ -747,13 +753,13 @@ async function generateApi(msgs, hooks) {
   const maxSteps = Math.max(1, Math.min(200, Math.round(Number(preferences.agentSteps)) || MAX_STEPS));
   const run = { actions: [], plan: lastPlan(), approved: false, seen: new Map(), repeats: 0, hooks };
   let text = "", chunks = 0, first = 0, last = 0;
-  const body = { model: connection.model.trim(), messages: msgs, temperature: preferences.temperature, max_tokens: preferences.maxTokens, ...(helperReady() ? { tools: TOOLS } : {}) };
+  const body = { model: connection.model.trim(), messages: msgs, temperature: preferences.temperature, max_tokens: preferences.maxTokens, ...(agentReady() ? { tools: TOOLS } : {}) };
   const add = (piece) => { text += piece; hooks.text(piece); };
   try {
     for (let step = 1; ; step++) {
       if (step > maxSteps) { add(`\n\n${tr("agent.limit", { n: maxSteps })}`); break; }
       if (step > 1 && text && !text.endsWith("\n")) add("\n\n");
-      hooks.status(helperReady() ? tr("agent.step", { n: step, max: maxSteps, what: tr("agent.thinking") }) : "");
+      hooks.status(agentReady() ? tr("agent.step", { n: step, max: maxSteps, what: tr("agent.thinking") }) : "");
       compact(msgs);
       let result;
       for (let attempt = 0; ; attempt++) {
@@ -786,34 +792,30 @@ async function generateApi(msgs, hooks) {
   return { text, tps: chunks > 1 && last > first ? (chunks - 1) / ((last - first) / 1000) : 0, actions: run.actions, plan: run.plan };
 }
 
-// The connections: the API and muai-helper (a sheet with a form)
+// The windows (sheets of assets/js/popup.js): the API, muai-helper, and the file explorer of the project folder
+const part = (tag, className, text) => Object.assign(document.createElement(tag), { className, ...(text === undefined ? {} : { textContent: text }) });
+const field = (label, control, hint) => {
+  const wrap = part("label", "connection-field");
+  wrap.append(part("span", "connection-label", label), control);
+  if (hint) wrap.append(part("span", "note", hint));
+  return wrap;
+};
+const input = (type, value, placeholder) => Object.assign(document.createElement("input"), { type, value, placeholder: placeholder || "", spellcheck: false, autocapitalize: "off" });
+const button = (label, onClick, className = "") => { const b = Object.assign(part("button", className, label), { type: "button" }); b.addEventListener("click", onClick); return b; };
+const closeSheetOf = (node) => node.closest("dialog")?.close();
+
+// The API (OpenAI-compatible)
 function openConnections() {
   const form = document.createElement("form");
   form.className = "connection-form";
   form.autocomplete = "off";
-  const part = (tag, className, text) => Object.assign(document.createElement(tag), { className, ...(text === undefined ? {} : { textContent: text }) });
-  const field = (label, control, hint) => {
-    const wrap = part("label", "connection-field");
-    wrap.append(part("span", "connection-label", label), control);
-    if (hint) wrap.append(part("span", "note", hint));
-    return wrap;
-  };
-  const input = (type, value, placeholder) => Object.assign(document.createElement("input"), { type, value, placeholder: placeholder || "", spellcheck: false, autocapitalize: "off" });
-  const button = (label, onClick, className = "") => { const b = Object.assign(part("button", className, label), { type: "button" }); b.addEventListener("click", onClick); return b; };
-
   const baseUrl = input("url", connection.baseUrl, "https://api.openai.com/v1");
   const apiKey = input("password", connection.apiKey, tr("conn.apiKey.optional"));
   const modelName = input("text", connection.model, "gpt-4o-mini");
   modelName.setAttribute("list", "connection-models");
   const models = part("datalist", "");
   models.id = "connection-models";
-  const helperUrl = input("url", connection.helperUrl, HELPER_URL);
-  const helperToken = input("password", connection.helperToken, "");
-  const writeMode = document.createElement("select");
-  writeMode.replaceChildren(...WRITE_MODES.map((mode) => Object.assign(document.createElement("option"), { value: mode, textContent: tr(`conn.mode.${mode}`) })));
-  writeMode.value = connection.writeMode;
-  const draft = () => ({ baseUrl: baseUrl.value, apiKey: apiKey.value, model: modelName.value, helperUrl: helperUrl.value, helperToken: helperToken.value, writeMode: writeMode.value });
-
+  const draft = () => ({ baseUrl: baseUrl.value, apiKey: apiKey.value, model: modelName.value });
   const listModels = button(tr("conn.models"), async () => {
     try {
       const conn = draft();
@@ -825,66 +827,162 @@ function openConnections() {
       popups.toast(tr("conn.models.found", { n: ids.length }));
     } catch (error) { popups.toast(tr("conn.models.failed", { message: error.message }), { kind: "error" }); }
   });
-  const command = (label, text) => {   // a command to paste in a terminal, and the button that copies it
-    const box = input("text", text);
-    box.readOnly = true;
-    box.classList.add("connection-code");
-    box.addEventListener("focus", () => box.select());
-    const copyButton = button(tr("conn.copyCommand"), async () => {
-      try { await navigator.clipboard.writeText(text); popups.toast(tr("toast.copied")); } catch { box.select(); }
-    });
-    const row = part("div", "connection-command");
-    row.append(box, copyButton);
-    const wrap = part("div", "connection-field");
-    wrap.append(part("span", "connection-label", label), row);
-    return wrap;
-  };
-  const helperStatus = part("div", "connection-status");
-  helperStatus.id = "helper-status";
-  const advanced = part("details", "connection-advanced");
-  advanced.append(part("summary", "", tr("conn.advanced")), field(tr("conn.helperUrl"), helperUrl), field(tr("conn.helperToken"), helperToken));
-  const connectNow = button(tr("conn.connect"), async () => { await connectHelper({ force: true }); showHelper(helperInfo); });
-  const testHelper = button(tr("conn.test"), async () => {
-    try { const info = await helper("ping", null, draft()); popups.toast(tr("conn.test.ok", { folder: info.folder })); } catch (error) { popups.toast(error.message, { kind: "error" }); }
-  });
-  const save = Object.assign(button(tr("conn.save"), () => form.requestSubmit(), "primary"), {});
   const remove = button(tr("conn.remove"), () => {
     try { localStorage.removeItem(CONNECTION_KEY); } catch { /* ignore */ }
     connection = { ...NO_CONNECTION };
+    helperInfo = null; showHelper(null);
     if (MODEL?.kind === "api") { MODEL = null; loadedDef = null; savePreferences({ model: "" }); }
     showSelected(); renderChat();
     popups.toast(tr("conn.removed"));
-    form.closest("dialog")?.close();
+    closeSheetOf(form);
   });
-
-  form.append(
-    part("h3", "connection-title", tr("conn.api.title")), part("span", "note", tr("conn.api.hint")),
-    field(tr("conn.baseUrl"), baseUrl), field(tr("conn.apiKey"), apiKey), field(tr("conn.model"), modelName), models,
-    part("div", "connection-row", ""),
-    part("h3", "connection-title", tr("conn.helper.title")), part("span", "note", tr("conn.helper.hint")),
-    helperStatus, command(tr("conn.helper.cmdWindows"), INSTALL_WINDOWS), command(tr("conn.helper.cmdUnix"), INSTALL_UNIX), field(tr("conn.writeMode"), writeMode), advanced,
-    part("div", "connection-row", ""),
-    part("div", "connection-row", ""),
-  );
-  const rows = form.querySelectorAll(".connection-row");
-  rows[0].append(listModels);
-  rows[1].append(testHelper, connectNow);
-  showHelper(helperInfo);
-  rows[2].append(remove, save);
+  const row = part("div", "connection-row");
+  const rowEnd = part("div", "connection-row");
+  row.append(listModels);
+  rowEnd.append(remove, button(tr("conn.save"), () => form.requestSubmit(), "primary"));
+  form.append(part("span", "note", tr("conn.api.hint")), field(tr("conn.baseUrl"), baseUrl), field(tr("conn.apiKey"), apiKey), field(tr("conn.model"), modelName), models, row, rowEnd);
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const next = draft();
     if ((next.baseUrl.trim() || next.model.trim()) && !(next.baseUrl.trim() && next.model.trim())) return popups.toast(tr("conn.needs"), { kind: "warning" });
-    connection = { ...NO_CONNECTION, ...next };
+    connection = { ...connection, ...next };   // what is of muai-helper stays
     saveConnection();
     popups.toast(tr("conn.saved"));
-    form.closest("dialog")?.close();
+    closeSheetOf(form);
     if (apiReady()) { if (!busy) await chooseModel(apiDef()); } else if (MODEL?.kind === "api") { MODEL = null; loadedDef = null; savePreferences({ model: "" }); showSelected(); renderChat(); }
     renderModelPicker();
   });
   popups.sheet({ title: tr("conn.title"), node: form, side: "end" });
 }
 els.connectionButton.addEventListener("click", openConnections);
+
+// muai-helper: while this window is open the page looks for it every second, so it shows the moment the program is running (the command starts it by itself after it is downloaded)
+function openHelper() {
+  const box = part("div", "connection-form");
+  const state = part("div", "connection-form helper-state");   // what depends on the state: it is drawn again when the state changes
+  const command = (label, text) => {   // a command to paste in a terminal, and the button that copies it
+    const code = input("text", text);
+    code.readOnly = true;
+    code.classList.add("connection-code");
+    code.addEventListener("focus", () => code.select());
+    const copyButton = button(tr("conn.copyCommand"), async () => {
+      try { await navigator.clipboard.writeText(text); popups.toast(tr("toast.copied")); } catch { code.select(); }
+    });
+    const row = part("div", "connection-command");
+    row.append(code, copyButton);
+    const wrap = part("div", "connection-field");
+    wrap.append(part("span", "connection-label", label), row);
+    return wrap;
+  };
+  let drawn = "";
+  const draw = () => {
+    const info = helperInfo;
+    const signature = JSON.stringify([!!info, info?.folder, info?.locked, info?.browse, info?.version, helperDenied]);
+    if (signature === drawn) return;
+    drawn = signature;
+    state.replaceChildren();
+    if (!info) {
+      const waiting = part("div", "connection-status");
+      waiting.textContent = helperDenied ? tr("helper.denied") : tr("helper.waiting");
+      state.append(waiting, part("span", "note", tr("conn.helper.hint")), command(tr("conn.helper.cmdWindows"), INSTALL_WINDOWS), command(tr("conn.helper.cmdUnix"), INSTALL_UNIX));
+      if (helperDenied) state.append(button(tr("conn.connect"), () => connectHelper({ force: true }), "primary"));
+      return;
+    }
+    const status = part("div", "connection-status ok");
+    status.textContent = tr("helper.connectedShort", { version: info.version });
+    const folder = part("div", "connection-field");
+    const shown = part("div", "connection-path", info.folder || tr("folder.none"));
+    shown.dir = "ltr";
+    folder.append(part("span", "connection-label", tr("folder.current", { folder: "" }).replace(/[:：]\s*$/, "")), shown);
+    state.append(status, folder);
+    if (info.locked) state.append(part("span", "note", tr("folder.locked")));
+    else if (!info.browse) state.append(part("span", "note", tr("helper.old")));
+    else {
+      const row = part("div", "connection-row");
+      row.append(button(tr("folder.choose"), () => { closeSheetOf(box); openExplorer(); }, info.folder ? "" : "primary"));
+      state.append(row);
+    }
+  };
+  const writeMode = document.createElement("select");
+  writeMode.replaceChildren(...WRITE_MODES.map((mode) => Object.assign(document.createElement("option"), { value: mode, textContent: tr(`conn.mode.${mode}`) })));
+  writeMode.value = connection.writeMode;
+  writeMode.addEventListener("change", () => { connection = { ...connection, writeMode: writeMode.value }; saveConnection(); });
+  const helperUrl = input("url", connection.helperUrl, HELPER_URL);
+  const helperToken = input("password", connection.helperToken, "");
+  const advanced = part("details", "connection-advanced");
+  const testRow = part("div", "connection-row");
+  testRow.append(button(tr("conn.test"), async () => {
+    try { const info = await helper("ping", null, { ...connection, helperUrl: helperUrl.value, helperToken: helperToken.value }); popups.toast(tr("conn.test.ok", { folder: info.folder || tr("folder.none") })); } catch (error) { popups.toast(error.message, { kind: "error" }); }
+  }), button(tr("conn.save"), () => {
+    connection = { ...connection, helperUrl: helperUrl.value.trim(), helperToken: helperToken.value.trim() };
+    saveConnection();
+    connectHelper({ force: true });
+    popups.toast(tr("conn.saved"));
+  }, "primary"));
+  advanced.append(part("summary", "", tr("conn.advanced")), field(tr("conn.helperUrl"), helperUrl), field(tr("conn.helperToken"), helperToken), testRow);
+  box.append(state, field(tr("conn.writeMode"), writeMode), advanced);
+  onHelperChange = draw;
+  draw();
+  const timer = setInterval(() => connectHelper({ quiet: true }), 1000);
+  connectHelper({ quiet: true });
+  popups.sheet({ title: tr("helper.title"), node: box, side: "end" }).then(() => {
+    clearInterval(timer);
+    if (onHelperChange === draw) onHelperChange = null;
+  });
+}
+els.helperButton.addEventListener("click", openHelper);
+
+// The file explorer of the project folder: it shows the names of the folders of this PC (muai-helper reads them), and the folder that is chosen is the only one that the AI can work in
+function openExplorer() {
+  if (!helperInfo) { popups.toast(tr("helper.waiting"), { kind: "warning" }); openHelper(); return; }
+  if (helperInfo.locked) return void popups.toast(tr("folder.locked"), { kind: "warning" });
+  if (!helperInfo.browse) return void popups.toast(tr("helper.old"), { kind: "warning" });
+  const wrap = part("div", "explorer");
+  const where = part("div", "explorer-path");
+  where.dir = "ltr";
+  const bar = part("div", "explorer-bar");
+  const list = part("div", "explorer-list");
+  let current = "", parent = null;
+  const up = button(tr("explorer.up"), () => show(parent || ""));
+  up.prepend(part("span", "icon icon-arrow-up"));
+  const places = button(tr("explorer.places"), () => show(""));
+  places.prepend(part("span", "icon icon-hard-drive"));
+  const use = button(tr("explorer.use"), async () => {
+    try {
+      const done = await helper("folder", { path: current });
+      await connectHelper({ quiet: true });
+      popups.toast(tr("explorer.chosen", { folder: done.folder }));
+      closeSheetOf(wrap);
+    } catch (error) { popups.toast(tr("explorer.failed", { message: error.message }), { kind: "error" }); }
+  }, "primary");
+  const rows = (items) => items.map((item) => {
+    const row = button(item.name, () => show(item.path), "explorer-row");
+    row.prepend(part("span", "icon icon-folder"));
+    row.title = item.path;
+    return row;
+  });
+  async function show(path) {
+    try {
+      const data = await helper("browse", { path });
+      current = data.path;
+      parent = data.parent;
+      where.textContent = current || tr("explorer.places");
+      up.disabled = !current;
+      use.disabled = !current;
+      const items = current ? data.entries : data.places;
+      list.replaceChildren(...(items.length ? rows(items) : [part("span", "note", tr("explorer.empty"))]));
+      if (data.truncated) list.append(part("span", "note", tr("explorer.truncated")));
+      list.scrollTop = 0;
+    } catch (error) { popups.toast(tr("explorer.failed", { message: error.message }), { kind: "error" }); }
+  }
+  bar.append(up, places);
+  const footer = part("div", "connection-row");
+  footer.append(use);
+  wrap.append(where, bar, list, footer);
+  popups.sheet({ title: tr("explorer.title"), node: wrap, side: "bottom" });
+  show(helperInfo.folder || "");
+}
+els.folderButton.addEventListener("click", openExplorer);
 watchHelper();   // muai-helper is looked for from the start
 
 // ---------- Generate ----------
