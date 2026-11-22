@@ -566,6 +566,7 @@ async function loadData() {
     state.home = data.home;
     state.categories = data.categories;
     state.projects = data.projects;
+    document.getElementById("support-link").href = data.support.url;   // the support of Kancamu (data.json, "support")
     restoreFilters();
     i18n.selects();
     renderAll();

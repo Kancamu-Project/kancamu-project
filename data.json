@@ -190,6 +190,11 @@
       "en-US": "Source on GitHub",
       "zh-CN": "GitHub 源代码",
       "ar-SA": "الشيفرة المصدرية على GitHub"
+    },
+    "support.title": {
+      "en-US": "Support",
+      "zh-CN": "支持",
+      "ar-SA": "ادعمنا"
     }
   },
   "categories": {
@@ -953,6 +958,24 @@
         },
         {
           "heading": {
+            "en-US": "Support Kancamu",
+            "zh-CN": "支持 Kancamu",
+            "ar-SA": "ادعم Kancamu"
+          },
+          "text": {
+            "en-US": "Kancamu is free to use. If it helps you, you can support it through Saweria. It is voluntary, and it is not needed to use anything here.",
+            "zh-CN": "Kancamu 可以免费使用。如果它对你有帮助，你可以通过 Saweria 支持它。这是自愿的，使用这里的任何内容都不需要它。",
+            "ar-SA": "استخدام Kancamu مجاني. وإن أفادك فيمكنك دعمه عبر Saweria. وهذا اختياري، ولا يلزم لاستخدام أي شيء هنا."
+          },
+          "links": [
+            {
+              "label": "Saweria",
+              "url": "https://saweria.co/kancamu"
+            }
+          ]
+        },
+        {
+          "heading": {
             "en-US": "Image credits",
             "zh-CN": "图片来源",
             "ar-SA": "مصادر الصور"
@@ -1068,5 +1091,8 @@
         }
       ]
     }
+  },
+  "support": {
+    "url": "https://saweria.co/kancamu"
   }
 }

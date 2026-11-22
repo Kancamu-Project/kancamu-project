@@ -14,6 +14,7 @@
     &.list { --icon: url("assets/icons/list.svg"); }
     &.external { --icon: url("assets/icons/external.svg"); }
     &.more { --icon: url("assets/icons/more.svg"); }
+    &.heart { --icon: url("assets/icons/heart.svg"); }
     &.check { --icon: url("assets/icons/check.svg"); }
     &.error { --icon: url("assets/icons/alert.svg"); }
     &.close { --icon: url("assets/icons/close.svg"); }
@@ -707,7 +708,12 @@ button {
 }
 
 /* The buttons of the footer: the pages About and Terms and conditions */
-#footer button {
+#footer :is(button, a.button) {
+    flex: none;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: var(--gap-small);
     height: 100%;
     border: 0;
     border-radius: 0;
@@ -718,8 +724,14 @@ button {
     text-transform: none;
 }
 
-#footer button:hover {
+#footer :is(button, a.button):hover {
     color: var(--fg);
+}
+
+/* The text of the support link is yellow, so it stands out in the footer (the hover keeps it yellow) */
+#footer #support-link,
+#footer #support-link:hover {
+    color: var(--yellow);
 }
 
 #about-button {
@@ -751,6 +763,11 @@ button {
     #home, #page {
         padding: var(--padding-medium);
     }
+
+    /* On a narrow screen the footer is tighter, and the support link keeps only its heart (a square, with its name in the title) */
+    #footer { padding: 0 var(--padding-medium); }
+    #support-link { width: var(--height); padding: 0; justify-content: center; }
+    #support-link > span { display: none; }
 
     #project-list.list {
         --list-columns: 1fr calc(var(--unit) * 50);
