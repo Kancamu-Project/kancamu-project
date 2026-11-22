@@ -18,11 +18,15 @@ on Windows (PowerShell), or
 curl -fsSL https://kancamu.site/assets/tools/muai-helper/install.sh | sh
 ```
 
-on macOS and Linux. The script downloads muai-helper (a release of this project on GitHub), checks its SHA-256, keeps it in `%LOCALAPPDATA%muai-helper` (Windows) or `~/.local/share/muai-helper`, and runs it for that folder. The same command later just runs it (it downloads again only when there is a new version).
+on macOS and Linux. The program lives in `C:\Users\<you>\kancamu\muai` (Windows) or `~/kancamu/muai` (macOS and Linux). Every time, the script first reads `latest.txt` from kancamu.site (the version, and the SHA-256 and address of the program for your system) and then looks in that folder:
+
+- the program is there and its SHA-256 is the one of `latest.txt`: it is **run at once**, nothing is downloaded;
+- the program is not there, or its SHA-256 is another one (a new version, or the file was changed): the script downloads the program (from kancamu.site, the folder `bin/` of this one), checks that it has the SHA-256 of `latest.txt` (it stops if it has not), keeps it, and **writes the new SHA-256** in `muai-helper.json` beside it (`{ "version", "sha256", "installed" }`);
+- kancamu.site cannot be reached: the program that is there is run, but only if it still has the SHA-256 that `muai-helper.json` says (a program that was changed is never run without a check).
 
 muAI looks for the program by itself (every few seconds, on `127.0.0.1:47615`) and connects: **you copy no address and no token**. The first time, the program asks in its terminal whether to allow muAI (`https://kancamu.site`): type `y`. The answer is kept in a file (`%APPDATA%muai-helperallowed-origins.json`, or `~/.config/muai-helper/allowed-origins.json`), so the next time it connects without asking. When the program is started again it has a new token, and muAI takes it by itself.
 
-The scripts are short and made to be read: `install.ps1` and `install.sh` in this folder. They change nothing but that folder (no setting, no registry, no PATH); to remove the program, delete it. If you do not want to run a script from the internet, read it first (`irm <address>` without `| iex` shows it), or build the program yourself:
+The scripts are short and made to be read: `install.ps1` and `install.sh` in this folder. They change nothing but that folder (no setting, no registry, no PATH); to remove the program, delete the folder `kancamu/muai`. If you do not want to run a script from the internet, read it first (`irm <address>` without `| iex` shows it), or build the program yourself:
 
 ## Build it yourself
 
@@ -48,14 +52,14 @@ Options:
 
 ## For the maker: a new version
 
-The programs are made by GitHub (`.github/workflows/muai-helper-release.yml`) when a tag is pushed. Change `version` in `Cargo.toml`, commit, and:
+The programs are in `bin/` of this folder, and `latest.txt` has their version and SHA-256 (the scripts read it, and download the programs from kancamu.site itself). The Windows program is made by hand:
 
-```sh
-git tag muai-helper-v0.2.0
-git push origin muai-helper-v0.2.0
+```powershell
+cargo build --release
+copy targeteleasemuai-helper.exe binmuai-helper-windows-x64.exe
 ```
 
-The workflow tests and builds for Windows, Linux (x64 and arm64), and macOS (arm64 and x64), makes the release, and writes the SHA-256 of every program in `latest.txt` on `main`, which is what the scripts read: the program comes from GitHub and its checksum from kancamu.site, so both must be changed to put a wrong program on a computer. Until the first release the command says that `latest.txt` is not there.
+and its SHA-256 (`Get-FileHash binmuai-helper-windows-x64.exe`) goes in the line `windows-x64` of `latest.txt`. The other systems (Linux, macOS) are made by GitHub: change `version` in `Cargo.toml`, commit, and push a tag `muai-helper-v<version>` (or run the workflow `muai-helper release` by hand in the tab Actions). It tests and builds for Windows, Linux (x64 and arm64), and macOS (arm64 and x64), puts the programs in `bin/`, and writes `latest.txt` on `main`. Every new version adds the programs to the history of the repository (about 0.6 MB each).
 
 ## What keeps it safe
 

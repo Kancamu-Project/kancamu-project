@@ -1,12 +1,13 @@
-# Builds muai-helper for every system and makes a release when a tag "muai-helper-v<version>" is pushed (the version is the one of Cargo.toml):
+# Builds muai-helper for every system and puts the programs in assets/tools/muai-helper/bin on main, with their SHA-256 in assets/tools/muai-helper/latest.txt
+# (install.ps1 and install.sh read latest.txt and download the programs from kancamu.site itself: there is no GitHub release). It runs when a tag "muai-helper-v<version>"
+# is pushed (the version is the one of Cargo.toml), or by hand (the tab Actions, "Run workflow"):
 #   git tag muai-helper-v0.2.0 && git push origin muai-helper-v0.2.0
-# The release has the programs; the workflow also writes their SHA-256 in assets/tools/muai-helper/latest.txt on main, which is what install.ps1 and install.sh read
-# (so the program comes from GitHub and its checksum from kancamu.site: both must be changed to put a wrong program on a computer).
 name: muai-helper release
 
 on:
   push:
     tags: ["muai-helper-v*"]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -28,9 +29,8 @@ jobs:
       - name: The version of the tag is the one of Cargo.toml
         shell: bash
         run: |
-          tag="${GITHUB_REF_NAME#muai-helper-v}"
           crate="$(grep -m1 '^version' assets/tools/muai-helper/Cargo.toml | cut -d'"' -f2)"
-          if [ "$tag" != "$crate" ]; then echo "The tag is $tag but Cargo.toml says $crate"; exit 1; fi
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "${GITHUB_REF_NAME#muai-helper-v}" != "$crate" ]; then echo "The tag is ${GITHUB_REF_NAME#muai-helper-v} but Cargo.toml says $crate"; exit 1; fi
       - name: Rust target
         run: rustup target add ${{ matrix.target }}
       - name: Test
@@ -61,12 +61,12 @@ jobs:
         with:
           path: out
           merge-multiple: true
-      - name: Release, and the checksums on main
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: The programs and the checksums on main
         run: |
-          version="${GITHUB_REF_NAME#muai-helper-v}"
-          base="https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}"
+          version="$(grep -m1 '^version' assets/tools/muai-helper/Cargo.toml | cut -d'"' -f2)"
+          base="https://kancamu.site/assets/tools/muai-helper/bin"
+          mkdir -p assets/tools/muai-helper/bin
+          cp out/muai-helper-* assets/tools/muai-helper/bin/
           {
             echo "version $version"
             for file in out/muai-helper-*; do
@@ -74,12 +74,10 @@ jobs:
               key="${name#muai-helper-}"; key="${key%.exe}"
               echo "$key $(sha256sum "$file" | cut -d' ' -f1) $base/$name"
             done
-          } > latest.txt
-          cat latest.txt
-          gh release create "$GITHUB_REF_NAME" out/muai-helper-* --title "muai-helper $version" --notes "The program that lets muAI work with the files of a folder of your PC. Do not download it by hand: use the command in muAI (see assets/tools/muai-helper/README.md). The SHA-256 of every program is in latest.txt."
-          cp latest.txt assets/tools/muai-helper/latest.txt
+          } > assets/tools/muai-helper/latest.txt
+          cat assets/tools/muai-helper/latest.txt
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/tools/muai-helper/latest.txt
-          git commit -m "muai-helper $version: the checksums of the release"
+          git add assets/tools/muai-helper/bin assets/tools/muai-helper/latest.txt
+          git commit -m "muai-helper $version: the programs and their checksums"
           git push origin HEAD:main

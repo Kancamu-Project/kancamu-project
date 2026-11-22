@@ -1,0 +1,2 @@
+version 0.2.0
+windows-x64 4771d38063b4fb59d17ff412bef9f0da34595bdac42711e9142e6190cd8ba049 https://kancamu.site/assets/tools/muai-helper/bin/muai-helper-windows-x64.exe
