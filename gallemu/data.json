@@ -207,9 +207,9 @@
       "ar-SA": "تعذر تحميل ملفاتك: {message}"
     },
     "acct.tokenInvalid": {
-      "en-US": "The token of {name} does not work any more. Sign in again.",
-      "zh-CN": "{name} 的令牌已失效，请重新登录。",
-      "ar-SA": "لم يعد رمز {name} يعمل. سجّل الدخول مجددًا."
+      "en-US": "The sign-in of {name} has ended. Sign in again.",
+      "zh-CN": "{name} 的登录已失效，请重新登录。",
+      "ar-SA": "انتهى تسجيل دخول {name}. سجّل الدخول مرة أخرى."
     },
     "acct.anAccount": {
       "en-US": "your account",

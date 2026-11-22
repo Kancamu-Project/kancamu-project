@@ -66,8 +66,6 @@ body { grid-template-columns: var(--sidebar-width) minmax(0, 1fr); overflow: hid
 body.plain :is(#new-button, .sidebar-nav, .usage, #refresh-button) { display: none; }
 .usage { display: flex; flex: none; flex-direction: column; gap: var(--gap-small); padding: var(--padding-medium); border-radius: var(--border-radius-medium); border: var(--border-width) solid var(--border); font-size: var(--font-size-small); }
 .usage-detail { color: var(--fg-1); }
-.meter { height: calc(var(--unit) * 2); border: var(--border-width) solid var(--border); }
-.meter > i { display: block; height: 100%; background: var(--fg); }
 #sort-order { width: calc(var(--height) * 5); border-inline-start-width: 0; }
 .header-cell { padding-inline: var(--padding-small); }
 .searchbox { flex: none; width: calc(var(--height) * 6); }

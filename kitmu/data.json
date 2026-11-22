@@ -456,9 +456,9 @@
       "ar-SA": "حقل نص من عدة أسطر."
     },
     "components.nativeSelect.text": {
-      "en-US": "The select of the browser, with the style of assets/css/style.css.",
-      "zh-CN": "浏览器自带的选择框，使用 assets/css/style.css 的样式。",
-      "ar-SA": "قائمة المتصفح بنمط assets/css/style.css."
+      "en-US": "The tag select: it looks like a button and opens the menu of the kit, not the list of the browser. A web writes the select as always (its options, its value, the event change) and changes nothing else: every select of a page gets the menu, also the ones that are made later. data-native on a select keeps the list of the browser.",
+      "zh-CN": "标签 select：外观像按钮，打开的是组件库的菜单，而不是浏览器的列表。网站照常编写 select（选项、值、change 事件），无需其他改动：页面上的每个 select 都会使用该菜单，包括之后创建的。在 select 上加 data-native 则保留浏览器的列表。",
+      "ar-SA": "الوسم select: يبدو كزر ويفتح قائمة العدة لا قائمة المتصفح. يكتب الموقع الـ select كالمعتاد (خياراته وقيمته وحدث change) دون أي تغيير آخر: كل select في الصفحة يأخذ القائمة، وكذلك ما يُنشأ لاحقا. والسمة data-native على select تُبقي قائمة المتصفح."
     },
     "components.switch.text": {
       "en-US": "A checkbox that looks like a switch (class switch). It takes the colour of the web when it is on.",
@@ -859,6 +859,46 @@
       "en-US": "Makes the same element as the tag kit-… from a script. The attributes of the tag are also properties of the element: change one and the parts follow.",
       "zh-CN": "在脚本中生成与标签 kit-… 相同的元素。标签的属性同时也是元素的属性：修改其中一个，各部分随之更新。",
       "ar-SA": "يصنع من سكربت العنصر نفسه الذي يصنعه الوسم kit-…. وخصائص الوسم هي أيضا خصائص للعنصر: غيّر واحدة فتتبعها الأجزاء."
+    },
+    "search": {
+      "en-US": "Search the kit",
+      "zh-CN": "搜索组件库",
+      "ar-SA": "ابحث في العدة"
+    },
+    "reset": {
+      "en-US": "Reset",
+      "zh-CN": "重置",
+      "ar-SA": "إعادة تعيين"
+    },
+    "noResults": {
+      "en-US": "Nothing found.",
+      "zh-CN": "未找到内容。",
+      "ar-SA": "لم يتم العثور على شيء."
+    },
+    "all": {
+      "en-US": "All",
+      "zh-CN": "全部",
+      "ar-SA": "الكل"
+    },
+    "section.components": {
+      "en-US": "Components",
+      "zh-CN": "组件",
+      "ar-SA": "المكوّنات"
+    },
+    "tag": {
+      "en-US": "Tag",
+      "zh-CN": "标签",
+      "ar-SA": "الوسم"
+    },
+    "section.pages": {
+      "en-US": "Pages",
+      "zh-CN": "页面",
+      "ar-SA": "الصفحات"
+    },
+    "pages.hint": {
+      "en-US": "A page is made of the parts of the page (the header, the sidebar, the main, and the footer), so it is not one component of the list. These are the two pages that a web starts from: with a sidebar, and without one.",
+      "zh-CN": "页面由页面部件（页眉、侧边栏、主体和页脚）组成，因此它不是列表中的单个组件。这里是网站的两种起点页面：有侧边栏的和没有侧边栏的。",
+      "ar-SA": "الصفحة مكوّنة من أجزاء الصفحة (الترويسة والشريط الجانبي والمحتوى والتذييل)، لذلك ليست مكوّنا واحدا في القائمة. هاتان هما الصفحتان اللتان يبدأ منهما الموقع: بشريط جانبي وبدونه."
     }
   },
   "helpers": [
@@ -943,451 +983,699 @@
   ],
   "items": [
     {
-      "id": "page",
-      "name": "Sidebar",
-      "group": "layout",
-      "height": 420,
-      "html": "<kit-header id=\"header\" theme menu name='Name<span class=\"highlight\">mu</span>'></kit-header>\n<kit-sidebar id=\"sidebar\">\n  <span class=\"sidebar-title\">Section</span>\n  <button class=\"sidebar-item on\" type=\"button\"><span>First item</span></button>\n  <button class=\"sidebar-item\" type=\"button\"><span>Second item</span></button>\n  <button class=\"sidebar-item\" type=\"button\"><span>Third item</span></button>\n  <div class=\"sidebar-summary\" slot=\"after\">A box of numbers</div>\n</kit-sidebar>\n<div id=\"main\" class=\"main\">\n  <div class=\"topbar\">\n    <button class=\"primary\" type=\"button\"><span class=\"icon icon-plus\"></span><span>New</span></button>\n    <button type=\"button\"><span>Other</span></button>\n  </div>\n  <p>The content of the web.</p>\n</div>\n<kit-footer id=\"footer\" status brand=\"Kancamu\"></kit-footer>\n<div id=\"popups\" class=\"popups\"></div>",
-      "script": "document.getElementById(\"status\").textContent = \"3 items\";"
-    },
-    {
-      "id": "pageSimple",
-      "name": "Page",
-      "group": "layout",
-      "height": 320,
-      "html": "<kit-header id=\"header\" theme name='Name<span class=\"highlight\">mu</span>'></kit-header>\n<div id=\"main\" class=\"main\">\n  <div class=\"topbar\">\n    <button class=\"primary\" type=\"button\"><span>Start</span></button>\n  </div>\n  <p>The content of the web. With no sidebar, the main has no border of its own.</p>\n</div>\n<kit-footer id=\"footer\" brand=\"Kancamu\"></kit-footer>\n<div id=\"popups\" class=\"popups\"></div>"
-    },
-    {
       "id": "separator",
       "name": "Separator",
-      "group": "layout",
       "height": 130,
-      "html": "<div style=\"display: flex; flex-direction: column; gap: var(--gap-small)\">\n  <span>Above</span>\n  <hr class=\"separator\">\n  <span>Below</span>\n</div>\n<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <span>One</span>\n  <hr class=\"separator vertical\" style=\"height: var(--height)\">\n  <span>Two</span>\n</div>"
+      "html": "<div style=\"display: flex; flex-direction: column; gap: var(--gap-small)\">\n  <span>Above</span>\n  <hr class=\"separator\">\n  <span>Below</span>\n</div>\n<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <span>One</span>\n  <hr class=\"separator vertical\" style=\"height: var(--height)\">\n  <span>Two</span>\n</div>",
+      "tags": [
+        "layout",
+        "class"
+      ]
     },
     {
       "id": "empty",
       "name": "Empty",
-      "group": "layout",
       "height": 300,
-      "html": "<kit-empty icon=\"folder\" heading=\"Nothing here yet\" text=\"Say in one line what to do to fill it.\">\n  <button slot=\"action\" class=\"primary\" type=\"button\"><span>Start</span></button>\n</kit-empty>"
+      "html": "<kit-empty icon=\"folder\" heading=\"Nothing here yet\" text=\"Say in one line what to do to fill it.\">\n  <button slot=\"action\" class=\"primary\" type=\"button\"><span>Start</span></button>\n</kit-empty>",
+      "tags": [
+        "layout",
+        "tag",
+        "feedback",
+        "container"
+      ]
     },
     {
       "id": "card",
       "name": "Card",
-      "group": "layout",
       "height": 250,
-      "html": "<kit-card heading=\"Title\" description=\"A short description.\">\n  The content of the card.\n  <button slot=\"footer\" class=\"primary\" type=\"button\"><span>Save</span></button>\n  <button slot=\"footer\" type=\"button\"><span>Cancel</span></button>\n</kit-card>"
+      "html": "<kit-card heading=\"Title\" description=\"A short description.\">\n  The content of the card.\n  <button slot=\"footer\" class=\"primary\" type=\"button\"><span>Save</span></button>\n  <button slot=\"footer\" type=\"button\"><span>Cancel</span></button>\n</kit-card>",
+      "tags": [
+        "layout",
+        "tag",
+        "container"
+      ]
     },
     {
       "id": "aspectRatio",
       "name": "Aspect Ratio",
-      "group": "layout",
       "height": 200,
-      "html": "<div class=\"aspect-ratio\" style=\"--ratio: 16 / 9; max-width: 20rem; display: flex; align-items: center; justify-content: center\">16 / 9</div>"
+      "html": "<div class=\"aspect-ratio\" style=\"--ratio: 16 / 9; max-width: 20rem; display: flex; align-items: center; justify-content: center\">16 / 9</div>",
+      "tags": [
+        "layout",
+        "class",
+        "media"
+      ]
     },
     {
       "id": "scrollArea",
       "name": "Scroll Area",
-      "group": "layout",
       "height": 190,
-      "html": "<div class=\"scroll-area\" style=\"height: 8rem; padding: var(--padding-medium); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium)\">\n  <p>Line 1 of the text.</p>\n  <p>Line 2 of the text.</p>\n  <p>Line 3 of the text.</p>\n  <p>Line 4 of the text.</p>\n  <p>Line 5 of the text.</p>\n  <p>Line 6 of the text.</p>\n  <p>Line 7 of the text.</p>\n  <p>Line 8 of the text.</p>\n  <p>Line 9 of the text.</p>\n  <p>Line 10 of the text.</p>\n  <p>Line 11 of the text.</p>\n  <p>Line 12 of the text.</p>\n  <p>Line 13 of the text.</p>\n  <p>Line 14 of the text.</p>\n</div>"
+      "html": "<div class=\"scroll-area\" style=\"height: 8rem; padding: var(--padding-medium); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium)\">\n  <p>Line 1 of the text.</p>\n  <p>Line 2 of the text.</p>\n  <p>Line 3 of the text.</p>\n  <p>Line 4 of the text.</p>\n  <p>Line 5 of the text.</p>\n  <p>Line 6 of the text.</p>\n  <p>Line 7 of the text.</p>\n  <p>Line 8 of the text.</p>\n  <p>Line 9 of the text.</p>\n  <p>Line 10 of the text.</p>\n  <p>Line 11 of the text.</p>\n  <p>Line 12 of the text.</p>\n  <p>Line 13 of the text.</p>\n  <p>Line 14 of the text.</p>\n</div>",
+      "tags": [
+        "layout",
+        "class",
+        "container"
+      ]
     },
     {
       "id": "resizable",
       "name": "Resizable",
-      "group": "layout",
       "height": 200,
       "html": "<div id=\"split\" class=\"resizable\" style=\"height: 9rem\">\n  <div class=\"resizable-panel\" style=\"width: 50%; flex: none\">One</div>\n  <div class=\"resizable-handle\"></div>\n  <div class=\"resizable-panel\" style=\"flex: 1\">Two</div>\n</div>",
-      "script": "components.resizable(document.getElementById(\"split\"));"
+      "script": "components.resizable(document.getElementById(\"split\"));",
+      "tags": [
+        "layout",
+        "script",
+        "container"
+      ]
     },
     {
       "id": "typography",
       "name": "Typography",
-      "group": "layout",
       "height": 330,
-      "html": "<div class=\"typography\">\n  <h1>The title</h1>\n  <p>A paragraph of text, with <code>code</code> in it.</p>\n  <h2>A heading</h2>\n  <blockquote>A quote.</blockquote>\n  <ul><li>One</li><li>Two</li></ul>\n</div>"
+      "html": "<div class=\"typography\">\n  <h1>The title</h1>\n  <p>A paragraph of text, with <code>code</code> in it.</p>\n  <h2>A heading</h2>\n  <blockquote>A quote.</blockquote>\n  <ul><li>One</li><li>Two</li></ul>\n</div>",
+      "tags": [
+        "layout",
+        "class",
+        "text"
+      ]
     },
     {
       "id": "direction",
       "name": "Direction",
-      "group": "layout",
       "height": 230,
       "html": "<div id=\"box\" class=\"card\">\n  <div class=\"card-header\"><span class=\"card-title\">Direction</span><span class=\"card-description\">The text follows the dir attribute.</span></div>\n  <div class=\"card-footer\"><button id=\"flip\" type=\"button\"><span>Flip</span></button></div>\n</div>",
-      "script": "document.getElementById(\"flip\").addEventListener(\"click\", () => {\n  const box = document.getElementById(\"box\");\n  box.dir = box.dir === \"rtl\" ? \"ltr\" : \"rtl\";\n});"
+      "script": "document.getElementById(\"flip\").addEventListener(\"click\", () => {\n  const box = document.getElementById(\"box\");\n  box.dir = box.dir === \"rtl\" ? \"ltr\" : \"rtl\";\n});",
+      "tags": [
+        "layout",
+        "script"
+      ]
     },
     {
       "id": "alert",
       "name": "Alert",
-      "group": "display",
       "height": 330,
-      "html": "<div style=\"display: flex; flex-direction: column; gap: var(--gap-small)\">\n  <kit-alert kind=\"success\" heading=\"Saved\">Your changes are saved.</kit-alert>\n  <kit-alert kind=\"info\" heading=\"Syncing\">The files are synced in the background.</kit-alert>\n  <kit-alert kind=\"warning\" heading=\"Careful\">Some files were skipped.</kit-alert>\n  <kit-alert kind=\"error\" heading=\"Failed\">The file could not be uploaded.</kit-alert>\n</div>"
+      "html": "<div style=\"display: flex; flex-direction: column; gap: var(--gap-small)\">\n  <kit-alert kind=\"success\" heading=\"Saved\">Your changes are saved.</kit-alert>\n  <kit-alert kind=\"info\" heading=\"Syncing\">The files are synced in the background.</kit-alert>\n  <kit-alert kind=\"warning\" heading=\"Careful\">Some files were skipped.</kit-alert>\n  <kit-alert kind=\"error\" heading=\"Failed\">The file could not be uploaded.</kit-alert>\n</div>",
+      "tags": [
+        "display",
+        "tag",
+        "feedback",
+        "status"
+      ]
     },
     {
       "id": "badge",
       "name": "Badge",
-      "group": "display",
       "height": 70,
-      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <span class=\"badge\">Default</span>\n  <span class=\"badge success\">Success</span>\n  <span class=\"badge info\">Info</span>\n  <span class=\"badge warning\">Warning</span>\n  <span class=\"badge error\">Error</span>\n</div>"
+      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <span class=\"badge\">Default</span>\n  <span class=\"badge success\">Success</span>\n  <span class=\"badge info\">Info</span>\n  <span class=\"badge warning\">Warning</span>\n  <span class=\"badge error\">Error</span>\n</div>",
+      "tags": [
+        "display",
+        "class",
+        "feedback",
+        "status"
+      ]
     },
     {
       "id": "kbd",
       "name": "Kbd",
-      "group": "display",
       "height": 70,
-      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <kbd class=\"kbd\">Ctrl</kbd> <span>+</span> <kbd class=\"kbd\">K</kbd>\n  <kbd class=\"kbd\">Esc</kbd>\n</div>"
+      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <kbd class=\"kbd\">Ctrl</kbd> <span>+</span> <kbd class=\"kbd\">K</kbd>\n  <kbd class=\"kbd\">Esc</kbd>\n</div>",
+      "tags": [
+        "display",
+        "class",
+        "text"
+      ]
     },
     {
       "id": "spinner",
       "name": "Spinner",
-      "group": "display",
       "height": 70,
-      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <div class=\"spinner\"></div>\n  <span>Loading</span>\n</div>"
+      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <div class=\"spinner\"></div>\n  <span>Loading</span>\n</div>",
+      "tags": [
+        "display",
+        "class",
+        "feedback",
+        "status",
+        "animated"
+      ]
     },
     {
       "id": "skeleton",
       "name": "Skeleton",
-      "group": "display",
       "height": 150,
-      "html": "<div style=\"display: flex; flex-direction: column; gap: var(--gap-small)\">\n  <div class=\"skeleton\" style=\"height: var(--height); width: 60%\"></div>\n  <div class=\"skeleton\" style=\"height: var(--height)\"></div>\n  <div class=\"skeleton\" style=\"height: var(--height); width: 80%\"></div>\n</div>"
+      "html": "<div style=\"display: flex; flex-direction: column; gap: var(--gap-small)\">\n  <div class=\"skeleton\" style=\"height: var(--height); width: 60%\"></div>\n  <div class=\"skeleton\" style=\"height: var(--height)\"></div>\n  <div class=\"skeleton\" style=\"height: var(--height); width: 80%\"></div>\n</div>",
+      "tags": [
+        "display",
+        "class",
+        "feedback",
+        "status",
+        "animated"
+      ]
     },
     {
       "id": "progress",
       "name": "Progress",
-      "group": "display",
       "height": 70,
-      "html": "<div class=\"progress\"><div class=\"progress-fill\" style=\"width: 45%\"></div></div>"
+      "html": "<div class=\"progress\"><div class=\"progress-fill\" style=\"width: 45%\"></div></div>",
+      "tags": [
+        "display",
+        "class",
+        "feedback",
+        "status",
+        "animated"
+      ]
     },
     {
       "id": "avatar",
       "name": "Avatar",
-      "group": "display",
       "height": 130,
-      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <span class=\"avatar\">KM</span>\n  <span class=\"avatar large\">AB</span>\n  <span class=\"avatar\" style=\"background-image: url(favicon.png)\"></span>\n</div>"
+      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <span class=\"avatar\">KM</span>\n  <span class=\"avatar large\">AB</span>\n  <span class=\"avatar\" style=\"background-image: url(favicon.png)\"></span>\n</div>",
+      "tags": [
+        "display",
+        "class",
+        "media"
+      ]
     },
     {
       "id": "codeBlock",
       "name": "Code Block",
-      "group": "display",
       "height": 130,
-      "html": "<div class=\"code-block\" dir=\"ltr\"><pre>const total = 1 + 2;\nconsole.log(total);</pre></div>"
+      "html": "<div class=\"code-block\" dir=\"ltr\"><pre>const total = 1 + 2;\nconsole.log(total);</pre></div>",
+      "tags": [
+        "display",
+        "class",
+        "text"
+      ]
     },
     {
       "id": "table",
       "name": "Table",
-      "group": "display",
       "height": 190,
-      "html": "<table class=\"table\">\n  <thead><tr><th>Name</th><th>Type</th><th>Size</th></tr></thead>\n  <tbody>\n    <tr><td>photo.png</td><td>Image</td><td>1.5 MB</td></tr>\n    <tr><td>notes.txt</td><td>Text</td><td>2 KB</td></tr>\n    <tr><td>song.mp3</td><td>Audio</td><td>4.2 MB</td></tr>\n  </tbody>\n</table>"
+      "html": "<table class=\"table\">\n  <thead><tr><th>Name</th><th>Type</th><th>Size</th></tr></thead>\n  <tbody>\n    <tr><td>photo.png</td><td>Image</td><td>1.5 MB</td></tr>\n    <tr><td>notes.txt</td><td>Text</td><td>2 KB</td></tr>\n    <tr><td>song.mp3</td><td>Audio</td><td>4.2 MB</td></tr>\n  </tbody>\n</table>",
+      "tags": [
+        "display",
+        "class",
+        "data",
+        "list"
+      ]
     },
     {
       "id": "item",
       "name": "Item",
-      "group": "display",
       "height": 110,
-      "html": "<kit-item heading=\"Title\" description=\"The description of the item.\">\n  <span slot=\"media\" class=\"avatar\">KM</span>\n  <button slot=\"actions\" type=\"button\"><span>Open</span></button>\n</kit-item>"
+      "html": "<kit-item heading=\"Title\" description=\"The description of the item.\">\n  <span slot=\"media\" class=\"avatar\">KM</span>\n  <button slot=\"actions\" type=\"button\"><span>Open</span></button>\n</kit-item>",
+      "tags": [
+        "display",
+        "tag",
+        "container",
+        "list"
+      ]
     },
     {
       "id": "chart",
       "name": "Chart",
-      "group": "display",
       "height": 450,
       "html": "<div id=\"charts\" style=\"display: flex; flex-direction: column; gap: var(--gap-large); max-width: 24rem\"></div>",
-      "script": "const data = [{ label: \"Mon\", value: 3 }, { label: \"Tue\", value: 7 }, { label: \"Wed\", value: 5 }, { label: \"Thu\", value: 9 }, { label: \"Fri\", value: 6 }];\ndocument.getElementById(\"charts\").append(\n  components.chart({ type: \"bar\", data }),\n  components.chart({ type: \"line\", data }),\n);"
+      "script": "const data = [{ label: \"Mon\", value: 3 }, { label: \"Tue\", value: 7 }, { label: \"Wed\", value: 5 }, { label: \"Thu\", value: 9 }, { label: \"Fri\", value: 6 }];\ndocument.getElementById(\"charts\").append(\n  components.chart({ type: \"bar\", data }),\n  components.chart({ type: \"line\", data }),\n);",
+      "tags": [
+        "display",
+        "script",
+        "data",
+        "media"
+      ]
     },
     {
       "id": "dataTable",
       "name": "Data Table",
-      "group": "display",
       "height": 400,
       "html": "<div id=\"files\"></div>",
-      "script": "const rows = [\n  { name: \"photo.png\", type: \"Image\", size: \"1.5 MB\" },\n  { name: \"notes.txt\", type: \"Text\", size: \"2 KB\" },\n  { name: \"song.mp3\", type: \"Audio\", size: \"4.2 MB\" },\n  { name: \"movie.mp4\", type: \"Video\", size: \"120 MB\" },\n  { name: \"report.pdf\", type: \"PDF\", size: \"800 KB\" },\n  { name: \"logo.svg\", type: \"Image\", size: \"6 KB\" },\n];\ndocument.getElementById(\"files\").append(components.dataTable({\n  columns: [{ key: \"name\", label: \"Name\" }, { key: \"type\", label: \"Type\" }, { key: \"size\", label: \"Size\" }],\n  rows,\n  pageSize: 4,\n}).element);"
+      "script": "const rows = [\n  { name: \"photo.png\", type: \"Image\", size: \"1.5 MB\" },\n  { name: \"notes.txt\", type: \"Text\", size: \"2 KB\" },\n  { name: \"song.mp3\", type: \"Audio\", size: \"4.2 MB\" },\n  { name: \"movie.mp4\", type: \"Video\", size: \"120 MB\" },\n  { name: \"report.pdf\", type: \"PDF\", size: \"800 KB\" },\n  { name: \"logo.svg\", type: \"Image\", size: \"6 KB\" },\n];\ndocument.getElementById(\"files\").append(components.dataTable({\n  columns: [{ key: \"name\", label: \"Name\" }, { key: \"type\", label: \"Type\" }, { key: \"size\", label: \"Size\" }],\n  rows,\n  pageSize: 4,\n}).element);",
+      "tags": [
+        "display",
+        "script",
+        "data",
+        "list"
+      ]
     },
     {
       "id": "carousel",
       "name": "Carousel",
-      "group": "display",
       "height": 230,
       "html": "<div id=\"slides\" class=\"carousel\">\n  <div class=\"carousel-track\">\n    <div class=\"carousel-item card\"><div class=\"card-header\"><span class=\"card-title\">One</span><span class=\"card-description\">The first slide.</span></div></div>\n    <div class=\"carousel-item card\"><div class=\"card-header\"><span class=\"card-title\">Two</span><span class=\"card-description\">The second slide.</span></div></div>\n    <div class=\"carousel-item card\"><div class=\"card-header\"><span class=\"card-title\">Three</span><span class=\"card-description\">The third slide.</span></div></div>\n  </div>\n  <div class=\"carousel-controls\">\n    <button class=\"square\" type=\"button\" data-carousel=\"previous\" aria-label=\"Previous\"><span class=\"icon icon-chevron-left\"></span></button>\n    <button class=\"square\" type=\"button\" data-carousel=\"next\" aria-label=\"Next\"><span class=\"icon icon-chevron-right\"></span></button>\n  </div>\n</div>",
-      "script": "components.carousel(document.getElementById(\"slides\"));"
+      "script": "components.carousel(document.getElementById(\"slides\"));",
+      "tags": [
+        "display",
+        "script",
+        "data",
+        "media",
+        "list",
+        "animated"
+      ]
     },
     {
       "id": "button",
       "name": "Button",
-      "group": "actions",
       "height": 110,
-      "html": "<div style=\"display: flex; flex-wrap: wrap; gap: var(--gap-small)\">\n  <button type=\"button\"><span>Plain</span></button>\n  <button class=\"primary\" type=\"button\"><span>Primary</span></button>\n  <button class=\"ghost\" type=\"button\"><span>Ghost</span></button>\n  <button class=\"danger\" type=\"button\"><span>Danger</span></button>\n  <button type=\"button\"><span class=\"icon icon-download\"></span><span>With icon</span></button>\n  <button class=\"square\" type=\"button\" aria-label=\"Close\"><span class=\"icon icon-close\"></span></button>\n  <button type=\"button\" disabled><span>Disabled</span></button>\n</div>"
+      "html": "<div style=\"display: flex; flex-wrap: wrap; gap: var(--gap-small)\">\n  <button type=\"button\"><span>Plain</span></button>\n  <button class=\"primary\" type=\"button\"><span>Primary</span></button>\n  <button class=\"ghost\" type=\"button\"><span>Ghost</span></button>\n  <button class=\"danger\" type=\"button\"><span>Danger</span></button>\n  <button type=\"button\"><span class=\"icon icon-download\"></span><span>With icon</span></button>\n  <button class=\"square\" type=\"button\" aria-label=\"Close\"><span class=\"icon icon-close\"></span></button>\n  <button type=\"button\" disabled><span>Disabled</span></button>\n</div>",
+      "tags": [
+        "actions",
+        "class",
+        "button"
+      ]
     },
     {
       "id": "buttonGroup",
       "name": "Button Group",
-      "group": "actions",
       "height": 90,
-      "html": "<div class=\"button-group\">\n  <button type=\"button\"><span>Left</span></button>\n  <button type=\"button\"><span>Middle</span></button>\n  <button type=\"button\"><span>Right</span></button>\n</div>"
+      "html": "<div class=\"button-group\">\n  <button type=\"button\"><span>Left</span></button>\n  <button type=\"button\"><span>Middle</span></button>\n  <button type=\"button\"><span>Right</span></button>\n</div>",
+      "tags": [
+        "actions",
+        "class",
+        "button"
+      ]
     },
     {
       "id": "toggle",
       "name": "Toggle",
-      "group": "actions",
       "height": 90,
-      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <button class=\"toggle\" type=\"button\" aria-pressed=\"false\"><span>Bold</span></button>\n  <button class=\"toggle on\" type=\"button\" aria-pressed=\"true\"><span>Italic</span></button>\n</div>"
+      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <button class=\"toggle\" type=\"button\" aria-pressed=\"false\"><span>Bold</span></button>\n  <button class=\"toggle on\" type=\"button\" aria-pressed=\"true\"><span>Italic</span></button>\n</div>",
+      "tags": [
+        "actions",
+        "class",
+        "button"
+      ]
     },
     {
       "id": "toggleGroup",
       "name": "Toggle Group",
-      "group": "actions",
       "height": 90,
-      "html": "<div class=\"segmented-control\">\n  <button class=\"on\" type=\"button\" aria-label=\"List\"><span class=\"icon icon-list\"></span></button>\n  <button type=\"button\" aria-label=\"Grid\"><span class=\"icon icon-grid\"></span></button>\n</div>"
+      "html": "<div class=\"segmented-control\">\n  <button class=\"on\" type=\"button\" aria-label=\"List\"><span class=\"icon icon-list\"></span></button>\n  <button type=\"button\" aria-label=\"Grid\"><span class=\"icon icon-grid\"></span></button>\n</div>",
+      "tags": [
+        "actions",
+        "class",
+        "choice",
+        "button"
+      ]
     },
     {
       "id": "collapsible",
       "name": "Collapsible",
-      "group": "actions",
       "height": 180,
-      "html": "<kit-collapsible heading=\"Open part\" open>What is inside the part.</kit-collapsible>"
+      "html": "<kit-collapsible heading=\"Open part\" open>What is inside the part.</kit-collapsible>",
+      "tags": [
+        "actions",
+        "tag",
+        "container"
+      ]
     },
     {
       "id": "accordion",
       "name": "Accordion",
-      "group": "actions",
       "height": 230,
-      "html": "<div style=\"display: flex; flex-direction: column; gap: var(--gap-small)\">\n  <kit-collapsible heading=\"First part\" open>What is inside the first part.</kit-collapsible>\n  <kit-collapsible heading=\"Second part\">What is inside the second part.</kit-collapsible>\n  <kit-collapsible heading=\"Third part\">What is inside the third part.</kit-collapsible>\n</div>"
+      "html": "<div style=\"display: flex; flex-direction: column; gap: var(--gap-small)\">\n  <kit-collapsible heading=\"First part\" open>What is inside the first part.</kit-collapsible>\n  <kit-collapsible heading=\"Second part\">What is inside the second part.</kit-collapsible>\n  <kit-collapsible heading=\"Third part\">What is inside the third part.</kit-collapsible>\n</div>",
+      "tags": [
+        "actions",
+        "tag",
+        "container"
+      ]
     },
     {
       "id": "breadcrumb",
       "name": "Breadcrumb",
-      "group": "navigation",
       "height": 90,
-      "html": "<kit-breadcrumbs>\n  <span>Home</span>\n  <span>Folder</span>\n  <span>File</span>\n</kit-breadcrumbs>"
+      "html": "<kit-breadcrumbs>\n  <span>Home</span>\n  <span>Folder</span>\n  <span>File</span>\n</kit-breadcrumbs>",
+      "tags": [
+        "navigation",
+        "tag"
+      ]
     },
     {
       "id": "tabs",
       "name": "Tabs",
-      "group": "navigation",
       "height": 100,
       "html": "<kit-tabs value=\"account\">\n  <button value=\"account\"><span>Account</span></button>\n  <button value=\"password\"><span>Password</span></button>\n  <button value=\"billing\"><span>Billing</span></button>\n</kit-tabs>",
-      "script": "document.querySelector(\"kit-tabs\").addEventListener(\"change\", (event) => popups.toast(event.detail.value));"
+      "script": "document.querySelector(\"kit-tabs\").addEventListener(\"change\", (event) => popups.toast(event.detail.value));",
+      "tags": [
+        "navigation",
+        "tag",
+        "script",
+        "choice"
+      ]
     },
     {
       "id": "pagination",
       "name": "Pagination",
-      "group": "navigation",
       "height": 90,
       "html": "<kit-pagination pages=\"9\" page=\"3\"></kit-pagination>",
-      "script": "document.querySelector(\"kit-pagination\").addEventListener(\"change\", (event) => popups.toast(\"Page \" + event.detail.page));"
+      "script": "document.querySelector(\"kit-pagination\").addEventListener(\"change\", (event) => popups.toast(\"Page \" + event.detail.page));",
+      "tags": [
+        "navigation",
+        "tag",
+        "script",
+        "data"
+      ]
     },
     {
       "id": "label",
       "name": "Label",
-      "group": "forms",
       "height": 90,
-      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <label class=\"field-label\" for=\"kit-agree\">Accept the terms</label>\n  <input id=\"kit-agree\" class=\"switch\" type=\"checkbox\">\n</div>"
+      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <label class=\"field-label\" for=\"kit-agree\">Accept the terms</label>\n  <input id=\"kit-agree\" class=\"switch\" type=\"checkbox\">\n</div>",
+      "tags": [
+        "forms",
+        "class",
+        "text"
+      ]
     },
     {
       "id": "field",
       "name": "Field",
-      "group": "forms",
       "height": 160,
-      "html": "<kit-field label=\"Email\" hint=\"It is never shared.\">\n  <input type=\"email\" placeholder=\"name@example.com\">\n</kit-field>"
+      "html": "<kit-field label=\"Email\" hint=\"It is never shared.\">\n  <input type=\"email\" placeholder=\"name@example.com\">\n</kit-field>",
+      "tags": [
+        "forms",
+        "tag",
+        "input"
+      ]
     },
     {
       "id": "input",
       "name": "Input",
-      "group": "forms",
       "height": 90,
-      "html": "<input type=\"text\" placeholder=\"Type here\" aria-label=\"Text\">"
+      "html": "<input type=\"text\" placeholder=\"Type here\" aria-label=\"Text\">",
+      "tags": [
+        "forms",
+        "class",
+        "input"
+      ]
     },
     {
       "id": "inputGroup",
       "name": "Input Group",
-      "group": "forms",
       "height": 90,
-      "html": "<kit-search input-id=\"fruit-search\" placeholder=\"Search\" aria-label=\"Search\"></kit-search>"
+      "html": "<kit-search input-id=\"fruit-search\" placeholder=\"Search\" aria-label=\"Search\"></kit-search>",
+      "tags": [
+        "forms",
+        "tag",
+        "input"
+      ]
     },
     {
       "id": "textarea",
       "name": "Textarea",
-      "group": "forms",
       "height": 130,
-      "html": "<textarea rows=\"3\" placeholder=\"Type a message\" aria-label=\"Message\"></textarea>"
+      "html": "<textarea rows=\"3\" placeholder=\"Type a message\" aria-label=\"Message\"></textarea>",
+      "tags": [
+        "forms",
+        "class",
+        "input"
+      ]
     },
     {
       "id": "nativeSelect",
-      "name": "Native Select",
-      "group": "forms",
+      "name": "Select Tag",
       "height": 90,
-      "html": "<select aria-label=\"Fruit\">\n  <option>Apple</option>\n  <option>Banana</option>\n  <option>Cherry</option>\n</select>"
+      "html": "<select aria-label=\"Fruit\">\n  <option>Apple</option>\n  <option>Banana</option>\n  <option>Cherry</option>\n</select>",
+      "tags": [
+        "forms",
+        "class",
+        "input",
+        "choice"
+      ]
     },
     {
       "id": "switch",
       "name": "Switch",
-      "group": "forms",
       "height": 90,
-      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <input class=\"switch\" type=\"checkbox\" aria-label=\"Off\">\n  <input class=\"switch\" type=\"checkbox\" aria-label=\"On\" checked>\n  <input class=\"switch\" type=\"checkbox\" aria-label=\"Disabled\" disabled>\n</div>"
+      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <input class=\"switch\" type=\"checkbox\" aria-label=\"Off\">\n  <input class=\"switch\" type=\"checkbox\" aria-label=\"On\" checked>\n  <input class=\"switch\" type=\"checkbox\" aria-label=\"Disabled\" disabled>\n</div>",
+      "tags": [
+        "forms",
+        "class",
+        "input",
+        "choice"
+      ]
     },
     {
       "id": "checkbox",
       "name": "Checkbox",
-      "group": "forms",
       "height": 90,
-      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <input class=\"checkbox\" type=\"checkbox\" aria-label=\"Off\">\n  <input class=\"checkbox\" type=\"checkbox\" aria-label=\"On\" checked>\n  <input class=\"checkbox\" type=\"checkbox\" aria-label=\"Disabled\" disabled>\n</div>"
+      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <input class=\"checkbox\" type=\"checkbox\" aria-label=\"Off\">\n  <input class=\"checkbox\" type=\"checkbox\" aria-label=\"On\" checked>\n  <input class=\"checkbox\" type=\"checkbox\" aria-label=\"Disabled\" disabled>\n</div>",
+      "tags": [
+        "forms",
+        "class",
+        "input",
+        "choice"
+      ]
     },
     {
       "id": "radioGroup",
       "name": "Radio Group",
-      "group": "forms",
       "height": 130,
-      "html": "<div style=\"display: flex; flex-direction: column; gap: var(--gap-small)\">\n  <label style=\"display: flex; align-items: center; gap: var(--gap-small)\"><input class=\"radio\" type=\"radio\" name=\"kit-fruit\" checked> Apple</label>\n  <label style=\"display: flex; align-items: center; gap: var(--gap-small)\"><input class=\"radio\" type=\"radio\" name=\"kit-fruit\"> Banana</label>\n  <label style=\"display: flex; align-items: center; gap: var(--gap-small)\"><input class=\"radio\" type=\"radio\" name=\"kit-fruit\"> Cherry</label>\n</div>"
+      "html": "<div style=\"display: flex; flex-direction: column; gap: var(--gap-small)\">\n  <label style=\"display: flex; align-items: center; gap: var(--gap-small)\"><input class=\"radio\" type=\"radio\" name=\"kit-fruit\" checked> Apple</label>\n  <label style=\"display: flex; align-items: center; gap: var(--gap-small)\"><input class=\"radio\" type=\"radio\" name=\"kit-fruit\"> Banana</label>\n  <label style=\"display: flex; align-items: center; gap: var(--gap-small)\"><input class=\"radio\" type=\"radio\" name=\"kit-fruit\"> Cherry</label>\n</div>",
+      "tags": [
+        "forms",
+        "class",
+        "input",
+        "choice"
+      ]
     },
     {
       "id": "slider",
       "name": "Slider",
-      "group": "forms",
       "height": 90,
-      "html": "<input class=\"slider\" type=\"range\" min=\"0\" max=\"100\" value=\"40\" aria-label=\"Volume\">"
+      "html": "<input class=\"slider\" type=\"range\" min=\"0\" max=\"100\" value=\"40\" aria-label=\"Volume\">",
+      "tags": [
+        "forms",
+        "class",
+        "input",
+        "choice"
+      ]
     },
     {
       "id": "inputOtp",
       "name": "Input OTP",
-      "group": "forms",
       "height": 110,
       "html": "<div id=\"code\"></div>",
-      "script": "const code = components.otp({ length: 6, onComplete: (value) => popups.toast(value) });\ndocument.getElementById(\"code\").append(code.element);"
+      "script": "const code = components.otp({ length: 6, onComplete: (value) => popups.toast(value) });\ndocument.getElementById(\"code\").append(code.element);",
+      "tags": [
+        "forms",
+        "script",
+        "input"
+      ]
     },
     {
       "id": "select",
       "name": "Select",
-      "group": "forms",
       "height": 260,
       "html": "<button id=\"fruit\" type=\"button\" style=\"width: calc(var(--height) * 5)\"></button>",
-      "script": "components.select({\n  trigger: document.getElementById(\"fruit\"),\n  options: [{ value: \"apple\", label: \"Apple\" }, { value: \"banana\", label: \"Banana\" }, { value: \"cherry\", label: \"Cherry\" }],\n  value: \"banana\",\n  onChange: (value) => popups.toast(value),\n});"
+      "script": "components.select({\n  trigger: document.getElementById(\"fruit\"),\n  options: [{ value: \"apple\", label: \"Apple\" }, { value: \"banana\", label: \"Banana\" }, { value: \"cherry\", label: \"Cherry\" }],\n  value: \"banana\",\n  onChange: (value) => popups.toast(value),\n});",
+      "tags": [
+        "forms",
+        "script",
+        "input",
+        "choice",
+        "menu"
+      ]
     },
     {
       "id": "combobox",
       "name": "Combobox",
-      "group": "forms",
       "height": 260,
       "html": "<label class=\"searchbox\">\n  <span class=\"icon icon-search\"></span>\n  <input id=\"fruit-search\" type=\"search\" placeholder=\"Search a fruit\" aria-label=\"Fruit\">\n</label>",
-      "script": "autocomplete.attach(document.getElementById(\"fruit-search\"), {\n  suggestions: () => [\"Apple\", \"Apricot\", \"Banana\", \"Cherry\", \"Grape\"],\n});"
+      "script": "autocomplete.attach(document.getElementById(\"fruit-search\"), {\n  suggestions: () => [\"Apple\", \"Apricot\", \"Banana\", \"Cherry\", \"Grape\"],\n});",
+      "tags": [
+        "forms",
+        "script",
+        "input",
+        "choice",
+        "menu"
+      ]
     },
     {
       "id": "calendar",
       "name": "Calendar",
-      "group": "forms",
       "height": 420,
       "html": "<div id=\"month\"></div>",
-      "script": "const month = components.calendar({ onSelect: (date) => popups.toast(date.toDateString()) });\ndocument.getElementById(\"month\").append(month.element);"
+      "script": "const month = components.calendar({ onSelect: (date) => popups.toast(date.toDateString()) });\ndocument.getElementById(\"month\").append(month.element);",
+      "tags": [
+        "forms",
+        "script",
+        "data",
+        "input",
+        "choice"
+      ]
     },
     {
       "id": "datePicker",
       "name": "Date Picker",
-      "group": "forms",
       "height": 460,
       "html": "<button id=\"pick-date\" type=\"button\" style=\"width: calc(var(--height) * 6)\"><span>Pick a date</span></button>",
-      "script": "const button = document.getElementById(\"pick-date\");\nbutton.addEventListener(\"click\", () => {\n  const picker = components.calendar({\n    onSelect: (date) => {\n      button.firstChild.textContent = date.toLocaleDateString();\n      components.closeOverlay();\n    },\n  });\n  components.popover({ anchor: button, content: picker.element });\n});"
+      "script": "const button = document.getElementById(\"pick-date\");\nbutton.addEventListener(\"click\", () => {\n  const picker = components.calendar({\n    onSelect: (date) => {\n      button.firstChild.textContent = date.toLocaleDateString();\n      components.closeOverlay();\n    },\n  });\n  components.popover({ anchor: button, content: picker.element });\n});",
+      "tags": [
+        "forms",
+        "script",
+        "data",
+        "input",
+        "choice"
+      ]
     },
     {
       "id": "dropdownMenu",
       "name": "Dropdown Menu",
-      "group": "overlays",
       "height": 300,
       "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <button id=\"open-menu\" type=\"button\"><span>Open menu</span></button>\n</div>",
-      "script": "document.getElementById(\"open-menu\").addEventListener(\"click\", (event) => {\n  components.menu({\n    anchor: event.currentTarget,\n    items: [\n      { label: \"Profile\", icon: \"user\", onSelect: () => popups.toast(\"Profile\") },\n      { label: \"Settings\", icon: \"sliders\", onSelect: () => popups.toast(\"Settings\") },\n      { separator: true },\n      { label: \"Sign out\", icon: \"logout\", danger: true, onSelect: () => popups.toast(\"Signed out\") },\n    ],\n  });\n});"
+      "script": "document.getElementById(\"open-menu\").addEventListener(\"click\", (event) => {\n  components.menu({\n    anchor: event.currentTarget,\n    items: [\n      { label: \"Profile\", icon: \"user\", onSelect: () => popups.toast(\"Profile\") },\n      { label: \"Settings\", icon: \"sliders\", onSelect: () => popups.toast(\"Settings\") },\n      { separator: true },\n      { label: \"Sign out\", icon: \"logout\", danger: true, onSelect: () => popups.toast(\"Signed out\") },\n    ],\n  });\n});",
+      "tags": [
+        "overlays",
+        "script",
+        "menu"
+      ]
     },
     {
       "id": "contextMenu",
       "name": "Context Menu",
-      "group": "overlays",
       "height": 300,
       "html": "<div id=\"area\" class=\"card\"><div class=\"card-header\"><span class=\"card-description\">Right-click anywhere in this card.</span></div></div>",
-      "script": "document.getElementById(\"area\").addEventListener(\"contextmenu\", (event) => {\n  event.preventDefault();\n  components.menu({\n    point: { x: event.clientX, y: event.clientY },\n    items: [\n      { label: \"Copy\", icon: \"copy\", onSelect: () => popups.toast(\"Copied\") },\n      { label: \"Rename\", icon: \"pencil\" },\n      { separator: true },\n      { label: \"Delete\", icon: \"trash\", danger: true },\n    ],\n  });\n});"
+      "script": "document.getElementById(\"area\").addEventListener(\"contextmenu\", (event) => {\n  event.preventDefault();\n  components.menu({\n    point: { x: event.clientX, y: event.clientY },\n    items: [\n      { label: \"Copy\", icon: \"copy\", onSelect: () => popups.toast(\"Copied\") },\n      { label: \"Rename\", icon: \"pencil\" },\n      { separator: true },\n      { label: \"Delete\", icon: \"trash\", danger: true },\n    ],\n  });\n});",
+      "tags": [
+        "overlays",
+        "script",
+        "menu"
+      ]
     },
     {
       "id": "popover",
       "name": "Popover",
-      "group": "overlays",
       "height": 260,
       "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <button id=\"open-popover\" type=\"button\"><span>Open popover</span></button>\n</div>",
-      "script": "document.getElementById(\"open-popover\").addEventListener(\"click\", (event) => {\n  components.popover({\n    anchor: event.currentTarget,\n    content: components.element(\"p\", \"\", \"Anything can go in a popover.\"),\n  });\n});"
+      "script": "document.getElementById(\"open-popover\").addEventListener(\"click\", (event) => {\n  components.popover({\n    anchor: event.currentTarget,\n    content: components.element(\"p\", \"\", \"Anything can go in a popover.\"),\n  });\n});",
+      "tags": [
+        "overlays",
+        "script",
+        "container"
+      ]
     },
     {
       "id": "tooltip",
       "name": "Tooltip",
-      "group": "overlays",
       "height": 130,
-      "html": "<div style=\"padding-top: var(--padding-extra-large)\">\n  <button class=\"square\" type=\"button\" data-tooltip=\"Add to library\" aria-label=\"Add\"><span class=\"icon icon-plus\"></span></button>\n</div>"
+      "html": "<div style=\"padding-top: var(--padding-extra-large)\">\n  <button class=\"square\" type=\"button\" data-tooltip=\"Add to library\" aria-label=\"Add\"><span class=\"icon icon-plus\"></span></button>\n</div>",
+      "tags": [
+        "overlays",
+        "class",
+        "hover"
+      ]
     },
     {
       "id": "hoverCard",
       "name": "Hover Card",
-      "group": "overlays",
       "height": 260,
-      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <span class=\"hover-card\">\n    <button type=\"button\"><span>@kancamu</span></button>\n    <span class=\"hover-card-content\"><span class=\"avatar\">KM</span><strong>Kancamu</strong><span>One account for every web.</span></span>\n  </span>\n</div>"
+      "html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small)\">\n  <span class=\"hover-card\">\n    <button type=\"button\"><span>@kancamu</span></button>\n    <span class=\"hover-card-content\"><span class=\"avatar\">KM</span><strong>Kancamu</strong><span>One account for every web.</span></span>\n  </span>\n</div>",
+      "tags": [
+        "overlays",
+        "class",
+        "container",
+        "hover"
+      ]
     },
     {
       "id": "menubar",
       "name": "Menubar",
-      "group": "overlays",
       "height": 300,
       "html": "<div class=\"menubar\">\n  <button type=\"button\" data-menu=\"file\"><span>File</span></button>\n  <button type=\"button\" data-menu=\"edit\"><span>Edit</span></button>\n  <button type=\"button\" data-menu=\"view\"><span>View</span></button>\n</div>",
-      "script": "const menus = { file: [\"New\", \"Open\", \"Save\"], edit: [\"Undo\", \"Redo\"], view: [\"Zoom in\", \"Zoom out\"] };\ndocument.querySelectorAll(\"[data-menu]\").forEach((button) => button.addEventListener(\"click\", () => components.menu({\n  anchor: button,\n  items: menus[button.dataset.menu].map((label) => ({ label, onSelect: () => popups.toast(label) })),\n})));"
+      "script": "const menus = { file: [\"New\", \"Open\", \"Save\"], edit: [\"Undo\", \"Redo\"], view: [\"Zoom in\", \"Zoom out\"] };\ndocument.querySelectorAll(\"[data-menu]\").forEach((button) => button.addEventListener(\"click\", () => components.menu({\n  anchor: button,\n  items: menus[button.dataset.menu].map((label) => ({ label, onSelect: () => popups.toast(label) })),\n})));",
+      "tags": [
+        "overlays",
+        "script",
+        "menu"
+      ]
     },
     {
       "id": "navigationMenu",
       "name": "Navigation Menu",
-      "group": "overlays",
       "height": 300,
       "html": "<nav class=\"navigation-menu\">\n  <button type=\"button\" data-panel=\"start\"><span>Getting started</span></button>\n  <button type=\"button\" data-panel=\"parts\"><span>Components</span></button>\n  <button type=\"button\" data-panel=\"docs\"><span>Docs</span></button>\n</nav>",
-      "script": "const panels = { start: [\"Introduction\", \"Installation\"], parts: [\"Button\", \"Card\", \"Tabs\"], docs: [\"Changelog\", \"Rules\"] };\ndocument.querySelectorAll(\"[data-panel]\").forEach((button) => button.addEventListener(\"click\", () => {\n  const list = components.element(\"div\", \"section-body\");\n  panels[button.dataset.panel].forEach((name) => list.append(components.element(\"button\", \"menu-item\", name)));\n  components.popover({ anchor: button, content: list });\n}));"
+      "script": "const panels = { start: [\"Introduction\", \"Installation\"], parts: [\"Button\", \"Card\", \"Tabs\"], docs: [\"Changelog\", \"Rules\"] };\ndocument.querySelectorAll(\"[data-panel]\").forEach((button) => button.addEventListener(\"click\", () => {\n  const list = components.element(\"div\", \"section-body\");\n  panels[button.dataset.panel].forEach((name) => list.append(components.element(\"button\", \"menu-item\", name)));\n  components.popover({ anchor: button, content: list });\n}));",
+      "tags": [
+        "overlays",
+        "script",
+        "menu"
+      ]
     },
     {
       "id": "message",
       "name": "Message",
-      "group": "chat",
       "height": 260,
-      "html": "<div class=\"message-group\">\n  <kit-message avatar=\"AI\" heading=\"Assistant\" footer=\"10:42\">How can I help you today?</kit-message>\n  <kit-message end bubble=\"filled\" footer=\"Delivered\">Show me the chat components.</kit-message>\n</div>"
+      "html": "<div class=\"message-group\">\n  <kit-message avatar=\"AI\" heading=\"Assistant\" footer=\"10:42\">How can I help you today?</kit-message>\n  <kit-message end bubble=\"filled\" footer=\"Delivered\">Show me the chat components.</kit-message>\n</div>",
+      "tags": [
+        "chat",
+        "tag",
+        "text"
+      ]
     },
     {
       "id": "bubble",
       "name": "Bubble",
-      "group": "chat",
       "height": 300,
-      "html": "<div style=\"display: flex; flex-direction: column; gap: var(--gap-small); align-items: flex-start\">\n  <div class=\"bubble\">Default</div>\n  <div class=\"bubble filled\">Filled</div>\n  <div class=\"bubble ghost\">Ghost, with no frame</div>\n  <div class=\"bubble\">With reactions<span class=\"bubble-reactions\"><span class=\"icon icon-heart\"></span><span class=\"icon icon-star\"></span></span></div>\n</div>"
+      "html": "<div style=\"display: flex; flex-direction: column; gap: var(--gap-small); align-items: flex-start\">\n  <div class=\"bubble\">Default</div>\n  <div class=\"bubble filled\">Filled</div>\n  <div class=\"bubble ghost\">Ghost, with no frame</div>\n  <div class=\"bubble\">With reactions<span class=\"bubble-reactions\"><span class=\"icon icon-heart\"></span><span class=\"icon icon-star\"></span></span></div>\n</div>",
+      "tags": [
+        "chat",
+        "class",
+        "text"
+      ]
     },
     {
       "id": "marker",
       "name": "Marker",
-      "group": "chat",
       "height": 230,
-      "html": "<div style=\"display: flex; flex-direction: column; gap: var(--gap-small); gap: var(--gap-medium)\">\n  <kit-marker icon=\"check\">Explored 4 files</kit-marker>\n  <kit-marker variant=\"border\" icon=\"info\">Conversation compacted</kit-marker>\n  <kit-marker variant=\"separator\">Today</kit-marker>\n  <kit-marker status shimmer>Thinking...</kit-marker>\n</div>"
+      "html": "<div style=\"display: flex; flex-direction: column; gap: var(--gap-small); gap: var(--gap-medium)\">\n  <kit-marker icon=\"check\">Explored 4 files</kit-marker>\n  <kit-marker variant=\"border\" icon=\"info\">Conversation compacted</kit-marker>\n  <kit-marker variant=\"separator\">Today</kit-marker>\n  <kit-marker status shimmer>Thinking...</kit-marker>\n</div>",
+      "tags": [
+        "chat",
+        "tag"
+      ]
     },
     {
       "id": "trace",
       "name": "Trace",
-      "group": "chat",
       "height": 260,
-      "html": "<div class=\"trace\">\n  <kit-trace-line icon=\"search\" heading=\"Searched for minimumReleaseAge\"></kit-trace-line>\n  <kit-trace-line icon=\"file-text\" heading=\"Ran node --version\" description=\"0.2 s\">v24.18.0</kit-trace-line>\n  <kit-trace-line icon=\"cpu\" heading=\"Running the tests\" status=\"running\"></kit-trace-line>\n  <kit-trace-line icon=\"alert\" heading=\"Failed to install the packages\" status=\"error\"></kit-trace-line>\n</div>"
+      "html": "<div class=\"trace\">\n  <kit-trace-line icon=\"search\" heading=\"Searched for minimumReleaseAge\"></kit-trace-line>\n  <kit-trace-line icon=\"file-text\" heading=\"Ran node --version\" description=\"0.2 s\">v24.18.0</kit-trace-line>\n  <kit-trace-line icon=\"cpu\" heading=\"Running the tests\" status=\"running\"></kit-trace-line>\n  <kit-trace-line icon=\"alert\" heading=\"Failed to install the packages\" status=\"error\"></kit-trace-line>\n</div>",
+      "tags": [
+        "chat",
+        "tag"
+      ]
     },
     {
       "id": "attachment",
       "name": "Attachment",
-      "group": "chat",
       "height": 150,
-      "html": "<div class=\"attachment-group\">\n  <kit-attachment icon=\"image\" name=\"workspace.png\" detail=\"PNG · 820 KB\">\n    <button slot=\"actions\" class=\"square ghost\" type=\"button\" aria-label=\"Remove\"><span class=\"icon icon-close\"></span></button>\n  </kit-attachment>\n  <kit-attachment icon=\"pdf\" name=\"report.pdf\" detail=\"Upload failed\" kind=\"error\"></kit-attachment>\n</div>"
+      "html": "<div class=\"attachment-group\">\n  <kit-attachment icon=\"image\" name=\"workspace.png\" detail=\"PNG · 820 KB\">\n    <button slot=\"actions\" class=\"square ghost\" type=\"button\" aria-label=\"Remove\"><span class=\"icon icon-close\"></span></button>\n  </kit-attachment>\n  <kit-attachment icon=\"pdf\" name=\"report.pdf\" detail=\"Upload failed\" kind=\"error\"></kit-attachment>\n</div>",
+      "tags": [
+        "chat",
+        "tag",
+        "media"
+      ]
     },
     {
       "id": "messageScroller",
       "name": "Message Scroller",
-      "group": "chat",
       "height": 260,
       "html": "<div id=\"thread\" class=\"message-scroller\" style=\"height: 9rem\"></div>\n<div style=\"display: flex; margin-top: var(--gap-small)\"><button id=\"add\" type=\"button\"><span>Add a message</span></button></div>",
-      "script": "const thread = document.getElementById(\"thread\");\nconst follow = components.scroller(thread);\nconst add = (text) => {\n  thread.append(components.element(\"div\", \"bubble\", text));\n  follow.follow();\n};\nfor (let number = 1; number <= 6; number++) add(\"Message \" + number);\ndocument.getElementById(\"add\").addEventListener(\"click\", () => add(\"Another message\"));"
+      "script": "const thread = document.getElementById(\"thread\");\nconst follow = components.scroller(thread);\nconst add = (text) => {\n  thread.append(components.element(\"div\", \"bubble\", text));\n  follow.follow();\n};\nfor (let number = 1; number <= 6; number++) add(\"Message \" + number);\ndocument.getElementById(\"add\").addEventListener(\"click\", () => add(\"Another message\"));",
+      "tags": [
+        "chat",
+        "script",
+        "list"
+      ]
     },
     {
       "id": "questionnaire",
       "name": "Questionnaire",
-      "group": "chat",
       "height": 430,
       "html": "<div id=\"quiz\"></div>",
-      "script": "const quiz = components.questionnaire({\n  items: [\n    { name: \"direction\", required: true, prompt: \"What should we build next?\", description: \"Choose a direction.\", choices: [{ value: \"trace\", label: \"Tool call timeline\", description: \"Show what the agent ran.\" }, { value: \"approval\", label: \"Approval checkpoints\" }, { value: \"handoff\", label: \"Sub-agent handoffs\" }] },\n    { name: \"detail\", required: false, prompt: \"How much detail?\", description: \"Skip it if you are not sure.\", choices: [{ value: \"focused\", label: \"Focused\" }, { value: \"complete\", label: \"Complete\" }] },\n  ],\n  onSubmit: (answers) => popups.toast(JSON.stringify(answers)),\n});\ndocument.getElementById(\"quiz\").append(quiz.element);"
+      "script": "const quiz = components.questionnaire({\n  items: [\n    { name: \"direction\", required: true, prompt: \"What should we build next?\", description: \"Choose a direction.\", choices: [{ value: \"trace\", label: \"Tool call timeline\", description: \"Show what the agent ran.\" }, { value: \"approval\", label: \"Approval checkpoints\" }, { value: \"handoff\", label: \"Sub-agent handoffs\" }] },\n    { name: \"detail\", required: false, prompt: \"How much detail?\", description: \"Skip it if you are not sure.\", choices: [{ value: \"focused\", label: \"Focused\" }, { value: \"complete\", label: \"Complete\" }] },\n  ],\n  onSubmit: (answers) => popups.toast(JSON.stringify(answers)),\n});\ndocument.getElementById(\"quiz\").append(quiz.element);",
+      "tags": [
+        "chat",
+        "script"
+      ]
     }
   ],
   "guide": [
@@ -1397,7 +1685,7 @@
     },
     {
       "id": "page",
-      "code": "<body>\n  <kit-header id=\"header\" theme menu></kit-header>\n  <kit-sidebar id=\"sidebar\">...</kit-sidebar>   <!-- only when the web has a sidebar -->\n  <div id=\"main\" class=\"main\">...</div>\n  <kit-footer id=\"footer\" status></kit-footer>\n  <div id=\"popups\" class=\"popups\"></div>\n</body>"
+      "code": "<body>\n  <kit-header id=\"header\" theme menu></kit-header>\n  <kit-sidebar id=\"sidebar\">...</kit-sidebar>   <!-- only when the web has a sidebar -->\n  <div id=\"main\" class=\"main\" style=\"padding: var(--padding-large)\">...</div>\n  <kit-footer id=\"footer\" status></kit-footer>\n  <div id=\"popups\" class=\"popups\"></div>\n</body>"
     },
     {
       "id": "components",
@@ -1421,6 +1709,138 @@
     {
       "id": "add",
       "code": "// kitmu/data.json\n{ \"id\": \"stat\", \"name\": \"Stat\", \"group\": \"display\", \"height\": 120, \"html\": \"<div class=\\\"stat\\\">...</div>\" }\n\n// and its text, in every language\n\"components.stat.text\": { \"en-US\": \"...\", \"zh-CN\": \"...\", \"ar-SA\": \"...\" }"
+    }
+  ],
+  "tags": {
+    "layout": {
+      "en-US": "Layout",
+      "zh-CN": "布局",
+      "ar-SA": "التخطيط"
+    },
+    "display": {
+      "en-US": "Display",
+      "zh-CN": "展示",
+      "ar-SA": "العرض"
+    },
+    "actions": {
+      "en-US": "Actions",
+      "zh-CN": "操作",
+      "ar-SA": "الإجراءات"
+    },
+    "navigation": {
+      "en-US": "Navigation",
+      "zh-CN": "导航",
+      "ar-SA": "التنقل"
+    },
+    "forms": {
+      "en-US": "Forms",
+      "zh-CN": "表单",
+      "ar-SA": "النماذج"
+    },
+    "overlays": {
+      "en-US": "Overlays",
+      "zh-CN": "浮层",
+      "ar-SA": "الطبقات"
+    },
+    "chat": {
+      "en-US": "Chat",
+      "zh-CN": "聊天",
+      "ar-SA": "الدردشة"
+    },
+    "class": {
+      "en-US": "CSS class",
+      "zh-CN": "CSS 类",
+      "ar-SA": "صنف CSS"
+    },
+    "tag": {
+      "en-US": "Tag",
+      "zh-CN": "标签",
+      "ar-SA": "وسم"
+    },
+    "script": {
+      "en-US": "Script",
+      "zh-CN": "脚本",
+      "ar-SA": "سكربت"
+    },
+    "feedback": {
+      "en-US": "Feedback",
+      "zh-CN": "反馈",
+      "ar-SA": "ملاحظات"
+    },
+    "data": {
+      "en-US": "Data",
+      "zh-CN": "数据",
+      "ar-SA": "البيانات"
+    },
+    "input": {
+      "en-US": "Input",
+      "zh-CN": "输入",
+      "ar-SA": "إدخال"
+    },
+    "choice": {
+      "en-US": "Choice",
+      "zh-CN": "选择",
+      "ar-SA": "اختيار"
+    },
+    "text": {
+      "en-US": "Text",
+      "zh-CN": "文本",
+      "ar-SA": "نص"
+    },
+    "button": {
+      "en-US": "Button",
+      "zh-CN": "按钮",
+      "ar-SA": "أزرار"
+    },
+    "menu": {
+      "en-US": "Menu",
+      "zh-CN": "菜单",
+      "ar-SA": "قوائم"
+    },
+    "container": {
+      "en-US": "Container",
+      "zh-CN": "容器",
+      "ar-SA": "حاويات"
+    },
+    "status": {
+      "en-US": "Status",
+      "zh-CN": "状态",
+      "ar-SA": "حالة"
+    },
+    "media": {
+      "en-US": "Media",
+      "zh-CN": "媒体",
+      "ar-SA": "وسائط"
+    },
+    "list": {
+      "en-US": "List",
+      "zh-CN": "列表",
+      "ar-SA": "قوائم عناصر"
+    },
+    "hover": {
+      "en-US": "Hover",
+      "zh-CN": "悬停",
+      "ar-SA": "تمرير"
+    },
+    "animated": {
+      "en-US": "Animated",
+      "zh-CN": "动画",
+      "ar-SA": "متحرك"
+    }
+  },
+  "pages": [
+    {
+      "id": "page",
+      "name": "Sidebar",
+      "height": 420,
+      "html": "<kit-header id=\"header\" theme menu name='Name<span class=\"highlight\">mu</span>'></kit-header>\n<kit-sidebar id=\"sidebar\">\n  <span class=\"sidebar-title\">Section</span>\n  <button class=\"sidebar-item on\" type=\"button\"><span>First item</span></button>\n  <button class=\"sidebar-item\" type=\"button\"><span>Second item</span></button>\n  <button class=\"sidebar-item\" type=\"button\"><span>Third item</span></button>\n  <div class=\"sidebar-summary\" slot=\"after\">A box of numbers</div>\n</kit-sidebar>\n<div id=\"main\" class=\"main\" style=\"padding: var(--padding-large)\">\n  <div class=\"topbar\">\n    <button class=\"primary\" type=\"button\"><span class=\"icon icon-plus\"></span><span>New</span></button>\n    <button type=\"button\"><span>Other</span></button>\n  </div>\n  <p>The content of the web.</p>\n</div>\n<kit-footer id=\"footer\" status brand=\"Kancamu\"></kit-footer>\n<div id=\"popups\" class=\"popups\"></div>",
+      "script": "document.getElementById(\"status\").textContent = \"3 items\";"
+    },
+    {
+      "id": "pageSimple",
+      "name": "Page",
+      "height": 320,
+      "html": "<kit-header id=\"header\" theme name='Name<span class=\"highlight\">mu</span>'></kit-header>\n<div id=\"main\" class=\"main\" style=\"padding: var(--padding-large)\">\n  <div class=\"topbar\">\n    <button class=\"primary\" type=\"button\"><span>Start</span></button>\n  </div>\n  <p>The content of the web. With no sidebar, the main has no border of its own.</p>\n</div>\n<kit-footer id=\"footer\" brand=\"Kancamu\"></kit-footer>\n<div id=\"popups\" class=\"popups\"></div>"
     }
   ]
 }

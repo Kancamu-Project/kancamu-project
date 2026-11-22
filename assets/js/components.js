@@ -139,13 +139,14 @@
             event.stopPropagation();
             close(true);
         };
+        const scrolled = (event) => { if (!node.contains(event.target)) close(); };   // the page scrolls: it closes; the list inside it scrolls: it stays
         const close = (refocus = false) => {
             if (open?.node !== node) return;
             node.remove();
             document.removeEventListener("pointerdown", outside, true);
             document.removeEventListener("keydown", escape, true);
             window.removeEventListener("resize", close);
-            document.removeEventListener("scroll", close, true);
+            document.removeEventListener("scroll", scrolled, true);
             open = null;
             if (refocus) anchor?.focus();
         };
@@ -153,13 +154,17 @@
         document.addEventListener("pointerdown", outside, true);
         document.addEventListener("keydown", escape, true);
         window.addEventListener("resize", close);
-        document.addEventListener("scroll", close, true);
+        document.addEventListener("scroll", scrolled, true);
         return { node, close };
     }
 
-    function menu({ anchor, point, items, align }) {
+    function menu({ anchor, point, items, align, scroll = false }) {
         const node = element("div", "menu");
         node.setAttribute("role", "menu");
+        if (scroll) {   // a long list scrolls inside the menu
+            node.style.maxHeight = "min(32rem, 60vh)";
+            node.style.overflowY = "auto";
+        }
         const buttons = [];
         let handle = null;
         for (const entry of items) {
@@ -249,6 +254,53 @@
             },
         };
     }
+
+    /* ---------- the tag <select>: it opens the menu of the kit, not the list of the browser ---------- */
+    // The select keeps its value, its options, and its change event, so a web changes nothing; only the list that opens is the menu of the kit (a second click, Escape, and the arrows work as in every menu).
+    // Every <select> of a page gets it (the ones that are made later too); data-native keeps the list of the browser.
+    function enhanceSelect(native) {
+        if (native.dataset.kitSelect !== undefined || native.hasAttribute("data-native")) return;
+        native.dataset.kitSelect = "";
+        const choose = () => {
+            if (native.disabled) return;
+            const handle = menu({
+                anchor: native,
+                scroll: true,
+                items: [...native.options].filter((option) => !option.hidden).map((option) => ({
+                    label: option.textContent,
+                    icon: option.selected ? "check" : "blank",
+                    disabled: option.disabled,
+                    onSelect: () => {
+                        if (native.value === option.value) return;
+                        native.value = option.value;
+                        native.dispatchEvent(new Event("input", { bubbles: true }));
+                        native.dispatchEvent(new Event("change", { bubbles: true }));
+                    },
+                })),
+            });
+            if (!handle) return;
+            handle.node.style.minWidth = `${native.offsetWidth}px`;
+            const picked = [...handle.node.querySelectorAll(".menu-item")].find((button) => button.querySelector(".icon-check"));
+            if (picked) { picked.focus(); picked.scrollIntoView({ block: "nearest" }); }
+        };
+        native.addEventListener("mousedown", (event) => {
+            if (event.button !== 0) return;
+            event.preventDefault();   // the list of the browser does not open
+            native.focus();
+            choose();
+        });
+        native.addEventListener("keydown", (event) => {
+            if (![" ", "Enter", "ArrowDown", "ArrowUp"].includes(event.key)) return;
+            event.preventDefault();
+            choose();
+        });
+    }
+    const enhanceSelects = (root) => {
+        if (root.matches?.("select")) enhanceSelect(root);
+        root.querySelectorAll?.("select").forEach(enhanceSelect);
+    };
+    enhanceSelects(document);
+    new MutationObserver((records) => records.forEach((record) => record.addedNodes.forEach((node) => node.nodeType === 1 && enhanceSelects(node)))).observe(document.documentElement, { childList: true, subtree: true });
 
     /* ---------- the one time code: one input for each character ---------- */
     function otp({ length = 6, onComplete }) {

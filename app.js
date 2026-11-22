@@ -434,7 +434,7 @@ function renderProjects() {
         .sort((a, b) => direction * pickText(a.name).localeCompare(pickText(b.name)));
 
     if (projects.length === 0) {
-        list.replaceChildren(createElement("span", "empty", t("empty")));
+        list.replaceChildren(components.make("empty", { icon: "search", heading: t("empty") }));
         return;
     }
     const items = projects.map(createProjectCard);
@@ -469,7 +469,7 @@ function load() {
     loadData().catch((error) => {
         console.error(error);
         document.getElementById("project-list").replaceChildren(
-            createElement("span", "empty", t("errorLoad"))
+            components.make("empty", { icon: "alert", heading: t("errorLoad") })
         );
     });
 }

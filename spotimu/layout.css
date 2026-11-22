@@ -39,14 +39,12 @@ button.active, button[aria-pressed="true"] { background: var(--fg); color: var(-
 .player-line { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); }
 .player-name { min-width: 0; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .player-time { color: var(--fg-1); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.seek-slider, .volume-slider { height: var(--height); padding: 0; border: none; accent-color: var(--brand); background: transparent; }
-.seek-slider { width: 100%; }
 .player-controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small); }
 .repeat-button { position: relative; }
 .repeat-mark { position: absolute; inset-block-end: var(--padding-extra-small); inset-inline-end: var(--padding-extra-small); font-size: var(--font-size-extra-small); line-height: 1; }
 .volume { display: flex; align-items: center; gap: var(--gap-small); flex: 1; min-width: calc(var(--unit) * 50); justify-content: flex-end; }
 .volume .icon { color: var(--fg-1); }
-.volume-slider { flex: 1; max-width: calc(var(--unit) * 80); }
+.volume-slider { flex: 1; width: auto; max-width: calc(var(--unit) * 80); }   /* the slider of the kit (assets/css/components.css), here in the row of the volume */
 
 /* Settings */
 dialog { color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--border); padding: 0; }

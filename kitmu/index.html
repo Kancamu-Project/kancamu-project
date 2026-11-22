@@ -19,11 +19,21 @@
 </head>
 <body>
 
-  <kit-header id="header" theme menu data-i18n-menu-label="menu"></kit-header>
-  <kit-sidebar id="sidebar"></kit-sidebar>
+  <kit-header id="header" theme></kit-header>
 
   <div id="main" class="main">
-    <div id="content" class="content"></div>
+    <div id="views" class="views"></div>
+    <div id="toolbar" class="toolbar">
+      <div class="toolbar-row">
+        <kit-search input-id="kit-search" data-i18n-placeholder="search" data-i18n-label="search"></kit-search>
+        <div class="spacer"></div>
+        <button id="reset-button" class="danger" type="button" hidden><span data-i18n="reset"></span></button>
+      </div>
+      <div id="tag-filter" class="tag-filter"></div>
+    </div>
+    <div id="content" class="content">
+      <span id="no-results" class="no-results" data-i18n="noResults" hidden></span>
+    </div>
   </div>
   <kit-footer id="footer"></kit-footer>
 

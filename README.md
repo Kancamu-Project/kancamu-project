@@ -47,7 +47,7 @@ assets/          Shared assets, in folders
   js/            The scripts
     theme.js        Applies the saved theme before the page shows, to avoid a flash
     i18n.js         Loads a web's data.json and applies the chosen language (en-US, zh-CN, ar-SA)
-    account.js      The shared GitHub sign-in: get, onChange, and the dialog (open, bind) that embeds /youmu
+    account.js      The shared GitHub sign-in ("Sign in with GitHub"): get, signInWithGitHub, signOut, onChange, and the dialog (open, bind) that embeds /youmu
     settings.js     The settings of every web (get, set, onChange, listen): written by the account web and by the controls of a web
     storage.js      The shared data storage: one private repository (<id>-data), one branch per app (drivemu, muai); muAI keeps conversations/ and files/ on its branch
     transfer.js     Files of the Drive dragged out of a web: pictures as real pictures (any web takes them), other files as a link (the webs of Kancamu take them)
@@ -57,6 +57,7 @@ assets/          Shared assets, in folders
   data/          What the scripts read
     brand.json      The id, the name, and the highlighted word of the brand, the one place they are written (texts say {brand} and {highlight})
     popup.json      The texts of the buttons of the popups, in every language
+    auth.json       The sign-in with GitHub: the client id (public), the scope, and the address of the Worker (local and production). Never a secret
   fonts/         Inter (woff2), used by every web, and JetBrains Mono (woff2), used by muOS
   icons/         Every SVG icon of the main site, Drivemu, and muAI (universal names)
 favicon.png      Site icon

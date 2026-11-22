@@ -79,9 +79,9 @@
       "ar-SA": "حفظ"
     },
     "acct.tokenInvalid": {
-      "en-US": "Your sign-in for {name} has expired. Please sign in again.",
+      "en-US": "The sign-in of {name} has ended. Sign in again.",
       "zh-CN": "{name} 的登录已失效，请重新登录。",
-      "ar-SA": "انتهت صلاحية تسجيل دخول {name}. سجّل الدخول مرة أخرى."
+      "ar-SA": "انتهى تسجيل دخول {name}. سجّل الدخول مرة أخرى."
     },
     "acct.anAccount": {
       "en-US": "an account",

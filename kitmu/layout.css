@@ -1,27 +1,52 @@
 /* Kitmu: the UI kit of the webs (the templates, the helpers, and the popups). The page itself is the template of ../assets/css/components.css. */
 html, body { height: 100%; }
 .logo-mark { background-image: url("favicon.png"); }   /* the logo of the web: its favicon (the rest is in assets/css/components.css) */
-.sidebar-nav { gap: var(--gap-small); }
-.sidebar-nav > * { flex: none; }
 .main { gap: 0; overflow: hidden; }
 .content { flex: 1; min-height: 0; overflow-y: auto; scroll-behavior: smooth; }
+
+/* The search and the tags, as in the directory of the main site */
+.toolbar { flex: none; display: flex; flex-direction: column; gap: var(--gap-small); padding: var(--padding-medium) var(--padding-extra-large); border-bottom: var(--border-width) solid var(--border); }
+.toolbar-row { display: flex; align-items: center; gap: var(--gap-small); }
+.toolbar-row > .spacer { flex: 1; }
+.toolbar .searchbox { flex: 1 1 auto; min-width: 0; max-width: calc(var(--height) * 8); }
+.toolbar-row > .spacer { flex: 1 1 0; min-width: 0; }
+.toolbar-row > button { flex: none; }
+#reset-button { width: calc(var(--height) * 3); }
+#reset-button[hidden], .doc-card[hidden], .doc-pane[hidden], .no-results[hidden] { display: none; }
+.toolbar[hidden] { display: none; }
+.views { flex: none; padding-inline: var(--padding-extra-large); border-bottom: var(--border-width) solid var(--border); overflow-x: auto; scrollbar-width: none; }
+.tag-filter { display: flex; flex-wrap: wrap; gap: var(--gap-small); }
+.tag-filter > button { width: auto; height: calc(var(--unit) * 10); font-size: var(--font-size-extra-small); }
+.tag-filter > button.on { background: var(--fg); color: var(--bg); }
+@media (max-width: 640px) {
+  .toolbar { padding-inline: var(--padding-medium); }
+  .views { padding-inline: var(--padding-medium); }
+  .tag-filter { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }   /* one row that scrolls, so the tags do not fill the screen */
+  .tag-filter > button { flex: none; }
+  .toolbar-row { flex-wrap: wrap; }
+}
+.doc-tags { display: flex; flex-wrap: wrap; gap: var(--gap-small); }
+.tag { padding: var(--padding-extra-small) var(--padding-small); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-small); color: var(--fg); font-size: var(--font-size-extra-small); }
+.tag.on { background: var(--fg); border-color: var(--fg); color: var(--bg); }   /* the tag that is filtered shows as on in every item that has it */
+.no-results { display: block; padding: var(--padding-extra-large); color: var(--fg-1); }
 
 /* A section of the kit */
 .kit-section { display: flex; flex-direction: column; gap: var(--gap-medium); padding: var(--padding-extra-large); border-bottom: var(--border-width) solid var(--border); }
 .section-title { font-size: var(--font-size-large); font-weight: 700; }
 .section-hint { color: var(--fg-1); }
-.group { display: flex; flex-direction: column; gap: var(--gap-small); }
-.group-title { color: var(--fg-1); font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; }
-
-/* The usage of each template, helper, and popup: what it is, how it looks, and the code to copy */
-.doc-list { display: flex; flex-direction: column; gap: var(--gap-small); }
-.doc-item { display: flex; flex-direction: column; }
-.doc-body { align-items: flex-start; padding: var(--padding-medium) var(--padding-extra-large); }
-.doc-title { font-weight: 700; }
+/* The cards: each template, helper, and popup with its name and its preview; the code to copy is behind the button Code */
+/* Columns like a wall of pictures (Pinterest): a short card does not leave an empty space, the next card goes under it. Nothing breaks the columns, so the margin under a card is always there. */
+.doc-grid { columns: calc(var(--height) * 10); column-gap: var(--gap-medium); }
+.doc-grid.single { columns: 1; }   /* the pages and the guide: one card under another, as wide as the page */
+.doc-card { min-width: 0; display: flex; flex-direction: column; gap: var(--gap-small); margin-bottom: var(--gap-medium); padding: var(--padding-medium); background: var(--bg-1); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); break-inside: avoid; }
+.doc-head { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); }
+.doc-pane { display: flex; flex-direction: column; gap: var(--gap-small); align-items: flex-start; min-width: 0; }
+.doc-head .segmented-control > button { width: calc(var(--height) * 2); }
+.doc-title { font-weight: 700; min-width: 0; overflow-wrap: anywhere; }
 .doc-text { color: var(--fg-1); }
-.doc-code { align-self: stretch; margin: 0; padding: var(--padding-medium); overflow-x: auto; direction: ltr; text-align: left; background: var(--bg-1); border-radius: var(--border-radius-small); font-family: var(--font-mono); font-size: var(--font-size-small); }
+.doc-code { align-self: stretch; margin: 0; padding: var(--padding-medium); overflow-x: auto; direction: ltr; text-align: left; background: var(--bg); border-radius: var(--border-radius-small); font-family: var(--font-mono); font-size: var(--font-size-small); }
 .kit-section[hidden] { display: none; }
-.doc-frame { align-self: stretch; width: 100%; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-small); background: var(--bg); }
+.doc-frame { align-self: stretch; width: 100%; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); background: var(--bg); }
 
 /* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
 .popup-try, .segmented-control > button { width: calc(var(--height) * 3); }

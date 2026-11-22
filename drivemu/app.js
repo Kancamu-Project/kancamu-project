@@ -221,7 +221,7 @@ function renderSide() {
   for (const name of S.rootFolders) nav.append(entry(name, 'folder', [name], S.path[0] === name));
   // the indicator of the storage used, at the bottom
   const { percent, params } = usageInfo();
-  const meter = element('div', 'meter'), fill = element('i');
+  const meter = element('div', 'progress'), fill = element('div', 'progress-fill');
   fill.style.width = `${percent > 0 ? Math.max(percent, 1) : 0}%`;
   meter.append(fill);
   meter.setAttribute('role', 'progressbar'); meter.setAttribute('aria-valuenow', Math.round(percent)); meter.setAttribute('aria-valuemin', 0); meter.setAttribute('aria-valuemax', 100);

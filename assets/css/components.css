@@ -33,6 +33,7 @@
 .icon-cpu { --icon: url("../icons/cpu.svg"); }
 .icon-download { --icon: url("../icons/download.svg"); }
 .icon-external { --icon: url("../icons/external.svg"); }
+.icon-github { --icon: url("../icons/github.svg"); }
 .icon-file { --icon: url("../icons/file.svg"); }
 .icon-file-text { --icon: url("../icons/file-text.svg"); }
 .icon-folder { --icon: url("../icons/folder.svg"); }
@@ -209,7 +210,7 @@ button.square {
     justify-content: space-between;
     background: var(--bg-1);
     border-width: 0;
-    border-radius: 0;
+    border-radius: var(--border-radius-medium);   /* it stands alone, a gap is between it and the next */
     border-inline-start: var(--border-width-thick) solid var(--green);
     color: var(--fg);
     font-size: var(--font-size-small);
@@ -279,6 +280,10 @@ button.square {
     background: var(--bg);
     border: var(--border-width) solid var(--kind);
     border-radius: var(--border-radius-medium);
+}
+
+.alert[hidden] {
+    display: none;
 }
 
 .alert > .icon {
@@ -395,7 +400,7 @@ button.square {
 }
 
 /* ---------- Switch: a checkbox that looks like a switch ---------- */
-.switch {
+input.switch {   /* input.: it has to win over input[type="checkbox"] of style.css, which makes a checkbox square */
     -webkit-appearance: none;
     appearance: none;
     position: relative;
@@ -649,10 +654,14 @@ input.radio:disabled {
 /* ---------- Tabs: buttons side by side, with a line under the one that is on ---------- */
 .tabs {
     display: flex;
+    max-width: 100%;
+    overflow-x: auto;   /* more tabs than the width: the row scrolls, the tabs do not shrink */
+    scrollbar-width: none;
     border-bottom: var(--border-width) solid var(--border);
 }
 
 .tabs > button {
+    flex: none;
     border: 0;
     border-bottom: var(--border-width-thick) solid transparent;
     border-radius: 0;
@@ -723,6 +732,10 @@ input.radio:disabled {
     min-width: calc(var(--unit) * 60);
     max-width: min(calc(var(--unit) * 140), calc(var(--vw) * 100 - 1.6rem));
     padding: var(--padding-large);
+}
+
+.menu > * {
+    flex: none;   /* an item keeps its height: a long menu scrolls, the items do not shrink */
 }
 
 .menu-item {
