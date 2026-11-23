@@ -1,5 +1,5 @@
 // Makes the sprites of the main website: one file with many images, so a page asks for one file and not for one for every image (RULES.md, Images).
-//   assets/images/splash.webp   the images of the splash screen (data.json, "splash", "images"), the whole file is a square of 1024 px (four images of 512 px in a grid of 2 x 2)
+//   assets/images/splash.webp   the images of the splash screen (data.json, "splash", "images"), the whole file is a square of 512 px (four images of 256 px in a grid of 2 x 2)
 //   assets/images/icons.png     the icons of the apps of the brand (16 x 16 px each), in a grid like that (4 x 4 for sixteen)
 // The single files stay: the favicon.png of each app is its favicon, and the single image of the splash is used by the previews (assetmu).
 // It also writes in data.json what app.js needs to cut the sprites ("splash.sprite" and "iconSprite"), so run it again when an image or an app is added.
@@ -18,7 +18,7 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("../..", import.meta.url));
 const chrome = process.env.CHROME || "C:/Program Files/Google/Chrome/Application/chrome.exe";
 const only = process.argv[2];   // "icons" or "splash"
-const SIZE = 1024;              // the whole sprite of the splash is a square of this many pixels; a square of an image is SIZE divided by the columns of the grid
+const SIZE = 512;               // the whole sprite of the splash is a square of this many pixels; a square of an image is SIZE divided by the columns of the grid
 const SINGLE = 512;             // the single image of the splash, when it does not exist yet
 const CELL = 16;                // an icon
 
@@ -68,7 +68,7 @@ if (job.splash.length) {
   const columns = job.splashColumns, rows = Math.ceil(job.splash.length / columns);
   const [canvas, context] = sheet(job.tile * columns, job.tile * rows);
   for (const [index, source] of job.splash.entries()) cover(context, await load(source), (index % columns) * job.tile, Math.floor(index / columns) * job.tile, job.tile);
-  await save("splash.webp", canvas, "image/webp", 0.8);
+  await save("splash.webp", canvas, "image/webp", 0.85);
   for (const single of job.singles) {
     if (single.exists) continue;
     const [small, smallContext] = sheet(job.single, job.single);
