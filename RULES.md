@@ -93,6 +93,7 @@ Where you would normally use a p element, use a span instead.
 
 #### 3. Image
 Where you would normally use an img element, use a div with a CSS background that points to the image.
+Images that a page shows together are one file, a sprite, so the page asks for one file and not for one per image: the images of the splash screen of the main website are assets/images/splash.webp (squares of 1024 px in a grid that is a square too: 2 x 2 for four) and the icons of the apps of the brand are assets/images/icons.png (squares of 16 px in a grid: 4 x 4 for sixteen). assets/tools/sprites.mjs makes them from the single files (and from the originals, for the splash) and writes in data.json what app.js needs to cut them ("splash.sprite" and "iconSprite"); run it again when an image or an app is added. A box shows one square of the sprite with background-size and background-position in percentages (the box is a square too), and when a project is not in the sprite (an app of another maker), or the sprite does not have all the images of the list, the single file is used. The single files stay: favicon.png is the favicon of its app, and the single image of the splash is used by the previews.
 
 #### 4. Button
 Not <button>Button</button>, but <button><span>Button</span></button>.

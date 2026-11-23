@@ -946,9 +946,19 @@
         "file": "assets/images/cinnadust.webp",
         "author": "Cinnadust",
         "source": "https://civitai.com/images/141462600"
+      },
+      {
+        "file": "assets/images/regular209.webp",
+        "author": "Regular209",
+        "source": "https://civitai.com/images/141611553"
       }
     ],
-    "seconds": 3
+    "seconds": 3,
+    "sprite": {
+      "file": "assets/images/splash.webp",
+      "count": 4,
+      "columns": 2
+    }
   },
   "pages": {
     "about": {
@@ -1151,5 +1161,27 @@
   },
   "support": {
     "url": "https://saweria.co/kancamu"
+  },
+  "iconSprite": {
+    "file": "assets/images/icons.png",
+    "columns": 4,
+    "ids": [
+      "muos",
+      "drivemu",
+      "gallemu",
+      "spotimu",
+      "lingomu",
+      "mujs",
+      "picmu",
+      "transmu",
+      "speechmu",
+      "hashmu",
+      "searchmu",
+      "youmu",
+      "assetmu",
+      "kitmu",
+      "muai",
+      "kancamu"
+    ]
   }
 }

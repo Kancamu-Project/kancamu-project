@@ -1,4 +1,5 @@
 const state = {
+    iconSprite: null,   // the icons of the apps of the brand in one file (data.json, "iconSprite"; assets/tools/sprites.mjs makes it)
     home: null,
     categories: {},
     projects: [],
@@ -96,7 +97,7 @@ function renderTabs() {
             const select = createElement("button", "select");
             select.title = pickText(project.name);
             const icon = createElement("div", "app-icon");
-            icon.style.backgroundImage = `url(${JSON.stringify(project.icon)})`;
+            setIcon(icon, project);
             select.append(
                 icon,
                 createNameElement(pickText(project.name), project.highlight && pickText(project.highlight))
@@ -284,6 +285,30 @@ function renderAll() {
     renderPage();
 }
 
+// The icon of a project is its place in the sprite of the icons (one file for all of them, so the page asks for one and not for one per app), or its own file when it is not in the sprite.
+// The sprite is a grid of squares: the box of the icon shows one of them (every box is a square, so the percentages cut it exactly).
+// The place of a square in a grid of squares (the columns are in data.json; the rows are as many as they need): the size and the position of a background that shows only that square
+function spriteCell(count, columns, index) {
+    const wide = columns || count;   // a sprite without columns is a row
+    const rows = Math.ceil(count / wide);
+    const column = index % wide;
+    const row = Math.floor(index / wide);
+    return { size: `${wide * 100}% ${rows * 100}%`, position: `${wide > 1 ? (column / (wide - 1)) * 100 : 0}% ${rows > 1 ? (row / (rows - 1)) * 100 : 0}%` };
+}
+
+function setIcon(element, project) {
+    const sprite = state.iconSprite;
+    const at = sprite ? sprite.ids.indexOf(project.id) : -1;
+    if (at < 0) {
+        element.style.backgroundImage = `url(${JSON.stringify(project.icon)})`;
+        return;
+    }
+    const cell = spriteCell(sprite.ids.length, sprite.columns, at);
+    element.style.backgroundImage = `url(${JSON.stringify(sprite.file)})`;
+    element.style.backgroundSize = cell.size;
+    element.style.backgroundPosition = cell.position;
+}
+
 function createElement(tag, className, text) {
     const element = document.createElement(tag);
     if (className) element.className = className;
@@ -338,7 +363,7 @@ function createProjectCard(project) {
     top.append(createElement("span", "project-publisher", project.publisher || ""), link);
 
     const icon = createElement("div", "app-icon");
-    icon.style.backgroundImage = `url(${JSON.stringify(project.icon)})`;
+    setIcon(icon, project);
 
     const text = createElement("div", "project-text");
     text.append(
@@ -505,16 +530,23 @@ function createListHeader() {
 /* ---------- the splash: a layer over the content for a moment when the site opens ---------- */
 // Its images (data.json, "splash") slide one after another every few seconds, in the order of the list (and not at all when the device asks for less motion). The content is loaded behind it.
 // It stays until the user clicks or presses a key, and the user can turn it off in the Appearance page of the account app (the setting "splash").
-async function showSplash({ images, seconds }) {   // the first image is the first of the list
+async function showSplash({ images, seconds, sprite }) {   // the first image is the first of the list
     const splash = document.getElementById("splash");
     if (settings.get("appearance").splash === false) return;
     const order = images;
+    // the images are one file (a grid of squares, assets/tools/sprites.mjs makes it); when it does not have all the images of the list, every image is its own file
+    const joined = sprite && sprite.count === order.length;
     // the splash opens with its images ready, not empty
-    await Promise.all(order.map(({ file }) => { const preload = new Image(); preload.src = file; return preload.decode().catch(() => {}); }));
+    await Promise.all((joined ? [sprite.file] : order.map(({ file }) => file)).map((file) => { const preload = new Image(); preload.src = file; return preload.decode().catch(() => {}); }));
     const track = createElement("div", "splash-track");
-    track.append(...order.map(({ file }) => {
+    track.append(...order.map(({ file }, index) => {
         const slide = createElement("div", "splash-slide");
-        slide.style.backgroundImage = `url(${JSON.stringify(file)})`;
+        slide.style.backgroundImage = `url(${JSON.stringify(joined ? sprite.file : file)})`;
+        if (joined) {   // the square of this image (the slide is a square too)
+            const cell = spriteCell(order.length, sprite.columns, index);
+            slide.style.backgroundSize = cell.size;
+            slide.style.backgroundPosition = cell.position;
+        }
         return slide;
     }));
     // the dots tell which image shows (and how many there are); the slides keep their place in the list, because the track turns round
@@ -566,6 +598,7 @@ async function loadData() {
     state.home = data.home;
     state.categories = data.categories;
     state.projects = data.projects;
+    state.iconSprite = data.iconSprite || null;
     document.getElementById("support-link").href = data.support.url;   // the support of Kancamu (data.json, "support")
     restoreFilters();
     i18n.selects();
