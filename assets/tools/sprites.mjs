@@ -1,8 +1,8 @@
 // Makes the sprites of the main website: one file with many images, so a page asks for one file and not for one for every image (RULES.md, Images).
-//   assets/images/splash.webp   the images of the splash screen (data.json, "splash", "images"), the whole file is a square of 512 px (four images of 256 px in a grid of 2 x 2)
+//   assets/images/splash.webp   the images of the splash screen (data.json, "splash", "images"), the whole file is a square of 768 px (four images of 384 px in a grid of 2 x 2)
 //   assets/images/icons.png     the icons of all the apps of the directory (data.json, "projects"), in two blocks side by side: the pixel icons (16 px or less, as they are, in cells of 16 px)
 //                               and the icons of other makers (ArtCraft, TraceDraw: made smaller, 48 px at most, smoothly, in cells of 48 px). Each block is a grid as square as it can be.
-// The single files stay: the favicon.png of each app is its favicon, and the single image of the splash is used by the previews (assetmu).
+// The favicon.png of each app stays: it is the favicon of its app. The splash has no single files: its images are in the sprite, and their originals (<name>_raw) are the source.
 // It also writes in data.json what app.js needs to cut the sprites ("splash.sprite" and "iconSprite"), so run it again when an image or an app is added.
 //   node assets/tools/sprites.mjs            both
 //   node assets/tools/sprites.mjs icons      only the icons
@@ -19,8 +19,7 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("../..", import.meta.url));
 const chrome = process.env.CHROME || "C:/Program Files/Google/Chrome/Application/chrome.exe";
 const only = process.argv[2];   // "icons" or "splash"
-const SIZE = 512;               // the whole sprite of the splash is a square of this many pixels; a square of an image is SIZE divided by the columns of the grid
-const SINGLE = 512;             // the single image of the splash, when it does not exist yet
+const SIZE = 768;               // the whole sprite of the splash is a square of this many pixels; a square of an image is SIZE divided by the columns of the grid
 const PIXEL = 16;               // the cell of a pixel icon (an icon of 16 px or less is kept as it is)
 const CELL = 48;                // the cell of the other icons: they are made smaller than this
 
@@ -32,11 +31,10 @@ const data = JSON.parse(rawData);
 const wantSplash = only !== "icons";
 const wantIcons = only !== "splash";
 const images = data.splash.images;
-const nameOf = (file) => path.basename(file).replace(/\.[^.]+$/, "");
-const rawOf = (file) => fs.readdirSync(path.join(root, "assets/images")).find((entry) => entry.startsWith(`${nameOf(file)}_raw.`));
-const raws = images.map((image) => rawOf(image.file));
+const rawOf = (name) => fs.readdirSync(path.join(root, "assets/images")).find((entry) => entry.startsWith(`${name}_raw.`));
+const raws = images.map((image) => rawOf(image.name));
 if (wantSplash && raws.some((raw) => !raw)) {
-  const missing = images.filter((_, index) => !raws[index]).map((image) => `assets/images/${nameOf(image.file)}_raw.png (or .jpg)`);
+  const missing = images.filter((_, index) => !raws[index]).map((image) => `assets/images/${image.name}_raw.png (or .jpg)`);
   throw new Error(`the originals of the splash images are needed: ${missing.join(", ")}`);
 }
 const icons = data.projects.filter((project) => project.icon).map((project) => ({ id: project.id, src: /^https?:/.test(project.icon) ? project.icon : `/${project.icon}`, remote: /^https?:/.test(project.icon) }));
@@ -44,9 +42,8 @@ const icons = data.projects.filter((project) => project.icon).map((project) => (
 const grid = (count) => Math.ceil(Math.sqrt(count));   // the columns of a grid for that many squares; the rows are as many as they need
 const job = {
   splashColumns: grid(images.length),
-  tile: SIZE / grid(images.length), single: SINGLE, pixel: PIXEL, cell: CELL,
+  tile: SIZE / grid(images.length), pixel: PIXEL, cell: CELL,
   splash: wantSplash ? raws.map((raw) => `/assets/images/${raw}`) : [],
-  singles: wantSplash ? images.map((image, index) => ({ out: path.basename(image.file), raw: `/assets/images/${raws[index]}`, exists: fs.existsSync(path.join(root, image.file)) })) : [],
   icons: wantIcons ? icons : [],
 };
 
@@ -66,12 +63,6 @@ if (job.splash.length) {
   const [canvas, context] = sheet(job.tile * columns, job.tile * rows);
   for (const [index, source] of job.splash.entries()) cover(context, await load(source), (index % columns) * job.tile, Math.floor(index / columns) * job.tile, job.tile);
   await save("splash.webp", canvas, "image/webp", 0.85);
-  for (const single of job.singles) {
-    if (single.exists) continue;
-    const [small, smallContext] = sheet(job.single, job.single);
-    cover(smallContext, await load(single.raw), 0, 0, job.single);
-    await save(single.out, small, "image/webp", 0.8);
-  }
 }
 if (job.icons.length) {
   // the icons are loaded first (one that cannot be loaded is left out), then the grid is made for the ones that are there
@@ -146,7 +137,6 @@ const put = (name, destination) => {
 };
 if (wantSplash) {
   put("splash.webp", "assets/images/splash.webp");
-  for (const single of job.singles) if (!single.exists) put(single.out, `assets/images/${single.out}`);
   data.splash.sprite = { file: "assets/images/splash.webp", count: images.length, columns: grid(images.length) };
 }
 if (wantIcons) {

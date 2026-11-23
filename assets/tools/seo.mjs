@@ -58,7 +58,7 @@ for (const project of own) {
   const twitter = /^([ \t]*)<meta name="twitter:card"[^\n]*\n/m.exec(html);
   if (!twitter) throw new Error(`${file}: no twitter:card tag`);
   const indent = twitter[1];
-  const preload = project.id === "kancamu" ? `${indent}<link rel="preload" as="image" href="${data.splash.sprite?.file || data.splash.images[0].file}" fetchpriority="high">\n` : "";   // the image of the splash screen (the sprite of its images, or the first image): the largest element of the main website, whose address a script sets
+  const preload = project.id === "kancamu" && data.splash.sprite ? `${indent}<link rel="preload" as="image" href="${data.splash.sprite.file}" fetchpriority="high">\n` : "";   // the image of the splash screen (the sprite of its images): the largest element of the main website, whose address a script sets
   const head = `${indent}<!-- seo -->\n${indent}<link rel="canonical" href="${addressOf(project)}">\n${preload}${indent}<script type="application/ld+json">${JSON.stringify(jsonLd(project))}</script>\n${indent}<!-- /seo -->\n`;
   html = html.replace(twitter[0], () => twitter[0] + head);
   const body = /<body[^>]*>\n/.exec(html);

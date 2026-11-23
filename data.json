@@ -933,22 +933,22 @@
   "splash": {
     "images": [
       {
-        "file": "assets/images/purplelady.webp",
+        "name": "purplelady",
         "author": "purplelady",
         "source": "https://civitai.com/images/136992675"
       },
       {
-        "file": "assets/images/siberius.webp",
+        "name": "siberius",
         "author": "SIBERIUS",
         "source": "https://civitai.com/images/141201050"
       },
       {
-        "file": "assets/images/cinnadust.webp",
+        "name": "cinnadust",
         "author": "Cinnadust",
         "source": "https://civitai.com/images/141462600"
       },
       {
-        "file": "assets/images/regular209.webp",
+        "name": "regular209",
         "author": "Regular209",
         "source": "https://civitai.com/images/141611553"
       }

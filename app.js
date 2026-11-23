@@ -535,19 +535,19 @@ async function showSplash({ images, seconds, sprite }) {   // the first image is
     const splash = document.getElementById("splash");
     if (settings.get("appearance").splash === false) return;
     const order = images;
-    // the images are one file (a grid of squares, assets/tools/sprites.mjs makes it); when it does not have all the images of the list, every image is its own file
-    const joined = sprite && sprite.count === order.length;
+    // the images are one file (a grid of squares, assets/tools/sprites.mjs makes it); without it, or when it does not have all the images of the list, there is no splash
+    if (!sprite || sprite.count !== order.length) return;
     // the splash opens with its images ready, not empty
-    await Promise.all((joined ? [sprite.file] : order.map(({ file }) => file)).map((file) => { const preload = new Image(); preload.src = file; return preload.decode().catch(() => {}); }));
+    const preload = new Image();
+    preload.src = sprite.file;
+    await preload.decode().catch(() => {});
     const track = createElement("div", "splash-track");
-    track.append(...order.map(({ file }, index) => {
+    track.append(...order.map((_, index) => {
         const slide = createElement("div", "splash-slide");
-        slide.style.backgroundImage = `url(${JSON.stringify(joined ? sprite.file : file)})`;
-        if (joined) {   // the square of this image (the slide is a square too)
-            const cell = spriteCell(order.length, sprite.columns, index);
-            slide.style.backgroundSize = cell.size;
-            slide.style.backgroundPosition = cell.position;
-        }
+        const cell = spriteCell(order.length, sprite.columns, index);   // the square of this image (the slide is a square too)
+        slide.style.backgroundImage = `url(${JSON.stringify(sprite.file)})`;
+        slide.style.backgroundSize = cell.size;
+        slide.style.backgroundPosition = cell.position;
         return slide;
     }));
     // the dots tell which image shows (and how many there are); the slides keep their place in the list, because the track turns round

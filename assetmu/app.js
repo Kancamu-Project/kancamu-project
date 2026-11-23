@@ -141,7 +141,7 @@ function buildCard({ project, brand, data }) {
 
   if (project.id === "kancamu") {
     const ui = (key) => cardFill(data.ui[key]["en-US"], brand);
-    const image = data.splash.images[0];
+    const sprite = data.splash.sprite;   // the first image of the splash is the first square of its sprite
     const info = element("div", "splash-info");
     const brandRow = element("div", "splash-brand");
     const mark = element("div", "splash-mark");
@@ -150,7 +150,9 @@ function buildCard({ project, brand, data }) {
     brandRow.lastChild.append(...nameParts);
     info.append(brandRow, element("span", "splash-tagline", ui("splash.tagline")), element("span", "splash-copyright", ui("copyright")));
     const art = element("div", "splash-art");
-    art.style.backgroundImage = `url("${address(image.file)}")`;
+    art.style.backgroundImage = `url("${address(sprite.file)}")`;
+    art.style.backgroundSize = `${sprite.columns * 100}% ${Math.ceil(sprite.count / sprite.columns) * 100}%`;
+    art.style.backgroundPosition = "0% 0%";
     art.append(element("div", "splash-fade"));
     const sheet = element("div", "splash-card");
     sheet.append(info, art);
