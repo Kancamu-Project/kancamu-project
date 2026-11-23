@@ -1163,7 +1163,7 @@
     "url": "https://saweria.co/kancamu"
   },
   "iconSprite": {
-    "file": "assets/images/icons.png",
+    "file": "assets/images/icons.webp",
     "width": 208,
     "height": 144,
     "cells": {

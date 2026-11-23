@@ -1,6 +1,6 @@
 // Makes the sprites of the main website: one file with many images, so a page asks for one file and not for one for every image (RULES.md, Images).
 //   assets/images/splash.webp   the images of the splash screen (data.json, "splash", "images"), the whole file is a square of 768 px (four images of 384 px in a grid of 2 x 2)
-//   assets/images/icons.png     the icons of all the apps of the directory (data.json, "projects"), in two blocks side by side: the pixel icons (16 px or less, as they are, in cells of 16 px)
+//   assets/images/icons.webp     the icons of all the apps of the directory (data.json, "projects"), in two blocks side by side: the pixel icons (16 px or less, as they are, in cells of 16 px)
 //                               and the icons of other makers (ArtCraft, TraceDraw: made smaller, 48 px at most, smoothly, in cells of 48 px). Each block is a grid as square as it can be.
 // The favicon.png of each app stays: it is the favicon of its app. The splash has no single files: its images are in the sprite, and their originals (<name>_raw) are the source.
 // It also writes in data.json what app.js needs to cut the sprites ("splash.sprite" and "iconSprite"), so run it again when an image or an app is added.
@@ -85,7 +85,7 @@ if (job.icons.length) {
       cells[id] = [x, y, group.side];
     });
   }
-  await save("icons.png", canvas, "image/png");
+  await save("icons.webp", canvas, "image/webp", 1);   // quality 1: lossless, so the pixel icons stay exact
   await fetch("/__save?name=icons.json", { method: "POST", body: JSON.stringify({ width, height, cells, skipped }) });
 }
 await fetch("/__done", { method: "POST" });
@@ -140,10 +140,10 @@ if (wantSplash) {
   data.splash.sprite = { file: "assets/images/splash.webp", count: images.length, columns: grid(images.length) };
 }
 if (wantIcons) {
-  put("icons.png", "assets/images/icons.png");
+  put("icons.webp", "assets/images/icons.webp");
   const made = JSON.parse(fs.readFileSync(path.join(work, "icons.json"), "utf8"));
   if (made.skipped.length) console.warn(`left out (they could not be loaded): ${made.skipped.join(", ")}`);
-  data.iconSprite = { file: "assets/images/icons.png", width: made.width, height: made.height, cells: made.cells };
+  data.iconSprite = { file: "assets/images/icons.webp", width: made.width, height: made.height, cells: made.cells };
 }
 const out = JSON.stringify(data, null, 2) + "\n";
 fs.writeFileSync(dataFile, rawData.includes("\r\n") ? out.replace(/\n/g, "\r\n") : out);
