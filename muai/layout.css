@@ -57,7 +57,8 @@ body.resizing .sidebar { transition: none; }
 /* The right part is one panel with a border; the page has a padding around it. */
 /* The sidebar fills the height of the page; only the app has a space above and below it. */
 .main { gap: 0; grid-column: 2; grid-row: 1 / -1; background: var(--bg); overflow: hidden; }
-.topbar { box-sizing: content-box; padding-inline: var(--padding-extra-large) 0; border-bottom: var(--border-width) solid var(--border); }
+.topbar { box-sizing: content-box; gap: 0; padding-inline: var(--padding-extra-large) 0; border-bottom: var(--border-width) solid var(--border); }   /* the buttons of the bar touch each other: no gap */
+.topbar > button + button { border-inline-start: none; }   /* and share one line, as in a button group */
 /* What touches another element is square: the bar, the buttons of a row, the theme switch, the head of a code block. */
 .topbar > button, .chat-item .actions button, .markdown .code-header > button, .segmented-control button { border-radius: 0; }
 .markdown .code { border-radius: var(--border-radius-medium); }

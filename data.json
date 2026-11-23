@@ -31,6 +31,11 @@
       "zh-CN": "重置",
       "ar-SA": "إعادة تعيين"
     },
+    "sort": {
+      "en-US": "Sort order",
+      "zh-CN": "排序",
+      "ar-SA": "الترتيب"
+    },
     "sortAsc": {
       "en-US": "Name (A-Z)",
       "zh-CN": "名称 (A-Z)",

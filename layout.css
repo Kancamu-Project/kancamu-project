@@ -386,6 +386,7 @@ button {
 #category-filter {
     width: 100%;
     flex-shrink: 0;
+    min-height: calc(var(--unit) * 10);   /* the room of one row of buttons is kept before they are made, so the list does not jump down */
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -405,7 +406,7 @@ button {
         &[data-category="official"] {
             border-color: var(--yellow);
 
-            color: var(--yellow);
+            color: color-mix(in srgb, var(--yellow) 85%, var(--fg));
 
             &.active {
                 background: var(--yellow);
@@ -415,7 +416,7 @@ button {
 
         &[data-category="mobile"] {
             border-color: var(--blue);
-            color: var(--blue);
+            color: color-mix(in srgb, var(--blue) 85%, var(--fg));
 
             &.active {
                 background: var(--blue);
@@ -425,7 +426,7 @@ button {
 
         &[data-category="education"] {
             border-color: var(--green);
-            color: var(--green);
+            color: color-mix(in srgb, var(--green) 85%, var(--fg));
 
             &.active {
                 background: var(--green);
@@ -543,7 +544,7 @@ button {
         text-transform: uppercase;
 
         & > .project-publisher {
-            color: var(--color);
+            color: color-mix(in srgb, var(--color) 85%, var(--fg));   /* the colour of the project, as small text: enough contrast */
         }
 
         & > .project-link {
@@ -621,17 +622,17 @@ button {
 
             &[data-category="official"] {
                 border-color: var(--yellow);
-                color: var(--yellow);
+                color: color-mix(in srgb, var(--yellow) 85%, var(--fg));
             }
 
             &[data-category="mobile"] {
                 border-color: var(--blue);
-                color: var(--blue);
+                color: color-mix(in srgb, var(--blue) 85%, var(--fg));
             }
 
             &[data-category="education"] {
                 border-color: var(--green);
-                color: var(--green);
+                color: color-mix(in srgb, var(--green) 85%, var(--fg));
             }
 
             /* The category that is filtered: filled, like its button in the filter (Official yellow, Mobile blue, Education green) */

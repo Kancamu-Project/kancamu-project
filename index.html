@@ -18,9 +18,12 @@
     <meta name="twitter:card" content="summary_large_image">
     <!-- seo -->
     <link rel="canonical" href="https://kancamu.site/">
+    <link rel="preload" as="image" href="assets/images/purplelady.webp" fetchpriority="high">
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://kancamu.site/#brand","name":"Kancamu","url":"https://kancamu.site/","logo":"https://kancamu.site/favicon.png"},{"@type":"WebSite","@id":"https://kancamu.site/#website","url":"https://kancamu.site/","name":"Kancamu","description":"Apps and tools, in one place.","publisher":{"@id":"https://kancamu.site/#brand"}}]}</script>
     <!-- /seo -->
     <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="preload" href="assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/inter-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/components.css">
     <link rel="stylesheet" href="layout.css">
@@ -85,7 +88,7 @@
             <button id="reset-button"><span data-i18n="reset"></span></button>
             <select id="alternative-filter" data-i18n-title="alternative"></select>
             <select id="publisher-filter" data-i18n-title="publisher"></select>
-            <select id="sort-order">
+            <select id="sort-order" data-i18n-title="sort" data-i18n-label="sort">
                 <option value="asc" data-i18n="sortAsc"></option>
                 <option value="desc" data-i18n="sortDesc"></option>
             </select>
