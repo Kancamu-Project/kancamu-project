@@ -96,6 +96,7 @@
 }
 
 * {
+    -webkit-tap-highlight-color: transparent;   /* no blue flash where a finger touches, on a phone: the elements show their own pressed state */
     box-sizing: border-box;
     margin: 0;
     padding: 0;
