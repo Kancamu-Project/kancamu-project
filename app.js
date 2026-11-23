@@ -286,8 +286,8 @@ function renderAll() {
 }
 
 // The icon of a project is its place in the sprite of the icons (one file for all of them, so the page asks for one and not for one per app), or its own file when it is not in the sprite.
-// The sprite is a grid of squares: the box of the icon shows one of them (every box is a square, so the percentages cut it exactly).
-// The place of a square in a grid of squares (the columns are in data.json; the rows are as many as they need): the size and the position of a background that shows only that square
+// The sprite has the squares of the icons (16 px for a pixel icon, up to 48 px for the others): the box of the icon shows one of them (every box is a square, so the percentages cut it exactly).
+// The place of a square in a grid of squares (the columns are in data.json; the rows are as many as they need): the size and the position of a background that shows only that square (the splash)
 function spriteCell(count, columns, index) {
     const wide = columns || count;   // a sprite without columns is a row
     const rows = Math.ceil(count / wide);
@@ -298,15 +298,16 @@ function spriteCell(count, columns, index) {
 
 function setIcon(element, project) {
     const sprite = state.iconSprite;
-    const at = sprite ? sprite.ids.indexOf(project.id) : -1;
-    if (at < 0) {
+    const cell = sprite?.cells?.[project.id];   // [x, y, side]: the square of this icon in the file (a square of 16 px for a pixel icon, up to 48 px for the others)
+    if (!cell) {
         element.style.backgroundImage = `url(${JSON.stringify(project.icon)})`;
         return;
     }
-    const cell = spriteCell(sprite.ids.length, sprite.columns, at);
+    const [x, y, side] = cell;
     element.style.backgroundImage = `url(${JSON.stringify(sprite.file)})`;
-    element.style.backgroundSize = cell.size;
-    element.style.backgroundPosition = cell.position;
+    element.style.backgroundSize = `${(sprite.width / side) * 100}% ${(sprite.height / side) * 100}%`;
+    // a background-position of p% puts the p% of the file on the p% of the box: for a square that is at x, p = x / (width - side)
+    element.style.backgroundPosition = `${sprite.width > side ? (x / (sprite.width - side)) * 100 : 0}% ${sprite.height > side ? (y / (sprite.height - side)) * 100 : 0}%`;   // every icon is scaled with no smoothing (image-rendering: pixelated, in layout.css)
 }
 
 function createElement(tag, className, text) {

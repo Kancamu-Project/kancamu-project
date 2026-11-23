@@ -1,6 +1,7 @@
 // Makes the sprites of the main website: one file with many images, so a page asks for one file and not for one for every image (RULES.md, Images).
 //   assets/images/splash.webp   the images of the splash screen (data.json, "splash", "images"), the whole file is a square of 512 px (four images of 256 px in a grid of 2 x 2)
-//   assets/images/icons.png     the icons of the apps of the brand (16 x 16 px each), in a grid like that (4 x 4 for sixteen)
+//   assets/images/icons.png     the icons of all the apps of the directory (data.json, "projects"), in two blocks side by side: the pixel icons (16 px or less, as they are, in cells of 16 px)
+//                               and the icons of other makers (ArtCraft, TraceDraw: made smaller, 48 px at most, smoothly, in cells of 48 px). Each block is a grid as square as it can be.
 // The single files stay: the favicon.png of each app is its favicon, and the single image of the splash is used by the previews (assetmu).
 // It also writes in data.json what app.js needs to cut the sprites ("splash.sprite" and "iconSprite"), so run it again when an image or an app is added.
 //   node assets/tools/sprites.mjs            both
@@ -20,7 +21,8 @@ const chrome = process.env.CHROME || "C:/Program Files/Google/Chrome/Application
 const only = process.argv[2];   // "icons" or "splash"
 const SIZE = 512;               // the whole sprite of the splash is a square of this many pixels; a square of an image is SIZE divided by the columns of the grid
 const SINGLE = 512;             // the single image of the splash, when it does not exist yet
-const CELL = 16;                // an icon
+const PIXEL = 16;               // the cell of a pixel icon (an icon of 16 px or less is kept as it is)
+const CELL = 48;                // the cell of the other icons: they are made smaller than this
 
 const dataFile = path.join(root, "data.json");
 const rawData = fs.readFileSync(dataFile, "utf8");
@@ -37,26 +39,21 @@ if (wantSplash && raws.some((raw) => !raw)) {
   const missing = images.filter((_, index) => !raws[index]).map((image) => `assets/images/${nameOf(image.file)}_raw.png (or .jpg)`);
   throw new Error(`the originals of the splash images are needed: ${missing.join(", ")}`);
 }
-const own = data.projects.filter((project) => project.publisher === "{brand}" && !/^https?:/.test(project.icon) && /\.png$/.test(project.icon));
-const pngSize = (file) => { const bytes = fs.readFileSync(path.join(root, file)); return [bytes.readUInt32BE(16), bytes.readUInt32BE(20)]; };
-for (const project of own) {
-  const [width, height] = pngSize(project.icon);
-  if (width !== CELL || height !== CELL) throw new Error(`${project.icon} is ${width} x ${height}: an icon of the sprite is ${CELL} x ${CELL}`);
-}
+const icons = data.projects.filter((project) => project.icon).map((project) => ({ id: project.id, src: /^https?:/.test(project.icon) ? project.icon : `/${project.icon}`, remote: /^https?:/.test(project.icon) }));
 
 const grid = (count) => Math.ceil(Math.sqrt(count));   // the columns of a grid for that many squares; the rows are as many as they need
 const job = {
-  splashColumns: grid(images.length), iconColumns: grid(own.length),
-  tile: SIZE / grid(images.length), single: SINGLE, cell: CELL,
+  splashColumns: grid(images.length),
+  tile: SIZE / grid(images.length), single: SINGLE, pixel: PIXEL, cell: CELL,
   splash: wantSplash ? raws.map((raw) => `/assets/images/${raw}`) : [],
   singles: wantSplash ? images.map((image, index) => ({ out: path.basename(image.file), raw: `/assets/images/${raws[index]}`, exists: fs.existsSync(path.join(root, image.file)) })) : [],
-  icons: wantIcons ? own.map((project) => `/${project.icon}`) : [],
+  icons: wantIcons ? icons : [],
 };
 
 // ---- the page that makes the pictures (it is served by this script and is not kept in the repository)
 const page = `<!doctype html><meta charset="utf-8"><body><script type="module">
 const job = await (await fetch("/__job.json")).json();
-const load = async (source) => { const image = new Image(); image.src = source; await image.decode(); return image; };
+const load = async (source, remote) => { const image = new Image(); if (remote) image.crossOrigin = "anonymous"; image.src = source; await image.decode(); return image; };
 // a square of the middle of the image, as the splash shows it (background: center / cover)
 const cover = (context, image, x, y, size) => { const side = Math.min(image.naturalWidth, image.naturalHeight); context.drawImage(image, (image.naturalWidth - side) / 2, (image.naturalHeight - side) / 2, side, side, x, y, size, size); };
 const save = async (name, canvas, type, quality) => {
@@ -77,18 +74,35 @@ if (job.splash.length) {
   }
 }
 if (job.icons.length) {
-  const columns = job.iconColumns, rows = Math.ceil(job.icons.length / columns);
-  const [canvas, context] = sheet(job.cell * columns, job.cell * rows);
-  context.imageSmoothingEnabled = false;
-  for (const [index, source] of job.icons.entries()) context.drawImage(await load(source), (index % columns) * job.cell, Math.floor(index / columns) * job.cell);
+  // the icons are loaded first (one that cannot be loaded is left out), then the grid is made for the ones that are there
+  const loaded = [], skipped = [];
+  for (const icon of job.icons) { try { loaded.push({ id: icon.id, image: await load(icon.src, icon.remote) }); } catch { skipped.push(icon.id); } }
+  // two blocks side by side: the pixel icons as they are (cells of 16 px), and the others made smaller (cells of 48 px); each block is a grid as square as it can be
+  const block = (list, side) => { const columns = Math.ceil(Math.sqrt(list.length)); return { list, side, columns, width: columns * side, height: Math.ceil(list.length / (columns || 1)) * side }; };
+  const small = block(loaded.filter(({ image }) => Math.max(image.naturalWidth, image.naturalHeight) <= job.pixel), job.pixel);
+  const large = block(loaded.filter(({ image }) => Math.max(image.naturalWidth, image.naturalHeight) > job.pixel), job.cell);
+  const width = small.width + large.width, height = Math.max(small.height, large.height);
+  const [canvas, context] = sheet(width, height);
+  const cells = {};   // for each icon: [x, y, side] in the file
+  for (const [group, left, smooth] of [[small, 0, false], [large, small.width, true]]) {
+    context.imageSmoothingEnabled = smooth;   // a pixel icon is not smoothed; the others are made smaller, smoothly
+    group.list.forEach(({ id, image }, index) => {
+      const scale = Math.min(1, group.side / image.naturalWidth, group.side / image.naturalHeight);
+      const w = Math.round(image.naturalWidth * scale), h = Math.round(image.naturalHeight * scale);
+      const x = left + (index % group.columns) * group.side, y = Math.floor(index / group.columns) * group.side;
+      context.drawImage(image, x + (group.side - w) / 2, y + (group.side - h) / 2, w, h);
+      cells[id] = [x, y, group.side];
+    });
+  }
   await save("icons.png", canvas, "image/png");
+  await fetch("/__save?name=icons.json", { method: "POST", body: JSON.stringify({ width, height, cells, skipped }) });
 }
 await fetch("/__done", { method: "POST" });
 </script>`;
 
 // ---- a server for the page, the files, and the pictures that come back
 const work = fs.mkdtempSync(path.join(os.tmpdir(), "sprites-"));
-const types = { ".html": "text/html", ".json": "application/json", ".png": "image/png", ".webp": "image/webp", ".jpg": "image/jpeg", ".jpeg": "image/jpeg" };
+const types = { ".html": "text/html", ".json": "application/json", ".ico": "image/x-icon", ".png": "image/png", ".webp": "image/webp", ".jpg": "image/jpeg", ".jpeg": "image/jpeg" };
 let finish;
 const done = new Promise((resolve) => { finish = resolve; });
 const server = http.createServer((request, response) => {
@@ -137,7 +151,9 @@ if (wantSplash) {
 }
 if (wantIcons) {
   put("icons.png", "assets/images/icons.png");
-  data.iconSprite = { file: "assets/images/icons.png", columns: grid(own.length), ids: own.map((project) => project.id) };
+  const made = JSON.parse(fs.readFileSync(path.join(work, "icons.json"), "utf8"));
+  if (made.skipped.length) console.warn(`left out (they could not be loaded): ${made.skipped.join(", ")}`);
+  data.iconSprite = { file: "assets/images/icons.png", width: made.width, height: made.height, cells: made.cells };
 }
 const out = JSON.stringify(data, null, 2) + "\n";
 fs.writeFileSync(dataFile, rawData.includes("\r\n") ? out.replace(/\n/g, "\r\n") : out);

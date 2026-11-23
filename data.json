@@ -1164,24 +1164,134 @@
   },
   "iconSprite": {
     "file": "assets/images/icons.png",
-    "columns": 4,
-    "ids": [
-      "muos",
-      "drivemu",
-      "gallemu",
-      "spotimu",
-      "lingomu",
-      "mujs",
-      "picmu",
-      "transmu",
-      "speechmu",
-      "hashmu",
-      "searchmu",
-      "youmu",
-      "assetmu",
-      "kitmu",
-      "muai",
-      "kancamu"
-    ]
+    "width": 208,
+    "height": 144,
+    "cells": {
+      "muos": [
+        0,
+        0,
+        16
+      ],
+      "drivemu": [
+        16,
+        0,
+        16
+      ],
+      "gallemu": [
+        32,
+        0,
+        16
+      ],
+      "spotimu": [
+        48,
+        0,
+        16
+      ],
+      "lingomu": [
+        0,
+        16,
+        16
+      ],
+      "mujs": [
+        16,
+        16,
+        16
+      ],
+      "picmu": [
+        32,
+        16,
+        16
+      ],
+      "transmu": [
+        48,
+        16,
+        16
+      ],
+      "speechmu": [
+        0,
+        32,
+        16
+      ],
+      "hashmu": [
+        16,
+        32,
+        16
+      ],
+      "searchmu": [
+        32,
+        32,
+        16
+      ],
+      "youmu": [
+        48,
+        32,
+        16
+      ],
+      "assetmu": [
+        0,
+        48,
+        16
+      ],
+      "kitmu": [
+        16,
+        48,
+        16
+      ],
+      "muai": [
+        32,
+        48,
+        16
+      ],
+      "kancamu": [
+        48,
+        48,
+        16
+      ],
+      "deckcraft": [
+        64,
+        0,
+        48
+      ],
+      "effectcraft": [
+        112,
+        0,
+        48
+      ],
+      "filmcraft": [
+        160,
+        0,
+        48
+      ],
+      "gridcraft": [
+        64,
+        48,
+        48
+      ],
+      "photocraft": [
+        112,
+        48,
+        48
+      ],
+      "vectorcraft": [
+        160,
+        48,
+        48
+      ],
+      "wordcraft": [
+        64,
+        96,
+        48
+      ],
+      "tracedraw": [
+        112,
+        96,
+        48
+      ],
+      "pdfcraft": [
+        160,
+        96,
+        48
+      ]
+    }
   }
 }
