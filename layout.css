@@ -381,6 +381,19 @@ button {
     }
 }
 
+/* The home and the footer are made by the script (the buttons, the list, and the texts come from data.json), and their parts change size while they are made. Until the page is made
+   (body.ready, in app.js) they are hidden, so nothing that is seen jumps; hidden parts are not counted as a layout shift. If the script does not finish, they show after 3 seconds. */
+body:not(.ready) :is(#home, #footer) {
+    visibility: hidden;
+    animation: show-late 0s 3s forwards;
+}
+
+@keyframes show-late {
+    to {
+        visibility: visible;
+    }
+}
+
 /* Category filter */
 
 #category-filter {

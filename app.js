@@ -573,6 +573,7 @@ async function loadData() {
     syncControls();
     syncViewer();
     showSplash(data.splash);
+    document.body.classList.add("ready");   // the page is made: what was hidden until now shows (layout.css), all at once
 }
 
 function load() {
@@ -581,6 +582,7 @@ function load() {
         document.getElementById("project-list").replaceChildren(
             components.make("empty", { icon: "alert", heading: t("errorLoad") })
         );
+        document.body.classList.add("ready");
     });
 }
 
