@@ -17,7 +17,7 @@ const els = Object.fromEntries([
   "drive-dialog", "drive-close-button", "drive-search", "drive-list", "drive-message"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-// The models, the backgrounds, the Drive folder, the folder to save in, and the image types are in data.json.
+// The models, the backgrounds, the Drive folder, the folder to save in, and the image types are in data.js.
 const { models, backgrounds, downloadSuffix, saveFolder, media, mimeTypes, video, upscale: upscaling, settings: { defaults } } = i18n.data;
 const preferences = settings.get("picmu", defaults);   // the tool, its models, the frames per second, the format, and the background: set here and in the account app
 // What is on the screen is also in the address (?tool=...&model=...&fps=...), so a reload shows the same (assets/js/url.js); the address wins over the settings.

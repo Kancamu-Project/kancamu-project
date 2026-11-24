@@ -1,0 +1,754 @@
+export default {
+  "name": {
+    "en-US": "Search{highlight} — advanced search of Google",
+    "zh-CN": "Search{highlight} — Google 高级搜索",
+    "ar-SA": "Search{highlight} — البحث المتقدم في Google"
+  },
+  "brandColor": "#1782db",
+  "searchLanguages": [
+    {
+      "value": "lang_ar",
+      "code": "ar",
+      "name": "العربية"
+    },
+    {
+      "value": "lang_zh-CN",
+      "code": "zh-CN",
+      "name": "中文（中国）"
+    },
+    {
+      "value": "lang_zh-TW",
+      "code": "zh-TW",
+      "name": "中文（台灣）"
+    },
+    {
+      "value": "lang_cs",
+      "code": "cs",
+      "name": "Čeština"
+    },
+    {
+      "value": "lang_da",
+      "code": "da",
+      "name": "Dansk"
+    },
+    {
+      "value": "lang_nl",
+      "code": "nl",
+      "name": "Nederlands"
+    },
+    {
+      "value": "lang_en",
+      "code": "en",
+      "name": "English"
+    },
+    {
+      "value": "lang_et",
+      "code": "et",
+      "name": "Eesti"
+    },
+    {
+      "value": "lang_fi",
+      "code": "fi",
+      "name": "Suomi"
+    },
+    {
+      "value": "lang_fr",
+      "code": "fr",
+      "name": "Français"
+    },
+    {
+      "value": "lang_de",
+      "code": "de",
+      "name": "Deutsch"
+    },
+    {
+      "value": "lang_el",
+      "code": "el",
+      "name": "Ελληνικά"
+    },
+    {
+      "value": "lang_he",
+      "code": "he",
+      "name": "עברית"
+    },
+    {
+      "value": "lang_hu",
+      "code": "hu",
+      "name": "Magyar"
+    },
+    {
+      "value": "lang_is",
+      "code": "is",
+      "name": "Íslenska"
+    },
+    {
+      "value": "lang_id",
+      "code": "id",
+      "name": "Indonesia"
+    },
+    {
+      "value": "lang_it",
+      "code": "it",
+      "name": "Italiano"
+    },
+    {
+      "value": "lang_ja",
+      "code": "ja",
+      "name": "日本語"
+    },
+    {
+      "value": "lang_ko",
+      "code": "ko",
+      "name": "한국어"
+    },
+    {
+      "value": "lang_lv",
+      "code": "lv",
+      "name": "Latviešu"
+    },
+    {
+      "value": "lang_lt",
+      "code": "lt",
+      "name": "Lietuvių"
+    },
+    {
+      "value": "lang_no",
+      "code": "no",
+      "name": "Norsk"
+    },
+    {
+      "value": "lang_pt",
+      "code": "pt",
+      "name": "Português"
+    },
+    {
+      "value": "lang_pl",
+      "code": "pl",
+      "name": "Polski"
+    },
+    {
+      "value": "lang_ro",
+      "code": "ro",
+      "name": "Română"
+    },
+    {
+      "value": "lang_ru",
+      "code": "ru",
+      "name": "Русский"
+    },
+    {
+      "value": "lang_es",
+      "code": "es",
+      "name": "Español"
+    },
+    {
+      "value": "lang_sv",
+      "code": "sv",
+      "name": "Svenska"
+    },
+    {
+      "value": "lang_tr",
+      "code": "tr",
+      "name": "Türkçe"
+    }
+  ],
+  "regions": [
+    "US",
+    "GB",
+    "CA",
+    "AU",
+    "NZ",
+    "IE",
+    "IN",
+    "ID",
+    "MY",
+    "SG",
+    "PH",
+    "TH",
+    "VN",
+    "JP",
+    "KR",
+    "CN",
+    "TW",
+    "HK",
+    "SA",
+    "AE",
+    "EG",
+    "TR",
+    "IL",
+    "FR",
+    "DE",
+    "ES",
+    "IT",
+    "PT",
+    "NL",
+    "BE",
+    "CH",
+    "AT",
+    "SE",
+    "NO",
+    "DK",
+    "FI",
+    "PL",
+    "CZ",
+    "RU",
+    "UA",
+    "BR",
+    "MX",
+    "AR",
+    "CL",
+    "CO",
+    "ZA",
+    "NG",
+    "KE"
+  ],
+  "filetypes": [
+    "pdf",
+    "doc",
+    "docx",
+    "xls",
+    "xlsx",
+    "ppt",
+    "pptx",
+    "rtf",
+    "txt",
+    "kml",
+    "kmz",
+    "swf",
+    "ps",
+    "dwf"
+  ],
+  "rights": [
+    {
+      "id": "any",
+      "value": ""
+    },
+    {
+      "id": "share",
+      "value": "cc_publicdomain|cc_attribute|cc_sharealike|cc_nonderived"
+    },
+    {
+      "id": "shareCommercial",
+      "value": "(cc_publicdomain|cc_attribute|cc_sharealike|cc_nonderived).-(cc_noncommercial)"
+    },
+    {
+      "id": "modify",
+      "value": "cc_publicdomain|cc_attribute|cc_sharealike"
+    },
+    {
+      "id": "modifyCommercial",
+      "value": "(cc_publicdomain|cc_attribute|cc_sharealike).-(cc_noncommercial)"
+    }
+  ],
+  "limits": {
+    "numbers": [
+      "10",
+      "20",
+      "30",
+      "50",
+      "100"
+    ]
+  },
+  "settings": {
+    "defaults": {
+      "language": "",
+      "safe": false,
+      "num": "10"
+    },
+    "fields": [
+      {
+        "id": "language",
+        "type": "select",
+        "options": [
+          {
+            "value": "",
+            "label": "—"
+          },
+          {
+            "value": "lang_ar",
+            "label": "العربية"
+          },
+          {
+            "value": "lang_zh-CN",
+            "label": "中文（中国）"
+          },
+          {
+            "value": "lang_zh-TW",
+            "label": "中文（台灣）"
+          },
+          {
+            "value": "lang_cs",
+            "label": "Čeština"
+          },
+          {
+            "value": "lang_da",
+            "label": "Dansk"
+          },
+          {
+            "value": "lang_nl",
+            "label": "Nederlands"
+          },
+          {
+            "value": "lang_en",
+            "label": "English"
+          },
+          {
+            "value": "lang_et",
+            "label": "Eesti"
+          },
+          {
+            "value": "lang_fi",
+            "label": "Suomi"
+          },
+          {
+            "value": "lang_fr",
+            "label": "Français"
+          },
+          {
+            "value": "lang_de",
+            "label": "Deutsch"
+          },
+          {
+            "value": "lang_el",
+            "label": "Ελληνικά"
+          },
+          {
+            "value": "lang_he",
+            "label": "עברית"
+          },
+          {
+            "value": "lang_hu",
+            "label": "Magyar"
+          },
+          {
+            "value": "lang_is",
+            "label": "Íslenska"
+          },
+          {
+            "value": "lang_id",
+            "label": "Indonesia"
+          },
+          {
+            "value": "lang_it",
+            "label": "Italiano"
+          },
+          {
+            "value": "lang_ja",
+            "label": "日本語"
+          },
+          {
+            "value": "lang_ko",
+            "label": "한국어"
+          },
+          {
+            "value": "lang_lv",
+            "label": "Latviešu"
+          },
+          {
+            "value": "lang_lt",
+            "label": "Lietuvių"
+          },
+          {
+            "value": "lang_no",
+            "label": "Norsk"
+          },
+          {
+            "value": "lang_pt",
+            "label": "Português"
+          },
+          {
+            "value": "lang_pl",
+            "label": "Polski"
+          },
+          {
+            "value": "lang_ro",
+            "label": "Română"
+          },
+          {
+            "value": "lang_ru",
+            "label": "Русский"
+          },
+          {
+            "value": "lang_es",
+            "label": "Español"
+          },
+          {
+            "value": "lang_sv",
+            "label": "Svenska"
+          },
+          {
+            "value": "lang_tr",
+            "label": "Türkçe"
+          }
+        ],
+        "label": "set.language"
+      },
+      {
+        "id": "safe",
+        "type": "checkbox",
+        "label": "set.safe"
+      },
+      {
+        "id": "num",
+        "type": "select",
+        "options": [
+          {
+            "value": "10",
+            "label": "10"
+          },
+          {
+            "value": "20",
+            "label": "20"
+          },
+          {
+            "value": "30",
+            "label": "30"
+          },
+          {
+            "value": "50",
+            "label": "50"
+          },
+          {
+            "value": "100",
+            "label": "100"
+          }
+        ],
+        "label": "set.num"
+      }
+    ]
+  },
+  "languages": [
+    {
+      "code": "en-US",
+      "name": "English",
+      "dir": "ltr"
+    },
+    {
+      "code": "zh-CN",
+      "name": "简体中文",
+      "dir": "ltr"
+    },
+    {
+      "code": "ar-SA",
+      "name": "العربية",
+      "dir": "rtl"
+    }
+  ],
+  "ui": {
+    "copyright": {
+      "en-US": "© {brand}",
+      "zh-CN": "© {brand}",
+      "ar-SA": "© {brand}"
+    },
+    "settings": {
+      "en-US": "Settings",
+      "zh-CN": "设置",
+      "ar-SA": "الإعدادات"
+    },
+    "close": {
+      "en-US": "Close",
+      "zh-CN": "关闭",
+      "ar-SA": "إغلاق"
+    },
+    "account": {
+      "en-US": "Account",
+      "zh-CN": "账户",
+      "ar-SA": "الحساب"
+    },
+    "logo": {
+      "en-US": "Search<span class=\"highlight\">{highlight}</span>",
+      "zh-CN": "Search<span class=\"highlight\">{highlight}</span>",
+      "ar-SA": "Search<span class=\"highlight\">{highlight}</span>"
+    },
+    "toast.copied": {
+      "en-US": "Copied.",
+      "zh-CN": "已复制。",
+      "ar-SA": "تم النسخ."
+    },
+    "tab.filters": {
+      "en-US": "Search",
+      "zh-CN": "搜索",
+      "ar-SA": "البحث"
+    },
+    "tab.results": {
+      "en-US": "Results",
+      "zh-CN": "结果",
+      "ar-SA": "النتائج"
+    },
+    "status.filters": {
+      "en-US": "Fill in what you know, then search. The results of Google show beside the fields.",
+      "zh-CN": "填写已知的内容，然后搜索。Google 的结果显示在字段旁边。",
+      "ar-SA": "املأ ما تعرفه ثم ابحث. تظهر نتائج Google بجانب الحقول."
+    },
+    "status.results": {
+      "en-US": "The results of Google. If they do not show, open them in a new tab.",
+      "zh-CN": "Google 的结果。如果没有显示，请在新标签页中打开。",
+      "ar-SA": "نتائج Google. إن لم تظهر فافتحها في تبويب جديد."
+    },
+    "group.words": {
+      "en-US": "Find pages with…",
+      "zh-CN": "查找包含以下内容的网页…",
+      "ar-SA": "ابحث عن صفحات فيها…"
+    },
+    "group.narrow": {
+      "en-US": "Then narrow the results by…",
+      "zh-CN": "然后按以下条件缩小结果范围…",
+      "ar-SA": "ثم ضيّق النتائج حسب…"
+    },
+    "field.all": {
+      "en-US": "All these words",
+      "zh-CN": "包含全部字词",
+      "ar-SA": "كل هذه الكلمات"
+    },
+    "field.all.placeholder": {
+      "en-US": "tri-colour rat terrier",
+      "zh-CN": "例如：三色 老鼠梗",
+      "ar-SA": "مثال: كلب تيرير ثلاثي الألوان"
+    },
+    "field.exact": {
+      "en-US": "This exact word or phrase",
+      "zh-CN": "包含完整字词或短语",
+      "ar-SA": "هذه الكلمة أو العبارة بالضبط"
+    },
+    "field.exact.placeholder": {
+      "en-US": "rat terrier",
+      "zh-CN": "例如：老鼠梗",
+      "ar-SA": "مثال: كلب تيرير"
+    },
+    "field.any": {
+      "en-US": "Any of these words",
+      "zh-CN": "包含任一字词",
+      "ar-SA": "أي من هذه الكلمات"
+    },
+    "field.any.placeholder": {
+      "en-US": "miniature standard",
+      "zh-CN": "例如：迷你 标准",
+      "ar-SA": "مثال: صغير قياسي"
+    },
+    "field.none": {
+      "en-US": "None of these words",
+      "zh-CN": "不包含以下字词",
+      "ar-SA": "بدون هذه الكلمات"
+    },
+    "field.none.placeholder": {
+      "en-US": "rodent, \"Jack Russell\"",
+      "zh-CN": "例如：啮齿动物, \"杰克罗素\"",
+      "ar-SA": "مثال: قوارض، \"جاك راسل\""
+    },
+    "field.range": {
+      "en-US": "Numbers ranging from",
+      "zh-CN": "数字范围",
+      "ar-SA": "أرقام تتراوح بين"
+    },
+    "field.range.to": {
+      "en-US": "to",
+      "zh-CN": "至",
+      "ar-SA": "إلى"
+    },
+    "field.language": {
+      "en-US": "Language",
+      "zh-CN": "语言",
+      "ar-SA": "اللغة"
+    },
+    "field.region": {
+      "en-US": "Region",
+      "zh-CN": "地区",
+      "ar-SA": "المنطقة"
+    },
+    "field.updated": {
+      "en-US": "Last update",
+      "zh-CN": "最后更新",
+      "ar-SA": "آخر تحديث"
+    },
+    "field.site": {
+      "en-US": "Site or domain",
+      "zh-CN": "网站或域名",
+      "ar-SA": "الموقع أو النطاق"
+    },
+    "field.site.placeholder": {
+      "en-US": "wikipedia.org, .edu, .gov",
+      "zh-CN": "例如：wikipedia.org, .edu, .gov",
+      "ar-SA": "مثال: wikipedia.org أو .edu أو .gov"
+    },
+    "field.terms": {
+      "en-US": "Terms appearing",
+      "zh-CN": "字词出现位置",
+      "ar-SA": "موضع الكلمات"
+    },
+    "field.filetype": {
+      "en-US": "File type",
+      "zh-CN": "文件类型",
+      "ar-SA": "نوع الملف"
+    },
+    "field.safe": {
+      "en-US": "SafeSearch",
+      "zh-CN": "安全搜索",
+      "ar-SA": "البحث الآمن"
+    },
+    "field.safe.on": {
+      "en-US": "Hide explicit results",
+      "zh-CN": "隐藏不良内容的结果",
+      "ar-SA": "إخفاء النتائج الصريحة"
+    },
+    "field.rights": {
+      "en-US": "Usage rights",
+      "zh-CN": "使用权限",
+      "ar-SA": "حقوق الاستخدام"
+    },
+    "field.num": {
+      "en-US": "Results per page",
+      "zh-CN": "每页结果数",
+      "ar-SA": "عدد النتائج في الصفحة"
+    },
+    "option.any": {
+      "en-US": "Any",
+      "zh-CN": "不限",
+      "ar-SA": "أي"
+    },
+    "updated.any": {
+      "en-US": "Anytime",
+      "zh-CN": "时间不限",
+      "ar-SA": "أي وقت"
+    },
+    "updated.d": {
+      "en-US": "Past 24 hours",
+      "zh-CN": "过去 24 小时",
+      "ar-SA": "آخر 24 ساعة"
+    },
+    "updated.w": {
+      "en-US": "Past week",
+      "zh-CN": "过去一周",
+      "ar-SA": "آخر أسبوع"
+    },
+    "updated.m": {
+      "en-US": "Past month",
+      "zh-CN": "过去一个月",
+      "ar-SA": "آخر شهر"
+    },
+    "updated.y": {
+      "en-US": "Past year",
+      "zh-CN": "过去一年",
+      "ar-SA": "آخر سنة"
+    },
+    "terms.any": {
+      "en-US": "Anywhere in the page",
+      "zh-CN": "网页的任何位置",
+      "ar-SA": "في أي مكان بالصفحة"
+    },
+    "terms.title": {
+      "en-US": "In the title of the page",
+      "zh-CN": "网页标题",
+      "ar-SA": "في عنوان الصفحة"
+    },
+    "terms.body": {
+      "en-US": "In the text of the page",
+      "zh-CN": "网页正文",
+      "ar-SA": "في نص الصفحة"
+    },
+    "terms.url": {
+      "en-US": "In the URL of the page",
+      "zh-CN": "网页网址",
+      "ar-SA": "في رابط الصفحة"
+    },
+    "terms.links": {
+      "en-US": "In links to the page",
+      "zh-CN": "指向该网页的链接",
+      "ar-SA": "في الروابط إلى الصفحة"
+    },
+    "rights.any": {
+      "en-US": "Not filtered by license",
+      "zh-CN": "不按许可过滤",
+      "ar-SA": "بدون تصفية حسب الترخيص"
+    },
+    "rights.share": {
+      "en-US": "Free to use or share",
+      "zh-CN": "可自由使用或分享",
+      "ar-SA": "حرة للاستخدام أو المشاركة"
+    },
+    "rights.shareCommercial": {
+      "en-US": "Free to use or share, even commercially",
+      "zh-CN": "可自由使用或分享，包括商用",
+      "ar-SA": "حرة للاستخدام أو المشاركة، حتى تجاريًا"
+    },
+    "rights.modify": {
+      "en-US": "Free to use, share or modify",
+      "zh-CN": "可自由使用、分享或修改",
+      "ar-SA": "حرة للاستخدام أو المشاركة أو التعديل"
+    },
+    "rights.modifyCommercial": {
+      "en-US": "Free to use, share or modify, even commercially",
+      "zh-CN": "可自由使用、分享或修改，包括商用",
+      "ar-SA": "حرة للاستخدام أو المشاركة أو التعديل، حتى تجاريًا"
+    },
+    "action.search": {
+      "en-US": "Search",
+      "zh-CN": "搜索",
+      "ar-SA": "بحث"
+    },
+    "action.open": {
+      "en-US": "Open in a new tab",
+      "zh-CN": "在新标签页中打开",
+      "ar-SA": "فتح في تبويب جديد"
+    },
+    "action.copy": {
+      "en-US": "Copy the query",
+      "zh-CN": "复制查询",
+      "ar-SA": "نسخ الاستعلام"
+    },
+    "action.reset": {
+      "en-US": "Clear",
+      "zh-CN": "清除",
+      "ar-SA": "مسح"
+    },
+    "query.label": {
+      "en-US": "Query",
+      "zh-CN": "查询",
+      "ar-SA": "الاستعلام"
+    },
+    "query.empty": {
+      "en-US": "Nothing to search yet.",
+      "zh-CN": "还没有可搜索的内容。",
+      "ar-SA": "لا شيء للبحث عنه بعد."
+    },
+    "frame.title": {
+      "en-US": "The results of Google",
+      "zh-CN": "Google 的结果",
+      "ar-SA": "نتائج Google"
+    },
+    "frame.empty": {
+      "en-US": "The results show here, as Google gives them.",
+      "zh-CN": "结果会按 Google 给出的样子显示在这里。",
+      "ar-SA": "تظهر النتائج هنا كما تعطيها Google."
+    },
+    "frame.hint": {
+      "en-US": "Google can ask you to confirm that you are not a robot, or refuse to show its results here. Then open them in a new tab.",
+      "zh-CN": "Google 可能要求你确认不是机器人，或拒绝在此显示结果。此时请在新标签页中打开。",
+      "ar-SA": "قد تطلب Google تأكيد أنك لست روبوتًا أو ترفض عرض نتائجها هنا. عندها افتحها في تبويب جديد."
+    },
+    "error.empty": {
+      "en-US": "Fill in at least one field.",
+      "zh-CN": "请至少填写一个字段。",
+      "ar-SA": "املأ حقلًا واحدًا على الأقل."
+    },
+    "error.failed": {
+      "en-US": "It failed: {message}",
+      "zh-CN": "失败：{message}",
+      "ar-SA": "فشل الأمر: {message}"
+    },
+    "set.language": {
+      "en-US": "Language of the results",
+      "zh-CN": "结果语言",
+      "ar-SA": "لغة النتائج"
+    },
+    "set.safe": {
+      "en-US": "Hide explicit results",
+      "zh-CN": "隐藏不良内容的结果",
+      "ar-SA": "إخفاء النتائج الصريحة"
+    },
+    "set.num": {
+      "en-US": "Results per page",
+      "zh-CN": "每页结果数",
+      "ar-SA": "عدد النتائج في الصفحة"
+    }
+  }
+};

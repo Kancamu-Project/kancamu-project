@@ -1,5 +1,5 @@
 const state = {
-    iconSprite: null,   // the icons of the apps of the brand in one file (data.json, "iconSprite"; assets/tools/sprites.mjs makes it)
+    iconSprite: null,   // the icons of the apps of the brand in one file (data.js, "iconSprite"; assets/tools/sprites.mjs makes it)
     home: null,
     categories: {},
     projects: [],
@@ -11,7 +11,7 @@ const state = {
     view: "grid",
     tabs: [],
     active: null,
-    page: "",   // "about" or "terms" (data.json, "pages"): shown in the main instead of the directory
+    page: "",   // "about" or "terms" (data.js, "pages"): shown in the main instead of the directory
     frames: {},   // the query string of the app in each open tab (what the app says about itself, assets/js/url.js): id -> "path=Images&view=list"
 };
 
@@ -230,7 +230,7 @@ window.addEventListener("message", (event) => {
     saveFilters();
 });
 
-/* ---------- the pages (About, Terms and conditions): the texts are in data.json, in "pages" ---------- */
+/* ---------- the pages (About, Terms and conditions): the texts are in data.js, in "pages" ---------- */
 function openPage(name) {
     state.page = name;
     saveFilters();
@@ -287,7 +287,7 @@ function renderAll() {
 
 // The icon of a project is its place in the sprite of the icons (one file for all of them, so the page asks for one and not for one per app), or its own file when it is not in the sprite.
 // The sprite has the squares of the icons (16 px for a pixel icon, up to 48 px for the others): the box of the icon shows one of them (every box is a square, so the percentages cut it exactly).
-// The place of a square in a grid of squares (the columns are in data.json; the rows are as many as they need): the size and the position of a background that shows only that square (the splash)
+// The place of a square in a grid of squares (the columns are in data.js; the rows are as many as they need): the size and the position of a background that shows only that square (the splash)
 function spriteCell(count, columns, index) {
     const wide = columns || count;   // a sprite without columns is a row
     const rows = Math.ceil(count / wide);
@@ -529,7 +529,7 @@ function createListHeader() {
 }
 
 /* ---------- the splash: a layer over the content for a moment when the site opens ---------- */
-// Its images (data.json, "splash") slide one after another every few seconds, in the order of the list (and not at all when the device asks for less motion). The content is loaded behind it.
+// Its images (data.js, "splash") slide one after another every few seconds, in the order of the list (and not at all when the device asks for less motion). The content is loaded behind it.
 // It stays until the user clicks or presses a key, and the user can turn it off in the Appearance page of the account app (the setting "splash").
 async function showSplash({ images, seconds, sprite }) {   // the first image is the first of the list
     const splash = document.getElementById("splash");
@@ -600,7 +600,7 @@ async function loadData() {
     state.categories = data.categories;
     state.projects = data.projects;
     state.iconSprite = data.iconSprite || null;
-    document.getElementById("support-link").href = data.support.url;   // the support of Kancamu (data.json, "support")
+    document.getElementById("support-link").href = data.support.url;   // the support of Kancamu (data.js, "support")
     restoreFilters();
     i18n.selects();
     renderAll();

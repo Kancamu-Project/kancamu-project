@@ -12,7 +12,7 @@ const els = Object.fromEntries([
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 const audio = els.audioElement;
 
-// The audio types, the limits, the first values of the settings, and the folder are in data.json.
+// The audio types, the limits, the first values of the settings, and the folder are in data.js.
 const { media, limits, mimeTypes, settings: { defaults }, repeatModes } = i18n.data;
 const AUDIO = new Set(media.audio);
 const ALL = "", ROOT = "/";   // the values of the album select: every album, and the files at the root of the Drive

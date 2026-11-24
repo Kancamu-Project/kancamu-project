@@ -11,7 +11,7 @@ const els = Object.fromEntries([
   "viewer-previous-button", "viewer-next-button", "account-button"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-// The media types, the limits and the folder are in data.json.
+// The media types, the limits and the folder are in data.js.
 const { media, limits, mimeTypes } = i18n.data;
 const KIND_OF = new Map(Object.entries(media).flatMap(([kind, extensions]) => extensions.map((extension) => [extension, kind])));
 const ALL = "", ROOT = "/";   // the values of the album select: every album, and the files at the root of the Drive

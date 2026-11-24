@@ -1,9 +1,9 @@
 // Makes the sprites of the main website: one file with many images, so a page asks for one file and not for one for every image (RULES.md, Images).
-//   assets/images/splash.webp   the images of the splash screen (data.json, "splash", "images"), the whole file is a square of 768 px (four images of 384 px in a grid of 2 x 2)
-//   assets/images/icons.webp     the icons of all the apps of the directory (data.json, "projects"), in two blocks side by side: the pixel icons (16 px or less, as they are, in cells of 16 px)
+//   assets/images/splash.webp   the images of the splash screen (data.js, "splash", "images"), the whole file is a square of 768 px (four images of 384 px in a grid of 2 x 2)
+//   assets/images/icons.webp     the icons of all the apps of the directory (data.js, "projects"), in two blocks side by side: the pixel icons (16 px or less, as they are, in cells of 16 px)
 //                               and the icons of other makers (ArtCraft, TraceDraw: made smaller, 48 px at most, smoothly, in cells of 48 px). Each block is a grid as square as it can be.
 // The favicon.png of each app stays: it is the favicon of its app. The splash has no single files: its images are in the sprite, and their originals (<name>_raw) are the source.
-// It also writes in data.json what app.js needs to cut the sprites ("splash.sprite" and "iconSprite"), so run it again when an image or an app is added.
+// It also writes in data.js what app.js needs to cut the sprites ("splash.sprite" and "iconSprite"), so run it again when an image or an app is added.
 //   node assets/tools/sprites.mjs            both
 //   node assets/tools/sprites.mjs icons      only the icons
 //   node assets/tools/sprites.mjs splash     only the splash (it needs the originals: assets/images/<name>_raw.png or .jpg, which are not kept in the repository)
@@ -15,6 +15,7 @@ import path from "node:path";
 import http from "node:http";
 import { spawn, execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { readData } from "./data.mjs";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
 const chrome = process.env.CHROME || "C:/Program Files/Google/Chrome/Application/chrome.exe";
@@ -23,9 +24,8 @@ const SIZE = 768;               // the whole sprite of the splash is a square of
 const PIXEL = 16;               // the cell of a pixel icon (an icon of 16 px or less is kept as it is)
 const CELL = 48;                // the cell of the other icons: they are made smaller than this
 
-const dataFile = path.join(root, "data.json");
-const rawData = fs.readFileSync(dataFile, "utf8");
-const data = JSON.parse(rawData);
+const dataFile = path.join(root, "data.js");
+const data = readData(dataFile);
 
 // ---- what goes in the sprites
 const wantSplash = only !== "icons";
@@ -128,7 +128,7 @@ clearTimeout(timeout);
 stop();
 server.close();
 
-// ---- the files, and what data.json says about them
+// ---- the files, and what data.js says about them
 const put = (name, destination) => {
   const source = path.join(work, name);
   if (!fs.existsSync(source)) throw new Error(`${name} was not made`);
@@ -145,7 +145,7 @@ if (wantIcons) {
   if (made.skipped.length) console.warn(`left out (they could not be loaded): ${made.skipped.join(", ")}`);
   data.iconSprite = { file: "assets/images/icons.webp", width: made.width, height: made.height, cells: made.cells };
 }
-const out = JSON.stringify(data, null, 2) + "\n";
-fs.writeFileSync(dataFile, rawData.includes("\r\n") ? out.replace(/\n/g, "\r\n") : out);
+const out = `export default ${JSON.stringify(data, null, 2)};\n`;
+fs.writeFileSync(dataFile, out);
 try { fs.rmSync(work, { recursive: true, force: true, maxRetries: 8, retryDelay: 400 }); } catch { /* Chrome still holds its profile for a moment: the folder is in the temporary folder of the system */ }
-console.log("data.json: splash.sprite and iconSprite are set");
+console.log("data.js: splash.sprite and iconSprite are set");

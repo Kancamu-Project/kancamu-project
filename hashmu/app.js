@@ -15,7 +15,7 @@ const els = Object.fromEntries([
   "status", "account-button"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-// The algorithms, the formats, the characters, and the limits are in data.json.
+// The algorithms, the formats, the characters, and the limits are in data.js.
 const { algorithms, formats, charsets, generateTypes, encodings, limits, settings: { defaults } } = i18n.data;
 const TABS = ["hash", "encrypt", "generate", "encode"];
 const preferences = () => settings.get("hashmu", defaults);

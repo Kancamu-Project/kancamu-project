@@ -23,7 +23,7 @@ await i18n.load();
 i18n.selects();
 const tr = (key, params) => i18n.t(key, params);
 
-// The model list and the default settings are in data.json (models, settings).
+// The model list and the default settings are in data.js (models, settings).
 // kind "text" = AutoModelForCausalLM, "multi" = Gemma 4 (text + images).
 const { models: MODELS, settings: { defaults: DEFAULTS } } = i18n.data;
 const sizeLabel = (mb) => (mb >= 1000 ? (mb / 1000).toFixed(1) + " GB" : mb + " MB");
@@ -447,7 +447,7 @@ async function loadModel() {
     } else if (info.status === "ready") note.set(tr("load.gpu"));
   };
   try {
-    const opts = { dtype: def.dtype ?? i18n.data.defaultDtype, device: "webgpu", progress_callback: onProgress };   // a model may name its own dtype in data.json
+    const opts = { dtype: def.dtype ?? i18n.data.defaultDtype, device: "webgpu", progress_callback: onProgress };   // a model may name its own dtype in data.js
     if (def.kind === "multi") {
       processor = await AutoProcessor.from_pretrained(def.id);
       if (!processor.tokenizer) processor = await Gemma4Processor.from_pretrained(def.id);   // the QAT repos do not name the processor class in preprocessor_config.json, so AutoProcessor makes one without a tokenizer
@@ -1185,7 +1185,7 @@ settings.listen("muai", async (message) => {
 
 // ---------- Resizable sidebar ----------
 // Width is kept in rem (multiples of 0.2rem), clamped to 16rem-40rem and at most 60% of the window.
-const sideField = i18n.data.settings.fields.find((definition) => definition.id === "sideWidth");   // its limits are in data.json
+const sideField = i18n.data.settings.fields.find((definition) => definition.id === "sideWidth");   // its limits are in data.js
 const SIDE = { min: sideField.min, max: sideField.max, def: DEFAULTS.sideWidth };
 let sideRem = preferences.sideWidth || SIDE.def;
 const remPx = () => parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;

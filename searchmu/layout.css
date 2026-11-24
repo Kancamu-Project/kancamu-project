@@ -7,7 +7,7 @@
 #views { display: none; }   /* the tabs are for a narrow window: from a tablet up the fields and the results are side by side */
 
 .header { height: var(--height); }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/style.css) */
 .header-tools { height: 100%; }
 
 .panel { min-height: 0; min-width: 0; display: flex; flex-direction: column; gap: var(--gap-small); }

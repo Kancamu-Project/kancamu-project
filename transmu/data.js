@@ -1,0 +1,405 @@
+export default {
+  "name": {
+    "en-US": "Trans{highlight} — translate with AI in your browser",
+    "zh-CN": "Trans{highlight} — 在浏览器中用 AI 翻译",
+    "ar-SA": "Trans{highlight} — ترجم بالذكاء الاصطناعي في متصفحك"
+  },
+  "brandColor": "#ef2142",
+  "translationLanguages": [
+    {
+      "code": "en",
+      "name": "English",
+      "dir": "ltr"
+    },
+    {
+      "code": "zh",
+      "name": "中文",
+      "dir": "ltr"
+    },
+    {
+      "code": "ar",
+      "name": "العربية",
+      "dir": "rtl"
+    },
+    {
+      "code": "id",
+      "name": "Indonesia",
+      "dir": "ltr"
+    },
+    {
+      "code": "es",
+      "name": "Español",
+      "dir": "ltr"
+    },
+    {
+      "code": "fr",
+      "name": "Français",
+      "dir": "ltr"
+    },
+    {
+      "code": "de",
+      "name": "Deutsch",
+      "dir": "ltr"
+    },
+    {
+      "code": "ru",
+      "name": "Русский",
+      "dir": "ltr"
+    }
+  ],
+  "models": [
+    {
+      "id": "opus",
+      "name": "Opus-MT",
+      "modelTemplate": "Xenova/opus-mt-{from}-{to}",
+      "pivot": "en",
+      "pairs": [
+        "en-zh",
+        "zh-en",
+        "en-ar",
+        "ar-en",
+        "en-id",
+        "id-en",
+        "en-es",
+        "es-en",
+        "en-fr",
+        "fr-en",
+        "en-de",
+        "de-en",
+        "en-ru",
+        "ru-en"
+      ],
+      "dtype": "q8",
+      "hint": {
+        "en-US": "small and fast, about 55 MB for each direction",
+        "zh-CN": "小而快，每个方向约 55 MB",
+        "ar-SA": "صغير وسريع، نحو 55 ميغابايت لكل اتجاه"
+      }
+    },
+    {
+      "id": "nllb",
+      "name": "NLLB-200",
+      "model": "Xenova/nllb-200-distilled-600M",
+      "dtype": "q8",
+      "codes": {
+        "en": "eng_Latn",
+        "zh": "zho_Hans",
+        "ar": "arb_Arab",
+        "id": "ind_Latn",
+        "es": "spa_Latn",
+        "fr": "fra_Latn",
+        "de": "deu_Latn",
+        "ru": "rus_Cyrl"
+      },
+      "hint": {
+        "en-US": "best quality, any pair directly, about 900 MB, non-commercial licence",
+        "zh-CN": "质量最好，任意语言直接互译，约 900 MB，仅限非商业使用",
+        "ar-SA": "أفضل جودة، أي زوج مباشرة، نحو 900 ميغابايت، ترخيص غير تجاري"
+      }
+    },
+    {
+      "id": "m2m100",
+      "name": "M2M100",
+      "model": "Xenova/m2m100_418M",
+      "dtype": "q8",
+      "codes": {
+        "en": "en",
+        "zh": "zh",
+        "ar": "ar",
+        "id": "id",
+        "es": "es",
+        "fr": "fr",
+        "de": "de",
+        "ru": "ru"
+      },
+      "hint": {
+        "en-US": "any pair directly, about 630 MB",
+        "zh-CN": "任意语言直接互译，约 630 MB",
+        "ar-SA": "أي زوج مباشرة، نحو 630 ميغابايت"
+      }
+    }
+  ],
+  "engine": {
+    "device": "wasm",
+    "maxNewTokens": 256
+  },
+  "settings": {
+    "defaults": {
+      "model": "opus",
+      "source": "en",
+      "target": "zh"
+    },
+    "fields": [
+      {
+        "id": "source",
+        "type": "select",
+        "optionsFrom": {
+          "list": "translationLanguages",
+          "value": "code",
+          "label": "name"
+        },
+        "label": "from.label"
+      },
+      {
+        "id": "target",
+        "type": "select",
+        "optionsFrom": {
+          "list": "translationLanguages",
+          "value": "code",
+          "label": "name"
+        },
+        "label": "to.label"
+      }
+    ],
+    "models": {
+      "cache": "transformers-cache",
+      "choose": "model",
+      "list": "models",
+      "repo": "model",
+      "repoTemplate": "modelTemplate"
+    },
+    "panels": [
+      "modelList"
+    ]
+  },
+  "sentenceMarks": ".!?。！？؟",
+  "noSpaceLanguages": [
+    "zh"
+  ],
+  "punctuation": {
+    "zh": [
+      [
+        "(?<!\\d),(?!\\d)",
+        "，"
+      ],
+      [
+        "(?<!\\d)\\.(?!\\d)",
+        "。"
+      ],
+      [
+        "\\?",
+        "？"
+      ],
+      [
+        "!",
+        "！"
+      ],
+      [
+        ";",
+        "；"
+      ],
+      [
+        "(?<!\\d):(?!\\d)",
+        "："
+      ]
+    ],
+    "ar": [
+      [
+        ",",
+        "،"
+      ],
+      [
+        "\\?",
+        "؟"
+      ],
+      [
+        ";",
+        "؛"
+      ]
+    ]
+  },
+  "languages": [
+    {
+      "code": "en-US",
+      "name": "English",
+      "dir": "ltr"
+    },
+    {
+      "code": "zh-CN",
+      "name": "简体中文",
+      "dir": "ltr"
+    },
+    {
+      "code": "ar-SA",
+      "name": "العربية",
+      "dir": "rtl"
+    }
+  ],
+  "ui": {
+    "logo": {
+      "en-US": "Trans<span class=\"highlight\">{highlight}</span>",
+      "zh-CN": "Trans<span class=\"highlight\">{highlight}</span>",
+      "ar-SA": "Trans<span class=\"highlight\">{highlight}</span>"
+    },
+    "copyright": {
+      "en-US": "© {brand}",
+      "zh-CN": "© {brand}",
+      "ar-SA": "© {brand}"
+    },
+    "settings": {
+      "en-US": "Settings",
+      "zh-CN": "设置",
+      "ar-SA": "الإعدادات"
+    },
+    "close": {
+      "en-US": "Close",
+      "zh-CN": "关闭",
+      "ar-SA": "إغلاق"
+    },
+    "from.label": {
+      "en-US": "Translate from",
+      "zh-CN": "源语言",
+      "ar-SA": "الترجمة من"
+    },
+    "to.label": {
+      "en-US": "Translate to",
+      "zh-CN": "目标语言",
+      "ar-SA": "الترجمة إلى"
+    },
+    "swap": {
+      "en-US": "Swap the languages",
+      "zh-CN": "交换语言",
+      "ar-SA": "تبديل اللغتين"
+    },
+    "source.title": {
+      "en-US": "Text",
+      "zh-CN": "原文",
+      "ar-SA": "النص"
+    },
+    "source.placeholder": {
+      "en-US": "Type or paste the text to translate. Ctrl+Enter translates it.",
+      "zh-CN": "输入或粘贴要翻译的文字。按 Ctrl+Enter 翻译。",
+      "ar-SA": "اكتب النص المراد ترجمته أو الصقه. اضغط Ctrl+Enter للترجمة."
+    },
+    "target.title": {
+      "en-US": "Translation",
+      "zh-CN": "译文",
+      "ar-SA": "الترجمة"
+    },
+    "target.placeholder": {
+      "en-US": "The translation appears here. It never leaves your device: the model runs in your browser.",
+      "zh-CN": "译文显示在这里。文字不会离开你的设备：模型在浏览器中运行。",
+      "ar-SA": "تظهر الترجمة هنا. لا يغادر النص جهازك أبدًا: يعمل النموذج في متصفحك."
+    },
+    "count": {
+      "en-US": "{count} characters",
+      "zh-CN": "{count} 个字符",
+      "ar-SA": "{count} حرفًا"
+    },
+    "clear": {
+      "en-US": "Clear",
+      "zh-CN": "清除",
+      "ar-SA": "مسح"
+    },
+    "copy": {
+      "en-US": "Copy the translation",
+      "zh-CN": "复制译文",
+      "ar-SA": "نسخ الترجمة"
+    },
+    "toast.copied": {
+      "en-US": "Copied.",
+      "zh-CN": "已复制。",
+      "ar-SA": "تم النسخ."
+    },
+    "translate": {
+      "en-US": "Translate",
+      "zh-CN": "翻译",
+      "ar-SA": "ترجم"
+    },
+    "stop": {
+      "en-US": "Stop",
+      "zh-CN": "停止",
+      "ar-SA": "إيقاف"
+    },
+    "status.idle": {
+      "en-US": "Type a text and press Translate. The first time, the model is downloaded and kept in your browser.",
+      "zh-CN": "输入文字后点击翻译。首次使用时会下载模型并保存在浏览器中。",
+      "ar-SA": "اكتب نصًا واضغط ترجم. في المرة الأولى يُنزَّل النموذج ويُحفظ في متصفحك."
+    },
+    "status.loadingModel": {
+      "en-US": "Loading {model}… {percent}%",
+      "zh-CN": "正在加载 {model}… {percent}%",
+      "ar-SA": "جارٍ تحميل {model}… {percent}%"
+    },
+    "status.preparingModel": {
+      "en-US": "Preparing the model…",
+      "zh-CN": "正在准备模型…",
+      "ar-SA": "جارٍ تجهيز النموذج…"
+    },
+    "status.translating": {
+      "en-US": "Translating… part {done} of {total}",
+      "zh-CN": "正在翻译… 第 {done} / {total} 段",
+      "ar-SA": "جارٍ الترجمة… الجزء {done} من {total}"
+    },
+    "status.done": {
+      "en-US": "Done in {seconds} s · {total} parts",
+      "zh-CN": "完成，用时 {seconds} 秒 · {total} 段",
+      "ar-SA": "تم في {seconds} ث · {total} أجزاء"
+    },
+    "status.stopped": {
+      "en-US": "Stopped after {done} of {total} parts.",
+      "zh-CN": "已停止，完成 {done} / {total} 段。",
+      "ar-SA": "أُوقفت بعد {done} من {total} أجزاء."
+    },
+    "status.same": {
+      "en-US": "Both languages are the same, so the text is shown as it is.",
+      "zh-CN": "两种语言相同，文字保持原样。",
+      "ar-SA": "اللغتان متطابقتان، لذا يظهر النص كما هو."
+    },
+    "error.empty": {
+      "en-US": "Type a text first.",
+      "zh-CN": "请先输入文字。",
+      "ar-SA": "اكتب نصًا أولًا."
+    },
+    "error.failed": {
+      "en-US": "Could not translate: {message}",
+      "zh-CN": "无法翻译：{message}",
+      "ar-SA": "تعذرت الترجمة: {message}"
+    },
+    "model.label": {
+      "en-US": "Model",
+      "zh-CN": "模型",
+      "ar-SA": "النموذج"
+    },
+    "account": {
+      "en-US": "Account",
+      "zh-CN": "账户",
+      "ar-SA": "الحساب"
+    },
+    "set.models.label": {
+      "en-US": "Models",
+      "zh-CN": "模型",
+      "ar-SA": "النماذج"
+    },
+    "set.models.hint": {
+      "en-US": "Choose the model that translates. The files of a model are kept in this browser: delete them to free the space, and the model downloads again when you use it.",
+      "zh-CN": "选择用于翻译的模型。模型文件保存在此浏览器中：删除后可释放空间，再次使用时会重新下载。",
+      "ar-SA": "اختر النموذج المستخدم. تُحفظ ملفات النموذج في هذا المتصفح: احذفها لتحرير المساحة، وسيُنزَّل النموذج مجددا عند استخدامه."
+    },
+    "confirm.deleteModel": {
+      "en-US": "Delete the downloaded files of {name} ({size})? They will download again when you use it.",
+      "zh-CN": "删除 {name} 的已下载文件（{size}）？再次使用时会重新下载。",
+      "ar-SA": "هل تريد حذف الملفات المنزّلة لـ {name} ({size})؟ ستُنزَّل مرة أخرى عند استخدامه."
+    },
+    "toast.modelDeleted": {
+      "en-US": "{name} deleted",
+      "zh-CN": "已删除 {name}",
+      "ar-SA": "تم حذف {name}"
+    },
+    "models.delete": {
+      "en-US": "Delete",
+      "zh-CN": "删除",
+      "ar-SA": "حذف"
+    },
+    "models.downloaded": {
+      "en-US": "Downloaded",
+      "zh-CN": "已下载",
+      "ar-SA": "تم التنزيل"
+    },
+    "models.notDownloaded": {
+      "en-US": "Not downloaded",
+      "zh-CN": "未下载",
+      "ar-SA": "غير منزَّل"
+    }
+  }
+};

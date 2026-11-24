@@ -1,5 +1,5 @@
 // muJS: lessons that teach JavaScript. Each lesson explains one idea, gives a task, and has a code editor that runs the code.
-// The units, the lessons, their tests, and the words to colour are in data.json. The code runs in a sandboxed frame (sandbox.js), never in this page.
+// The units, the lessons, their tests, and the words to colour are in data.js. The code runs in a sandboxed frame (sandbox.js), never in this page.
 // The progress (lessons done, the code that was written) is kept in this browser, and in the mujs folder of the storage once the user is signed in.
 
 await i18n.load();

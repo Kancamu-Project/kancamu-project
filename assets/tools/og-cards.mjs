@@ -13,11 +13,12 @@ import http from "node:http";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
+import { readData } from "./data.mjs";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
 const work = fs.mkdtempSync(path.join(os.tmpdir(), "og-cards-"));
 const chrome = process.env.CHROME || "C:/Program Files/Google/Chrome/Application/chrome.exe";
-const data = JSON.parse(fs.readFileSync(path.join(root, "data.json"), "utf8"));
+const data = readData(path.join(root, "data.js"));
 const only = process.argv[2];   // one project, by its id
 
 const projects = data.projects.filter((project) => project.publisher === "{brand}" && (!only || project.id === only));

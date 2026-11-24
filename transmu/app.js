@@ -14,7 +14,7 @@ const els = Object.fromEntries([
   "account-button"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-// The languages, the models, and how a text is cut are in data.json.
+// The languages, the models, and how a text is cut are in data.js.
 const { translationLanguages: languages, models, engine, settings: { defaults }, sentenceMarks, noSpaceLanguages, punctuation } = i18n.data;
 const preferences = settings.get("transmu", defaults);   // the model and the two languages: set here and in the account app
 // What is on the screen is also in the address (?model=...&from=...&to=...&text=...), so a reload shows the same (assets/js/url.js); the address wins over the settings.

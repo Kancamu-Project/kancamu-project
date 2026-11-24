@@ -6,24 +6,27 @@
     mask: var(--icon) center / contain no-repeat;
     -webkit-mask: var(--icon) center / contain no-repeat;
 
-    &.refresh { --icon: url("assets/icons/refresh.svg"); }
-    &.theme { --icon: url("assets/icons/sun.svg"); }
-    &.search { --icon: url("assets/icons/search.svg"); }
-    &.user { --icon: url("assets/icons/user.svg"); }
-    &.grid { --icon: url("assets/icons/grid.svg"); }
-    &.list { --icon: url("assets/icons/list.svg"); }
-    &.external { --icon: url("assets/icons/external.svg"); }
-    &.more { --icon: url("assets/icons/more.svg"); }
-    &.heart { --icon: url("assets/icons/heart.svg"); }
-    &.check { --icon: url("assets/icons/check.svg"); }
-    &.error { --icon: url("assets/icons/alert.svg"); }
-    &.close { --icon: url("assets/icons/close.svg"); }
+    &.refresh { --icon: var(--icon-refresh); }
+    &.theme { --icon: var(--icon-sun); }
+    &.search { --icon: var(--icon-search); }
+    &.user { --icon: var(--icon-user); }
+    &.grid { --icon: var(--icon-grid); }
+    &.list { --icon: var(--icon-list); }
+    &.external { --icon: var(--icon-external); }
+    &.more { --icon: var(--icon-more); }
+    &.heart { --icon: var(--icon-heart); }
+    &.check { --icon: var(--icon-check); }
+    &.error { --icon: var(--icon-alert); }
+    &.close { --icon: var(--icon-close); }
 }
 
 body {
     display: grid;
     grid-template: auto minmax(0, 1fr) auto / minmax(0, 1fr);
     overflow: hidden;
+    /* The main website has its own page: no gap or padding from the page template (assets/css/style.css). */
+    gap: 0;
+    padding: 0;
 }
 
 /* Header */
@@ -35,6 +38,8 @@ body {
     display: flex;
     flex-direction: row;
     align-items: stretch;
+    justify-content: normal;
+    gap: 0;
     border-bottom: var(--border-width) solid var(--border);
 
     & > div {
@@ -223,6 +228,8 @@ body {
     & > .header-tools {
         flex-shrink: 0;
         align-items: stretch;
+        gap: 0;
+        height: auto;
         padding: 0;
         border-inline-start: var(--border-width) solid var(--border);
 
@@ -246,7 +253,7 @@ body {
 }
 
 :root[data-theme="light"] .glyph.theme {
-    --icon: url("assets/icons/moon.svg");
+    --icon: var(--icon-moon);
 }
 
 [hidden] {
@@ -260,6 +267,7 @@ body {
     min-height: 0;
     display: flex;
     flex-direction: column;
+    gap: 0;
 }
 
 #viewer {
@@ -381,7 +389,7 @@ button {
     }
 }
 
-/* The home and the footer are made by the script (the buttons, the list, and the texts come from data.json), and their parts change size while they are made. Until the page is made
+/* The home and the footer are made by the script (the buttons, the list, and the texts come from data.js), and their parts change size while they are made. Until the page is made
    (body.ready, in app.js) they are hidden, so nothing that is seen jumps; hidden parts are not counted as a layout shift. If the script does not finish, they show after 3 seconds. */
 body:not(.ready) :is(#home, #footer) {
     visibility: hidden;
@@ -715,6 +723,8 @@ body:not(.ready) :is(#home, #footer) {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: normal;
+    gap: 0;
     padding: 0 var(--padding-extra-large);
     border-top: var(--border-width) solid var(--border);
     color: var(--fg-1);
@@ -875,7 +885,7 @@ body:not(.ready) :is(#home, #footer) {
 .splash-tagline { color: var(--fg-1); margin-block-end: auto; }
 .splash-hint, .splash-copyright { font-size: var(--font-size-extra-small); color: var(--fg-1); }
 
-/* The images of the splash (assets/images, the list of data.json, set by app.js): squares in a row that slides, covering their part of the card */
+/* The images of the splash (assets/images, the list of data.js, set by app.js): squares in a row that slides, covering their part of the card */
 .splash-art {
     position: relative;
     overflow: hidden;

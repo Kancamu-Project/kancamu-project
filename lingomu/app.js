@@ -1,4 +1,4 @@
-// Lingomu: short lessons that teach the words of a language. The courses, the units, the lessons, and the rules of a lesson are in data.json.
+// Lingomu: short lessons that teach the words of a language. The courses, the units, the lessons, and the rules of a lesson are in data.js.
 // The progress (lessons done, XP, streak) is kept in this browser, and in the lingomu folder of the storage once the user is signed in.
 
 await i18n.load();

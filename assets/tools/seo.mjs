@@ -1,17 +1,18 @@
 // Makes what a search engine reads in the pages of Kancamu (RULES.md, HTML 10): sitemap.xml, robots.txt, and, in the index.html of the main website and of every app,
 // the title, the canonical address, the structured data (JSON-LD), the preload of the image of the splash screen (main website), and a text for the visitors without JavaScript (<noscript>, with the link to the main website and, on the main website, to the apps).
-// Everything comes from the main data.json (the name, the description, the categories), so it follows an app that changes or is added. It is safe to run again: its parts are between markers.
+// Everything comes from the main data.js (the name, the description, the categories), so it follows an app that changes or is added. It is safe to run again: its parts are between markers.
 //   node assets/tools/seo.mjs
 // It needs Node 20 or newer. The address of the website is in CNAME.
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { readData } from "./data.mjs";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
 const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
 const site = `https://${read("CNAME").trim()}/`;
-const data = JSON.parse(read("data.json"));
-const brand = JSON.parse(read("assets/data/brand.json"));
+const data = readData(path.join(root, "data.js"));
+const brand = readData(path.join(root, "assets/data/brand.js"));
 const fill = (text) => text.replaceAll("{highlight}", brand.highlight).replaceAll("{brand}", brand.name);
 const escape = (text) => text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
