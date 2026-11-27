@@ -196,6 +196,56 @@ export default {
       "zh-CN": "GitHub 源代码",
       "ar-SA": "الشيفرة المصدرية على GitHub"
     },
+    "nativeInstall": {
+      "en-US": "Install the native app",
+      "zh-CN": "安装原生应用",
+      "ar-SA": "تثبيت التطبيق الأصلي"
+    },
+    "nativeUpdate": {
+      "en-US": "Update the native app",
+      "zh-CN": "更新原生应用",
+      "ar-SA": "تحديث التطبيق الأصلي"
+    },
+    "nativeOpen": {
+      "en-US": "Open the native app",
+      "zh-CN": "打开原生应用",
+      "ar-SA": "فتح التطبيق الأصلي"
+    },
+    "nativeRemove": {
+      "en-US": "Remove the native app",
+      "zh-CN": "移除原生应用",
+      "ar-SA": "إزالة التطبيق الأصلي"
+    },
+    "nativeInstalling": {
+      "en-US": "Installing, this can take a while",
+      "zh-CN": "正在安装，可能需要一些时间",
+      "ar-SA": "جارٍ التثبيت، قد يستغرق ذلك بعض الوقت"
+    },
+    "nativeInstalled": {
+      "en-US": "Installed version {version}",
+      "zh-CN": "已安装版本 {version}",
+      "ar-SA": "تم تثبيت الإصدار {version}"
+    },
+    "nativeCurrent": {
+      "en-US": "Version {version} is already the latest",
+      "zh-CN": "版本 {version} 已是最新",
+      "ar-SA": "الإصدار {version} هو الأحدث بالفعل"
+    },
+    "nativeRemoved": {
+      "en-US": "Removed",
+      "zh-CN": "已移除",
+      "ar-SA": "تمت الإزالة"
+    },
+    "nativeConfirmRemove": {
+      "en-US": "Remove the native app from this computer?",
+      "zh-CN": "从此电脑移除原生应用？",
+      "ar-SA": "هل تريد إزالة التطبيق الأصلي من هذا الكمبيوتر؟"
+    },
+    "nativeFailed": {
+      "en-US": "It failed: {message}",
+      "zh-CN": "失败：{message}",
+      "ar-SA": "فشل الأمر: {message}"
+    },
     "support.title": {
       "en-US": "Support",
       "zh-CN": "支持",
@@ -748,7 +798,8 @@ export default {
         "Google Slides",
         "Keynote"
       ],
-      "source": "https://github.com/storytold/deckcraft"
+      "source": "https://github.com/storytold/deckcraft",
+      "native": "deckcraft"
     },
     {
       "id": "effectcraft",
@@ -774,7 +825,8 @@ export default {
       "alternatives": [
         "Adobe After Effects"
       ],
-      "source": "https://github.com/storytold/effectcraft"
+      "source": "https://github.com/storytold/effectcraft",
+      "native": "effectcraft"
     },
     {
       "id": "filmcraft",
@@ -801,7 +853,8 @@ export default {
         "Adobe Premiere Pro",
         "Final Cut Pro"
       ],
-      "source": "https://github.com/storytold/filmcraft"
+      "source": "https://github.com/storytold/filmcraft",
+      "native": "filmcraft"
     },
     {
       "id": "gridcraft",
@@ -828,7 +881,8 @@ export default {
         "Microsoft Excel",
         "Google Sheets"
       ],
-      "source": "https://github.com/storytold/gridcraft"
+      "source": "https://github.com/storytold/gridcraft",
+      "native": "gridcraft"
     },
     {
       "id": "photocraft",
@@ -854,7 +908,8 @@ export default {
       "alternatives": [
         "Adobe Photoshop"
       ],
-      "source": "https://github.com/storytold/photocraft"
+      "source": "https://github.com/storytold/photocraft",
+      "native": "photocraft"
     },
     {
       "id": "vectorcraft",
@@ -880,7 +935,8 @@ export default {
       "alternatives": [
         "Adobe Illustrator"
       ],
-      "source": "https://github.com/storytold/vectorcraft"
+      "source": "https://github.com/storytold/vectorcraft",
+      "native": "vectorcraft"
     },
     {
       "id": "wordcraft",
@@ -907,7 +963,8 @@ export default {
         "Microsoft Word",
         "Google Docs"
       ],
-      "source": "https://github.com/storytold/wordcraft"
+      "source": "https://github.com/storytold/wordcraft",
+      "native": "wordcraft"
     },
     {
       "id": "tracedraw",
@@ -959,7 +1016,8 @@ export default {
       "alternatives": [
         "Adobe Acrobat"
       ],
-      "source": "https://github.com/storytold/pdfcraft"
+      "source": "https://github.com/storytold/pdfcraft",
+      "native": "pdfcraft"
     }
   ],
   "splash": {

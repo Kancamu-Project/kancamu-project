@@ -1,4 +1,4 @@
-import { i18n, popups, account, settings, autocomplete, components } from "./assets/js/shared.js";
+import { i18n, popups, account, settings, autocomplete, components, desktop } from "./assets/js/shared.js";
 import appData from "./data.js";
 
 const state = {
@@ -365,7 +365,49 @@ function createGlyph(name) {
     return createElement("div", `glyph ${name}`);
 }
 
-function showMenu(anchor, project) {
+async function nativeItems(project) {
+    let installed;
+    try {
+        installed = await desktop.call("native_status", { id: project.native });
+    } catch {
+        return [];
+    }
+    const failed = (error) => popups.toast(t("nativeFailed", { message: String(error) }), { kind: "error" });
+    const install = async () => {
+        popups.toast(t("nativeInstalling"));
+        try {
+            const result = await desktop.call("native_install", { id: project.native });
+            popups.toast(t(result.changed ? "nativeInstalled" : "nativeCurrent", { version: result.version }));
+        } catch (error) {
+            failed(error);
+        }
+    };
+    const open = async () => {
+        try {
+            await desktop.call("native_open", { id: project.native });
+        } catch (error) {
+            failed(error);
+        }
+    };
+    const remove = async () => {
+        if (!(await popups.ask({ text: t("nativeConfirmRemove"), ok: t("nativeRemove") }))) return;
+        try {
+            await desktop.call("native_remove", { id: project.native });
+            popups.toast(t("nativeRemoved"));
+        } catch (error) {
+            failed(error);
+        }
+    };
+    if (installed === null) return [{ label: t("nativeInstall"), onSelect: install }];
+    return [
+        { label: t("nativeUpdate"), onSelect: install },
+        { label: t("nativeOpen"), onSelect: open },
+        { label: t("nativeRemove"), onSelect: remove },
+    ];
+}
+
+async function showMenu(anchor, project) {
+    const native = project.native && desktop.available ? await nativeItems(project) : [];
     components.menu({
         anchor,
         align: "end",
@@ -383,6 +425,7 @@ function showMenu(anchor, project) {
             },
             { label: t("openNew"), onSelect: () => window.open(project.url, "_blank", "noopener") },
             ...(project.source ? [{ label: t("viewSource"), onSelect: () => window.open(project.source, "_blank", "noopener") }] : []),
+            ...native,
         ],
     });
 }

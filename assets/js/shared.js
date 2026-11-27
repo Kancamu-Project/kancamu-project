@@ -1,7 +1,7 @@
 import { auth as authData, brand as brandData, cleanup as cleanupData, drive as driveData, kit as kitData, popup as popupTexts } from "../data/data.js";
 import { icons } from "../icons/icons.js";
 
-export let urlState, i18n, popups, components, autocomplete, account, transfer, settings, storage;
+export let urlState, i18n, popups, components, autocomplete, account, transfer, settings, storage, desktop;
 
 {
     const style = document.createElement("style");
@@ -2119,4 +2119,13 @@ storage = {
     },
 };
 
+}
+
+{
+desktop = {
+    get available() {
+        return typeof window.__TAURI__?.core?.invoke === "function";
+    },
+    call: (command, args) => window.__TAURI__.core.invoke(command, args),
+};
 }
