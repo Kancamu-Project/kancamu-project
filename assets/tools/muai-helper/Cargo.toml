@@ -2,8 +2,9 @@
 name = "muai-helper"
 version = "0.3.1"
 edition = "2021"
+authors = ["Yuxie"]
 description = "A small program on your PC that lets muAI (kancamu.site/muai/) write, read, and list files in one folder that you choose."
-license = "MIT"
+license = "AGPL-3.0-or-later"
 
 [dependencies]
 tiny_http = "0.12"
