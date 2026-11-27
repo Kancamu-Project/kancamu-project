@@ -3,15 +3,9 @@
   --content-width: calc(var(--unit) * 220);
   --input-width: calc(var(--unit) * 200);
 }
-
-/* The page is the header, the sidebar, and the main, directly in the body. The padding and the gap are the ones of the body: the three elements have none. */
 body { grid-template-columns: var(--sidebar-width) minmax(0, 1fr); line-height: 1.55; overflow: hidden; }
 .note { color: var(--fg-1); }
 .mono {text-transform: uppercase; }
-
-/* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
-
-/* Button */
 button.ghost { height: var(--height-s); font-size: var(--font-size-extra-small); }
 button.outline { border-color: var(--fg); }
 button.outline:hover:not(:disabled) { background: var(--fg); color: var(--bg); border-color: var(--fg); }
@@ -21,16 +15,14 @@ input::placeholder, textarea::placeholder { color: var(--fg-1); }
 input[type=search], input[type=number] { height: var(--height); }
 input[type=search] { width: 100%; }
 input[type=range] { height: var(--height); padding: 0; border: none; accent-color: var(--accent); }
-
-/* Sidebar */
-.sidebar { grid-column: 1; grid-row: 2; position: relative; display: flex; overflow: visible; }   /* the handle to resize it sticks out */
+.sidebar { grid-column: 1; grid-row: 2; position: relative; display: flex; overflow: visible; }
 .chat-controls { display: flex; flex-direction: column; gap: var(--gap-small); }
 .header { grid-column: 1; grid-row: 1; }
 .logo { height: var(--height); }
 .logo .logo-name { display: flex; }
 .logo .highlight { color: var(--brand, var(--red)); }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
-:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/components.css) */
+.logo-mark { background-image: url("favicon.png"); }
+:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }
 #chat-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; padding: 0 0 var(--padding-large); }
 .date-group { padding: var(--padding-medium) var(--padding-medium) var(--padding-small);font-size: var(--font-size-extra-small);text-transform: uppercase; color: var(--fg-1); }
 .chat-item {
@@ -52,14 +44,9 @@ input[type=range] { height: var(--height); padding: 0; border: none; accent-colo
 .sidebar-resizer:hover, .sidebar-resizer.active, .sidebar-resizer:focus-visible { background: var(--accent); outline: none; }
 body.resizing, body.resizing * { cursor: col-resize !important; user-select: none; }
 body.resizing .sidebar { transition: none; }
-
-/* Main area */
-/* The right part is one panel with a border; the page has a padding around it. */
-/* The sidebar fills the height of the page; only the app has a space above and below it. */
 .main { gap: 0; grid-column: 2; grid-row: 1 / -1; background: var(--bg); overflow: hidden; }
-.topbar { box-sizing: content-box; gap: 0; padding-inline: var(--padding-extra-large) 0; border-bottom: var(--border-width) solid var(--border); }   /* the buttons of the bar touch each other: no gap */
-.topbar > button + button { border-inline-start: none; }   /* and share one line, as in a button group */
-/* What touches another element is square: the bar, the buttons of a row, the theme switch, the head of a code block. */
+.topbar { box-sizing: content-box; gap: 0; padding-inline: var(--padding-extra-large) 0; border-bottom: var(--border-width) solid var(--border); }
+.topbar > button + button { border-inline-start: none; }
 .topbar > button, .chat-item .actions button, .markdown .code-header > button, .segmented-control button { border-radius: 0; }
 .markdown .code { border-radius: var(--border-radius-medium); }
 .attachment-thumbnail { border-radius: var(--border-radius-small); }
@@ -67,18 +54,16 @@ body.resizing .sidebar { transition: none; }
 #menu-button { display: none; }
 .model-row { display: flex; gap: var(--gap-small); }
 #model-picker { flex: 1; min-width: 0; width: 100%; }
-/* The connections (a sheet) and what the model did with files */
 .connection-form { display: flex; flex-direction: column; gap: var(--gap-small); }
 .connection-row { display: flex; justify-content: flex-end; gap: var(--gap-small); }
-.connection-row button { width: calc(var(--height) * 4); }   /* the width of a control is a multiple of its height (RULES.md, Control Width) */
+.connection-row button { width: calc(var(--height) * 4); }
 .connection-row button.wide { width: calc(var(--height) * 8); }
 .connection-command { display: flex; align-items: flex-start; gap: var(--gap-small); }
 .connection-command .code-block { flex: 1; min-width: 0; }
 .connection-command button { flex: none; width: calc(var(--height) * 3); }
-/* The file explorer of the project folder: the bar (up, and the path as breadcrumbs), and the list of folders that scrolls */
 .explorer { display: flex; flex-direction: column; gap: var(--gap-medium); }
 .explorer-bar { display: flex; align-items: center; gap: var(--gap-small); }
-.explorer-bar kit-breadcrumbs { flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }   /* a long path scrolls sideways */
+.explorer-bar kit-breadcrumbs { flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
 .explorer-bar .breadcrumb { flex: none; }
 .explorer-list { display: grid; gap: var(--gap-small); align-content: start; max-height: calc(var(--vh) * 40); }
 .connection-row:empty { display: none; }
@@ -87,13 +72,11 @@ body.resizing .sidebar { transition: none; }
 #folder-button { width: calc(var(--height) * 8); }
 #folder-button > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #folder-button.unset { color: var(--yellow); border-color: var(--yellow); }
-/* The file explorer of the project folder */
 @media (max-width: 48rem) { .topbar > button > span:not(.icon) { display: none; } }
 .markdown .tool-log { list-style: none; margin: var(--gap-small) 0 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--unit) * 0.5); font-size: var(--font-size-small); }
 .markdown .tool-log li { padding-inline-start: var(--padding-medium); border-inline-start: var(--border-width-thick) solid var(--border); }
 .markdown .tool-log li.ok { border-color: var(--ok); }
 .markdown .tool-log li.failed { border-color: var(--danger); color: var(--danger); }
-/* The plan of an agent and what it is doing */
 .markdown .plan { margin: var(--gap-small) 0 0; padding: var(--padding-small) var(--padding-medium); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); }
 .markdown .plan-title { font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; color: var(--fg-1); }
 .markdown .plan ul { list-style: none; margin: calc(var(--unit) * 0.5) 0 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--unit) * 0.5); font-size: var(--font-size-small); }
@@ -107,23 +90,17 @@ body.resizing .sidebar { transition: none; }
 #model-picker.loading { color: var(--yellow); border-color: var(--yellow); }
 .scrollable-area { flex: 1; min-height: 0; overflow-y: auto; display: flex; justify-content: center; align-items: flex-start; padding: var(--padding-large) var(--padding-extra-large); }
 .welcome-message { padding-block: var(--padding-extra-large); text-align: center; font-size: var(--font-size-extra-large); font-weight: 700; }
-/* No messages yet: the welcome and the message box sit together in the middle of the page, under the top bar. */
 .main.welcoming { position: relative; justify-content: center; }
 .main.welcoming > .topbar { position: absolute; inset-block-start: 0; inset-inline: 0; }
 .main.welcoming > .scrollable-area { flex: none; overflow: visible; padding-block-end: 0; }
 .chat-column { flex: 1; min-width: 0; max-width: var(--content-width); display: flex; flex-direction: column; }
-
-
-/* Chat */
 #chat { display: flex; flex-direction: column; gap: var(--gap-small); width: 100%; }
-.bubble.filled { white-space: pre-wrap; }   /* what the user wrote keeps its lines */
+.bubble.filled { white-space: pre-wrap; }
 .message-image { width: calc(var(--unit) * 100); max-width: 100%; height: calc(var(--unit) * 75); background-size: contain; background-position: left center; background-repeat: no-repeat; image-rendering: pixelated; }
 .message-actions { display: flex; align-items: center; gap: var(--gap-small); opacity: 0; transition: opacity 0.15s; }
 .message:hover .message-actions, .message:focus-within .message-actions { opacity: 1; }
 @media (hover: none) { .message-actions { opacity: 1; } }
 .model-meta { padding-inline-start: var(--padding-small);font-size: var(--font-size-extra-small);text-transform: uppercase; color: var(--fg-1); }
-
-/* Markdown */
 .markdown { display: flex; flex-direction: column; gap: var(--gap-small); min-width: 0; }
 .markdown h1, .markdown h2, .markdown h3, .markdown h4 { padding-top: var(--padding-small); font-weight: 700; line-height: 1.3; }
 .markdown h1 { font-size: var(--font-size-large); } .markdown h2 { font-size: var(--font-size-large); } .markdown h3, .markdown h4 { font-size: var(--font-size-small); }
@@ -143,21 +120,16 @@ font-size: var(--font-size-extra-small);text-transform: uppercase; color: var(--
 .markdown pre code { padding: 0; background: none; border: none; line-height: 1.5; }
 .cursor::after { content: ""; display: inline-block; width: calc(var(--unit) * 2); height: calc(var(--unit) * 4); background: var(--accent-text); vertical-align: text-bottom; animation: blink 1s steps(2) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
-
-/* Composer */
 .composer-area { display: flex; flex-direction: column; align-items: center; gap: var(--gap-small); padding: var(--padding-medium) var(--padding-extra-large); }
 .composer-area > * { width: 100%; max-width: var(--input-width); }
 #attachment-preview { display: flex; align-items: center; gap: var(--gap-small); }
 .attachment-thumbnail { width: var(--icon-size-extra-large); height: var(--icon-size-extra-large); flex: none; border: var(--border-width) solid var(--border); background-size: cover; background-position: center; image-rendering: pixelated; }
 .composer { display: flex; align-items: flex-end; gap: var(--gap-small); }
 #message-input { flex: 1; min-width: 0; height: var(--height); min-height: var(--height); max-height: calc(var(--height) * 2); padding: var(--padding-small) var(--padding-medium); resize: none; line-height: calc(var(--unit) * 5); overflow-y: auto; }
-
-/* The dialogs and the sheets are the shared ones (assets/css/style.css): muAI has none of its own */
 [hidden] { display: none !important; }
 
 .sidebar-overlay { display: none; }
 @media (max-width: 48rem) {
-  /* The header is a row on top (the brand, the account button, and the menu button); the sidebar is a drawer that opens under it */
   body { grid-template-columns: minmax(0, 1fr); }
   .header { grid-column: 1; }
   .main { grid-column: 1; grid-row: 2; }
@@ -170,8 +142,6 @@ font-size: var(--font-size-extra-small);text-transform: uppercase; color: var(--
 @media (max-width: 35rem) {
   .topbar #export-button > span:not(.icon) { display: none; }
 }
-
-/* ---------- Language and right-to-left ---------- */
 .footer span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 :root[dir="rtl"] .message-image { background-position: right center; }
 :root[dir="rtl"] .chat-item.active { box-shadow: inset calc(var(--border-width) * -1) 0 0 var(--accent); }
@@ -179,8 +149,6 @@ font-size: var(--font-size-extra-small);text-transform: uppercase; color: var(--
   :root[dir="rtl"] .sidebar { transform: translateX(calc(100% + var(--padding-medium))); }
   :root[dir="rtl"] body.sidebar-open .sidebar { transform: none; }
 }
-
-/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
 #export-button { width: calc(var(--height) * 5); }
 #remove-attachment-button { width: calc(var(--height) * 4); }
 #stop-button { width: calc(var(--height) * 3); }

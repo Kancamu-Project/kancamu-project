@@ -1,8 +1,7 @@
-// Searchmu: the advanced search of Google. The fields make a query (the words, the exact phrase, the words to leave out, a range of numbers, a site, a type of file) and the filters of Google
-// (the language, the region, the last update, the usage rights, SafeSearch), and the results of Google are shown in a frame beside the fields. Nothing goes to Kancamu: the frame is Google's own page.
-// What the user types in the fields is never in the address: only the tab of a narrow window is.
+import { i18n, popups, account, settings, urlState, components } from "../assets/js/shared.js";
+import appData from "./data.js";
 
-await i18n.load();
+await i18n.load(appData);
 i18n.selects();
 
 const tr = (key, params) => i18n.t(key, params);
@@ -13,16 +12,15 @@ const els = Object.fromEntries([
   "status", "account-button"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-// The languages, the regions, the types of file, the rights, and the limits are in data.json.
 const { searchLanguages, regions, filetypes, rights, limits, settings: { defaults } } = i18n.data;
 const VIEWS = ["filters", "results"];
 const preferences = () => settings.get("searchmu", defaults);
-const keep = (patch) => settings.set("searchmu", { ...preferences(), ...patch });   // a change of the page is a setting too (the account web shows it)
+const keep = (patch) => settings.set("searchmu", { ...preferences(), ...patch });
 const narrow = matchMedia("(max-width: 48rem)");
 
 const state = {
-  view: VIEWS.includes(urlState.get("view")) ? urlState.get("view") : VIEWS[0],   // the tab of a narrow window
-  url: "",   // the address of the last search, as Google has it
+  view: VIEWS.includes(urlState.get("view")) ? urlState.get("view") : VIEWS[0],
+  url: "",
 };
 
 const say = components.status(els.status);
@@ -32,13 +30,11 @@ const copy = async (text) => {
   try { await navigator.clipboard.writeText(text); toast(tr("toast.copied")); } catch (error) { fail(tr("error.failed", { message: error.message })); }
 };
 
-/* ---------- the query that the fields make ---------- */
 const words = (text) => text.match(/"[^"]*"|[^\s,]+/g) || [];
 const hostOf = (text) => text.trim().replace(/^[a-z]+:\/\//i, "").replace(/\/.*$/, "");
 const UPDATED = { d: "qdr:d", w: "qdr:w", m: "qdr:m", y: "qdr:y" };
-const OPERATORS = { title: "intitle:", body: "intext:", url: "inurl:", links: "inanchor:" };   // where the words must appear (the operator goes before each word, so the other operators of the query still work)
+const OPERATORS = { title: "intitle:", body: "intext:", url: "inurl:", links: "inanchor:" };
 
-// The text of the query (q) and the filters of Google (the other parts of its address)
 function build() {
   const parts = [];
   const where = OPERATORS[els.terms.value] || "";
@@ -60,7 +56,7 @@ function build() {
 
   const params = new URLSearchParams();
   params.set("q", q);
-  params.set("hl", i18n.lang.split("-")[0] === "zh" ? i18n.lang : i18n.lang.split("-")[0]);   // the language of the page of Google: the one of this page
+  params.set("hl", i18n.lang.split("-")[0] === "zh" ? i18n.lang : i18n.lang.split("-")[0]);
   if (els.language.value) params.set("lr", els.language.value);
   if (els.region.value) params.set("cr", `country${els.region.value}`);
   if (els.updated.value) params.set("tbs", UPDATED[els.updated.value]);
@@ -76,12 +72,11 @@ function drawQuery() {
   els.query.classList.toggle("empty", !q);
 }
 
-/* ---------- the search ---------- */
 function showView(view) {
   state.view = view;
   els.main.dataset.view = view;
   const tabs = els.views.firstElementChild;
-  if (tabs && tabs.value !== view) tabs.value = view;   // the tabs show the view (a search shows the results)
+  if (tabs && tabs.value !== view) tabs.value = view;
   if (narrow.matches) urlState.set({ view });
   say(tr(`status.${view}`));
 }
@@ -91,7 +86,7 @@ function search(event) {
   const { q, url } = build();
   if (!q) { fail(tr("error.empty")); els.all.focus(); return; }
   state.url = url;
-  els.frame.src = `${url}&igu=1`;   // igu=1: the page of the results that Google lets a frame show
+  els.frame.src = `${url}&igu=1`;
   els.frame.classList.remove("hidden");
   els.frameEmpty.classList.add("hidden");
   els.openButton.disabled = false;
@@ -115,7 +110,6 @@ els.resetButton.addEventListener("click", () => {
   els.all.focus();
 });
 
-/* ---------- the fields that follow the settings ---------- */
 function applyPreferences() {
   const preference = preferences();
   els.language.value = preference.language;
@@ -125,9 +119,8 @@ function applyPreferences() {
 els.language.addEventListener("change", () => keep({ language: els.language.value }));
 els.safe.addEventListener("change", () => keep({ safe: els.safe.checked }));
 els.num.addEventListener("change", () => keep({ num: els.num.value }));
-settings.onChange("searchmu", defaults, () => { applyPreferences(); drawQuery(); });   // the account web changes a setting: the page shows it
+settings.onChange("searchmu", defaults, () => { applyPreferences(); drawQuery(); });
 
-/* ---------- the page ---------- */
 const option = (value, text) => Object.assign(document.createElement("option"), { value, textContent: text });
 function fillSelect(select, options) {
   const value = select.value;
@@ -136,7 +129,7 @@ function fillSelect(select, options) {
 }
 function buildSelects() {
   const any = tr("option.any");
-  const regionNames = new Intl.DisplayNames([i18n.lang], { type: "region" });   // the names of the regions are in the language of the page
+  const regionNames = new Intl.DisplayNames([i18n.lang], { type: "region" });
   const sortedRegions = regions.map((code) => [code, regionNames.of(code)]).sort((a, b) => a[1].localeCompare(b[1], i18n.lang));
   fillSelect(els.language, [["", any], ...searchLanguages.map((language) => [language.value, language.name])]);
   fillSelect(els.region, [["", any], ...sortedRegions]);
@@ -161,7 +154,7 @@ function renderTabs() {
   els.views.replaceChildren(tabs);
 }
 
-account.bind(els.accountButton);   // the profile and the settings are in the account web
+account.bind(els.accountButton);
 
 function renderTexts() {
   renderTabs();

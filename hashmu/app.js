@@ -1,7 +1,7 @@
-// Hashmu: hashing and cryptography in the browser (the Web Crypto API of the browser, and MD5 here). Nothing is uploaded: texts, files, keys, and passphrases stay on the device.
-// What the user types in the fields (a text, a key, a passphrase) is never in the address: only the tab and the type of the random value are.
+import { i18n, popups, account, settings, urlState, transfer, components } from "../assets/js/shared.js";
+import appData from "./data.js";
 
-await i18n.load();
+await i18n.load(appData);
 i18n.selects();
 
 const tr = (key, params) => i18n.t(key, params);
@@ -15,20 +15,19 @@ const els = Object.fromEntries([
   "status", "account-button"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-// The algorithms, the formats, the characters, and the limits are in data.json.
 const { algorithms, formats, charsets, generateTypes, encodings, limits, settings: { defaults } } = i18n.data;
 const TABS = ["hash", "encrypt", "generate", "encode"];
 const preferences = () => settings.get("hashmu", defaults);
-const keep = (patch) => settings.set("hashmu", { ...preferences(), ...patch });   // a change of the page is a setting too (the account web shows it)
+const keep = (patch) => settings.set("hashmu", { ...preferences(), ...patch });
 
 const state = {
   tab: TABS.includes(urlState.get("tab")) ? urlState.get("tab") : TABS[0],
-  source: "text",      // what is hashed: "text" or "file"
-  file: null,          // the file that was chosen
-  mode: "encrypt",     // "encrypt" or "decrypt"
+  source: "text",
+  file: null,
+  mode: "encrypt",
   type: generateTypes.some((type) => type.id === urlState.get("type")) ? urlState.get("type") : generateTypes[0].id,
-  output: "",          // the last random value
-  lastMatch: "",       // the algorithm that matched last, so a match is told once
+  output: "",
+  lastMatch: "",
 };
 
 const say = components.status(els.status);
@@ -39,7 +38,6 @@ const copy = async (text) => {
   try { await navigator.clipboard.writeText(text); toast(tr("toast.copied")); } catch (error) { fail(tr("error.failed", { message: error.message })); }
 };
 
-/* ---------- bytes and their forms ---------- */
 const utf8 = (text) => new TextEncoder().encode(text);
 const toHex = (bytes) => [...bytes].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 const toBase64 = (bytes) => { let binary = ""; for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000)); return btoa(binary); };
@@ -51,7 +49,6 @@ const fromHex = (text) => {
 };
 const formatBytes = (bytes, format) => (format === "base64" ? toBase64(bytes) : toHex(bytes));
 
-/* ---------- MD5: the Web Crypto API does not have it (it is for checking a file, not for security) ---------- */
 function md5(bytes) {
   const K = Uint32Array.from({ length: 64 }, (_, i) => Math.floor(Math.abs(Math.sin(i + 1)) * 2 ** 32));
   const S = [7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21];
@@ -84,9 +81,8 @@ function md5(bytes) {
   return new Uint8Array(out.buffer);
 }
 
-/* ====================================================== Hash ====================================================== */
 async function digestOf(algorithm, bytes, key) {
-  if (key) {   // a key makes an HMAC (MD5 has none here)
+  if (key) {
     if (!algorithm.subtle) return null;
     const imported = await crypto.subtle.importKey("raw", utf8(key), { name: "HMAC", hash: algorithm.id }, false, ["sign"]);
     return new Uint8Array(await crypto.subtle.sign("HMAC", imported, bytes));
@@ -111,7 +107,7 @@ async function renderHashes() {
   const key = els.hashKey.value;
   const digests = [];
   for (const algorithm of algorithms) digests.push([algorithm, await digestOf(algorithm, bytes, key)]);
-  if (run !== hashRun) return;   // another text came while this one was made
+  if (run !== hashRun) return;
   drawHashes(digests, key);
 }
 
@@ -144,7 +140,7 @@ function drawHashes(digests = lastDigests, key = els.hashKey.value) {
     row.append(name, value, copyButton);
     return row;
   }));
-  if (matched && matched !== state.lastMatch) toast(tr("hash.match", { name: matched }), "success");   // told once, not at every key
+  if (matched && matched !== state.lastMatch) toast(tr("hash.match", { name: matched }), "success");
   state.lastMatch = matched;
 }
 
@@ -182,8 +178,6 @@ document.addEventListener("drop", async (event) => {
   chooseSource("file");
 });
 
-/* ==================================================== Encrypt ==================================================== */
-// The encrypted text: Base64 of version (1 byte), rounds of PBKDF2 (4 bytes), salt (16), iv (12), and the cipher text (AES-256-GCM).
 const VERSION = 1, SALT = 16, IV = 12;
 async function keyFrom(passphrase, salt, iterations) {
   const material = await crypto.subtle.importKey("raw", utf8(passphrase), "PBKDF2", false, ["deriveKey"]);
@@ -246,8 +240,6 @@ els.encryptRun.addEventListener("click", async () => {
 });
 els.encryptCopy.addEventListener("click", () => copy(els.encryptOutput.textContent));
 
-/* ==================================================== Generate ==================================================== */
-// A random whole number below max, without the bias of a remainder (a value above the last whole multiple is thrown away).
 function randomBelow(max) {
   const limit = Math.floor(2 ** 32 / max) * max;
   const buffer = new Uint32Array(1);
@@ -262,7 +254,7 @@ function generate() {
     if (!chosen.length) { state.output = ""; els.generateOutput.textContent = ""; els.generateEntropy.textContent = ""; els.generateCopy.disabled = true; return fail(tr("error.noCharacters")); }
     const length = Number(els.generateLength.value);
     const pool = chosen.map((name) => charsets[name]).join("");
-    const picked = chosen.map((name) => charsets[name][randomBelow(charsets[name].length)]);   // at least one of each kind that is chosen
+    const picked = chosen.map((name) => charsets[name][randomBelow(charsets[name].length)]);
     while (picked.length < length) picked.push(pool[randomBelow(pool.length)]);
     for (let i = picked.length - 1; i > 0; i--) { const j = randomBelow(i + 1); [picked[i], picked[j]] = [picked[j], picked[i]]; }
     output = picked.join("");
@@ -285,12 +277,12 @@ function buildTypes() {
   els.generateType.replaceChildren(...generateTypes.map((type) => Object.assign(document.createElement("option"), { value: type.id, textContent: tr(`generate.type.${type.id}`) })));
   els.generateType.value = state.type;
 }
-function renderOptions() {   // the controls of a password show the settings
+function renderOptions() {
   const values = preferences();
   els.generateLength.value = values.length;
   els.lengthValue.textContent = i18n.number(Number(values.length));
   for (const name of ["lowercase", "uppercase", "digits", "symbols"]) els[`generate${name[0].toUpperCase()}${name.slice(1)}`].checked = !!values[name];
-  els.generateLength.dispatchEvent(new Event("input"));   // the slider of the kit places its knob
+  els.generateLength.dispatchEvent(new Event("input"));
   els.passwordOptions.classList.toggle("hidden", state.type !== "password");
 }
 els.generateType.addEventListener("change", () => { state.type = els.generateType.value; urlState.set({ type: state.type }); renderOptions(); generate(); });
@@ -302,7 +294,6 @@ for (const name of ["lowercase", "uppercase", "digits", "symbols"]) {
 els.generateRun.addEventListener("click", generate);
 els.generateCopy.addEventListener("click", () => copy(state.output));
 
-/* ===================================================== Encode ===================================================== */
 const encoders = {
   base64: { encode: (text) => toBase64(utf8(text)), decode: (text) => new TextDecoder("utf-8", { fatal: true }).decode(fromBase64(text.trim())) },
   base64url: { encode: (text) => toBase64(utf8(text)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""), decode: (text) => new TextDecoder("utf-8", { fatal: true }).decode(fromBase64(text.trim())) },
@@ -325,7 +316,6 @@ els.encodeRun.addEventListener("click", () => transform("encode"));
 els.decodeRun.addEventListener("click", () => transform("decode"));
 els.encodeCopy.addEventListener("click", () => copy(els.encodeOutput.textContent));
 
-/* ====================================================== The page ====================================================== */
 function renderTabs() {
   const buttons = TABS.map((id) => {
     const button = document.createElement("button");
@@ -350,10 +340,9 @@ function buildSelects() {
   els.encodeFormat.replaceChildren(...encodings.map((encoding) => Object.assign(document.createElement("option"), { value: encoding.id, textContent: encoding.name })));
 }
 
-// The account web changes a setting: the page shows it
 settings.onChange("hashmu", defaults, () => { els.hashFormat.value = preferences().format; renderOptions(); renderEncryptTexts(); drawHashes(); });
 
-account.bind(els.accountButton);   // the profile and the settings are in the account web
+account.bind(els.accountButton);
 
 function renderTexts() {
   renderTabs();

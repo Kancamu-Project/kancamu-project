@@ -1,7 +1,10 @@
-// Assetmu: shows every asset of the apps: the colours (read from the page, so they follow the theme), the colour and icon of every app, the icons, the fonts, the sizes, and the files. The templates, the helpers, and the popups are in Kitmu.
-const previewId = new URLSearchParams(location.search).get("preview");   // ?preview=<app>: the card of that app alone, as big as the window (assets/tools/og-cards.mjs takes its picture)
+import { i18n, popups, account, urlState, autocomplete, components } from "../assets/js/shared.js";
+import appData from "./data.js";
+import mainSite from "../data.js";
 
-await i18n.load();
+const previewId = new URLSearchParams(location.search).get("preview");
+
+await i18n.load(appData);
 i18n.selects();
 
 const tr = (key, params) => i18n.t(key, params);
@@ -9,9 +12,8 @@ const $ = (id) => document.getElementById(id);
 const { element } = components;
 const { palette, roles, sizes, icons, fonts, files, sectionOrder } = i18n.data;
 
-/* ---------- reading the page: the value of a colour or a length as the page has it now ---------- */
 const probe = element("div", "probe");
-document.querySelector(".main").append(probe);   // not in the body: the body holds the sidebar and the main only
+document.querySelector(".main").append(probe);
 const computed = (property, value) => {
   probe.style[property] = "";
   probe.style[property] = value;
@@ -19,7 +21,7 @@ const computed = (property, value) => {
 };
 const canvas = Object.assign(document.createElement("canvas"), { width: 1, height: 1 });
 const paint = canvas.getContext("2d", { willReadFrequently: true });
-function hexOf(css) {   // any colour the browser knows, as #rrggbb
+function hexOf(css) {
   paint.clearRect(0, 0, 1, 1);
   paint.fillStyle = "#000000";
   paint.fillStyle = css;
@@ -34,7 +36,6 @@ const lengthValue = (name) => {
   return `${i18n.number(Math.round(rem * 100) / 100)} rem · ${i18n.number(Math.round(pixels * 10) / 10)} px`;
 };
 
-/* ---------- copying ---------- */
 async function copy(text) {
   try {
     await navigator.clipboard.writeText(text);
@@ -44,7 +45,6 @@ async function copy(text) {
   }
 }
 
-/* ---------- the sections: built once, filled again when the language or the theme changes ---------- */
 const sections = {};
 for (const id of sectionOrder) {
   const box = element("div", "asset-section");
@@ -61,7 +61,6 @@ const heading = (id) => {
   sections[id].hint.textContent = tr(id === "colours" ? "colours.paletteHint" : `${id}.hint`);
 };
 
-/* ---------- colours ---------- */
 function swatch(entry) {
   const button = element("button", "swatch");
   button.type = "button";
@@ -87,9 +86,7 @@ function renderColours() {
   sections.colours.body.replaceChildren(group("colours.palette", "", palette), group("colours.roles", "colours.rolesHint", roles));
 }
 
-/* ---------- the apps: the icon, the name with its highlight, and the colour of each project of the main website ---------- */
-let mainData = { projects: [] };
-try { mainData = await (await fetch("../data.json", { cache: "no-store" })).json(); } catch { /* the sections of the apps stay empty */ }
+const mainData = mainSite;
 const projects = mainData.projects;
 const fill = (text) => text.replaceAll("{highlight}", i18n.brand.highlight).replaceAll("{brand}", i18n.brand.name);
 function renderApps() {
@@ -98,11 +95,11 @@ function renderApps() {
     const name = fill(i18n.pick(project.name));
     const highlight = fill(i18n.pick(project.highlight || {}));
     const at = highlight ? name.indexOf(highlight) : -1;
-    const colour = project.color;   // the colour of a project is its own (a hex from its icon), not a colour of the palette: a project can come from outside
+    const colour = project.color;
     const row = element("button", "app-row");
     row.type = "button";
     const icon = element("span", "app-icon");
-    icon.style.backgroundImage = `url("${/^https?:/.test(project.icon) ? project.icon : `../${project.icon}`}")`;   // an icon can be a file of this site or an address (TraceDraw)
+    icon.style.backgroundImage = `url("${/^https?:/.test(project.icon) ? project.icon : `../${project.icon}`}")`;
     const label = element("span", "app-name");
     const mark = element("span", "highlight", at < 0 ? "" : highlight);
     mark.style.color = colour;
@@ -120,19 +117,14 @@ function renderApps() {
   sections.apps.body.replaceChildren(list);
 }
 
-/* ---------- the cards of the previews ---------- */
-// A card is built here, shown in the section Previews, and alone with ?preview=<app>. cardToPng makes an image of a card (1200 x 630).
-// A card is always in English (the sites that show a link do not run scripts, so its tags are in English), and it does not change with the theme of the page.
 const cardFill = (text, brand) => text.replaceAll("{highlight}", brand.highlight).replaceAll("{brand}", brand.name);
 const address = (path) => (/^https?:/.test(path) ? path : new URL(`../${path}`, import.meta.url).href);
 
-// A card of an app: the icon, the name with its highlight in the colour of the app, the description, and the address.
-// The card of the main website is its splash screen: the brand and a line at the start, an image at the end, the credit of the image, and the dots.
 function buildCard({ project, brand, data }) {
   const folder = project.url.replace(/^\.\/?|\/$/g, "");
   const card = element("div", "preview-card");
   card.dataset.id = project.id;
-  card.style.setProperty("--preview-colour", project.color);   // the colour of a project is its own (a hex from its icon)
+  card.style.setProperty("--preview-colour", project.color);
   const body = element("div", `preview-body${project.id === "kancamu" ? " splash" : ""}`);
   const name = cardFill(project.name["en-US"], brand);
   const highlight = cardFill(project.highlight["en-US"], brand);
@@ -141,7 +133,7 @@ function buildCard({ project, brand, data }) {
 
   if (project.id === "kancamu") {
     const ui = (key) => cardFill(data.ui[key]["en-US"], brand);
-    const sprite = data.splash.sprite;   // the first image of the splash is the first square of its sprite
+    const sprite = data.splash.sprite;
     const info = element("div", "splash-info");
     const brandRow = element("div", "splash-brand");
     const mark = element("div", "splash-mark");
@@ -173,7 +165,6 @@ function buildCard({ project, brand, data }) {
   return card;
 }
 
-/* ---------- an image of a card ---------- */
 const dataUrl = (blob) => new Promise((resolve, reject) => {
   const reader = new FileReader();
   reader.onload = () => resolve(reader.result);
@@ -182,22 +173,20 @@ const dataUrl = (blob) => new Promise((resolve, reject) => {
 });
 const toDataUrl = async (source) => dataUrl(await (await fetch(source)).blob());
 
-// The computed style of every element goes in its own style attribute, so the card needs no style sheet in the image (an image cannot load one).
 function flatten(source, target) {
   const computed = getComputedStyle(source);
   for (const property of computed) target.style.setProperty(property, computed.getPropertyValue(property));
   [...source.children].forEach((child, index) => flatten(child, target.children[index]));
 }
 
-// The card as a PNG of 1200 x 630: it is laid out in a box of 1200 px (out of sight), its styles and its images are put inside a copy, and the browser draws the copy.
 async function cardToPng(card) {
   const stage = element("div", "");
-  stage.style.cssText = "position: fixed; left: -10000px; top: 0; width: 1200px;";   // a box of 1200 px, out of sight
+  stage.style.cssText = "position: fixed; left: -10000px; top: 0; width: 1200px;";
   document.body.append(stage);
   try {
     const live = card.cloneNode(true);
     stage.append(live);
-    for (const part of [live, ...live.querySelectorAll("*")]) {   // the images of the card go inside it
+    for (const part of [live, ...live.querySelectorAll("*")]) {
       const found = /url\("?([^")]+)"?\)/.exec(part.style.backgroundImage || "");
       if (found) part.style.backgroundImage = `url("${await toDataUrl(found[1])}")`;
     }
@@ -218,8 +207,6 @@ async function cardToPng(card) {
   }
 }
 
-/* ---------- the previews: the card of the main website and of every app of the brand, as the sites that show a link draw it (Open Graph) ---------- */
-// A card is an element (below), and it can be saved as an image: the preview.png of an app is made from its card (assets/tools/og-cards.mjs takes the same card).
 function renderPreviews() {
   heading("previews");
   const own = projects.filter((project) => project.publisher === "{brand}");
@@ -253,12 +240,11 @@ function renderPreviews() {
   }));
 }
 
-/* ---------- icons ---------- */
 const search = element("input");
 search.type = "search";
 search.setAttribute("data-i18n-placeholder", "icons.search");
 search.setAttribute("data-i18n-label", "icons.searchLabel");
-search.value = urlState.get("q");   // the search and the section that is shown are in the address (?q=...&section=...), assets/js/url.js
+search.value = urlState.get("q");
 const searchbox = element("label", "searchbox");
 searchbox.append(element("span", "icon icon-search"), search);
 const count = element("span", "section-hint");
@@ -274,7 +260,7 @@ function renderIcons() {
     const tile = element("button", "icon-tile");
     tile.type = "button";
     const glyph = element("span", "icon");
-    glyph.style.setProperty("--icon", `url("${new URL(`../assets/icons/${name}.svg`, location.href).href}")`);
+    glyph.style.setProperty("--icon", `var(--icon-${name})`);
     tile.append(glyph, element("span", "icon-name", name));
     tile.title = `${name}.svg`;
     tile.addEventListener("click", () => copy(`${name}.svg`));
@@ -285,7 +271,6 @@ sections.icons.body.append(searchbox, count, iconGrid);
 search.addEventListener("input", () => { urlState.set({ q: search.value.trim() }); renderIcons(); });
 autocomplete.attach(search, { suggestions: () => icons });
 
-/* ---------- fonts ---------- */
 function renderFonts() {
   heading("fonts");
   const list = element("div", "font-list");
@@ -299,7 +284,6 @@ function renderFonts() {
   sections.fonts.body.replaceChildren(list);
 }
 
-/* ---------- sizes: each scale of style.css, with its value and a demonstration ---------- */
 const demoOf = { gap: "demo-bar", padding: "demo-bar", fontSize: "demo-text", radius: "demo-radius", iconSize: "demo-box", other: "demo-bar" };
 function renderSizes() {
   heading("sizes");
@@ -319,7 +303,6 @@ function renderSizes() {
   }));
 }
 
-/* ---------- files ---------- */
 function renderFiles() {
   heading("files");
   const list = element("div", "file-list");
@@ -331,8 +314,6 @@ function renderFiles() {
   sections.files.body.replaceChildren(list);
 }
 
-/* ---------- the sidebar: a button for each section, which scrolls to it ---------- */
-// On a narrow screen the sections are hidden, and a button opens them over the page (Escape closes them and gives the focus back).
 const menu = components.drawer({ sidebar: $("sidebar"), button: $("menu-button") });
 function renderSide() {
   $("sidebar-nav").replaceChildren(...sectionOrder.map((id) => {
@@ -345,7 +326,6 @@ function renderSide() {
   }));
   markSection();
 }
-// The section that is at the top of the page is marked in the sidebar.
 function markSection() {
   const top = $("content").getBoundingClientRect().top + 8;
   let current = sectionOrder[0];
@@ -353,7 +333,7 @@ function markSection() {
   for (const item of $("sidebar-nav").children) item.classList.toggle("on", item.dataset.section === current);
   if (settled) urlState.set({ section: current === sectionOrder[0] ? "" : current });
 }
-let settled = false;   // the section of the address is gone to first; until then the scroll does not write it
+let settled = false;
 $("content").addEventListener("scroll", markSection);
 
 function renderAll() {
@@ -361,16 +341,14 @@ function renderAll() {
 }
 renderAll();
 i18n.onChange(renderAll);
-{   // the section of the address is shown (after the layout, when the fonts have their width)
+{
   const wanted = sections[urlState.get("section")];
   const arrive = () => { wanted?.box.scrollIntoView({ block: "start" }); markSection(); settled = true; };
   requestAnimationFrame(() => requestAnimationFrame(arrive));
   document.fonts?.ready.then(() => { if (!settled) arrive(); else if (wanted) wanted.box.scrollIntoView({ block: "start" }); });
 }
-// The values follow the theme: when it changes (here, or in another app), the colours are read again.
 new MutationObserver(() => { renderColours(); renderApps(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
-// One button toggles the theme, to see the colours in both of them; its icon is the theme that a click gives (a sun in the dark theme).
 function markTheme() {
   const light = document.documentElement.dataset.theme === "light";
   const icon = $("theme-button").querySelector(".icon");
@@ -380,7 +358,7 @@ function markTheme() {
 $("theme-button").addEventListener("click", () => {
   const theme = document.documentElement.dataset.theme === "light" ? "dark" : "light";
   document.documentElement.dataset.theme = theme;
-  try { localStorage.setItem("theme", theme); } catch { /* ignore */ }
+  try { localStorage.setItem("theme", theme); } catch { }
 });
 new MutationObserver(markTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 window.addEventListener("storage", (event) => { if (event.key === "theme" || event.key === null) markTheme(); });
@@ -388,14 +366,13 @@ markTheme();
 
 account.bind($("account-button"));
 
-// ?preview=<app>: the page is the card alone, as big as the window (assets/tools/og-cards.mjs takes the picture of a window of 1200 x 630 to make the preview.png of the app)
 if (previewId) {
   const project = projects.find((item) => item.id === previewId && item.publisher === "{brand}");
   if (project) {
     document.body.className = "preview-only";
     document.body.replaceChildren(buildCard({ project, brand: i18n.brand, data: mainData }));
     await document.fonts.ready;
-    await Promise.all([...document.querySelectorAll("*")].map((part) => {   // the pictures of the card are there before the picture of the window is taken
+    await Promise.all([...document.querySelectorAll("*")].map((part) => {
       const found = /url("?([^")]+)"?)/.exec(part.style.backgroundImage || "");
       if (!found) return null;
       const image = new Image();

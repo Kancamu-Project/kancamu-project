@@ -1,22 +1,9 @@
-/* Lingomu: lessons that teach a language, a few words at a time. */
 .hidden { display: none !important; }
 
-/* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
-
-/* Buttons */
-
-/* The page is the header, the sidebar, and the main, directly in the body. The padding and the gap are the ones of the body: the three elements have none. */
-
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
-
-/* The sidebar holds the status line and the copyright at its end */
-
-/* The bar that fills while something is done: the goal of the day, the lesson */
+.logo-mark { background-image: url("favicon.png"); }
 .progress { flex: 1; height: calc(var(--unit) * 3); }
 .progress-fill { transition: width 0.3s; }
 .section-title { color: var(--fg-1); font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; }
-
-/* The lessons on one side, the main on the other */
 #course-select { flex: none; width: 100%; }
 .unit { display: flex; flex-direction: column; gap: var(--gap-extra-small); padding-block-end: var(--padding-small); }
 .unit-title { display: flex; align-items: center; height: var(--height); padding: 0 var(--padding-medium); color: var(--fg-1); font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -34,8 +21,6 @@
 .stat-label { color: var(--fg-1); font-size: var(--font-size-small); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .goal-text { color: var(--fg-1); font-size: var(--font-size-small); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sidebar-summary .progress { flex: none; }
-
-/* The main: the part that has a border around it. It shows a lesson (what is in it, and a button to start), the lesson itself, or the end of it. */
 .main { padding: var(--padding-medium); }
 .overview-view { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--gap-medium); }
 .overview-heading { display: flex; align-items: center; gap: var(--gap-medium); }
@@ -50,8 +35,6 @@
 .word-meaning { flex: 1 1 calc(var(--unit) * 40); color: var(--fg-1); font-size: var(--font-size-medium); text-align: end; }
 .overview-state { color: var(--fg-1); font-size: var(--font-size-small); }
 .overview-view > button { flex: none; }
-
-/* A lesson: the bar on top, the exercise, what was answered, and the button */
 .lesson-view { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--gap-medium); }
 .lesson-bar { display: flex; align-items: center; gap: var(--gap-small); height: var(--height); }
 .lesson-bar > button { height: 100%; }
@@ -79,8 +62,6 @@
 .feedback-answer { color: var(--fg); }
 .lesson-actions { display: flex; }
 .lesson-actions > button { flex: 1; }
-
-/* The end of a lesson */
 .result-view { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
 .result-card { width: 100%; max-width: calc(var(--unit) * 140); display: flex; flex-direction: column; align-items: stretch; gap: var(--gap-large); padding: var(--padding-extra-large); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); background: var(--bg-1); }
 .result-title { font-size: var(--font-size-extra-large); font-weight: 700; text-align: center; }
@@ -89,12 +70,8 @@
 .result-line > .icon { color: var(--brand); }
 .result-actions { display: flex; flex-wrap: wrap; gap: var(--gap-small); }
 .result-actions > button { flex: 1 1 calc(var(--unit) * 60); }
-
-/* Messages */
 dialog { color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--border); padding: 0; }
 dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent); }
-
-/* From a tablet up, the lessons stay beside the main */
 @media (min-width: 48rem) {
   body { grid-template-columns: var(--sidebar-width) minmax(0, 1fr); }
   .header { grid-column: 1; grid-row: 1; }
@@ -104,5 +81,3 @@ dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent)
   .main { grid-column: 2; grid-row: 1 / -1; }
   .menu-button { display: none; }
 }
-
-/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */

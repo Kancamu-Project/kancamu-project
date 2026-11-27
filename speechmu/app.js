@@ -1,10 +1,10 @@
-// Speechmu: speech to text (Whisper) and text to speech (MMS voices, and the voices of the device) with AI models that run in the browser (Transformers.js).
-// The audio and the text never leave the device.
 import { pipeline, env } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2";
+import { i18n, popups, account, settings, urlState, components } from "../assets/js/shared.js";
+import appData from "./data.js";
 
-env.allowLocalModels = false;   // a model is downloaded from Hugging Face once and kept in the browser cache
+env.allowLocalModels = false;
 
-await i18n.load();
+await i18n.load(appData);
 i18n.selects();
 
 const tr = (key, params) => i18n.t(key, params);
@@ -16,11 +16,9 @@ const els = Object.fromEntries([
   "status", "account-button"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-// The languages, the models, and the engine are in data.json.
 const { speechLanguages: languages, models, engine, speech, settings: { defaults } } = i18n.data;
-const preferences = settings.get("speechmu", defaults);   // the model and the two languages: set here and in the account app
-// What is on the screen is also in the address (?tab=...&model=...&listen=...&speak=...&text=...), so a reload shows the same (assets/js/url.js); the address wins over the settings.
-const TEXT_LIMIT = 500;   // a longer text does not go in the address
+const preferences = settings.get("speechmu", defaults);
+const TEXT_LIMIT = 500;
 const fromUrl = (name, fallback) => urlState.get(name) || fallback;
 const AUTO = "auto";
 const languageOf = (code) => languages.find((language) => language.code === code);
@@ -28,22 +26,22 @@ const known = (code, fallback) => (languageOf(code) ? code : fallback);
 
 const state = {
   view: urlState.get("tab") === "speak" ? "speak" : "listen",
-  model: models.find((model) => model.id === fromUrl("model", preferences.model)) || models[0],   // the model that turns speech into text
+  model: models.find((model) => model.id === fromUrl("model", preferences.model)) || models[0],
   listen: [AUTO, ...languages.map((language) => language.code)].includes(fromUrl("listen", preferences.listen)) ? fromUrl("listen", preferences.listen) : AUTO,
   speak: known(fromUrl("speak", preferences.speak), defaults.speak),
-  voice: "",                  // the voice that is chosen: "model", or "system:<name>"
-  transcribers: new Map(),    // the models that are loaded: "base" -> transcriber
-  speakers: new Map(),        // "eng" -> synthesizer
-  voices: [],                 // the voices of the device
+  voice: "",
+  transcribers: new Map(),
+  speakers: new Map(),
+  voices: [],
   busy: false,
-  recording: null,            // { recorder, chunks, started, timer, stream } while the microphone is on
-  transcript: null,           // { text, chunks, name } of the last transcription
-  audio: null,                // { samples, rate } of the last voice that a model made
-  output: null,               // what plays now: { stop() }
+  recording: null,
+  transcript: null,
+  audio: null,
+  output: null,
 };
 
-const say = components.status(els.status);   // only the hint of the page: every notice (work, result, error) is a popup
-let working = null;   // the popup of the work that goes on: one at a time, its text changes
+const say = components.status(els.status);
+let working = null;
 const work = (text) => (working ? working.set(text) : (working = popups.toast(text, { kind: "info", duration: 0 })));
 const rest = () => { working?.close(); working = null; };
 const done = (text) => popups.toast(text);
@@ -54,10 +52,9 @@ const formatTime = (seconds) => {
   return `${minutes}:${String(total % 60).padStart(2, "0")}`;
 };
 
-/* ---------- loading a model: the download is a popup with a bar ---------- */
 async function load(task, model, options) {
   const files = new Map();
-  let note = null;   // the popup of the loading (a download, or the files read from the cache): made when the first news of it comes
+  let note = null;
   const show = (text, fraction) => (note ? note.set(text, fraction) : (note = popups.toast(text, { duration: 0, progress: fraction ?? 0 })));
   const progress_callback = (info) => {
     if (info.status === "progress" && info.file) {
@@ -75,7 +72,6 @@ async function load(task, model, options) {
   }
 }
 
-/* ---------- the tabs ---------- */
 function renderTabs() {
   const buttons = ["listen", "speak"].map((id) => {
     const button = document.createElement("button");
@@ -97,9 +93,6 @@ function idle() {
   if (!state.busy) say(tr(state.view === "listen" ? "status.idleListen" : "status.idleSpeak"));
 }
 
-/* ====================================================== speech to text ====================================================== */
-
-/* ---------- the audio of a file or of the microphone, as the samples that Whisper takes (mono, 16 kHz) ---------- */
 async function decode(blob) {
   const context = new AudioContext({ sampleRate: engine.sampleRate });
   try {
@@ -121,7 +114,6 @@ async function loadTranscriber() {
   return state.transcribers.get(model.id);
 }
 
-// The srt of the chunks: a number, the two times, and the text
 const stamp = (seconds) => {
   const total = Math.max(0, Math.round(seconds * 1000));
   const part = (value, size) => String(value).padStart(size, "0");
@@ -193,7 +185,6 @@ els.copyListen.addEventListener("click", async () => {
 els.saveText.addEventListener("click", () => download(`${baseName(state.transcript.name)}.txt`, state.transcript.text, "text/plain;charset=utf-8"));
 els.saveSubtitles.addEventListener("click", () => download(`${baseName(state.transcript.name)}.srt`, subtitles(state.transcript.chunks), "text/plain;charset=utf-8"));
 
-/* ---------- the microphone ---------- */
 async function startRecording() {
   let stream;
   try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); } catch (error) { return fail(tr("error.microphone", { message: error.message || error })); }
@@ -222,12 +213,9 @@ els.recordButton.addEventListener("click", () => {
   else if (!state.busy) startRecording();
 });
 
-/* ====================================================== text to speech ====================================================== */
-
 const MODEL = "model";
 const mmsRepo = (language) => speech.modelTemplate.replace("{code}", language.mms);
 
-// The voices of the device for a language (the voices load by themselves, a moment after the page)
 function readVoices() {
   state.voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
   buildVoices();
@@ -246,7 +234,6 @@ function buildVoices() {
   els.speakText.dir = language.dir;
 }
 
-// The WAV file of the samples that a model made: 16 bit, mono
 function wav(samples, rate) {
   const view = new DataView(new ArrayBuffer(44 + samples.length * 2));
   const write = (offset, text) => [...text].forEach((character, index) => view.setUint8(offset + index, character.charCodeAt(0)));
@@ -349,7 +336,6 @@ els.clearButton.addEventListener("click", () => {
 });
 els.saveAudio.addEventListener("click", () => { if (state.audio) download("speech.wav", wav(state.audio.samples, state.audio.rate), "audio/wav"); });
 
-/* ---------- the choices: the page and the account app both set them, and each follows the other ---------- */
 const savePreferences = () => {
   settings.set("speechmu", { ...settings.get("speechmu", defaults), model: state.model.id, listen: state.listen, speak: state.speak });
   urlState.set({ model: state.model.id, listen: state.listen, speak: state.speak });
@@ -361,7 +347,6 @@ settings.onChange("speechmu", defaults, (changed) => {
   state.speak = known(changed.speak, state.speak);
   buildChoices();
 });
-// The account app deleted the files of a model: what is loaded is let go, and it downloads again when it is used.
 settings.listen("speechmu", (message) => { if (message.type === "modelDeleted") { state.transcribers.clear(); state.speakers.clear(); } });
 
 function buildChoices() {
@@ -383,8 +368,7 @@ els.listenLanguage.addEventListener("change", () => { state.listen = els.listenL
 els.speakLanguage.addEventListener("change", () => { state.speak = els.speakLanguage.value; savePreferences(); buildVoices(); });
 els.voiceSelect.addEventListener("change", () => { state.voice = els.voiceSelect.value; });
 
-/* ---------- the account ---------- */
-account.bind(els.accountButton);   // the profile and the settings are in the account app
+account.bind(els.accountButton);
 
 function renderTexts() {
   renderTabs();
@@ -398,6 +382,6 @@ i18n.onChange(renderTexts);
 if (window.speechSynthesis) speechSynthesis.addEventListener("voiceschanged", readVoices);
 
 els.speakText.value = urlState.get("text");
-showView();   // the tab of the address
+showView();
 renderTexts();
 readVoices();

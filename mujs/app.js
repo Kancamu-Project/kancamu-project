@@ -1,8 +1,7 @@
-// muJS: lessons that teach JavaScript. Each lesson explains one idea, gives a task, and has a code editor that runs the code.
-// The units, the lessons, their tests, and the words to colour are in data.json. The code runs in a sandboxed frame (sandbox.js), never in this page.
-// The progress (lessons done, the code that was written) is kept in this browser, and in the mujs folder of the storage once the user is signed in.
+import { i18n, popups, storage, urlState, account, settings, components } from "../assets/js/shared.js";
+import appData from "./data.js";
 
-await i18n.load();
+await i18n.load(appData);
 
 const { element, icon } = components;
 const tr = (key, params) => i18n.t(key, params);
@@ -20,8 +19,6 @@ const lessons = units.flatMap((unit) => unit.lessons.map((lesson) => ({ ...lesso
 
 const say = components.status(els.status);
 
-/* ---------- the colours of the code ---------- */
-// A word is a comment, a text, a number, a keyword, a value (true, null), a name that JavaScript has (console, Math), or the name of something that is called.
 const WORDS = /(\/\/.*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)/g;
 const escapeHtml = (text) => text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 function highlight(code) {
@@ -42,27 +39,25 @@ function highlight(code) {
   }
   return html + escapeHtml(code.slice(last));
 }
-// The editor is a text area over a copy of its text with the colours; the numbers of the lines are beside it.
 function renderEditor() {
   const code = els.codeEditor.value;
   els.editorHighlight.innerHTML = `${highlight(code)}\n`;
   els.editorGutter.textContent = Array.from({ length: code.split("\n").length }, (item, index) => index + 1).join("\n");
 }
 
-/* ---------- the progress ---------- */
 const PROGRESS_KEY = "mujs.progress";
 const blank = () => ({ done: {}, code: {}, last: "", updated: 0 });
 function readLocal() {
   try { return { ...blank(), ...JSON.parse(localStorage.getItem(PROGRESS_KEY)) }; } catch { return blank(); }
 }
 let progress = readLocal();
-let preferences = settings.get("mujs", defaults);   // the size of the code text: set in the account app
+let preferences = settings.get("mujs", defaults);
 
 function applyPreferences() {
   document.documentElement.style.setProperty("--editor-scale", String(preferences.editorScale));
 }
 function saveLocal() {
-  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); } catch { /* the progress stays in memory */ }
+  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); } catch { }
 }
 function save() {
   progress.updated = Date.now();
@@ -70,7 +65,6 @@ function save() {
   scheduleUpload();
 }
 
-/* ---------- the account: the same progress on every device ---------- */
 const sync = { store: null, token: "", timer: 0 };
 async function openStore() {
   const signedIn = account.get();
@@ -88,7 +82,6 @@ function scheduleUpload() {
     } catch (error) { popups.toast(tr("sync.failed", { message: error.message }), { kind: "error" }); }
   }, 1500);
 }
-// The progress of the account and the one of this device: the newest one is kept.
 async function download() {
   say(tr(account.get() ? "status.signedIn" : "status.signedOut"));
   try {
@@ -104,7 +97,6 @@ async function download() {
   } catch (error) { popups.toast(tr("sync.failed", { message: error.message }), { kind: "error" }); }
 }
 
-/* ---------- the sandbox: the code runs in a frame with no rights, in a worker ---------- */
 let frame = null;
 let frameReady = null;
 let nextId = 0;
@@ -113,7 +105,7 @@ const sandboxText = fetch("sandbox.js", { cache: "no-store" }).then((response) =
 
 function createFrame() {
   frame = element("iframe", "sandbox-frame");
-  frame.setAttribute("sandbox", "allow-scripts");   // a page of its own: it cannot reach this page, the account, or the storage
+  frame.setAttribute("sandbox", "allow-scripts");
   frame.setAttribute("aria-hidden", "true");
   frame.tabIndex = -1;
   frameReady = new Promise((resolve) => { frame.markReady = resolve; });
@@ -128,7 +120,6 @@ window.addEventListener("message", (event) => {
   const done = waiting.get(event.data?.id);
   if (done) { waiting.delete(event.data.id); done(event.data); }
 });
-// Runs the code and the tests; a code that takes too long (a loop that never ends) is stopped by removing the frame.
 async function execute(code, tests) {
   if (!frame) createFrame();
   await frameReady;
@@ -145,13 +136,10 @@ async function execute(code, tests) {
   });
 }
 
-/* ---------- the list of lessons ---------- */
 const isDone = (lesson) => !!progress.done[lesson.id];
-// The page opens on the lesson that was open last, or on the first one that is not done.
-// The lesson that is open is also in the address (?lesson=...), so a reload opens it again (assets/js/url.js); the address wins over the last lesson of the progress.
 const startingLesson = () => lessons.find((lesson) => lesson.id === urlState.get("lesson")) || lessons.find((lesson) => lesson.id === progress.last) || lessons.find((lesson) => !isDone(lesson)) || lessons[0];
 
-let current = null;   // the lesson that is open
+let current = null;
 const menu = components.drawer({ sidebar: els.sidebar, button: els.menuButton });
 function renderSidebar() {
   const done = lessons.filter(isDone).length;
@@ -220,7 +208,6 @@ els.codeEditor.addEventListener("input", () => {
   }, 600);
 });
 
-/* ---------- running and checking ---------- */
 function showConsole(answer, lines) {
   els.console.replaceChildren();
   for (const line of lines.slice(0, limits.maxLines)) els.console.append(element("span", `console-line${/^error: /.test(line) ? " error" : ""}`, line));
@@ -260,7 +247,6 @@ async function run(withTests) {
   showOutcome("passed", tr("result.pass"), results);
 }
 
-// What the code printed and what the expressions gave, against what the lesson expects.
 function judge(lesson, answer) {
   const printed = answer.logs.slice(0, answer.mark);
   let next = 0;
@@ -322,7 +308,6 @@ els.solutionButton.addEventListener("click", async () => {
   els.codeEditor.focus();
 });
 
-/* ---------- the list of lessons on a narrow screen, the settings, the account, and the language ---------- */
 settings.onChange("mujs", defaults, (changed) => { preferences = changed; applyPreferences(); });
 settings.listen("mujs", (message) => {
   if (message.type === "progressReset") { progress = blank(); openLesson(lessons[0].id); }

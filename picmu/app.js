@@ -1,10 +1,10 @@
-// Picmu: removes the background of an image or a video, and upscales an image or a video (bigger and sharper), with models that run on the graphics card (WebGPU).
-// The image never leaves the device. Every tool has its own models, and the file on the screen is done again when the tool or its model changes.
 import { AutoModel, AutoProcessor, RawImage, pipeline, env } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2";
+import { i18n, popups, account, settings, storage, urlState, transfer, autocomplete, components } from "../assets/js/shared.js";
+import appData from "./data.js";
 
-env.allowLocalModels = false;   // the model is downloaded from Hugging Face once and kept in the browser cache
+env.allowLocalModels = false;
 
-await i18n.load();
+await i18n.load(appData);
 i18n.selects();
 
 const { extensionOf, formatSize } = components;
@@ -17,59 +17,54 @@ const els = Object.fromEntries([
   "drive-dialog", "drive-close-button", "drive-search", "drive-list", "drive-message"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-// The models, the backgrounds, the Drive folder, the folder to save in, and the image types are in data.json.
 const { models, backgrounds, downloadSuffix, saveFolder, media, mimeTypes, video, upscale: upscaling, settings: { defaults } } = i18n.data;
-const preferences = settings.get("picmu", defaults);   // the tool, its models, the frames per second, the format, and the background: set here and in the account app
-// What is on the screen is also in the address (?tool=...&model=...&fps=...), so a reload shows the same (assets/js/url.js); the address wins over the settings.
+const preferences = settings.get("picmu", defaults);
 const fromUrl = (name, fallback) => urlState.get(name) || fallback;
 const TOOLS = ["cutout", "upscale"];
 const modelFor = (tool, id) => models.find((model) => model.tool === tool && model.id === id) || models.find((model) => model.tool === tool);
-const MEDIA_TYPES = new Set([...media.image, ...media.video]);   // what the Drive list shows
+const MEDIA_TYPES = new Set([...media.image, ...media.video]);
 
 const state = {
-  tool: TOOLS.includes(fromUrl("tool", preferences.tool)) ? fromUrl("tool", preferences.tool) : TOOLS[0],   // "cutout" (remove the background) or "upscale"
-  chosen: { cutout: modelFor("cutout", fromUrl("model", preferences.model)), upscale: modelFor("upscale", fromUrl("upscaleModel", preferences.upscaleModel)) },   // the model of each tool
-  get model() { return this.chosen[this.tool]; },   // the model of the tool that is shown
-  broken: false,     // the graphics card failed on a model: until the page is reloaded, every model fails
-  engines: new Map(),// the models that are loaded: id -> engine
-  file: null,        // the image or video that is being worked on, to do it again with another model
-  kind: "image",     // "image" or "video"
-  fps: video.fpsOptions.includes(Number(fromUrl("fps", preferences.fps))) ? Number(fromUrl("fps", preferences.fps)) : Number(preferences.fps),   // frames per second that are cut from a video
-  frames: [],        // the frames of a video, with a transparent background (ImageBitmap)
-  sound: undefined,  // the sound of the video once it is decoded (an AudioBuffer), null when it has none
-  playId: 0,         // changes to stop the playing of the frames
-  stop: false,       // the user stopped the cutting of a video
+  tool: TOOLS.includes(fromUrl("tool", preferences.tool)) ? fromUrl("tool", preferences.tool) : TOOLS[0],
+  chosen: { cutout: modelFor("cutout", fromUrl("model", preferences.model)), upscale: modelFor("upscale", fromUrl("upscaleModel", preferences.upscaleModel)) },
+  get model() { return this.chosen[this.tool]; },
+  broken: false,
+  engines: new Map(),
+  file: null,
+  kind: "image",
+  fps: video.fpsOptions.includes(Number(fromUrl("fps", preferences.fps))) ? Number(fromUrl("fps", preferences.fps)) : Number(preferences.fps),
+  frames: [],
+  sound: undefined,
+  playId: 0,
+  stop: false,
   busy: false,
-  store: null,       // the Drive (the root of the repository), opened when it is first needed
-  token: "",         // the token the store was opened with
-  name: "",          // the name of the image, without its extension
-  original: "",      // the address of the original image
-  cutout: null,      // the canvas of the result (a transparent background for the removal, the bigger image for the upscale)
+  store: null,
+  token: "",
+  name: "",
+  original: "",
+  cutout: null,
   cutoutUrl: "",
   background: backgrounds.includes(fromUrl("background", preferences.background)) ? fromUrl("background", preferences.background) : backgrounds[0],
-  customColour: preferences.customColour,   // the colour of the background that the user picks
-  format: fromUrl("format", preferences.format),   // the file format of a video (a format the browser cannot record is not kept: buildFormats)
+  customColour: preferences.customColour,
+  format: fromUrl("format", preferences.format),
 };
 
 const say = components.status(els.status);
-// Every notice is a popup (the line of the footer only keeps the hint). The work that goes on is one popup that changes its text, with a bar when it knows how far it is.
 let working = null;
 function work(text, fraction) {
-  if (working && (fraction === undefined) !== !working.bar) rest();   // a bar comes or goes: the popup is made again
+  if (working && (fraction === undefined) !== !working.bar) rest();
   if (working) working.note.set(text, fraction);
   else working = { note: popups.toast(text, { kind: "info", duration: 0, ...(fraction === undefined ? {} : { progress: fraction }) }), bar: fraction !== undefined };
 }
 function rest() { working?.note.close(); working = null; }
 
-/* ---------- the models ---------- */
-// Loads the chosen model (once). A card that can do 16-bit numbers gets the smaller file when the model has one.
 async function loadEngine(model) {
   if (state.engines.has(model.id)) return state.engines.get(model.id);
   const adapter = navigator.gpu ? await navigator.gpu.requestAdapter() : null;
   if (!adapter) throw Object.assign(new Error("no WebGPU"), { code: "noGpu" });
   const dtype = model.dtypeWithFloat16 && adapter.features.has("shader-f16") ? model.dtypeWithFloat16 : model.dtype;
   const files = new Map();
-  let note = null;   // the popup of the loading (a download, or the files read from the cache): made when the first news of it comes, so no popup when the model is already in memory
+  let note = null;
   const show = (text, fraction) => (note ? note.set(text, fraction) : (note = popups.toast(text, { duration: 0, progress: fraction ?? 0 })));
   const progress_callback = (info) => {
     if (info.status === "progress" && info.file) {
@@ -100,12 +95,11 @@ async function loadEngine(model) {
   }
 }
 
-// Puts the opacity of the model on the pixels of the canvas: after this the background is transparent.
 async function cutOut(model, engine, canvas, context) {
   const image = RawImage.fromCanvas(canvas);
   if (model.loader === "pipeline") {
     const result = await engine.segmenter(image);
-    const cut = Array.isArray(result) ? result[0] : result;   // the image with its background removed (RGBA)
+    const cut = Array.isArray(result) ? result[0] : result;
     context.putImageData(new ImageData(new Uint8ClampedArray(cut.data), cut.width, cut.height), 0, 0);
     return;
   }
@@ -113,11 +107,10 @@ async function cutOut(model, engine, canvas, context) {
   const { output } = await engine.net({ input: pixel_values });
   const mask = await RawImage.fromTensor(output[0].mul(255).to("uint8")).resize(canvas.width, canvas.height);
   const pixels = context.getImageData(0, 0, canvas.width, canvas.height);
-  for (let i = 0; i < mask.data.length; i++) pixels.data[i * 4 + 3] = mask.data[i];   // the mask is the opacity of every pixel
+  for (let i = 0; i < mask.data.length; i++) pixels.data[i * 4 + 3] = mask.data[i];
   context.putImageData(pixels, 0, 0);
 }
 
-// The upscale: the image is cut in tiles (with a margin, so the seams do not show), every tile is made bigger by the model, and the tiles are put together.
 async function upscaleImage(model, engine, source, onPart) {
   const { tile, overlap } = upscaling;
   const scale = model.scale;
@@ -136,30 +129,25 @@ async function upscaleImage(model, engine, source, onPart) {
       piece.getContext("2d").putImageData(reader.getImageData(left, top, piece.width, piece.height), 0, 0);
       const made = await engine.upscaler(RawImage.fromCanvas(piece));
       const rgba = (Array.isArray(made) ? made[0] : made).rgba();
-      // only the part inside the margin is kept
       context.putImageData(new ImageData(new Uint8ClampedArray(rgba.data), rgba.width, rgba.height), left * scale, top * scale, (x0 - left) * scale, (y0 - top) * scale, (x1 - x0) * scale, (y1 - y0) * scale);
       onPart?.(row * across + column + 1, across * down);
     }
   }
-  // the model works on colours only: the transparency of the image (if it has some) is put back, made bigger the plain way
   context.globalCompositeOperation = "destination-in";
   context.drawImage(source, 0, 0, result.width, result.height);
   context.globalCompositeOperation = "source-over";
   return result;
 }
 
-// The size of the result of the upscale: [width, height]
 const upscaledSize = (width, height, model) => [width * model.scale, height * model.scale];
 
-/* ---------- one image or video ---------- */
 const hasResult = () => (state.kind === "video" ? state.frames.length > 0 : !!state.cutout);
 const idle = () => say(tr(`status.idle.${state.tool}`));
 const suffix = () => downloadSuffix[state.tool];
-const fills = () => state.tool === "cutout" && state.background !== "transparent";   // only a removed background is put on a colour
+const fills = () => state.tool === "cutout" && state.background !== "transparent";
 function setReady(ready) {
   for (const button of [els.downloadButton, els.saveButton, els.zipButton]) button.disabled = !ready;
 }
-// The buttons that depend on the kind of file.
 function renderMode() {
   const isVideo = state.kind === "video" && !els.resultArea.classList.contains("hidden");
   els.downloadLabel.textContent = tr(isVideo ? "download.video" : "download");
@@ -189,7 +177,6 @@ async function handleFile(file) {
     if (kind === "image") await processImage(file, started); else await processVideo(started);
   } catch (error) {
     console.error(error);
-    // A model that the graphics card cannot run leaves it in a state where every other model fails too (ShaderModule errors), until the page is loaded again.
     state.broken = /OrtRun|ShaderModule|storage buffers|WebGPU|GPU/i.test(String(error.message)) && error.code !== "noGpu" && error.code !== "stopped";
     if (error.code === "stopped") popups.toast(tr("status.stopped"), { kind: "warning" });
     else popups.toast(error.code === "noGpu" ? tr("error.noGpu") : state.broken ? tr("error.gpu", { message: String(error.message).replace(/\s+/g, " ").slice(-80) }) : tr("error.failed", { message: error.message || error }), { kind: "error" });
@@ -235,7 +222,6 @@ async function processImage(file, started) {
 
 const seconds = (started) => i18n.number((performance.now() - started) / 1000, { maximumFractionDigits: 1 });
 
-// Waits for an event of an element, and fails on its error event.
 const waitFor = (target, name) => new Promise((resolve, reject) => {
   const done = () => { target.removeEventListener(name, ok); target.removeEventListener("error", bad); };
   const ok = () => { done(); resolve(); };
@@ -250,12 +236,11 @@ function seek(player, time) {
   return arrived;
 }
 
-// A video: every frame is read at the chosen frames per second, cut out, and kept; then the frames play in the result.
 async function processVideo(started) {
   const reader = Object.assign(document.createElement("video"), { muted: true, preload: "auto", playsInline: true });
   reader.src = state.original;
   await waitFor(reader, "loadeddata");
-  if (!Number.isFinite(reader.duration)) {   // a file made by a recorder has no length in it: going far makes the browser find it
+  if (!Number.isFinite(reader.duration)) {
     const found = waitFor(reader, "durationchange");
     reader.currentTime = 1e101;
     await found;
@@ -289,7 +274,7 @@ async function processVideo(started) {
       if (upscaled) state.frames.push(await createImageBitmap(await upscaleImage(model, engine, canvas)));
       else { await cutOut(model, engine, canvas, context); state.frames.push(await createImageBitmap(canvas)); }
     } catch (error) {
-      if (error.code === "stopped") break;   // the frames that are done are kept
+      if (error.code === "stopped") break;
       throw error;
     }
     showFrame(view, state.frames[state.frames.length - 1]);
@@ -308,7 +293,6 @@ function showFrame(view, frame) {
   context.clearRect(0, 0, view.width, view.height);
   context.drawImage(frame, 0, 0);
 }
-// Plays the frames over and over, at the speed they were cut.
 function play(view) {
   const id = ++state.playId;
   const begin = performance.now();
@@ -322,7 +306,6 @@ function play(view) {
   tick();
 }
 
-// The image as the browser draws it (turned the right way up), in the size it has.
 const readBitmap = (file) => createImageBitmap(file);
 const toBlob = (canvas) => new Promise((resolve, reject) => canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("PNG"))), "image/png"));
 
@@ -338,7 +321,7 @@ function clearImages() {
 }
 function startOver() {
   if (state.busy) return;
-  if (state.broken) { location.reload(); return; }   // a fresh start for the graphics card
+  if (state.broken) { location.reload(); return; }
   clearImages();
   els.fileInput.value = "";
   state.file = null;
@@ -349,7 +332,6 @@ function startOver() {
 }
 els.stopButton.addEventListener("click", () => { state.stop = true; });
 
-/* ---------- the settings: the page and the account app both set them, and each follows the other ---------- */
 const savePreferences = () => {
   settings.set("picmu", { tool: state.tool, model: state.chosen.cutout.id, upscaleModel: state.chosen.upscale.id, fps: state.fps, format: state.format, background: state.background, customColour: state.customColour });
   urlState.set({ tool: state.tool, model: state.chosen.cutout.id, upscaleModel: state.chosen.upscale.id, fps: state.fps, format: state.format, background: state.background });
@@ -363,13 +345,11 @@ settings.onChange("picmu", defaults, (changed) => {
   state.customColour = changed.customColour;
   applyColour(); chooseBackground(changed.background);
   buildModels(); buildFps(); buildFormats();
-  if (redo && state.file && !state.busy) handleFile(state.file);   // what is on the screen is done again with the new setting
+  if (redo && state.file && !state.busy) handleFile(state.file);
 });
 
-// The account app deleted the files of a model: what is loaded is let go, and it downloads again when it is used.
 settings.listen("picmu", (message) => { if (message.type === "modelDeleted") state.engines.clear(); });
 
-/* ---------- the model that is chosen ---------- */
 function buildModels() {
   els.modelSelect.replaceChildren(...models.filter((model) => model.tool === state.tool).map((model) => Object.assign(document.createElement("option"), { value: model.id, textContent: `${model.name} — ${i18n.pick(model.hint)}` })));
   els.modelSelect.value = state.model.id;
@@ -377,12 +357,11 @@ function buildModels() {
 els.modelSelect.addEventListener("change", () => {
   state.chosen[state.tool] = modelFor(state.tool, els.modelSelect.value);
   savePreferences();
-  if (state.broken && !state.busy) { location.reload(); return; }   // after a failure, the other model needs a fresh page (the choice is saved, so the new page uses it)
-  if (state.file && !state.busy) handleFile(state.file);   // the image on the screen is done again with the new model
+  if (state.broken && !state.busy) { location.reload(); return; }
+  if (state.file && !state.busy) handleFile(state.file);
   else if (state.busy) els.modelSelect.value = state.model.id;
 });
 
-/* ---------- the tools: the tabs ---------- */
 function renderTabs() {
   const buttons = TOOLS.map((tool) => Object.assign(document.createElement("button"), { type: "button", textContent: tr(`tab.${tool}`) }));
   buttons.forEach((button, index) => button.setAttribute("value", TOOLS[index]));
@@ -393,13 +372,12 @@ function renderTabs() {
     savePreferences();
     buildModels();
     renderMode();
-    if (state.file) handleFile(state.file);   // what is on the screen is done again with the other tool
+    if (state.file) handleFile(state.file);
     else idle();
   });
   els.views.replaceChildren(tabs);
 }
 
-/* ---------- the frames per second of a video ---------- */
 function buildFps() {
   els.frameRateSelect.replaceChildren(...video.fpsOptions.map((value) => Object.assign(document.createElement("option"), { value, textContent: i18n.number(value) })));
   els.frameRateSelect.value = state.fps;
@@ -408,10 +386,9 @@ els.frameRateSelect.addEventListener("change", () => {
   if (state.busy) { els.frameRateSelect.value = state.fps; return; }
   state.fps = Number(els.frameRateSelect.value);
   savePreferences();
-  if (state.file && state.kind === "video") handleFile(state.file);   // the video on the screen is done again
+  if (state.file && state.kind === "video") handleFile(state.file);
 });
 
-/* ---------- the background of the result ---------- */
 function buildBackgrounds() {
   els.backgroundSwitch.replaceChildren(...backgrounds.map((name) => {
     const button = document.createElement("button");
@@ -423,7 +400,7 @@ function buildBackgrounds() {
     button.addEventListener("click", () => {
       chooseBackground(name);
       savePreferences();
-      if (name === "custom") try { els.colourInput.showPicker(); } catch { els.colourInput.click(); }   // the colour is chosen in the picker of the browser
+      if (name === "custom") try { els.colourInput.showPicker(); } catch { els.colourInput.click(); }
     });
     return button;
   }));
@@ -434,7 +411,6 @@ function chooseBackground(name) {
   for (const button of els.backgroundSwitch.children) button.classList.toggle("active", button.dataset.background === name);
   for (const other of backgrounds) els.resultImage.classList.toggle(`background-${other}`, state.tool === "cutout" && other === name);
 }
-// The colour of a background that is not transparent comes from the colours of the page (--white, --black).
 const colourOf = (name) => (name === "custom" ? state.customColour : getComputedStyle(document.documentElement).getPropertyValue(`--${name}`).trim());
 function applyColour() {
   document.documentElement.style.setProperty("--custom-colour", state.customColour);
@@ -443,7 +419,6 @@ function applyColour() {
 els.colourInput.addEventListener("input", () => { state.customColour = els.colourInput.value; applyColour(); chooseBackground("custom"); savePreferences(); });
 applyColour();
 
-// An image or a frame on the background that is chosen.
 function paint(source, width, height) {
   const canvas = document.createElement("canvas");
   canvas.width = width; canvas.height = height;
@@ -454,7 +429,6 @@ function paint(source, width, height) {
 }
 const resultBlob = () => toBlob(paint(state.cutout, state.cutout.width, state.cutout.height));
 
-// The format of the video that is chosen (a format the browser cannot record is not offered).
 const formatOf = () => video.formats.find((format) => format.id === state.format) || video.formats[0];
 const recorderType = (format) => format.recorderTypes?.find((type) => window.MediaRecorder && MediaRecorder.isTypeSupported(type));
 const offered = () => video.formats.filter((format) => format.recorderTypes ? recorderType(format) : true);
@@ -468,10 +442,8 @@ els.formatSelect.addEventListener("change", () => {
   savePreferences();
 });
 
-// A video as a file of the chosen format.
 const videoBlob = (format) => (format.recorderTypes ? recordedVideo(format) : gifVideo());
 
-// The sound of the video, decoded once. A video without sound, or with a sound the browser cannot decode, gives null.
 async function soundOf(audioContext) {
   if (state.sound === undefined) {
     try { state.sound = await audioContext.decodeAudioData(await state.file.arrayBuffer()); } catch { state.sound = null; }
@@ -479,7 +451,6 @@ async function soundOf(audioContext) {
   return state.sound;
 }
 
-// WebM or MP4: the frames are drawn one after the other at their speed while the browser records the canvas.
 async function recordedVideo(format) {
   const { width, height } = state.frames[0];
   const fps = state.framesPerSecond;
@@ -488,7 +459,7 @@ async function recordedVideo(format) {
   const mimeType = recorderType(format);
   if (!mimeType) throw new Error(tr("error.noRecorder"));
   const stream = target.captureStream(0);
-  const audioContext = new AudioContext();   // the sound of the video goes into the recording through this
+  const audioContext = new AudioContext();
   const sound = await soundOf(audioContext);
   const destination = audioContext.createMediaStreamDestination();
   if (sound) stream.addTrack(destination.stream.getAudioTracks()[0]);
@@ -497,9 +468,9 @@ async function recordedVideo(format) {
   recorder.addEventListener("dataavailable", (event) => { if (event.data.size) chunks.push(event.data); });
   const stopped = new Promise((resolve) => recorder.addEventListener("stop", resolve));
   recorder.start();
-  await new Promise((resolve) => setTimeout(resolve, 100));   // the recorder needs a moment, or it loses the first frame
+  await new Promise((resolve) => setTimeout(resolve, 100));
   await audioContext.resume();
-  if (sound) {   // the sound starts with the first frame and ends with the last one
+  if (sound) {
     const source = audioContext.createBufferSource();
     source.buffer = sound;
     source.connect(destination);
@@ -515,14 +486,13 @@ async function recordedVideo(format) {
     stream.getVideoTracks()[0].requestFrame();
     work(tr("status.encoding", { done: i + 1, total: state.frames.length }), ((i + 1) / state.frames.length));
   }
-  await new Promise((resolve) => setTimeout(resolve, 1000 / fps));   // the last frame stays for its time
+  await new Promise((resolve) => setTimeout(resolve, 1000 / fps));
   recorder.stop();
   await stopped;
   audioContext.close();
   return new Blob(chunks, { type: mimeType.split(";")[0] });
 }
 
-// GIF: 256 fixed colours (the last one is the transparent one) and the LZW compression of the format.
 function lzw(indices) {
   const out = [];
   let bits = 0, count = 0, size = 9, next = 258;
@@ -547,16 +517,16 @@ function lzw(indices) {
 async function gifVideo() {
   const { levels, alphaThreshold } = video.gif;
   const { width, height } = state.frames[0];
-  const transparent = levels.red * levels.green * levels.blue;   // the index of the transparent colour
+  const transparent = levels.red * levels.green * levels.blue;
   const bytes = [];
   const word = (value) => bytes.push(value & 255, value >> 8);
   bytes.push(...[..."GIF89a"].map((letter) => letter.charCodeAt(0)));
   word(width); word(height); bytes.push(0xf7, 0, 0);
-  for (let i = 0; i < 256; i++) {   // the palette
+  for (let i = 0; i < 256; i++) {
     const red = Math.floor(i / (levels.green * levels.blue)), green = Math.floor(i / levels.blue) % levels.green, blue = i % levels.blue;
     bytes.push(i < transparent ? Math.round((red * 255) / (levels.red - 1)) : 0, i < transparent ? Math.round((green * 255) / (levels.green - 1)) : 0, i < transparent ? Math.round((blue * 255) / (levels.blue - 1)) : 0);
   }
-  bytes.push(0x21, 0xff, 11, ...[..."NETSCAPE2.0"].map((letter) => letter.charCodeAt(0)), 3, 1, 0, 0, 0);   // loops forever
+  bytes.push(0x21, 0xff, 11, ...[..."NETSCAPE2.0"].map((letter) => letter.charCodeAt(0)), 3, 1, 0, 0, 0);
   const delay = Math.round(100 / state.framesPerSecond);
   for (let f = 0; f < state.frames.length; f++) {
     const pixels = paint(state.frames[f], width, height).getContext("2d").getImageData(0, 0, width, height).data;
@@ -566,22 +536,21 @@ async function gifVideo() {
       indices[p] = pixels[o + 3] < alphaThreshold ? transparent
         : Math.round((pixels[o] * (levels.red - 1)) / 255) * levels.green * levels.blue + Math.round((pixels[o + 1] * (levels.green - 1)) / 255) * levels.blue + Math.round((pixels[o + 2] * (levels.blue - 1)) / 255);
     }
-    bytes.push(0x21, 0xf9, 4, 0x09, delay & 255, delay >> 8, transparent, 0);   // 0x09: the previous frame is cleared, a colour is transparent
+    bytes.push(0x21, 0xf9, 4, 0x09, delay & 255, delay >> 8, transparent, 0);
     bytes.push(0x2c); word(0); word(0); word(width); word(height); bytes.push(0, 8);
     const data = lzw(indices);
     for (let i = 0; i < data.length; i += 255) { const block = data.slice(i, i + 255); bytes.push(block.length, ...block); }
     bytes.push(0);
     work(tr("status.encodingGif", { done: f + 1, total: state.frames.length }), ((f + 1) / state.frames.length));
-    await new Promise((resolve) => setTimeout(resolve));   // the page stays alive
+    await new Promise((resolve) => setTimeout(resolve));
   }
   bytes.push(0x3b);
   return new Blob([new Uint8Array(bytes)], { type: "image/gif" });
 }
 
-// The frames as PNG files in one ZIP (stored, not compressed: PNG is already compressed).
 const CRC_TABLE = new Uint32Array(256).map((_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
 const crc32 = (bytes) => { let c = 0xffffffff; for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
-function makeZip(files) {   // [{ name, bytes }]
+function makeZip(files) {
   const encoder = new TextEncoder();
   const parts = [], central = [];
   let offset = 0, centralSize = 0;
@@ -613,12 +582,10 @@ async function framesZip() {
   return makeZip(files);
 }
 
-// Makes a file while the page is busy.
 async function making(job) {
   state.busy = true;
   try { return await job(); } finally { state.busy = false; rest(); }
 }
-// The result as a file: a PNG for an image, a WebM for a video.
 const resultFile = () => (state.kind === "video"
   ? making(async () => ({ blob: await videoBlob(formatOf()), extension: formatOf().extension }))
   : resultBlob().then((blob) => ({ blob, extension: "png" })));
@@ -642,15 +609,13 @@ els.zipButton.addEventListener("click", async () => {
   try { save(await making(framesZip), `${state.name}${suffix()}.zip`); } catch (error) { popups.toast(tr("error.failed", { message: error.message }), { kind: "error" }); }
 });
 
-/* ---------- the Drive: choosing an image from it, and saving the result to it ---------- */
-// The Drive needs the account. Without one, the account dialog opens and the user tries again once signed in.
 async function openDrive() {
   const signedIn = account.get();
   if (!signedIn) { account.open(); return null; }
   if (!state.store || state.token !== signedIn.token) { state.store = await storage.drive(); state.token = signedIn.token; }
   return state.store;
 }
-let driveImages = [];   // { path, name, folder, size }
+let driveImages = [];
 
 async function chooseFromDrive() {
   if (state.busy) return;
@@ -658,7 +623,7 @@ async function chooseFromDrive() {
   els.driveMessage.classList.remove("hidden");
   let store;
   try { store = await openDrive(); } catch (error) { return popups.toast(tr("drive.failed", { message: error.message }), { kind: "error" }); }
-  if (!store) return;   // the account dialog is open
+  if (!store) return;
   els.driveList.replaceChildren();
   els.driveSearch.value = "";
   els.driveDialog.showModal();
@@ -700,7 +665,7 @@ async function openFromDrive(image) {
   try {
     const bytes = await storage.readBinary(state.store, image.path);
     if (!bytes) throw new Error("not found");
-    const file = new File([bytes], image.name, { type: mimeTypes[extensionOf(image.name)] || "image/png" });   // the type tells an image from a video
+    const file = new File([bytes], image.name, { type: mimeTypes[extensionOf(image.name)] || "image/png" });
     if (!els.dropZone.classList.contains("hidden")) handleFile(file); else { startOver(); handleFile(file); }
   } catch (error) {
     popups.toast(tr("drive.failed", { message: error.message }), { kind: "error" });
@@ -713,7 +678,6 @@ els.driveSearch.addEventListener("input", renderDriveList);
 els.driveCloseButton.addEventListener("click", () => els.driveDialog.close());
 autocomplete.attach(els.driveSearch, { suggestions: () => driveImages.map((image) => image.name) });
 
-// Saves the result to the Drive as a new file (the user can change the folder and the name), and asks before replacing one.
 els.saveButton.addEventListener("click", async () => {
   if (!hasResult() || state.busy) return;
   const extension = state.kind === "video" ? formatOf().extension : "png";
@@ -721,10 +685,10 @@ els.saveButton.addEventListener("click", async () => {
   try { store = await openDrive(); } catch (error) { return popups.toast(tr("save.failed", { message: error.message }), { kind: "error" }); }
   if (!store) return;
   let suggestion = `${saveFolder}/${state.name}${suffix()}`;
-  try {   // a name that is free in the folder
+  try {
     const taken = new Set((await storage.list(store, saveFolder)).map((file) => file.name));
     for (let n = 2; taken.has(`${suggestion.split("/").pop()}.${extension}`); n++) suggestion = `${saveFolder}/${state.name}${suffix()}-${n}`;
-  } catch { /* the name stays as it is */ }
+  } catch { }
   const answer = await popups.ask({ text: tr("save.prompt"), value: `${suggestion}.${extension}`, ok: tr("drive.save") });
   if (answer === null) return;
   const path = answer.trim().replace(/\\/g, "/").replace(/^\/+/, "").replace(new RegExp(`(\\.${extension})?$`, "i"), `.${extension}`);
@@ -744,7 +708,6 @@ els.saveButton.addEventListener("click", async () => {
   }
 });
 
-/* ---------- choosing, dropping, and pasting an image ---------- */
 els.chooseButton.addEventListener("click", () => els.fileInput.click());
 els.fileInput.addEventListener("change", () => handleFile(els.fileInput.files[0]));
 els.anotherButton.addEventListener("click", startOver);
@@ -753,7 +716,7 @@ document.addEventListener("dragleave", (event) => { if (!event.relatedTarget) el
 document.addEventListener("drop", async (event) => {
   event.preventDefault();
   els.dropZone.classList.remove("over");
-  const files = await transfer.take(event);   // the ones of the computer, or a file of the Drive
+  const files = await transfer.take(event);
   const file = files.find((candidate) => /^(image|video)\//.test(candidate.type)) || files[0];
   if (file && !state.busy) { if (!els.dropZone.classList.contains("hidden")) handleFile(file); else { startOver(); handleFile(file); } }
 });
@@ -762,8 +725,6 @@ document.addEventListener("paste", (event) => {
   if (!file || state.busy) return;
   if (!els.dropZone.classList.contains("hidden")) handleFile(file); else { startOver(); handleFile(file); }
 });
-
-/* ---------- the settings ---------- */
 
 account.bind(els.accountButton);
 i18n.onChange(() => { renderTabs(); buildBackgrounds(); buildModels(); buildFps(); buildFormats(); renderMode(); if (!state.busy && !hasResult()) idle(); });

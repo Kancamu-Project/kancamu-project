@@ -1,16 +1,10 @@
-/* Assetmu: shows every asset of the apps (colours, icons, fonts, sizes, files). The assets are in ../assets. */
 html, body { height: 100%; }
 .hidden { display: none !important; }
 .probe { position: absolute; visibility: hidden; pointer-events: none; }
-
-/* Icon: SVG files of this folder are used as masks, so they follow the colour of the text */
-/* Buttons */
-
-/* The page is the header, the sidebar, and the main, directly in the body. The padding and the gap are the ones of the body: the three elements have none. */
 .menu-button { display: none; }
 .logo { height: var(--height); }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
-:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/components.css) */
+.logo-mark { background-image: url("favicon.png"); }
+:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }
 
 .sidebar-nav { gap: var(--gap-small); }
 .sidebar-nav > * { flex: none; }
@@ -20,41 +14,29 @@ html, body { height: 100%; }
 
 .main { gap: 0; overflow: hidden; }
 .content { flex: 1; min-height: 0; overflow-y: auto; scroll-behavior: smooth; }
-
-/* A section of assets */
 .asset-section { display: flex; flex-direction: column; gap: var(--gap-medium); padding: var(--padding-extra-large); border-bottom: var(--border-width) solid var(--border); }
 .section-title { font-size: var(--font-size-large); font-weight: 700; }
 .section-hint { color: var(--fg-1); }
 .group { display: flex; flex-direction: column; gap: var(--gap-small); }
 .group-title { color: var(--fg-1); font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; }
-
-/* Colours: a sample of the colour with the text that goes on it, its name, and its value */
 .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 44), 1fr)); gap: var(--gap-small); }
 .swatch { display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 0; height: auto; padding: 0; overflow: hidden; font-weight: 400; text-align: start; text-transform: none; }
 .swatch-sample { display: flex; align-items: center; justify-content: center; height: calc(var(--unit) * 20); background: var(--swatch); color: var(--ink); font-size: var(--font-size-large); font-weight: 700; border-bottom: var(--border-width) solid var(--border); }
 .swatch-meta { display: flex; flex-direction: column; padding: var(--padding-small) var(--padding-medium); }
 .swatch-name { font-weight: 700; }
 .swatch-value { color: var(--fg-1); font-size: var(--font-size-extra-small); }
-
-/* The apps: the icon, the name with its highlight, and the colour */
 .app-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 70), 1fr)); gap: var(--gap-small); }
 .app-row { justify-content: flex-start; gap: var(--gap-medium); padding: 0 var(--padding-medium); font-weight: 400; text-transform: none; }
 .app-icon { width: var(--icon-size-large); height: var(--icon-size-large); flex: none; background: center / contain no-repeat; image-rendering: pixelated; }
 .app-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; text-align: start; }
 .app-colour { flex: none; display: flex; align-items: center; gap: var(--gap-small); color: var(--fg-1); font-size: var(--font-size-extra-small); }
 .app-chip { width: var(--icon-size-small); height: var(--icon-size-small); background: var(--chip); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-small); }
-
-/* The previews: the cards (below), three in a row, each with the path of its image and a button to save it */
 .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 100), 1fr)); gap: var(--gap-medium); }
 .preview-item { display: flex; flex-direction: column; gap: var(--gap-small); min-width: 0; }
 .preview-frame { overflow: hidden; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); }
 .preview-meta { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); }
 .preview-path { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fg-1); font-size: var(--font-size-small); }
 .preview-meta button { flex: none; width: calc(var(--height) * 5); }
-
-/* ---- the cards of the previews ---- */
-/* The cards of the previews: every size is a share of the width of the card (100 cqw is 1200 px of the image), so a card is the same at any width.
-   --cqw is in assets/css/style.css. The colours are the black and the white of the palette, so a card does not change with the theme. */
 .preview-card {
     --preview-gray: color-mix(in srgb, var(--white) 60%, var(--black));
     --preview-line: color-mix(in srgb, var(--white) 15%, var(--black));
@@ -77,8 +59,6 @@ html, body { height: 100%; }
     gap: calc(var(--cqw) * 6);
     padding: 0 calc(var(--cqw) * 8) calc(var(--cqw) * 3.8333);
 }
-
-/* An app: the colour on top, the icon, the name and the description, and the address at the bottom */
 .preview-bar { position: absolute; inset: 0 0 auto 0; height: calc(var(--cqw) * 0.8333); background: var(--preview-colour); }
 .preview-icon { flex: none; width: calc(var(--cqw) * 23.3333); height: calc(var(--cqw) * 23.3333); background: center / contain no-repeat; image-rendering: pixelated; }
 .preview-text { min-width: 0; display: flex; flex-direction: column; gap: calc(var(--cqw) * 1.8333); }
@@ -90,8 +70,6 @@ html, body { height: 100%; }
     display: flex; align-items: center; justify-content: space-between; padding: 0 calc(var(--cqw) * 8);
     border-top: calc(var(--cqw) * 0.1667) solid var(--preview-line); font-size: calc(var(--cqw) * 2.1667); color: var(--preview-gray);
 }
-
-/* The main website: its splash screen (the card is 5:3, two parts of brand and three of image, as on the site) */
 .preview-body.splash { justify-content: center; padding: 0; }
 .splash-card {
     display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); box-sizing: border-box;
@@ -105,26 +83,17 @@ html, body { height: 100%; }
 .splash-copyright { font-size: calc(var(--cqw) * 1.88); color: var(--preview-gray); }
 .splash-art { position: relative; overflow: hidden; background: center / cover no-repeat; }
 .splash-fade { position: absolute; inset-block: 0; inset-inline-start: 0; width: calc(100% / 3); background: linear-gradient(to right, var(--black), transparent); }
-
-/* ?preview=<app>: the card alone, as big as the window */
 .preview-only { display: block; margin: 0; padding: 0; overflow: hidden; }
 .preview-only .preview-card { width: calc(var(--vw) * 100); }
-
-
-/* Icons */
 .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 32), 1fr)); gap: var(--gap-small); }
 .icon-tile { flex-direction: column; height: calc(var(--unit) * 32); padding: 0 var(--padding-small); font-size: var(--font-size-extra-small); font-weight: 400; text-transform: none; }
 .icon-tile .icon { width: var(--icon-size-large); height: var(--icon-size-large); }
 .icon-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .empty { color: var(--fg-1); }
-
-/* Fonts */
 .font-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 110), 1fr)); gap: var(--gap-small); }
 .font-card { display: flex; flex-direction: column; gap: var(--gap-small); padding: var(--padding-medium); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); }
 .font-sample { font-size: var(--font-size-large); overflow-wrap: anywhere; }
 .font-meta { color: var(--fg-1); font-size: var(--font-size-extra-small); }
-
-/* Sizes */
 .size-list { display: flex; flex-direction: column; }
 .size-row { display: grid; grid-template-columns: calc(var(--unit) * 64) calc(var(--unit) * 50) minmax(0, 1fr); align-items: center; gap: var(--gap-medium); padding: var(--padding-small) 0; border-bottom: var(--border-width) solid var(--border); }
 .size-row:last-child { border-bottom: 0; }
@@ -134,15 +103,11 @@ html, body { height: 100%; }
 .demo-text { font-size: var(--size); line-height: 1; white-space: nowrap; }
 .demo-radius { width: calc(var(--unit) * 12); height: calc(var(--unit) * 12); border: var(--border-width-thick) solid var(--fg); border-radius: var(--size); }
 .demo-box { width: var(--size); height: var(--size); border: var(--border-width) solid var(--fg); }
-
-/* Files */
 .file-list { display: flex; flex-direction: column; }
 .file-row { display: grid; grid-template-columns: calc(var(--unit) * 50) minmax(0, 1fr); gap: var(--gap-medium); padding: var(--padding-small) 0; border-bottom: var(--border-width) solid var(--border); }
 .file-row:last-child { border-bottom: 0; }
 .file-name { font-weight: 700; overflow-wrap: anywhere; }
 .file-description { color: var(--fg-1); }
-
-/* From a tablet up, the sidebar is beside the main; below it is a row on top, and the sections open over the main with the button of that row */
 @media (min-width: 48rem) {
   body { grid-template-columns: var(--sidebar-width) minmax(0, 1fr); }
   .header { grid-column: 1; grid-row: 1; }

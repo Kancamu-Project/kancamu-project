@@ -1,28 +1,16 @@
-/* Transmu: translates text with AI models that run in the browser. */
 .hidden { display: none !important; }
-
-/* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
-
-/* Buttons */
 button.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-
-/* Page */
-/* The page is the header, the main, and the footer, directly in the body. The padding and the gap are the ones of the body. */
 .main { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto auto; }
 
 .header { height: var(--height); }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
+.logo-mark { background-image: url("favicon.png"); }
 .header-tools { height: 100%; }
 
 .model-bar { display: flex; align-items: center; gap: var(--gap-small); }
 .model-label { font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; color: var(--fg-1); white-space: nowrap; }
 .model-bar select { flex: 1; min-width: 0; }
-
-/* The two languages and the button between them */
 .language-bar { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: var(--gap-small); }
 .language-bar select { min-width: 0; }
-
-/* The text and its translation, side by side */
 .panes { min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-small); }
 .pane { min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: var(--gap-small); }
 .pane-bar { display: flex; align-items: center; gap: var(--gap-small); height: var(--height); }
@@ -37,9 +25,6 @@ textarea.pane-text { color: var(--fg); }
 .pane-text:empty::before { content: attr(data-placeholder); color: var(--fg-1); }
 
 .actions { display: flex; justify-content: flex-end; gap: var(--gap-small); }
-
-
-/* Settings */
 dialog { color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--border); padding: 0; }
 dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent); }
 
@@ -47,7 +32,5 @@ dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent)
   .panes { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
   .pane-text { min-height: calc(var(--unit) * 30); }
 }
-
-/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
 #translate-button { width: calc(var(--height) * 4); }
 #stop-button { width: calc(var(--height) * 3); }

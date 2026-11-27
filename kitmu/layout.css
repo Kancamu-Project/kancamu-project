@@ -1,10 +1,7 @@
-/* Kitmu: the UI kit of the apps (the templates, the helpers, and the popups). The page itself is the template of ../assets/css/components.css. */
 html, body { height: 100%; }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
+.logo-mark { background-image: url("favicon.png"); }
 .main { gap: 0; overflow: hidden; }
 .content { flex: 1; min-height: 0; overflow-y: auto; scroll-behavior: smooth; }
-
-/* The search and the tags, as in the directory of the main site */
 .toolbar { flex: none; display: flex; flex-direction: column; gap: var(--gap-small); padding: var(--padding-medium) var(--padding-extra-large); border-bottom: var(--border-width) solid var(--border); }
 .toolbar-row { display: flex; align-items: center; gap: var(--gap-small); }
 .toolbar-row > .spacer { flex: 1; }
@@ -21,23 +18,19 @@ html, body { height: 100%; }
 @media (max-width: 640px) {
   .toolbar { padding-inline: var(--padding-medium); }
   .views { padding-inline: var(--padding-medium); }
-  .tag-filter { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }   /* one row that scrolls, so the tags do not fill the screen */
+  .tag-filter { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   .tag-filter > button { flex: none; }
   .toolbar-row { flex-wrap: wrap; }
 }
 .doc-tags { display: flex; flex-wrap: wrap; gap: var(--gap-small); }
 .tag { padding: var(--padding-extra-small) var(--padding-small); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-small); color: var(--fg); font-size: var(--font-size-extra-small); }
-.tag.on { background: var(--fg); border-color: var(--fg); color: var(--bg); }   /* the tag that is filtered shows as on in every item that has it */
+.tag.on { background: var(--fg); border-color: var(--fg); color: var(--bg); }
 .no-results { display: block; padding: var(--padding-extra-large); color: var(--fg-1); }
-
-/* A section of the kit */
 .kit-section { display: flex; flex-direction: column; gap: var(--gap-medium); padding: var(--padding-extra-large); border-bottom: var(--border-width) solid var(--border); }
 .section-title { font-size: var(--font-size-large); font-weight: 700; }
 .section-hint { color: var(--fg-1); }
-/* The cards: each template, helper, and popup with its name and its preview; the code to copy is behind the button Code */
-/* Columns like a wall of images (Pinterest): a short card does not leave an empty space, the next card goes under it. Nothing breaks the columns, so the margin under a card is always there. */
 .doc-grid { columns: calc(var(--height) * 10); column-gap: var(--gap-medium); }
-.doc-grid.single { columns: 1; }   /* the pages and the guide: one card under another, as wide as the page */
+.doc-grid.single { columns: 1; }
 .doc-card { min-width: 0; display: flex; flex-direction: column; gap: var(--gap-small); margin-bottom: var(--gap-medium); padding: var(--padding-medium); background: var(--bg-1); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); break-inside: avoid; }
 .doc-head { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); }
 .doc-pane { display: flex; flex-direction: column; gap: var(--gap-small); align-items: flex-start; min-width: 0; }
@@ -47,6 +40,4 @@ html, body { height: 100%; }
 .doc-code { align-self: stretch; margin: 0; padding: var(--padding-medium); overflow-x: auto; direction: ltr; text-align: left; background: var(--bg); border-radius: var(--border-radius-small); font-family: var(--font-mono); font-size: var(--font-size-small); }
 .kit-section[hidden] { display: none; }
 .doc-frame { align-self: stretch; width: 100%; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); background: var(--bg); }
-
-/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
 .popup-try, .segmented-control > button { width: calc(var(--height) * 3); }

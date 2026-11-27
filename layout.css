@@ -5,28 +5,25 @@
     background: currentColor;
     mask: var(--icon) center / contain no-repeat;
     -webkit-mask: var(--icon) center / contain no-repeat;
-
-    &.refresh { --icon: url("assets/icons/refresh.svg"); }
-    &.theme { --icon: url("assets/icons/sun.svg"); }
-    &.search { --icon: url("assets/icons/search.svg"); }
-    &.user { --icon: url("assets/icons/user.svg"); }
-    &.grid { --icon: url("assets/icons/grid.svg"); }
-    &.list { --icon: url("assets/icons/list.svg"); }
-    &.external { --icon: url("assets/icons/external.svg"); }
-    &.more { --icon: url("assets/icons/more.svg"); }
-    &.heart { --icon: url("assets/icons/heart.svg"); }
-    &.check { --icon: url("assets/icons/check.svg"); }
-    &.error { --icon: url("assets/icons/alert.svg"); }
-    &.close { --icon: url("assets/icons/close.svg"); }
 }
+.glyph.refresh { --icon: var(--icon-refresh); }
+.glyph.theme { --icon: var(--icon-sun); }
+.glyph.search { --icon: var(--icon-search); }
+.glyph.user { --icon: var(--icon-user); }
+.glyph.grid { --icon: var(--icon-grid); }
+.glyph.list { --icon: var(--icon-list); }
+.glyph.external { --icon: var(--icon-external); }
+.glyph.more { --icon: var(--icon-more); }
+.glyph.heart { --icon: var(--icon-heart); }
+.glyph.check { --icon: var(--icon-check); }
+.glyph.error { --icon: var(--icon-alert); }
+.glyph.close { --icon: var(--icon-close); }
 
 body {
     display: grid;
     grid-template: auto minmax(0, 1fr) auto / minmax(0, 1fr);
     overflow: hidden;
 }
-
-/* Header */
 
 #header {
     box-sizing: content-box;
@@ -36,224 +33,217 @@ body {
     flex-direction: row;
     align-items: stretch;
     border-bottom: var(--border-width) solid var(--border);
+}
 
-    & > div {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        padding: 0 var(--padding-large);
-    }
+#header > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 var(--padding-large);
+}
 
-    & > #tabs-area {
-        flex: 1;
-        min-width: 0;
-        position: relative;
-        padding: 0;
-        --fade-size: calc(var(--unit) * 32);
-        --fade-direction: to right;
+#header > #tabs-area {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    padding: 0;
+    --fade-size: calc(var(--unit) * 32);
+    --fade-direction: to right;
+}
 
-        &::before,
-        &::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: var(--fade-size);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
+#header > #tabs-area::before,
+#header > #tabs-area::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: var(--fade-size);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
 
-        &::before {
-            inset-inline-start: 0;
-            background: linear-gradient(var(--fade-direction), var(--bg), transparent);
-        }
+#header > #tabs-area::before {
+    inset-inline-start: 0;
+    background: linear-gradient(var(--fade-direction), var(--bg), transparent);
+}
 
-        &::after {
-            inset-inline-end: 0;
-            background: linear-gradient(var(--fade-direction), transparent, var(--bg));
-        }
+#header > #tabs-area::after {
+    inset-inline-end: 0;
+    background: linear-gradient(var(--fade-direction), transparent, var(--bg));
+}
 
-        &::before {
-            inset-inline-start: var(--home-width, 0);   /* the Kancamu tab stays where it is, so the fade starts after it */
-        }
+#header > #tabs-area::before {
+    inset-inline-start: var(--home-width, 0);
+}
 
-        &:has(> #tabs.fade-start)::before,
-        &:has(> #tabs.fade-end)::after {
-            opacity: 1;
-        }
-    }
+#header > #tabs-area:has(> #tabs.fade-start)::before,
+#header > #tabs-area:has(> #tabs.fade-end)::after {
+    opacity: 1;
+}
 
-    & #tabs {
-        flex: 1;
-        min-width: 0;
-        height: 100%;
-        display: flex;
-        flex-direction: row;
-        align-items: stretch;
-        overflow-x: auto;
-        overflow-y: hidden;
-        scrollbar-width: none;
-        scroll-padding-inline-start: var(--home-width, 0);   /* a tab that is brought into view does not stay under the Kancamu tab */
+#header #tabs {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    scroll-padding-inline-start: var(--home-width, 0);
+}
 
-        & > .tab {
-            height: 100%;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            border-inline-end: var(--border-width) solid var(--border);
-            font-size: var(--font-size-medium);
-            font-weight: 700;
-            transition: background 0.2s, padding-inline-end 0.2s;
+#header #tabs > .tab {
+    height: 100%;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-inline-end: var(--border-width) solid var(--border);
+    font-size: var(--font-size-medium);
+    font-weight: 700;
+    transition: background 0.2s, padding-inline-end 0.2s;
+}
 
-            &:hover {
-                background: color-mix(in srgb, var(--color) 7%, var(--bg));   /* the colour of its project, lighter than the tab that is shown (12%) */
-            }
+#header #tabs > .tab:hover {
+    background: color-mix(in srgb, var(--color) 7%, var(--bg));
+}
 
-            /* A file is over the tab, and the app of the tab takes it */
-            &.drop-target {
-                background: var(--bg-1);
-                box-shadow: inset 0 0 0 var(--border-width-thick) var(--color);
-            }
+#header #tabs > .tab.drop-target {
+    background: var(--bg-1);
+    box-shadow: inset 0 0 0 var(--border-width-thick) var(--color);
+}
 
-            /* The Kancamu tab does not scroll with the others, and cannot be dragged */
-            &.home {
-                position: sticky;
-                inset-inline-start: 0;
-                z-index: 2;
-                background: var(--bg);
+#header #tabs > .tab.home {
+    position: sticky;
+    inset-inline-start: 0;
+    z-index: 2;
+    background: var(--bg);
+}
 
-                &:hover {
-                    background: color-mix(in srgb, var(--color) 7%, var(--bg));
-                }
-            }
+#header #tabs > .tab.home:hover {
+    background: color-mix(in srgb, var(--color) 7%, var(--bg));
+}
 
-            &:not(.home) > .select {
-                cursor: grab;
-            }
+#header #tabs > .tab:not(.home) > .select {
+    cursor: grab;
+}
 
-            /* The tab that is being dragged follows the pointer */
-            &.dragging {
-                z-index: 3;
-                background: var(--bg-1);
-                cursor: grabbing;
-                transition: none;
+#header #tabs > .tab.dragging {
+    z-index: 3;
+    background: var(--bg-1);
+    cursor: grabbing;
+    transition: none;
+}
 
-                & > .select {
-                    cursor: grabbing;
-                }
-            }
+#header #tabs > .tab.dragging > .select {
+    cursor: grabbing;
+}
 
-            /* The tab that is shown is tinted with the colour of its project (opaque, because the Kancamu tab stays over the others) */
-            &.active,
-            &.active:hover {
-                background: color-mix(in srgb, var(--color) 12%, var(--bg));
-                box-shadow: inset 0 calc(var(--border-width-thick) * -1) 0 var(--color);
-            }
+#header #tabs > .tab.active,
+#header #tabs > .tab.active:hover {
+    background: color-mix(in srgb, var(--color) 12%, var(--bg));
+    box-shadow: inset 0 calc(var(--border-width-thick) * -1) 0 var(--color);
+}
 
-            & .highlight {
-                color: var(--color);
-            }
+#header #tabs > .tab .highlight {
+    color: var(--color);
+}
 
-            &:is(:hover, :focus-within, .active):has(> .close) {
-                padding-inline-end: var(--padding-small);
+#header #tabs > .tab:is(:hover, :focus-within, .active):has(> .close) {
+    padding-inline-end: var(--padding-small);
+}
 
-                & > .select {
-                    padding-inline-end: var(--padding-small);
-                }
-            }
+#header #tabs > .tab:is(:hover, :focus-within, .active):has(> .close) > .select {
+    padding-inline-end: var(--padding-small);
+}
 
-            & > .select {
-                transition: padding-inline-end 0.2s;
-                height: 100%;
-                max-width: calc(var(--unit) * 80);
-                gap: var(--gap-small);
-                border: none;
-                background: none;
-                font-size: inherit;
-                font-weight: inherit;
-                text-transform: none;
+#header #tabs > .tab > .select {
+    transition: padding-inline-end 0.2s;
+    height: 100%;
+    max-width: calc(var(--unit) * 80);
+    gap: var(--gap-small);
+    border: none;
+    background: none;
+    font-size: inherit;
+    font-weight: inherit;
+    text-transform: none;
+}
 
-                &:hover {
-                    background: none;
-                }
+#header #tabs > .tab > .select:hover {
+    background: none;
+}
 
-                & > .app-icon {
-                    width: var(--icon-size-medium);
-                    height: var(--icon-size-medium);
-                    flex-shrink: 0;
-                    background-size: contain;
-                    background-position: center;
-                    background-repeat: no-repeat;
-                    image-rendering: pixelated;
-                }
+#header #tabs > .tab > .select > .app-icon {
+    width: var(--icon-size-medium);
+    height: var(--icon-size-medium);
+    flex-shrink: 0;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+}
 
-                & > .name {
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                }
-            }
+#header #tabs > .tab > .select > .name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 
-            /* The close button shows on hover, on keyboard focus, and on the tab that is active; otherwise it has no width, so the tab is narrower. The width changes smoothly. */
-            & > .close {
-                width: 0;
-                height: var(--icon-size-large);
-                padding: 0;
-                border-width: 0;
-                border-radius: var(--border-radius-small);
-                overflow: hidden;
-                opacity: 0;
-                transition: width 0.2s, opacity 0.2s, background 0.2s, color 0.2s;
+#header #tabs > .tab > .close {
+    width: 0;
+    height: var(--icon-size-large);
+    padding: 0;
+    border-width: 0;
+    border-radius: var(--border-radius-small);
+    overflow: hidden;
+    opacity: 0;
+    transition: width 0.2s, opacity 0.2s, background 0.2s, color 0.2s;
+}
 
-                &:hover {   /* closing is a red thing: a light red tint behind the cross */
-                    background: color-mix(in srgb, var(--danger) 20%, transparent);
-                    color: var(--danger);
-                }
-            }
+#header #tabs > .tab > .close:hover {
+    background: color-mix(in srgb, var(--danger) 20%, transparent);
+    color: var(--danger);
+}
 
-            &:is(:hover, :focus-within, .active) > .close {
-                width: var(--icon-size-large);
-                opacity: 1;
-            }
-        }
-    }
+#header #tabs > .tab:is(:hover, :focus-within, .active) > .close {
+    width: var(--icon-size-large);
+    opacity: 1;
+}
 
-    & > .header-tools {
-        flex-shrink: 0;
-        align-items: stretch;
-        padding: 0;
-        border-inline-start: var(--border-width) solid var(--border);
+#header > .header-tools {
+    flex-shrink: 0;
+    align-items: stretch;
+    padding: 0;
+    border-inline-start: var(--border-width) solid var(--border);
+}
 
-        & > :is(select, button) {
-            height: 100%;
-            border: none;
-            background-color: transparent;
-            transition: background-color 0.2s;
+#header > .header-tools > :is(select, button) {
+    height: 100%;
+    border: none;
+    background-color: transparent;
+    transition: background-color 0.2s;
+}
 
-            &:hover {
-                background-color: var(--bg-1);
-            }
-        }
+#header > .header-tools > :is(select, button):hover {
+    background-color: var(--bg-1);
+}
 
-        & > :is(#theme-button, #account-button) {
-            width: calc(var(--unit) * 14);
-            padding: 0;
-            border-inline-start: var(--border-width) solid var(--border);
-        }
-    }
+#header > .header-tools > :is(#theme-button, #account-button) {
+    width: calc(var(--unit) * 14);
+    padding: 0;
+    border-inline-start: var(--border-width) solid var(--border);
 }
 
 :root[data-theme="light"] .glyph.theme {
-    --icon: url("assets/icons/moon.svg");
+    --icon: var(--icon-moon);
 }
 
 [hidden] {
     display: none !important;
 }
-
-/* Main: the viewer of the tabs, and the projects */
 
 #main {
     width: 100%;
@@ -268,16 +258,14 @@ body {
     min-height: 0;
     display: flex;
     flex-direction: column;
-
-    & > iframe {
-        width: 100%;
-        flex: 1;
-        border: none;
-        background: var(--bg);
-    }
 }
 
-/* The projects (shown on the first page, instead of the viewer) */
+#viewer > iframe {
+    width: 100%;
+    flex: 1;
+    border: none;
+    background: var(--bg);
+}
 
 #home {
     width: 100%;
@@ -299,10 +287,10 @@ body {
     flex-direction: row;
     align-items: center;
     gap: var(--gap-small);
+}
 
-    & > .spacer {
-        flex: 1;
-    }
+#toolbar > .spacer {
+    flex: 1;
 }
 
 select {
@@ -312,8 +300,6 @@ select {
 input {
     width: calc(var(--unit) * 70);
 }
-
-/* What touches another element is square. */
 #header :is(button, select),
 #view-toggle button {
     border-radius: 0;
@@ -323,33 +309,33 @@ input {
     height: var(--height);
     display: flex;
     flex-direction: row;
+}
 
-    & > button {
-        width: var(--height);
-        padding: 0;
+#view-toggle > button {
+    width: var(--height);
+    padding: 0;
+}
 
-        &.active {
-            background: var(--fg);
-            color: var(--bg);
-        }
-    }
+#view-toggle > button.active {
+    background: var(--fg);
+    color: var(--bg);
 }
 
 .searchbox {
     position: relative;
     display: flex;
     align-items: center;
+}
 
-    & > .glyph {
-        position: absolute;
-        inset-inline-start: calc(var(--unit) * 4);
-        color: var(--fg-1);
-        pointer-events: none;
-    }
+.searchbox > .glyph {
+    position: absolute;
+    inset-inline-start: calc(var(--unit) * 4);
+    color: var(--fg-1);
+    pointer-events: none;
+}
 
-    & > input {
-        padding-inline-start: calc(var(--unit) * 14);
-    }
+.searchbox > input {
+    padding-inline-start: calc(var(--unit) * 14);
 }
 
 button {
@@ -370,19 +356,16 @@ button {
     color: var(--danger);
     background: color-mix(in srgb, var(--danger) 10%, var(--bg));
     border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
-
-    &:hover {
-        background: color-mix(in srgb, var(--danger) 20%, var(--bg));
-        border-color: var(--danger);
-    }
-
-    &[hidden] {
-        display: none;
-    }
 }
 
-/* The home and the footer are made by the script (the buttons, the list, and the texts come from data.json), and their parts change size while they are made. Until the page is made
-   (body.ready, in app.js) they are hidden, so nothing that is seen jumps; hidden parts are not counted as a layout shift. If the script does not finish, they show after 3 seconds. */
+#reset-button:hover {
+    background: color-mix(in srgb, var(--danger) 20%, var(--bg));
+    border-color: var(--danger);
+}
+
+#reset-button[hidden] {
+    display: none;
+}
 body:not(.ready) :is(#home, #footer) {
     visibility: hidden;
     animation: show-late 0s 3s forwards;
@@ -394,62 +377,42 @@ body:not(.ready) :is(#home, #footer) {
     }
 }
 
-/* Category filter */
-
 #category-filter {
     width: 100%;
     flex-shrink: 0;
-    min-height: calc(var(--unit) * 10);   /* the room of one row of buttons is kept before they are made, so the list does not jump down */
+    min-height: calc(var(--unit) * 10);
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     gap: var(--gap-small);
-
-    & > button {
-        width: auto;
-        height: calc(var(--unit) * 10);
-        color: var(--fg);
-        font-size: var(--font-size-extra-small);
-
-        &.active {
-            background: var(--fg);
-            color: var(--bg);
-        }
-
-        &[data-category="official"] {
-            border-color: var(--yellow);
-
-            color: color-mix(in srgb, var(--yellow) 85%, var(--fg));
-
-            &.active {
-                background: var(--yellow);
-                color: var(--on-color);
-            }
-        }
-
-        &[data-category="mobile"] {
-            border-color: var(--blue);
-            color: color-mix(in srgb, var(--blue) 85%, var(--fg));
-
-            &.active {
-                background: var(--blue);
-                color: var(--on-color);
-            }
-        }
-
-        &[data-category="education"] {
-            border-color: var(--green);
-            color: color-mix(in srgb, var(--green) 85%, var(--fg));
-
-            &.active {
-                background: var(--green);
-                color: var(--on-color);
-            }
-        }
-    }
 }
 
-/* Project list */
+#category-filter > button {
+    width: auto;
+    height: calc(var(--unit) * 10);
+    color: var(--fg);
+    font-size: var(--font-size-extra-small);
+}
+
+#category-filter > button.active {
+    background: var(--fg);
+    color: var(--bg);
+}
+
+#category-filter > button.tinted {
+    border-color: var(--tint);
+    color: color-mix(in srgb, var(--tint) 85%, var(--fg));
+}
+
+#category-filter > button.tinted.active {
+    background: var(--tint);
+    color: var(--on-color);
+}
+
+#category-filter > button.tinted:hover:not(:disabled, .active) {
+    background: color-mix(in srgb, var(--tint) 15%, transparent);
+    border-color: var(--tint);
+}
 
 #project-list {
     width: 100%;
@@ -459,74 +422,74 @@ body:not(.ready) :is(#home, #footer) {
     align-items: stretch;
     border-block-start: var(--border-width) solid var(--border);
     border-inline-start: var(--border-width) solid var(--border);
+}
 
-    &:has(> .empty-state) {
-        border: none;
-    }
+#project-list:has(> .empty-state) {
+    border: none;
+}
 
-    &.list {
-        --list-columns: 1fr calc(var(--unit) * 60) calc(var(--unit) * 80) calc(var(--unit) * 50);
-        grid-template-columns: 1fr;
+#project-list.list {
+    --list-columns: 1fr calc(var(--unit) * 60) calc(var(--unit) * 80) calc(var(--unit) * 50);
+    grid-template-columns: 1fr;
+}
 
-        & > .list-header {
-            width: 100%;
-            height: var(--height);
-            display: grid;
-            grid-template-columns: var(--list-columns);
-            align-items: center;
-            gap: var(--gap-small);
-            padding: 0 var(--padding-large);
-            border-inline-end: var(--border-width) solid var(--border);
-            border-block-end: var(--border-width) solid var(--border);
-            color: var(--fg-1);
-            font-size: var(--font-size-small);
-            text-transform: uppercase;
-        }
+#project-list.list > .list-header {
+    width: 100%;
+    height: var(--height);
+    display: grid;
+    grid-template-columns: var(--list-columns);
+    align-items: center;
+    gap: var(--gap-small);
+    padding: 0 var(--padding-large);
+    border-inline-end: var(--border-width) solid var(--border);
+    border-block-end: var(--border-width) solid var(--border);
+    color: var(--fg-1);
+    font-size: var(--font-size-small);
+    text-transform: uppercase;
+}
 
-        & > .project {
-            display: grid;
-            grid-template-columns: var(--list-columns);
-            align-items: center;
-            gap: var(--gap-small);
-            padding: var(--padding-medium) var(--padding-large);
+#project-list.list > .project {
+    display: grid;
+    grid-template-columns: var(--list-columns);
+    align-items: center;
+    gap: var(--gap-small);
+    padding: var(--padding-medium) var(--padding-large);
+}
 
-            &:hover {
-                box-shadow: inset var(--border-width-thick) 0 0 var(--color);
-            }
+#project-list.list > .project:hover {
+    box-shadow: inset var(--border-width-thick) 0 0 var(--color);
+}
 
-            & > .project-header {
-                display: contents;
+#project-list.list > .project > .project-header {
+    display: contents;
+}
 
-                & > .project-publisher {
-                    order: 2;
-                }
+#project-list.list > .project > .project-header > .project-publisher {
+    order: 2;
+}
 
-                & > .project-link {
-                    display: none;
-                }
-            }
+#project-list.list > .project > .project-header > .project-link {
+    display: none;
+}
 
-            & > .project-body {
-                order: 1;
-            }
+#project-list.list > .project > .project-body {
+    order: 1;
+}
 
-            & > .project-categories {
-                order: 3;
-            }
+#project-list.list > .project > .project-categories {
+    order: 3;
+}
 
-            & > .project-actions {
-                order: 4;
-            }
+#project-list.list > .project > .project-actions {
+    order: 4;
+}
 
-            & > :is(.project-body, .project-categories, .project-actions) {
-                padding-inline: 0;
-            }
-        }
-    }
+#project-list.list > .project > :is(.project-body, .project-categories, .project-actions) {
+    padding-inline: 0;
+}
 
-    & > .empty-state {
-        grid-column: 1 / -1;
-    }
+#project-list > .empty-state {
+    grid-column: 1 / -1;
 }
 
 .project {
@@ -539,165 +502,138 @@ body:not(.ready) :is(#home, #footer) {
     border-inline-end: var(--border-width) solid var(--border);
     border-block-end: var(--border-width) solid var(--border);
     transition: background 0.2s, box-shadow 0.2s;
-
-    &:hover {
-        background: color-mix(in srgb, var(--color) 8%, transparent);
-        box-shadow: inset 0 var(--border-width-thick) 0 var(--color);
-    }
-
-    & > .project-header {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: var(--padding-medium) var(--padding-large);
-        border-bottom: var(--border-width) solid var(--border);
-        font-size: var(--font-size-small);
-        font-weight: bold;
-        text-transform: uppercase;
-
-        & > .project-publisher {
-            color: color-mix(in srgb, var(--color) 85%, var(--fg));   /* the colour of the project, as small text: enough contrast */
-        }
-
-        & > .project-link {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: var(--gap-small);
-            color: var(--fg-1);
-            text-decoration: none;
-
-            &:hover {
-                color: var(--fg);
-            }
-        }
-    }
-
-    & > .project-body {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: var(--gap-small);
-        padding: 0 var(--padding-large);
-        flex: 1;
-
-        & > .app-icon {
-            width: var(--icon-size-extra-large);
-            height: var(--icon-size-extra-large);
-            flex-shrink: 0;
-            border-radius: var(--border-radius-medium);
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            image-rendering: pixelated;
-        }
-
-        & > .project-text {
-            display: flex;
-            flex-direction: column;
-            gap: var(--gap-extra-small);
-
-            & > .name {
-                font-size: var(--font-size-large);
-                font-weight: 700;
-
-                & > .highlight {
-                    color: var(--color);
-                }
-            }
-
-            & > .description {
-                color: var(--fg-1);
-                font-size: var(--font-size-small);
-            }
-        }
-    }
-
-    & > .project-categories {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: var(--gap-small);
-        padding: 0 var(--padding-large);
-
-        &:empty {
-            display: none;
-        }
-
-        & > .category {
-            padding: var(--padding-extra-small) var(--padding-small);
-            border: var(--border-width) solid var(--border);
-            border-radius: var(--border-radius-small);
-            color: var(--fg);
-            font-size: var(--font-size-extra-small);
-            text-transform: none;
-
-            &[data-category="official"] {
-                border-color: var(--yellow);
-                color: color-mix(in srgb, var(--yellow) 85%, var(--fg));
-            }
-
-            &[data-category="mobile"] {
-                border-color: var(--blue);
-                color: color-mix(in srgb, var(--blue) 85%, var(--fg));
-            }
-
-            &[data-category="education"] {
-                border-color: var(--green);
-                color: color-mix(in srgb, var(--green) 85%, var(--fg));
-            }
-
-            /* The category that is filtered: filled, like its button in the filter (Official yellow, Mobile blue, Education green) */
-            &.active {
-                background: var(--fg);
-                border-color: var(--fg);
-                color: var(--bg);
-            }
-
-            &.active[data-category="official"] {
-                background: var(--yellow);
-                border-color: var(--yellow);
-                color: var(--on-color);
-            }
-
-            &.active[data-category="mobile"] {
-                background: var(--blue);
-                border-color: var(--blue);
-                color: var(--on-color);
-            }
-
-            &.active[data-category="education"] {
-                background: var(--green);
-                border-color: var(--green);
-                color: var(--on-color);
-            }
-        }
-    }
-
-    & > .project-actions {
-        width: 100%;
-        height: var(--height);
-        display: grid;
-        grid-template-columns: 1fr var(--height);
-        gap: var(--gap-small);
-        padding: 0 var(--padding-large);
-
-        & > button {
-            width: 100%;
-            padding: 0;
-        }
-
-        & > .project-open-button {
-            &:hover {
-                background: var(--fg);
-                color: var(--bg);
-            }
-        }
-    }
 }
 
-/* Right-to-left and non-Latin scripts */
+.project:hover {
+    background: color-mix(in srgb, var(--color) 8%, transparent);
+    box-shadow: inset 0 var(--border-width-thick) 0 var(--color);
+}
+
+.project > .project-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--padding-medium) var(--padding-large);
+    border-bottom: var(--border-width) solid var(--border);
+    font-size: var(--font-size-small);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.project > .project-header > .project-publisher {
+    color: color-mix(in srgb, var(--color) 85%, var(--fg));
+}
+
+.project > .project-header > .project-link {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-small);
+    color: var(--fg-1);
+    text-decoration: none;
+}
+
+.project > .project-header > .project-link:hover {
+    color: var(--fg);
+}
+
+.project > .project-body {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-small);
+    padding: 0 var(--padding-large);
+    flex: 1;
+}
+
+.project > .project-body > .app-icon {
+    width: var(--icon-size-extra-large);
+    height: var(--icon-size-extra-large);
+    flex-shrink: 0;
+    border-radius: var(--border-radius-medium);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+}
+
+.project > .project-body > .project-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-extra-small);
+}
+
+.project > .project-body > .project-text > .name {
+    font-size: var(--font-size-large);
+    font-weight: 700;
+}
+
+.project > .project-body > .project-text > .name > .highlight {
+    color: var(--color);
+}
+
+.project > .project-body > .project-text > .description {
+    color: var(--fg-1);
+    font-size: var(--font-size-small);
+}
+
+.project > .project-categories {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--gap-small);
+    padding: 0 var(--padding-large);
+}
+
+.project > .project-categories:empty {
+    display: none;
+}
+
+.project > .project-categories > .category {
+    padding: var(--padding-extra-small) var(--padding-small);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--border-radius-small);
+    color: var(--fg);
+    font-size: var(--font-size-extra-small);
+    text-transform: none;
+}
+
+.project > .project-categories > .category.tinted {
+    border-color: var(--tint);
+    color: color-mix(in srgb, var(--tint) 85%, var(--fg));
+}
+
+.project > .project-categories > .category.active {
+    background: var(--fg);
+    border-color: var(--fg);
+    color: var(--bg);
+}
+
+.project > .project-categories > .category.tinted.active {
+    background: var(--tint);
+    border-color: var(--tint);
+    color: var(--on-color);
+}
+
+.project > .project-actions {
+    width: 100%;
+    height: var(--height);
+    display: grid;
+    grid-template-columns: 1fr var(--height);
+    gap: var(--gap-small);
+    padding: 0 var(--padding-large);
+}
+
+.project > .project-actions > button {
+    width: 100%;
+    padding: 0;
+}
+
+.project > .project-actions > .project-open-button:hover {
+    background: var(--fg);
+    color: var(--bg);
+}
 
 :root[dir="rtl"] #tabs-area {
     --fade-direction: to left;
@@ -706,8 +642,6 @@ body:not(.ready) :is(#home, #footer) {
 :root[dir="rtl"] #project-list.list > .project:hover {
     box-shadow: inset calc(var(--border-width-thick) * -1) 0 0 var(--color);
 }
-
-/* Footer */
 
 #footer {
     width: 100%;
@@ -720,8 +654,6 @@ body:not(.ready) :is(#home, #footer) {
     color: var(--fg-1);
     font-size: var(--font-size-small);
 }
-
-/* The buttons of the footer: the pages About and Terms and conditions */
 #footer :is(button, a.button) {
     flex: none;
     white-space: nowrap;
@@ -741,18 +673,14 @@ body:not(.ready) :is(#home, #footer) {
 #footer :is(button, a.button):hover {
     color: var(--fg);
 }
-
-/* The text of the support link is yellow, so it stands out in the footer (the hover keeps it yellow) */
 #footer #support-link,
 #footer #support-link:hover {
     color: var(--yellow);
 }
 
 #about-button {
-    margin-inline-start: auto;   /* the buttons are at the end of the footer */
+    margin-inline-start: auto;
 }
-
-/* A page of the main: the text, one part under the other */
 #page {
     width: 100%;
     flex: 1;
@@ -777,38 +705,32 @@ body:not(.ready) :is(#home, #footer) {
     #home, #page {
         padding: var(--padding-medium);
     }
-
-    /* On a narrow screen the footer is tighter, and the support link keeps only its heart (a square, with its name in the title) */
     #footer { padding: 0 var(--padding-medium); }
     #support-link { width: var(--height); padding: 0; justify-content: center; }
     #support-link > span { display: none; }
 
-    #project-list.list {
-        --list-columns: 1fr calc(var(--unit) * 50);
-
-        & > .list-header > :is(.publisher, .category),
-        & > .project > .project-header > .project-publisher,
-        & > .project > .project-categories {
-            display: none;
-        }
-    }
-
-    #toolbar {
-        flex-wrap: wrap;
-        height: auto;
-
-        & > .spacer {
-            display: none;
-        }
-    }
+#project-list.list {
+    --list-columns: 1fr calc(var(--unit) * 50);
 }
 
-/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
+#project-list.list > .list-header > :is(.publisher, .category),
+#project-list.list > .project > .project-header > .project-publisher,
+#project-list.list > .project > .project-categories {
+    display: none;
+}
+
+#toolbar {
+    flex-wrap: wrap;
+    height: auto;
+}
+
+#toolbar > .spacer {
+    display: none;
+}
+}
 #reset-button {
     width: calc(var(--height) * 3);
 }
-
-/* Splash: a layer over the content for a moment when the site opens (it takes the click that closes it) */
 
 .splash {
     position: fixed;
@@ -819,24 +741,23 @@ body:not(.ready) :is(#home, #footer) {
     justify-content: center;
     padding: var(--padding-large);
     background: color-mix(in srgb, var(--bg) 85%, transparent);
-    -webkit-backdrop-filter: blur(var(--unit));   /* a little blur of the page behind it */
+    -webkit-backdrop-filter: blur(var(--unit));
     backdrop-filter: blur(var(--unit));
     transition: opacity 0.4s;
     cursor: pointer;
-
-    &[hidden] { display: none; }
-    &.leaving { opacity: 0; }
 }
 
-/* The card is 5:3 (wide), and 3:5 on a narrow screen (tall). Two parts are the brand and three parts are the picture, so the picture is a square in both. */
+.splash[hidden] { display: none; }
+
+.splash.leaving { opacity: 0; }
 .splash-card {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
     aspect-ratio: 5 / 3;
-    width: min(calc(var(--height) * 40 / 3), 100%, calc(var(--vh) * 80 * 5 / 3));   /* 13.33 heights wide, so 8 heights tall */
+    width: min(calc(var(--height) * 40 / 3), 100%, calc(var(--vh) * 80 * 5 / 3));
     overflow: hidden;
     background: var(--bg);
-    border: var(--border-width-thick) solid var(--border);   /* the dark gray of the lines, 2 thick, so the card stands out from the page behind it */
+    border: var(--border-width-thick) solid var(--border);
     border-radius: var(--border-radius-extra-large);
     animation: splash-in 0.5s;
 }
@@ -848,8 +769,6 @@ body:not(.ready) :is(#home, #footer) {
     min-width: 0;
     padding: var(--padding-extra-large);
 }
-
-/* The brand (the mark and the name) and the tagline are at the top, and the hint and the copyright are at the bottom (the auto margin of the tagline takes the free height) */
 .splash-brand {
     display: flex;
     align-items: center;
@@ -858,7 +777,7 @@ body:not(.ready) :is(#home, #footer) {
 
 .splash-mark {
     flex: none;
-    width: var(--icon-size-large);   /* the mark of a logo, next to a name of --font-size-extra-large */
+    width: var(--icon-size-large);
     height: var(--icon-size-large);
     background: url("favicon.png") center / contain no-repeat;
     image-rendering: pixelated;
@@ -868,23 +787,17 @@ body:not(.ready) :is(#home, #footer) {
     font-size: var(--font-size-extra-large);
     font-weight: 700;
     line-height: 1;
-
-    & .highlight { color: var(--highlight, var(--blue)); }
 }
+
+.splash-name .highlight { color: var(--highlight, var(--blue)); }
 
 .splash-tagline { color: var(--fg-1); margin-block-end: auto; }
 .splash-hint, .splash-copyright { font-size: var(--font-size-extra-small); color: var(--fg-1); }
-
-/* The images of the splash (assets/images, the list of data.json, set by app.js): squares in a row that slides, covering their part of the card */
 .splash-art {
     position: relative;
     overflow: hidden;
     background: var(--bg-1);
 }
-
-/* A gradient in the middle of the card: the card is 5 parts across (2 of the brand and 3 of the image), and the gradient is the third part, the one part that is in the middle,
-   where the brand meets the image: the colour of the brand fades into the image. One part is a third of the image (calc(100% / 3)), which is 3 heights.
-   On a narrow screen the card is 5 parts tall, and the gradient is the one part at the top of the image. */
 .splash-art::after {
     content: "";
     position: absolute;
@@ -894,24 +807,22 @@ body:not(.ready) :is(#home, #footer) {
     background: linear-gradient(to right, var(--bg), transparent);
     pointer-events: none;
 }
-
-/* The author of the image that shows: in the top corner at the end of the image, on a dark ground so it can be read on any image */
 .splash-credit {
     position: absolute;
+    z-index: 1;
     inset-block-start: var(--padding-medium);
     inset-inline-end: var(--padding-medium);
     max-width: calc(100% - var(--padding-medium) * 2);
     padding: var(--padding-extra-small) var(--padding-small);
     font-size: var(--font-size-extra-small);
-    color: var(--white);
+    color: color-mix(in srgb, var(--white) 60%, var(--black));
     background: color-mix(in srgb, var(--black) 55%, transparent);
     border-radius: var(--border-radius-medium);
     pointer-events: none;
 }
-
-/* The dots of the images: at the bottom of the image, one for each image, and the one of the image that shows is lit */
 .splash-dots {
     position: absolute;
+    z-index: 1;
     inset-inline: 0;
     inset-block-end: var(--padding-medium);
     display: flex;
@@ -926,9 +837,9 @@ body:not(.ready) :is(#home, #footer) {
     background: color-mix(in srgb, var(--white) 40%, transparent);
     border-radius: var(--border-radius-large);
     transition: background 0.3s;
-
-    &.on { background: var(--white); }
 }
+
+.splash-dot.on { background: var(--white); }
 
 :root[dir="rtl"] .splash-art::after {
     background: linear-gradient(to left, var(--bg), transparent);
@@ -937,9 +848,9 @@ body:not(.ready) :is(#home, #footer) {
 .splash-track {
     display: flex;
     height: 100%;
-
-    &.moving { transition: transform 0.8s ease-in-out; }
 }
+
+.splash-track.moving { transition: transform 0.8s ease-in-out; }
 
 .splash-slide {
     flex: none;
@@ -957,7 +868,7 @@ body:not(.ready) :is(#home, #footer) {
 }
 
 @media (max-width: 48rem) {
-    .splash-card { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 2fr) minmax(0, 3fr); aspect-ratio: 3 / 5; width: min(calc(var(--height) * 7), 100%, calc(var(--vh) * 80 * 3 / 5)); }   /* 7 heights wide, so 11.67 heights tall */
+    .splash-card { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 2fr) minmax(0, 3fr); aspect-ratio: 3 / 5; width: min(calc(var(--height) * 7), 100%, calc(var(--vh) * 80 * 3 / 5)); }
     .splash-info { padding: var(--padding-large); }
     .splash-art::after, :root[dir="rtl"] .splash-art::after { inset: 0 0 auto; width: auto; height: calc(100% / 3); background: linear-gradient(to bottom, var(--bg), transparent); }
 }

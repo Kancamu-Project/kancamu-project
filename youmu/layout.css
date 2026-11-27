@@ -10,62 +10,67 @@ html, body {
     height: 100%;
 }
 
-:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/components.css) */
-
-/* The page is the template (assets/css/components.css): the header, the sidebar, the main, and the footer. Here is only what is Youmu's own. */
+:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }
 .logo-mark {
-    background-image: url("favicon.png");   /* the logo of the app: its favicon */
+    background-image: url("favicon.png");
 }
 
 .sidebar-nav {
     gap: var(--gap-small);
+}
 
-    & > * {
-        flex: none;   /* nothing in the list is squeezed when the list is short and scrolls */
-    }
+.sidebar-nav > * {
+    flex: none;
+}
 
-    & .sidebar-item {
-        flex: none;
-    }
+.sidebar-nav .sidebar-item {
+    flex: none;
 }
 
 .sidebar-apps {
     display: flex;
     flex-direction: column;
     gap: var(--gap-small);
-
-    & > .sidebar-item {
-        text-transform: none;   /* the name of an app keeps its capitals (muAI) */
-
-        /* the tint of the button that is shown, and the line at its start, are the colour of the app (--app-colour, set by app.js; the appearance has none, and keeps the gray and the green).
-           The hover stays the gray of every sidebar (assets/css/page.css). */
-        &.on {
-            background: color-mix(in srgb, var(--app-colour, var(--fg)) 16%, transparent);
-            border-inline-start-color: var(--app-colour, var(--highlight));   /* the line at the start of the app that is shown */
-        }
-    }
-
-    & .app-icon {
-        width: var(--icon-size-medium);
-        height: var(--icon-size-medium);
-        flex: none;
-        background: center / contain no-repeat;
-        image-rendering: pixelated;
-    }
 }
 
-.main { gap: 0; overflow: hidden; & > .topbar {
-        justify-content: flex-end; gap: 0; border-bottom: var(--border-width) solid var(--border); & > select {   /* the controls touch: a line between them, no gap */
+.sidebar-apps > .sidebar-item {
+    text-transform: none;
+}
+
+.sidebar-apps > .sidebar-item.on {
+    background: color-mix(in srgb, var(--app-colour, var(--fg)) 16%, transparent);
+    border-inline-start-color: var(--app-colour, var(--highlight));
+}
+
+.sidebar-apps .app-icon {
+    width: var(--icon-size-medium);
+    height: var(--icon-size-medium);
+    flex: none;
+    background: center / contain no-repeat;
+    image-rendering: pixelated;
+}
+
+.main { gap: 0; overflow: hidden; }
+
+.main > .topbar {
+    justify-content: flex-end;
+    gap: 0;
+    border-bottom: var(--border-width) solid var(--border);
+}
+
+.main > .topbar > select {
             width: calc(var(--height) * 4); }
 
-        & > :is(select, button) {
+.main > .topbar > :is(select, button) {
             height: 100%; border-width: 0; border-inline-start-width: var(--border-width); border-radius: 0; }
-    }
 
-    & > .content {
-        flex: 1; overflow-y: auto; &:focus-visible {   
+.main > .content {
+    flex: 1;
+    overflow-y: auto;
+};
+
+.main > .content:focus-visible {
             outline: none; }
-    }; }
 
 #login-page, #settings-page {
     display: flex;
@@ -73,20 +78,16 @@ html, body {
     gap: var(--gap-medium);
     padding: var(--padding-extra-large);
 }
-
-/* The settings page has no padding: its parts fill it, one under the other, and each one has its padding inside */
 #settings-page {
     gap: 0;
     padding: 0;
-
-    & > .hint {
-        padding: var(--padding-extra-large);
-    }
-
-    & > .detail-section {
-        gap: 0;
-        border-bottom: var(--border-width) solid var(--border);
-    }
+}
+#settings-page > .hint {
+    padding: var(--padding-extra-large);
+}
+#settings-page > .detail-section {
+    gap: 0;
+    border-bottom: var(--border-width) solid var(--border);
 }
 
 .hint {
@@ -103,40 +104,39 @@ html, body {
 
 .account-bio {
     color: var(--fg-1);
+}
 
-    &:empty {
-        display: none;
-    }
+.account-bio:empty {
+    display: none;
 }
 
 #account-details {
     display: flex;
     flex-direction: column;
+}
 
-    &:empty {
-        display: none;
-    }
+#account-details:empty {
+    display: none;
+}
 
-    & > .detail-section {
-        gap: 0;
-        border-bottom: var(--border-width) solid var(--border);
-    }
+#account-details > .detail-section {
+    gap: 0;
+    border-bottom: var(--border-width) solid var(--border);
 }
 
 .detail-section {
     display: flex;
     flex-direction: column;
     gap: var(--gap-small);
+}
 
-    & > .detail-section-title {
-        color: var(--fg-1);
-        text-transform: uppercase;
-    }
+.detail-section > .detail-section-title {
+    color: var(--fg-1);
+    text-transform: uppercase;
+}
 
-    /* A part of the settings that opens and closes: the button and the body are the template (assets/css/components.css) */
-    & > .section-body {
-        padding: var(--padding-extra-large);
-    }
+.detail-section > .section-body {
+    padding: var(--padding-extra-large);
 }
 
 .detail-rows {
@@ -145,36 +145,36 @@ html, body {
     display: flex;
     flex-direction: column;
     border: var(--border-width) solid var(--border);
+}
 
-    & > .detail-row {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--gap-small);
-        min-height: var(--height);
-        padding: var(--padding-small) var(--padding-large);
-        border-bottom: var(--border-width) solid var(--border);
+.detail-rows > .detail-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-small);
+    min-height: var(--height);
+    padding: var(--padding-small) var(--padding-large);
+    border-bottom: var(--border-width) solid var(--border);
+}
 
-        &:last-child {
-            border-bottom: 0;
-        }
+.detail-rows > .detail-row:last-child {
+    border-bottom: 0;
+}
 
-        & > .detail-key {
-            flex: none;
-            color: var(--fg-1);
-        }
+.detail-rows > .detail-row > .detail-key {
+    flex: none;
+    color: var(--fg-1);
+}
 
-        & > .value {
-            min-width: 0;
-            overflow-wrap: anywhere;
-            text-align: end;
+.detail-rows > .detail-row > .value {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    text-align: end;
+}
 
-            & a {
-                text-decoration: underline;
-            }
-        }
-    }
+.detail-rows > .detail-row > .value a {
+    text-decoration: underline;
 }
 
 .scope-chips {
@@ -183,15 +183,12 @@ html, body {
     justify-content: flex-end;
     gap: var(--gap-small);
 }
-
-/* The profile: a card, a row of numbers, and parts that open and close; like the settings page, it has no padding of its own */
 #account-profile {
     display: flex;
     flex-direction: column;
-
-    & > .hint {
-        padding: var(--padding-extra-large);
-    }
+}
+#account-profile > .hint {
+    padding: var(--padding-extra-large);
 }
 
 .profile-card {
@@ -202,71 +199,69 @@ html, body {
     gap: var(--gap-large);
     padding: var(--padding-extra-large);
     border-bottom: var(--border-width) solid var(--border);
+}
 
-    & > .avatar {
-        width: calc(var(--unit) * 32);
-        height: calc(var(--unit) * 32);
-        border-radius: var(--border-radius-large);
-    }
+.profile-card > .avatar {
+    width: calc(var(--unit) * 32);
+    height: calc(var(--unit) * 32);
+    border-radius: var(--border-radius-large);
+}
 
-    & > .account-names {
-        flex: 1 1 calc(var(--unit) * 60);
-        display: flex;
-        flex-direction: column;
-        gap: var(--gap-extra-small);
-        min-width: 0;
+.profile-card > .account-names {
+    flex: 1 1 calc(var(--unit) * 60);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-extra-small);
+    min-width: 0;
+}
 
-        & > .account-name {
-            font-size: var(--font-size-extra-large);
-            font-weight: 700;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+.profile-card > .account-names > .account-name {
+    font-size: var(--font-size-extra-large);
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
-        & > .account-login {
-            color: var(--fg-1);
-        }
-    }
+.profile-card > .account-names > .account-login {
+    color: var(--fg-1);
 }
 
 .profile-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(calc(var(--unit) * 36), 1fr));
     border-bottom: var(--border-width) solid var(--border);
+}
 
-    &:empty {
-        display: none;
-    }
+.profile-stats:empty {
+    display: none;
+}
 
-    & > .stat {
-        display: flex;
-        flex-direction: column;
-        gap: var(--gap-extra-small);
-        padding: var(--padding-large) var(--padding-extra-large);
-        border-inline-end: var(--border-width) solid var(--border);
+.profile-stats > .stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-extra-small);
+    padding: var(--padding-large) var(--padding-extra-large);
+    border-inline-end: var(--border-width) solid var(--border);
+}
 
-        &:last-child {
-            border-inline-end: 0;
-        }
+.profile-stats > .stat:last-child {
+    border-inline-end: 0;
+}
 
-        & > .stat-value {
-            font-size: var(--font-size-extra-large);
-            font-weight: 700;
-        }
+.profile-stats > .stat > .stat-value {
+    font-size: var(--font-size-extra-large);
+    font-weight: 700;
+}
 
-        & > .stat-label {
-            color: var(--fg-1);
-            font-size: var(--font-size-small);
-        }
-    }
+.profile-stats > .stat > .stat-label {
+    color: var(--fg-1);
+    font-size: var(--font-size-small);
 }
 
 #sign-out-button {
     justify-content: center;
 }
-
-/* The settings: a field is a label, a hint, and a control, and is saved when it changes */
 .setting-fields {
     display: flex;
     flex-direction: column;
@@ -277,22 +272,22 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: var(--gap-small);
+}
 
-    & > textarea {
-        height: calc(var(--unit) * 40);
-        resize: vertical;
-    }
+.setting-field > textarea {
+    height: calc(var(--unit) * 40);
+    resize: vertical;
+}
 
-    &.checkbox {
-        display: grid;
-        grid-template-columns: auto minmax(0, 1fr);
-        align-items: center;
-        column-gap: var(--gap-small);
+.setting-field.checkbox {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: var(--gap-small);
+}
 
-        & > .field-hint {
-            grid-column: 2;
-        }
-    }
+.setting-field.checkbox > .field-hint {
+    grid-column: 2;
 }
 
 .status {
@@ -302,62 +297,62 @@ html, body {
     border-radius: var(--border-radius-medium);
     font-weight: 700;
     text-transform: uppercase;
+}
 
-    &.ok {
-        color: var(--green);
-        border-color: var(--green);
-    }
+.status.ok {
+    color: var(--green);
+    border-color: var(--green);
+}
 
-    &.bad {
-        color: var(--danger);
-        border-color: var(--danger);
-    }
+.status.bad {
+    color: var(--danger);
+    border-color: var(--danger);
 }
 
 .downloaded-models {
     display: flex;
     flex-direction: column;
     gap: var(--gap-small);
+}
 
-    & > .downloaded-group {
-        font-size: var(--font-size-extra-small);
-        font-weight: 700;
-        text-transform: uppercase;
-        color: var(--fg-1);
-    }
+.downloaded-models > .downloaded-group {
+    font-size: var(--font-size-extra-small);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--fg-1);
+}
 
-    & > .downloaded-model {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: var(--gap-small);
+.downloaded-models > .downloaded-model {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-small);
+}
 
-        & > .downloaded-model-text {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
+.downloaded-models > .downloaded-model > .downloaded-model-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
 
-            & > .downloaded-model-name {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-        }
+.downloaded-models > .downloaded-model > .downloaded-model-text > .downloaded-model-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
-        & > .downloaded-model-size {
-            color: var(--fg-1);
-            white-space: nowrap;
-        }
+.downloaded-models > .downloaded-model > .downloaded-model-size {
+    color: var(--fg-1);
+    white-space: nowrap;
+}
 
-        & > :is(.radio, .badge) {
-            flex: none;
-        }
+.downloaded-models > .downloaded-model > :is(.radio, .badge) {
+    flex: none;
+}
 
-        & .downloaded-model-name {
-            cursor: pointer;
-        }
-    }
+.downloaded-models > .downloaded-model .downloaded-model-name {
+    cursor: pointer;
 }
 
 .button-row-start {
@@ -366,16 +361,12 @@ html, body {
     flex-wrap: wrap;
     gap: var(--gap-small);
 }
-
-/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
 #github-button {
     width: calc(var(--height) * 6);
 }
 #sign-out-button {
     width: calc(var(--height) * 4);
 }
-
-/* The page where GitHub sends the user back after the sign-in (callback.html): a box in the middle, while the token is being asked for */
 body.callback {
     display: flex;
     align-items: center;

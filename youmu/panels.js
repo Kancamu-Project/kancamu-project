@@ -1,7 +1,4 @@
-// The panels of the settings that need more than a value: they work on the data of an app (its chats, its downloaded models, its drive).
-// An app names the panels it wants in its data.json ("settings": { "panels": [...] }); the account app draws them and does the work, so the app itself has no code for it.
-// Every panel gets { app, data, t, ask, toast, announce }: the name of the app, its data.json, a function for its texts, the shared question dialog, a toast,
-// and a function that tells the app what was done to its data (assets/js/settings.js: the app follows it with settings.listen).
+import { i18n, account, settings, storage } from "../assets/js/shared.js";
 
 const element = (tag, className, text) => {
     const node = document.createElement(tag);
@@ -16,7 +13,6 @@ const button = (iconName, text, className = "") => {
     node.lastChild.textContent = text;
     return node;
 };
-// A panel: a title, a hint, and what it holds.
 function panel(title, hint, ...content) {
     const box = element("div", "detail-section");
     box.append(element("span", "detail-section-title", title));
@@ -32,7 +28,6 @@ const size = (bytes) => {
     return `${value.toFixed(value < 10 ? 1 : 0)} ${units[index]}`;
 };
 const lsGet = (key) => { try { return localStorage.getItem(key); } catch { return null; } };
-const lsSet = (key, value) => { try { localStorage.setItem(key, value); } catch {} };
 const lsDelete = (key) => { try { localStorage.removeItem(key); } catch {} };
 function download(name, text, type) {
     const link = document.createElement("a");
@@ -42,8 +37,6 @@ function download(name, text, type) {
     setTimeout(() => URL.revokeObjectURL(link.href), 1000);
 }
 
-/* ---------- muAI ---------- */
-// Whether the browser can run the models.
 async function webgpu({ t }) {
     let ok = false;
     try { ok = !!(navigator.gpu && (await navigator.gpu.requestAdapter())); } catch {}
@@ -51,17 +44,10 @@ async function webgpu({ t }) {
     return panel(t("set.gpu.label"), "", status);
 }
 
-// The models of an app that works with one of them at a time (muAI, Picmu, Transmu): one list with every model of its data, and for each one the choice (the radio), whether its
-// files are in the cache of the browser (Transformers.js keeps them there, under the address of the model), and the deletion of them. It is the list of the models and the list of
-// the downloaded models in one. An app describes it in its data.json: "settings": { "models": { "cache": "transformers-cache", "choose": "model", "list": "models", "repo": "id",
-// "repoTemplate": "modelTemplate" } }: choose is the setting that holds the choice, list the list of the models of the app (each one has an id and a name), repo the field with the
-// repository of a model on Hugging Face, and repoTemplate (when a model is one repository for each pair of languages, as Opus-MT is) the field with an address such as
-// "Xenova/opus-mt-{from}-{to}": every repository that fits it is of the model. An app with several tools (Picmu) chooses a model for each one: a model has its own "choose"
-// (the setting that holds its choice) and a "group" (the text of the heading above the models of the tool). Choosing a model that is not downloaded downloads it (the app does it when it is used).
 async function modelList({ app, data, t, ask, toast, announce }) {
     const config = data.settings.models;
     const defaults = data.settings.defaults || {};
-    const keyOf = (item) => item.choose || config.choose;   // the setting that holds the choice of the tool of a model
+    const keyOf = (item) => item.choose || config.choose;
     const all = (data[config.list] || []).filter((item) => item.id);
     const order = [...new Set(all.map(keyOf))];
     const items = all.sort((a, b) => order.indexOf(keyOf(a)) - order.indexOf(keyOf(b)) || a.name.localeCompare(b.name));
@@ -74,7 +60,6 @@ async function modelList({ app, data, t, ask, toast, announce }) {
     const patterns = new Map(items.map((item) => [item.id, patternOf(item)]));
     const ownedBy = (item, repository) => item[config.repo] === repository || !!patterns.get(item.id)?.test(repository);
     const list = element("div", "downloaded-models");
-    // the files in the cache, by repository: repository -> { requests, bytes }
     const cached = async () => {
         const found = new Map();
         if (!("caches" in window)) return found;
@@ -119,9 +104,9 @@ async function modelList({ app, data, t, ask, toast, announce }) {
                     if (!(await ask({ text: t("confirm.deleteModel", { name: item.name, size: label }), ok: t("models.delete") }))) return;
                     const cache = await caches.open(config.cache);
                     for (const request of requests) await cache.delete(request);
-                    if (app === "muai") {   // muAI keeps what it knows about its models
+                    if (app === "muai") {
                         lsDelete(`muai.seen.${item.id}`);
-                        if (settings.get("muai")[config.choose] === item.id) { settings.set("muai", { ...settings.get("muai"), [config.choose]: "" }); lsSet("muai.autoload", "0"); }   // it was the chosen one: it is not downloaded again on its own
+                        if (settings.get("muai")[config.choose] === item.id) { settings.set("muai", { ...settings.get("muai"), [config.choose]: "" }); }
                     }
                     announce({ type: "modelDeleted", id: item.id });
                     toast(t("toast.modelDeleted", { name: item.name }));
@@ -137,6 +122,20 @@ async function modelList({ app, data, t, ask, toast, announce }) {
     await render();
     return panel(t("set.models.label"), t("set.models.hint"), list);
 }
+
+const openChats = () => new Promise((resolve) => {
+    try {
+        const request = indexedDB.open("muai", 1);
+        request.onupgradeneeded = () => request.result.createObjectStore("convs", { keyPath: "id" });
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => resolve(null);
+    } catch { resolve(null); }
+});
+const chatRequest = (database, mode, run) => new Promise((resolve) => {
+    const request = run(database.transaction("convs", mode).objectStore("convs"));
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => resolve(null);
+});
 
 async function chatData({ t, ask, toast, announce }) {
     const file = element("input");
@@ -183,7 +182,7 @@ async function chatData({ t, ask, toast, announce }) {
         if (!count) return toast(t("toast.noHistory"), { kind: "warning" });
         if (!(await ask({ text: t("confirm.deleteAll", { n: count }), ok: t("data.deleteAll") }))) return;
         await chatRequest(database, "readwrite", (store) => store.clear());
-        if (account.get()) {   // the copies in the storage too, or they would come back
+        if (account.get()) {
             try {
                 const store = await storage.connect("muai");
                 for (const item of await storage.list(store, "conversations")) await storage.removeFile(store, `conversations/${item.name}`, "muAI: delete a chat");
@@ -195,8 +194,6 @@ async function chatData({ t, ask, toast, announce }) {
     return panel(t("set.data.label"), t("set.data.hint"), row);
 }
 
-/* ---------- every app ---------- */
-// Puts the settings of the app back to their first values; the app follows what is announced.
 function restoreDefaults({ app, t, ask, announce }) {
   const reset = button("refresh", t("reset"), "danger");
   reset.addEventListener("click", async () => {
@@ -207,9 +204,6 @@ function restoreDefaults({ app, t, ask, announce }) {
   return panel(t("reset.title"), t("reset.hint"), reset);
 }
 
-/* ---------- Drivemu ---------- */
-// The drive is the whole repository of the storage, as Drivemu shows it: how much of the storage is used, and the reset of the drive.
-// It is opened once for the panels (opening it asks GitHub, and two panels need it).
 let drive = { token: "", store: null };
 function driveStore() {
     const signedIn = account.get();
@@ -229,8 +223,6 @@ async function driveUsage({ data, t }) {
     }
     return store ? panel(t("set.storage"), "", box) : element("span");
 }
-// The reset: every file and folder of the drive, and the data of Drivemu itself (AppData/drivemu), are deleted, and the default folders are made again, in one commit (git data API).
-// The rest of AppData (the folders of the other apps: the chats of muAI, the progress of the lessons) and README.md are not deleted: the reset of one app never takes the data of another.
 async function driveReset({ data, t, ask, toast, announce }) {
     const store = await driveStore();
     if (!store) return element("span");
@@ -254,7 +246,7 @@ async function driveReset({ data, t, ask, toast, announce }) {
             const commit = await call(`/git/commits/${ref.object.sha}`);
             const tree = await call(`/git/trees/${commit.tree.sha}?recursive=1`);
             const empty = await call("/git/blobs", { method: "POST", body: JSON.stringify({ content: "", encoding: "utf-8" }) });
-            const ofDrive = (path) => path.startsWith(`${store.own}/`) || !store.system.some((name) => path === name || path.startsWith(`${name}/`));   // the drive and its own data; not the rest of AppData, not README.md
+            const ofDrive = (path) => path.startsWith(`${store.own}/`) || !store.system.some((name) => path === name || path.startsWith(`${name}/`));
             const entries = tree.tree.filter((item) => item.type === "blob" && ofDrive(item.path) && item.path !== keep).map((item) => ({ path: item.path, mode: item.mode, type: "blob", sha: null }));
             entries.push(...data.drive.defaultFolders.map((name) => ({ path: `${name}/${keep}`, mode: "100644", type: "blob", sha: empty.sha })));
             const newTree = await call("/git/trees", { method: "POST", body: JSON.stringify({ base_tree: commit.tree.sha, tree: entries }) });
@@ -268,15 +260,13 @@ async function driveReset({ data, t, ask, toast, announce }) {
     return panel(t("reset.title"), t("reset.hint"), reset);
 }
 
-/* ---------- Lingomu and muJS ---------- */
-// The progress of an app (Lingomu, muJS) is kept in this browser ("<app>.progress") and, once signed in, in the folder of the app (progress.json): the reset deletes both.
 function progressReset({ app, t, ask, toast, announce }) {
     const reset = button("refresh", t("progress.reset"), "danger");
     reset.addEventListener("click", async () => {
         if (!(await ask({ title: t("progress.title"), text: t("progress.text"), ok: t("progress.reset") }))) return;
         reset.disabled = true;
         lsDelete(`${app}.progress`);
-        if (account.get()) {   // the copy in the storage too, or it would come back
+        if (account.get()) {
             try { await storage.removeFile(await storage.connect(app), "progress.json", `${app}: reset the progress`); } catch (error) { console.warn("[sync]", error); }
         }
         announce({ type: "progressReset" });

@@ -1,18 +1,21 @@
+import { i18n, popups, account, settings, autocomplete, components } from "./assets/js/shared.js";
+import appData from "./data.js";
+
 const state = {
-    iconSprite: null,   // the icons of the apps of the brand in one file (data.json, "iconSprite"; assets/tools/sprites.mjs makes it)
+    iconSprite: null,
     home: null,
     categories: {},
     projects: [],
     category: "all",
     publisher: "all",
-    alternative: "all",   // a product that a project is an alternative to (Microsoft Word)
+    alternative: "all",
     sort: "asc",
     query: "",
     view: "grid",
     tabs: [],
     active: null,
-    page: "",   // "about" or "terms" (data.json, "pages"): shown in the main instead of the directory
-    frames: {},   // the query string of the app in each open tab (what the app says about itself, assets/js/url.js): id -> "path=Images&view=list"
+    page: "",
+    frames: {},
 };
 
 function saveFilters() {
@@ -26,7 +29,7 @@ function saveFilters() {
     if (state.tabs.length) params.set("tabs", state.tabs.join(","));
     if (state.page) params.set("page", state.page);
     if (state.active !== state.home) params.set("tab", state.active);
-    for (const id of state.tabs) if (state.frames[id]) params.set(`s.${id}`, state.frames[id]);   // a reload opens every app as it was
+    for (const id of state.tabs) if (state.frames[id]) params.set(`s.${id}`, state.frames[id]);
     const search = params.toString();
     history.replaceState(null, "", location.pathname + (search ? `?${search}` : "") + location.hash);
     syncControls();
@@ -52,7 +55,6 @@ function restoreFilters() {
     state.active = allTabs().includes(active) ? active : state.home;
 }
 
-// The first tab is this site itself: it is always open and cannot be closed.
 function allTabs() {
     return [state.home, ...state.tabs];
 }
@@ -119,13 +121,11 @@ function renderTabs() {
         })
     );
     const home = tabs.querySelector(".tab.home");
-    tabs.parentElement.style.setProperty("--home-width", `${home ? home.offsetWidth : 0}px`);   // the Kancamu tab is pinned: the fade and the scrolling start after it
+    tabs.parentElement.style.setProperty("--home-width", `${home ? home.offsetWidth : 0}px`);
     tabs.querySelector(".tab.active")?.scrollIntoView({ block: "nearest", inline: "nearest" });
     updateTabFade();
 }
 
-// A tab is dragged to a new place (the Kancamu tab is not moved, and nothing goes before it). The order is kept in the address.
-// A pointer is used, so it also works by touch. A click that ends a drag is not taken as a click.
 let drag = null, justDragged = false;
 function tabsOf(strip) {
     return [...strip.children];
@@ -145,10 +145,10 @@ document.addEventListener("pointermove", (event) => {
         if (Math.abs(moved) < 6) return;
         drag.active = true;
         tab.classList.add("dragging");
-        try { tab.setPointerCapture(event.pointerId); } catch { /* ignore */ }
+        try { tab.setPointerCapture(event.pointerId); } catch { }
     }
     const direction = document.documentElement.dir === "rtl" ? -1 : 1;
-    const naturalLeft = () => {   // where the tab would be without the move that follows the pointer
+    const naturalLeft = () => {
         const kept = tab.style.transform;
         tab.style.transform = "";
         const left = tab.getBoundingClientRect().left;
@@ -157,7 +157,6 @@ document.addEventListener("pointermove", (event) => {
     };
     const place = () => { tab.style.transform = `translateX(${event.clientX - drag.startX - (naturalLeft() - drag.initialLeft)}px)`; };
     place();
-    // the tab passes the middle of its neighbour: they change places
     for (let guard = 0; guard < 50; guard++) {
         const box = tab.getBoundingClientRect();
         const center = box.left + box.width / 2;
@@ -170,7 +169,6 @@ document.addEventListener("pointermove", (event) => {
         else break;
         place();
     }
-    // near the edge of the strip, it scrolls
     const area = strip.getBoundingClientRect();
     const homeWidth = strip.querySelector(".tab.home")?.offsetWidth || 0;
     if (event.clientX > area.right - 32) strip.scrollLeft += 12;
@@ -183,7 +181,7 @@ function endDrag(event) {
     if (!active) return;
     tab.classList.remove("dragging");
     tab.style.transform = "";
-    try { tab.releasePointerCapture(event.pointerId); } catch { /* ignore */ }
+    try { tab.releasePointerCapture(event.pointerId); } catch { }
     justDragged = true;
     setTimeout(() => { justDragged = false; }, 0);
     state.tabs = tabsOf(strip).map((item) => item.dataset.id).filter((id) => id !== state.home);
@@ -194,6 +192,49 @@ document.addEventListener("pointerup", endDrag);
 document.addEventListener("pointercancel", endDrag);
 document.getElementById("tabs").addEventListener("click", (event) => { if (justDragged) { event.stopPropagation(); event.preventDefault(); } }, true);
 
+const WARM_LIMIT = 3;
+const WARM_KEEP = 10000;
+const warmFrames = new Map();
+
+function makeFrame(project) {
+    const frame = createElement("iframe");
+    frame.dataset.id = project.id;
+    frame.src = project.url + (state.frames[project.id] ? `?${state.frames[project.id]}` : "");
+    frame.allow = "fullscreen; clipboard-write";
+    return frame;
+}
+
+function cool(id) {
+    const entry = warmFrames.get(id);
+    if (!entry) return;
+    clearTimeout(entry.timer);
+    entry.frame.remove();
+    warmFrames.delete(id);
+}
+
+function warm(id) {
+    const entry = warmFrames.get(id);
+    if (entry) {
+        clearTimeout(entry.timer);
+        return;
+    }
+    const project = findProject(id);
+    if (!project || allTabs().includes(id)) return;
+    if (warmFrames.size >= WARM_LIMIT) cool(warmFrames.keys().next().value);
+    const frame = makeFrame(project);
+    frame.hidden = true;
+    frame.dataset.warm = "";
+    document.getElementById("viewer").appendChild(frame);
+    warmFrames.set(id, { frame, timer: 0 });
+}
+
+function coolLater(id) {
+    const entry = warmFrames.get(id);
+    if (!entry) return;
+    clearTimeout(entry.timer);
+    entry.timer = setTimeout(() => cool(id), WARM_KEEP);
+}
+
 function syncViewer() {
     const viewer = document.getElementById("viewer");
     const onHome = state.active === state.home;
@@ -203,17 +244,20 @@ function syncViewer() {
     document.getElementById("footer").hidden = !onHome;
 
     viewer.querySelectorAll("iframe").forEach((frame) => {
+        if (frame.dataset.warm !== undefined) return;
         if (!state.tabs.includes(frame.dataset.id)) { frame.remove(); delete state.frames[frame.dataset.id]; }
     });
     state.tabs.forEach((id) => {
         const project = findProject(id);
         if (!project) return;
         let frame = viewer.querySelector(`iframe[data-id="${id}"]`);
+        if (frame && frame.dataset.warm !== undefined) {
+            delete frame.dataset.warm;
+            clearTimeout(warmFrames.get(id)?.timer);
+            warmFrames.delete(id);
+        }
         if (!frame) {
-            frame = createElement("iframe");
-            frame.dataset.id = id;
-            frame.src = project.url + (state.frames[id] ? `?${state.frames[id]}` : "");
-            frame.allow = "fullscreen; clipboard-write";
+            frame = makeFrame(project);
             viewer.appendChild(frame);
         }
         frame.title = pickText(project.name);
@@ -221,16 +265,14 @@ function syncViewer() {
     });
 }
 
-// An app in a tab says what is on its screen (assets/js/url.js): its query string is kept in the address of this page, so a reload opens it the same.
 window.addEventListener("message", (event) => {
-    if (event.origin !== location.origin || event.data?.type !== "kancamu:url" || typeof event.data.search !== "string") return;
+    if (event.origin !== location.origin || event.data?.type !== "app:url" || typeof event.data.search !== "string") return;
     const frame = [...document.querySelectorAll("#viewer iframe")].find((candidate) => candidate.contentWindow === event.source);
     if (!frame || !state.tabs.includes(frame.dataset.id)) return;
     if (event.data.search) state.frames[frame.dataset.id] = event.data.search; else delete state.frames[frame.dataset.id];
     saveFilters();
 });
 
-/* ---------- the pages (About, Terms and conditions): the texts are in data.json, in "pages" ---------- */
 function openPage(name) {
     state.page = name;
     saveFilters();
@@ -251,7 +293,7 @@ function renderPage() {
     if (content.updated) parts.push(createElement("span", "page-updated", t("page.updated", { date: i18n.date(content.updated, { dateStyle: "long" }) })));
     for (const section of content.sections) {
         parts.push(createElement("span", "page-heading", pickText(section.heading)), createElement("span", "page-text selectable", pickText(section.text)));
-        if (section.links) {   // links to other sites (the sources of the images): they open in a tab of their own
+        if (section.links) {
             const links = createElement("div", "page-links");
             links.append(...section.links.map(({ label, url }) => Object.assign(createElement("a", "page-link", label), { href: url, target: "_blank", rel: "noopener noreferrer" })));
             parts.push(links);
@@ -285,11 +327,8 @@ function renderAll() {
     renderPage();
 }
 
-// The icon of a project is its place in the sprite of the icons (one file for all of them, so the page asks for one and not for one per app), or its own file when it is not in the sprite.
-// The sprite has the squares of the icons (16 px for a pixel icon, up to 48 px for the others): the box of the icon shows one of them (every box is a square, so the percentages cut it exactly).
-// The place of a square in a grid of squares (the columns are in data.json; the rows are as many as they need): the size and the position of a background that shows only that square (the splash)
 function spriteCell(count, columns, index) {
-    const wide = columns || count;   // a sprite without columns is a row
+    const wide = columns || count;
     const rows = Math.ceil(count / wide);
     const column = index % wide;
     const row = Math.floor(index / wide);
@@ -298,7 +337,7 @@ function spriteCell(count, columns, index) {
 
 function setIcon(element, project) {
     const sprite = state.iconSprite;
-    const cell = sprite?.cells?.[project.id];   // [x, y, side]: the square of this icon in the file (a square of 16 px for a pixel icon, up to 48 px for the others)
+    const cell = sprite?.cells?.[project.id];
     if (!cell) {
         element.style.backgroundImage = `url(${JSON.stringify(project.icon)})`;
         return;
@@ -306,8 +345,7 @@ function setIcon(element, project) {
     const [x, y, side] = cell;
     element.style.backgroundImage = `url(${JSON.stringify(sprite.file)})`;
     element.style.backgroundSize = `${(sprite.width / side) * 100}% ${(sprite.height / side) * 100}%`;
-    // a background-position of p% puts the p% of the file on the p% of the box: for a square that is at x, p = x / (width - side)
-    element.style.backgroundPosition = `${sprite.width > side ? (x / (sprite.width - side)) * 100 : 0}% ${sprite.height > side ? (y / (sprite.height - side)) * 100 : 0}%`;   // every icon is scaled with no smoothing (image-rendering: pixelated, in layout.css)
+    element.style.backgroundPosition = `${sprite.width > side ? (x / (sprite.width - side)) * 100 : 0}% ${sprite.height > side ? (y / (sprite.height - side)) * 100 : 0}%`;
 }
 
 function createElement(tag, className, text) {
@@ -327,7 +365,6 @@ function createGlyph(name) {
     return createElement("div", `glyph ${name}`);
 }
 
-// The menu of a project: the menu of the template (assets/js/components.js); a second click on the button closes it.
 function showMenu(anchor, project) {
     components.menu({
         anchor,
@@ -376,6 +413,8 @@ function createProjectCard(project) {
 
     const open = createButton("project-open-button", t("open"));
     open.addEventListener("click", () => openTab(project.id));
+    for (const type of ["pointerenter", "focus"]) open.addEventListener(type, () => warm(project.id));
+    for (const type of ["pointerleave", "blur"]) open.addEventListener(type, () => coolLater(project.id));
 
     const more = createElement("button", "project-more-button");
     more.title = t("more");
@@ -399,7 +438,6 @@ function createProjectCard(project) {
     return card;
 }
 
-// A palette name ("blue") or, for projects made by others, their own colour ("#a78bfa").
 function projectColor(project) {
     return project.color.startsWith("#") ? project.color : `var(--${project.color})`;
 }
@@ -419,11 +457,18 @@ function createNameElement(name, highlight) {
     return element;
 }
 
-// A category as a tag. The key is on the element, so the style can tell a category from another (Official has a yellow border).
+function tint(element, key) {
+    const color = state.categoryColors[key];
+    if (!color) return;
+    element.classList.add("tinted");
+    element.style.setProperty("--tint", `var(--${color})`);
+}
+
 function categoryTag(key) {
     const tag = createElement("span", "category", categoryLabel(key));
     tag.dataset.category = key;
-    tag.classList.toggle("active", state.category === key);   // the category that is filtered shows as active on every project that has it
+    tint(tag, key);
+    tag.classList.toggle("active", state.category === key);
     return tag;
 }
 
@@ -447,7 +492,6 @@ function renderPublisherSelect() {
     select.value = state.publisher;
 }
 
-// Every product that some project is an alternative to; a project may be an alternative to several.
 function renderAlternativeSelect() {
     const select = document.getElementById("alternative-filter");
     const alternatives = [...new Set(state.projects.flatMap((project) => project.alternatives || []))]
@@ -477,6 +521,7 @@ function renderCategoryFilter() {
                 key === "all" ? t("all") : categoryLabel(key)
             );
             button.dataset.category = key;
+            tint(button, key);
             button.addEventListener("click", () => {
                 state.category = key;
                 saveFilters();
@@ -528,41 +573,34 @@ function createListHeader() {
     return header;
 }
 
-/* ---------- the splash: a layer over the content for a moment when the site opens ---------- */
-// Its images (data.json, "splash") slide one after another every few seconds, in the order of the list (and not at all when the device asks for less motion). The content is loaded behind it.
-// It stays until the user clicks or presses a key, and the user can turn it off in the Appearance page of the account app (the setting "splash").
-async function showSplash({ images, seconds, sprite }) {   // the first image is the first of the list
+async function showSplash({ images, seconds, sprite }) {
     const splash = document.getElementById("splash");
     if (settings.get("appearance").splash === false) return;
     const order = images;
-    // the images are one file (a grid of squares, assets/tools/sprites.mjs makes it); without it, or when it does not have all the images of the list, there is no splash
     if (!sprite || sprite.count !== order.length) return;
-    // the splash opens with its images ready, not empty
     const preload = new Image();
     preload.src = sprite.file;
     await preload.decode().catch(() => {});
     const track = createElement("div", "splash-track");
     track.append(...order.map((_, index) => {
         const slide = createElement("div", "splash-slide");
-        const cell = spriteCell(order.length, sprite.columns, index);   // the square of this image (the slide is a square too)
+        const cell = spriteCell(order.length, sprite.columns, index);
         slide.style.backgroundImage = `url(${JSON.stringify(sprite.file)})`;
         slide.style.backgroundSize = cell.size;
         slide.style.backgroundPosition = cell.position;
         return slide;
     }));
-    // the dots tell which image shows (and how many there are); the slides keep their place in the list, because the track turns round
     track.querySelectorAll(".splash-slide").forEach((slide, index) => { slide.dataset.index = index; });
     const dots = createElement("div", "splash-dots");
     dots.setAttribute("aria-hidden", "true");
     dots.append(...order.map(() => createElement("span", "splash-dot")));
-    const credit = createElement("span", "splash-credit");   // the author of the image that shows, in the top corner of the image
+    const credit = createElement("span", "splash-credit");
     const mark = (index) => {
         [...dots.children].forEach((dot, at) => dot.classList.toggle("on", at === index));
         credit.textContent = t("splash.credit", { author: order[index].author });
     };
     mark(0);
     splash.querySelector(".splash-art").replaceChildren(track, dots, credit);
-    // every few seconds the track slides by one image, and the image that left goes to the end of it: the images go round without end
     const settle = () => {
         if (!track.classList.contains("moving")) return;
         track.classList.remove("moving");
@@ -571,11 +609,11 @@ async function showSplash({ images, seconds, sprite }) {   // the first image is
     };
     const slide = () => {
         settle();
-        track.getBoundingClientRect();   // the track is in its place before it moves
+        track.getBoundingClientRect();
         track.classList.add("moving");
-        mark(Number(track.children[1].dataset.index));   // the image that comes
+        mark(Number(track.children[1].dataset.index));
         track.style.transform = `translateX(${document.documentElement.dir === "rtl" ? 100 : -100}%)`;
-        setTimeout(settle, parseFloat(getComputedStyle(track).transitionDuration) * 1000 + 50);   // a timer, not "transitionend": the browser does not send it when it does not draw (a hidden tab)
+        setTimeout(settle, parseFloat(getComputedStyle(track).transitionDuration) * 1000 + 50);
     };
     const timer = order.length > 1 && !matchMedia("(prefers-reduced-motion: reduce)").matches ? setInterval(slide, seconds * 1000) : 0;
     splash.querySelector(".splash-name").replaceChildren(createNameElement(i18n.brand.name, i18n.brand.highlight));
@@ -594,20 +632,21 @@ async function showSplash({ images, seconds, sprite }) {   // the first image is
 }
 
 async function loadData() {
-    const data = await i18n.load();
+    const data = await i18n.load(appData);
 
     state.home = data.home;
     state.categories = data.categories;
+    state.categoryColors = data.categoryColors || {};
     state.projects = data.projects;
     state.iconSprite = data.iconSprite || null;
-    document.getElementById("support-link").href = data.support.url;   // the support of Kancamu (data.json, "support")
+    document.getElementById("support-link").href = data.support.url;
     restoreFilters();
     i18n.selects();
     renderAll();
     syncControls();
     syncViewer();
     showSplash(data.splash);
-    document.body.classList.add("ready");   // the page is made: what was hidden until now shows (layout.css), all at once
+    document.body.classList.add("ready");
 }
 
 function load() {
@@ -620,7 +659,6 @@ function load() {
     });
 }
 
-// Darken the edge of the tab bar where more tabs are hidden.
 function updateTabFade() {
     const tabs = document.getElementById("tabs");
     const offset = Math.abs(tabs.scrollLeft);
@@ -631,7 +669,6 @@ function updateTabFade() {
 document.getElementById("tabs").addEventListener("scroll", updateTabFade);
 window.addEventListener("resize", updateTabFade);
 
-// Let a plain mouse wheel scroll the tab bar sideways.
 document.getElementById("tabs").addEventListener(
     "wheel",
     (event) => {
@@ -648,14 +685,9 @@ i18n.onChange(() => {
     renderAll();
 });
 
-/* ---------- a file of the Drive dragged to any app ---------- */
-// TODO: this is a workaround (see TODO.md, "Retest"); retest from time to time whether a plain drag with the file works, and delete this then.
-// A page cannot put a file in a drag (the browser keeps only an image), but the apps run in frames of this page, and this page is the one that knows what is dragged:
-// the app that drags a file says it (assets/js/transfer.js), and every drag event that goes into the frame of another app, with no file in it, is given again with the real
-// file in it, as if it came from the file explorer. So the drop area of any app (ours or somebody else's) gets the file, whatever its kind.
-let carried = null;   // { name, file }: the file that an app is dragging now
+let carried = null;
 window.addEventListener("message", (event) => {
-    if (event.origin !== location.origin || event.data?.type !== "kancamu:drag") return;
+    if (event.origin !== location.origin || event.data?.type !== "app:drag") return;
     if (!event.data.on) { carried = null; return; }
     const entry = { name: event.data.name, file: null };
     carried = entry;
@@ -683,9 +715,6 @@ function bridge(frame) {
 }
 document.getElementById("viewer").addEventListener("load", (event) => { if (event.target.tagName === "IFRAME") bridge(event.target); }, true);
 
-/* ---------- a dragged file opens the app that takes it ---------- */
-// A file (of the Drive, dragged from Drivemu or Gallemu, or of the computer) that waits over the tab of any app opens that app; the file is then dropped
-// in the drop area of the page. The tab itself does not take the drop.
 const isFile = (event) => ["Files", "text/uri-list"].some((type) => event.dataTransfer.types.includes(type));
 const projectOfTab = (event) => {
     const tab = event.target.closest?.(".tab");
@@ -718,7 +747,6 @@ document.getElementById("theme-button").addEventListener("click", () => {
     } catch {}
 });
 
-// Account: the sign-in is the account app, opened by assets/js/account.js.
 account.bind(document.getElementById("account-button"));
 
 document.getElementById("publisher-filter").addEventListener("change", (event) => {

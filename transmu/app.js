@@ -1,9 +1,10 @@
-// Transmu: translates text with AI models that run in the browser (Transformers.js). The text never leaves the device.
 import { pipeline, env } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2";
+import { i18n, popups, account, settings, urlState, components } from "../assets/js/shared.js";
+import appData from "./data.js";
 
-env.allowLocalModels = false;   // a model is downloaded from Hugging Face once and kept in the browser cache
+env.allowLocalModels = false;
 
-await i18n.load();
+await i18n.load(appData);
 i18n.selects();
 
 const tr = (key, params) => i18n.t(key, params);
@@ -14,28 +15,24 @@ const els = Object.fromEntries([
   "account-button"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-// The languages, the models, and how a text is cut are in data.json.
 const { translationLanguages: languages, models, engine, settings: { defaults }, sentenceMarks, noSpaceLanguages, punctuation } = i18n.data;
-const preferences = settings.get("transmu", defaults);   // the model and the two languages: set here and in the account app
-// What is on the screen is also in the address (?model=...&from=...&to=...&text=...), so a reload shows the same (assets/js/url.js); the address wins over the settings.
-const TEXT_LIMIT = 500;   // a longer text does not go in the address
-const SENTENCE = new RegExp(`(?:[^${sentenceMarks}\\n]|[${sentenceMarks}](?=\\d))+[${sentenceMarks}]*\\s*|[${sentenceMarks}]+`, "g");   // a mark with a digit after it (3.5) does not end a sentence
+const preferences = settings.get("transmu", defaults);
+const TEXT_LIMIT = 500;
+const SENTENCE = new RegExp(`(?:[^${sentenceMarks}\\n]|[${sentenceMarks}](?=\\d))+[${sentenceMarks}]*\\s*|[${sentenceMarks}]+`, "g");
 
 const known = (code, fallback) => (languages.some((language) => language.code === code) ? code : fallback);
 const state = {
-  model: models.find((model) => model.id === (urlState.get("model") || preferences.model)) || models[0],   // the model that is chosen
+  model: models.find((model) => model.id === (urlState.get("model") || preferences.model)) || models[0],
   source: known(urlState.get("from") || preferences.source, defaults.source),
   target: known(urlState.get("to") || preferences.target, defaults.target),
-  engines: new Map(),   // the models that are loaded: "en-zh" -> translator
+  engines: new Map(),
   busy: false,
   stop: false,
 };
 
-const say = components.status(els.status);   // only the hint of the page: every notice (work, result, error) is a popup
+const say = components.status(els.status);
 const languageOf = (code) => languages.find((language) => language.code === code);
 
-/* ---------- the models: one for each direction, and English in the middle when neither language is English ---------- */
-// The models to run, one after the other, for a translation, with the options of each (a model that knows every language is told the two languages).
 function stepsOf(from, to) {
   const model = state.model;
   if (from === to) return [];
@@ -47,7 +44,7 @@ function stepsOf(from, to) {
 async function loadTranslator({ key, modelId }) {
   if (state.engines.has(key)) return state.engines.get(key);
   const files = new Map();
-  let note = null;   // the popup of the loading (a download, or the files read from the cache): made when the first news of it comes, so no popup when the model is already in memory
+  let note = null;
   const show = (text, fraction) => (note ? note.set(text, fraction) : (note = popups.toast(text, { duration: 0, progress: fraction ?? 0 })));
   const progress_callback = (info) => {
     if (info.status === "progress" && info.file) {
@@ -67,8 +64,6 @@ async function loadTranslator({ key, modelId }) {
   }
 }
 
-/* ---------- cutting a text into sentences ---------- */
-// A model drops sentences when it is given more than one, so every sentence is translated on its own; every line stays a line.
 function pieces(text) {
   const result = [];
   text.split("\n").forEach((line, lineIndex) => {
@@ -77,10 +72,8 @@ function pieces(text) {
   return result;
 }
 
-// The punctuation of the language of the translation.
 const punctuate = (text, code) => (punctuation[code] || []).reduce((result, [pattern, replacement]) => result.replace(new RegExp(pattern, "g"), replacement), text);
 
-/* ---------- translating ---------- */
 async function translate() {
   if (state.busy) return;
   const text = els.sourceText.value.trim();
@@ -91,12 +84,12 @@ async function translate() {
   state.stop = false;
   setBusy(true);
   const started = performance.now();
-  let note = null;   // the popup of the work, with a bar: one for the whole translation
+  let note = null;
   try {
     const translators = [];
     for (const step of steps) translators.push(await loadTranslator(step));
     const parts = pieces(text);
-    const lines = [];   // the translated pieces of every line
+    const lines = [];
     const separator = noSpaceLanguages.includes(state.target) ? "" : " ";
     let done = 0;
     for (const part of parts) {
@@ -138,7 +131,6 @@ function renderCount() {
   els.sourceCount.textContent = tr("count", { count: i18n.number(els.sourceText.value.length) });
 }
 
-/* ---------- the settings: the page and the account app both set them, and each follows the other ---------- */
 const savePreferences = () => {
   settings.set("transmu", { model: state.model.id, source: state.source, target: state.target });
   urlState.set({ model: state.model.id, from: state.source, to: state.target });
@@ -152,10 +144,8 @@ settings.onChange("transmu", defaults, (changed) => {
   buildLanguages();
 });
 
-// The account app deleted the files of a model: what is loaded is let go, and it downloads again when it is used.
 settings.listen("transmu", (message) => { if (message.type === "modelDeleted") state.engines.clear(); });
 
-/* ---------- the model that is chosen ---------- */
 function buildModels() {
   els.modelSelect.replaceChildren(...models.map((model) => Object.assign(document.createElement("option"), { value: model.id, textContent: `${model.name} — ${i18n.pick(model.hint)}` })));
   els.modelSelect.value = state.model.id;
@@ -166,7 +156,6 @@ els.modelSelect.addEventListener("change", () => {
   savePreferences();
 });
 
-/* ---------- the two languages ---------- */
 function buildLanguages() {
   for (const select of [els.sourceLanguage, els.targetLanguage]) {
     select.replaceChildren(...languages.map((language) => Object.assign(document.createElement("option"), { value: language.code, textContent: language.name })));
@@ -180,10 +169,8 @@ function chooseLanguages(source, target) {
   savePreferences();
   buildLanguages();
 }
-// Choosing the language that is on the other side swaps them.
 els.sourceLanguage.addEventListener("change", () => chooseLanguages(els.sourceLanguage.value, els.sourceLanguage.value === state.target ? state.source : state.target));
 els.targetLanguage.addEventListener("change", () => chooseLanguages(els.targetLanguage.value === state.source ? state.target : state.source, els.targetLanguage.value));
-// The swap button turns the languages around and puts the translation in as the new text.
 els.swapButton.addEventListener("click", () => {
   if (state.busy) return;
   const translation = els.targetText.textContent;
@@ -199,13 +186,11 @@ els.clearButton.addEventListener("click", () => {
   els.sourceText.focus();
 });
 
-/* ---------- copying the translation ---------- */
 els.copyButton.addEventListener("click", async () => {
   try { await navigator.clipboard.writeText(els.targetText.textContent); popups.toast(tr("toast.copied")); } catch (error) { popups.toast(tr("error.failed", { message: error.message }), { kind: "error" }); }
 });
 
-/* ---------- the settings ---------- */
-account.bind(els.accountButton);   // the profile and the settings are in the account app
+account.bind(els.accountButton);
 
 function renderTexts() {
   buildModels();

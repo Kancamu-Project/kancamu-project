@@ -1,22 +1,22 @@
-/* Drivemu — serverless file storage on top of GitHub (the user's own repository). */
+import { i18n, popups, account, settings, storage, urlState, transfer, autocomplete, components } from "../assets/js/shared.js";
+import appData from "./data.js";
+
 (() => {
 'use strict';
 
-// The size limits, the default folders, and the file types are in data.json (drive, fileTypes, thumbnailExtensions, mimeTypes); init() fills these in.
-let STORAGE_LIMIT_KB, DEFAULT_FOLDERS, KEEP, MAX_FILE, THUMB_MAX, TYPES, ICON_OF, THUMB_EXT, MIME;   // KEEP: the file that keeps an empty folder alive
+let STORAGE_LIMIT_KB, DEFAULT_FOLDERS, KEEP, MAX_FILE, THUMB_MAX, TYPES, ICON_OF, THUMB_EXT, MIME;
 
 const $ = (id) => document.getElementById(id);
 const tr = (key, params) => i18n.t(key, params);
 const S = {
-  token: '', user: null, owner: '', repo: '', branch: 'main', root: '', system: [], head: null,   // root: where the drive starts in the repository (its root: Documents, Images, ... are next to AppData); system: the names at the root that the user did not make (AppData, README.md)
+  token: '', user: null, owner: '', repo: '', branch: 'main', root: '', system: [], head: null,
   path: [], rootFolders: [], items: [], visible: [], view: 'grid', sort: 'name', dir: 1, query: '',
   selected: new Set(), busy: false, repoSizeKB: 0, repoPrivate: true,
 };
 
-/* ---------- utilities ---------- */
 const { element, icon, extensionOf } = components;
 const enc = (p) => p.split('/').map(encodeURIComponent).join('/');
-const fullPath = (...parts) => [S.root, ...S.path, ...parts].filter(Boolean).join('/');   // the path in the repository
+const fullPath = (...parts) => [S.root, ...S.path, ...parts].filter(Boolean).join('/');
 const contentsOf = (path) => `/contents${path ? '/' + enc(path) : ''}`;
 const kind = (it) => {
   if (it.type === 'dir') return 'folder';
@@ -28,17 +28,14 @@ const typeLabel = (it) => (it.type === 'dir' ? tr('type.folder') : extensionOf(i
 const tile = (k, big = false) => { const t = element('span', 'file-tile kind-' + k + (big ? ' large' : '')); t.appendChild(icon(ICON_OF[k])); return t; };
 
 
-/* ---------- dialogs ---------- */
-// A question in the dialog shared by every app (assets/js/popup.js). input: the text to start from; the answer is true, or the trimmed text (null when cancelled).
 async function ask({ title, text = '', input = null, ok }) {
   const answer = await popups.ask({ title, text, value: input, ok });
   return typeof answer === 'string' ? answer.trim() : answer || null;
 }
 
-/* ---------- GitHub API ---------- */
 async function api(path, opts = {}) {
   const res = await fetch(path.startsWith('http') ? path : 'https://api.github.com' + path, {
-    cache: 'no-store', // the GitHub API replies with max-age=60; without this the browser serves a stale list
+    cache: 'no-store',
     ...opts,
     headers: {
       Authorization: 'Bearer ' + S.token,
@@ -50,7 +47,7 @@ async function api(path, opts = {}) {
   });
   if (!res.ok) {
     let msg = res.statusText;
-    try { msg = (await res.json()).message || msg; } catch { /* ignore */ }
+    try { msg = (await res.json()).message || msg; } catch { }
     const err = new Error(msg); err.status = res.status; throw err;
   }
   if (opts.returnResponse) return res;
@@ -60,8 +57,6 @@ async function api(path, opts = {}) {
 }
 const repoApi = (p, opts) => api(`/repos/${S.owner}/${S.repo}${p}`, opts);
 
-// One commit for many changes (git data API). The branch is shared with the other apps: when one of them committed in the meantime, the branch cannot move to this
-// commit (422, "not a fast forward"), so the commit is made again on top of theirs.
 async function commitTree(entries, message) {
   for (let attempt = 1; ; attempt++) {
     const ref = await repoApi(`/git/ref/heads/${S.branch}`);
@@ -75,18 +70,16 @@ async function commitTree(entries, message) {
       if ((e.status === 422 || e.status === 409) && attempt < 4) { await new Promise((resolve) => setTimeout(resolve, 300 * attempt)); continue; }
       throw e;
     }
-    S.head = nc.sha; // read straight from this commit: not affected by caching or branch replication lag
+    S.head = nc.sha;
     return;
   }
 }
-// Every blob (file) under a folder
 async function blobsUnder(prefix) {
   const ref = await repoApi(`/git/ref/heads/${S.branch}`);
   const commit = await repoApi(`/git/commits/${ref.object.sha}`);
   const tree = await repoApi(`/git/trees/${commit.tree.sha}?recursive=1`);
   return tree.tree.filter((t) => t.type === 'blob' && t.path.startsWith(prefix + '/'));
 }
-// Folder listing through the git tree (no 1000-item cap like the Contents API)
 async function listViaTree(dir) {
   const sha = S.head || (await repoApi(`/git/ref/heads/${S.branch}`)).object.sha;
   const commit = await repoApi(`/git/commits/${sha}`);
@@ -96,7 +89,6 @@ async function listViaTree(dir) {
     .filter((t) => t.path.startsWith(prefix) && !t.path.slice(prefix.length).includes('/'))
     .map((t) => ({ name: t.path.slice(prefix.length), path: t.path, type: t.type === 'tree' ? 'dir' : 'file', size: t.size || 0, sha: t.sha }));
 }
-/* ---------- the account: one sign-in, shared with the other apps (assets/js/account.js) ---------- */
 async function authenticate(token) {
   S.token = token;
   const res = await api('/user', { returnResponse: true });
@@ -104,13 +96,11 @@ async function authenticate(token) {
   S.owner = S.user.login;
 }
 
-// The default folders, all empty (a folder is kept by an empty .gitkeep file).
 async function createDefaultFolders() {
   const blob = await repoApi('/git/blobs', { method: 'POST', body: JSON.stringify({ content: '', encoding: 'utf-8' }) });
   await commitTree(DEFAULT_FOLDERS.map((name) => ({ path: [S.root, name, KEEP].filter(Boolean).join('/'), mode: '100644', type: 'blob', sha: blob.sha })), 'Drivemu: create the default folders');
 }
 
-// Connects to the shared storage (assets/js/storage.js): the drive is the whole repository, shown like a file explorer (AppData is a folder in it like the others). Then makes sure the default folders are there.
 async function openStorage() {
   const store = await storage.drive();
   S.owner = store.owner; S.repo = store.repo; S.branch = store.branch; S.root = store.root; S.system = store.system;
@@ -118,11 +108,10 @@ async function openStorage() {
   S.head = null;
   let root = [];
   try { root = await repoApi(`${contentsOf(S.root)}?ref=${S.branch}`); } catch (e) { if (e.status !== 404) throw e; }
-  if (root.every((item) => item.name === KEEP || S.system.includes(item.name))) await createDefaultFolders();   // a new drive: nothing yet but what GitHub and the apps made
+  if (root.every((item) => item.name === KEEP || S.system.includes(item.name))) await createDefaultFolders();
   showApp();
 }
 
-// Connects with the shared account; shows the sign-in screen when there is none or it does not work.
 async function startFromAccount() {
   const acc = account.get();
   if (!acc) { showSignedOut(); return; }
@@ -134,21 +123,17 @@ async function startFromAccount() {
     else showSignedOut(tr('login.couldNotConnect', { message: e.code === 'noWrite' ? tr('error.noWrite') : e.message }));
   }
 }
-// Back to the sign-in screen (the account was removed here or in another app).
 function resetSession() { S.token = ''; S.user = null; S.items = []; S.rootFolders = []; showSignedOut(); }
 account.onChange(async (acc) => {
   if (!acc) { if (S.user) resetSession(); return; }
   if (!S.user || acc.token !== S.token) await startFromAccount();
 });
 
-/* --- screens --- */
-// What is on the screen is also in the address (?path=Images/Cats&q=...&view=list&sort=size:-1), so a reload shows the same folder (assets/js/url.js): the first time the files are shown, they are the ones of the address.
 let fromAddress = { path: urlState.get('path'), query: urlState.get('q') };
 function showApp() {
   S.path = fromAddress.path.split('/').filter(Boolean); S.query = fromAddress.query; S.restored = S.path.length > 0; fromAddress = { path: '', query: '' };
   $('file-search').value = S.query; S.selected.clear(); load();
 }
-// Not signed in: the files page is shown as it is, empty, with an invitation to sign in.
 function showSignedOut(err = '') {
   S.path = []; S.query = ''; $('file-search').value = ''; S.selected.clear(); S.items = []; S.head = null;
   $('loading').classList.add('hidden');
@@ -156,14 +141,12 @@ function showSignedOut(err = '') {
   if (err) popups.toast(err, { kind: "error" });
 }
 
-/* --- settings: set in the account app; the reset it does shows here --- */
 settings.listen('drivemu', (message) => {
   if (message.type !== 'reset') return;
   S.head = message.head; S.path = []; S.query = ''; $('file-search').value = '';
   load(); refreshUsage();
 });
 
-/* ---------- file list ---------- */
 async function load() {
   $('loading').replaceChildren(...Array.from({ length: 4 }, () => element('i')));
   $('loading').classList.remove('hidden'); $('empty').classList.add('hidden'); $('file-list').replaceChildren();
@@ -171,11 +154,11 @@ async function load() {
   try {
     const r = await repoApi(`${contentsOf(fullPath())}?ref=${S.head || S.branch}`);
     let items = Array.isArray(r) ? r : [];
-    if (items.length >= 1000) items = await listViaTree(fullPath()); // the Contents API stops at 1000 items
+    if (items.length >= 1000) items = await listViaTree(fullPath());
     S.items = items.filter((i) => i.name !== KEEP);
     if (!S.path.length) S.rootFolders = S.items.filter((i) => i.type === 'dir').map((i) => i.name);
   } catch (e) {
-    if (e.status === 404 && S.restored && S.path.length) { S.path = []; S.restored = false; return load(); }   // the folder of the address is not there (any more): the start
+    if (e.status === 404 && S.restored && S.path.length) { S.path = []; S.restored = false; return load(); }
     if (e.status === 404) S.items = [];
     else { popups.toast(tr('load.failed', { message: e.message }), { kind: "error" }); S.items = []; }
   }
@@ -196,7 +179,6 @@ function visibleItems() {
   return items;
 }
 
-// How much of the storage is used: the percentage, and the text with sizes.
 function usageInfo() {
   const used = S.repoSizeKB * 1024, limit = STORAGE_LIMIT_KB * 1024;
   const percent = Math.min(100, (used / limit) * 100);
@@ -204,10 +186,9 @@ function usageInfo() {
   return { percent, params };
 }
 function refreshUsage() {
-  repoApi('').then((info) => { S.repoSizeKB = info.size; renderSide(); }).catch(() => { /* ignore */ });
+  repoApi('').then((info) => { S.repoSizeKB = info.size; renderSide(); }).catch(() => { });
 }
 
-// On a narrow screen the folders are hidden, and the button of the first row opens them over the files (Escape closes them and gives the focus back).
 function setSide(open) {
   $('sidebar').classList.toggle('open', open);
   $('menu-button').setAttribute('aria-expanded', String(open));
@@ -219,10 +200,9 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && $('sidebar').classList.contains('open') && $('menu-button').offsetParent) { setSide(false); $('menu-button').focus(); }
 });
 
-// The sidebar: the folders at the root of the drive (the last list read at the root), and the root itself.
 function renderSide() {
   const nav = $('sidebar-nav'), box = $('usage');
-  document.body.classList.toggle('plain', !S.user);   // signed out: only the name, settings, and profile show
+  document.body.classList.toggle('plain', !S.user);
   nav.replaceChildren(); box.replaceChildren();
   if (!S.user) return;
   const entry = (label, ico, path, on) => {
@@ -233,7 +213,6 @@ function renderSide() {
   };
   nav.append(entry(tr('nav.myDrive'), 'hard-drive', [], S.path.length === 0));
   for (const name of S.rootFolders) nav.append(entry(name, 'folder', [name], S.path[0] === name));
-  // the indicator of the storage used, at the bottom
   const { percent, params } = usageInfo();
   const meter = element('div', 'progress'), fill = element('div', 'progress-fill');
   fill.style.width = `${percent > 0 ? Math.max(percent, 1) : 0}%`;
@@ -257,7 +236,6 @@ function render() {
   } else if (items.length) {
     list.appendChild(listTable(items));
   }
-  // empty state
   const empty = items.length === 0;
   $('empty').classList.toggle('hidden', !empty);
   if (empty) {
@@ -289,10 +267,9 @@ function renderCrumbs() {
     return b;
   };
   c.appendChild(mk(tr('nav.myDrive'), 0));
-  S.path.forEach((p, i) => c.append(mk(p, i + 1)));   // the tag kit-breadcrumbs puts the separators
+  S.path.forEach((p, i) => c.append(mk(p, i + 1)));
 }
 
-/* ----- item building blocks ----- */
 function chkEl(it, always = false) {
   const c = element('input', 'checkbox' + (always ? ' always' : '')); c.type = 'checkbox'; c.setAttribute('aria-label', tr('sel.item', { name: it.name }));
   c.onclick = (e) => e.stopPropagation();
@@ -313,8 +290,7 @@ function nameCell(it, k) {
 function base(it, cls) {
   const el = element('div', 'file-item ' + cls); el.dataset.name = it.name; el.title = it.name;
   el.onclick = () => (S.selected.size ? toggleSel(it.name) : open(it));
-  if (it.type !== 'dir') transfer.drag(el, { id: it.path, name: it.name, size: it.size, image: kind(it) === 'image', load: () => fetchBlob(it) }, () => el.querySelector('.file-thumbnail, .file-tile'));   // the picture can be dragged out of the page, as a file
-  // Keyboard: Tab reaches every item; arrows move between them, Enter opens, Space selects, F2 renames, Delete deletes.
+  if (it.type !== 'dir') transfer.drag(el, { id: it.path, name: it.name, size: it.size, image: kind(it) === 'image', load: () => fetchBlob(it) }, () => el.querySelector('.file-thumbnail, .file-tile'));
   el.tabIndex = 0;
   el.onkeydown = (e) => {
     if (e.target !== el) return;
@@ -368,7 +344,6 @@ function listTable(items) {
   return t;
 }
 
-/* ----- selection ----- */
 function toggleSel(name, on) {
   const next = on === undefined ? !S.selected.has(name) : on;
   next ? S.selected.add(name) : S.selected.delete(name);
@@ -389,7 +364,6 @@ function updateSelection() {
   if (all) all.checked = S.visible.length > 0 && S.visible.every((i) => S.selected.has(i.name));
 }
 
-/* ---------- actions ---------- */
 function open(it) {
   if (it.type === 'dir') { S.path.push(it.name); S.query = ''; $('file-search').value = ''; load(); }
   else previewFile(it);
@@ -399,7 +373,7 @@ async function fetchBlob(it) {
   const res = await repoApi(`/contents/${enc(it.path)}?ref=${S.head || S.branch}`, { headers: { Accept: 'application/vnd.github.raw+json' } });
   const b = await res.blob();
   const m = MIME[extensionOf(it.name)];
-  return new Blob([b], { type: m || 'application/octet-stream' });   // the type of the answer (a JSON of GitHub) is not the type of the file
+  return new Blob([b], { type: m || 'application/octet-stream' });
 }
 async function download(it) {
   const t = popups.toast(tr('download.start', { name: it.name }), { kind: "info", duration: 0 });
@@ -436,7 +410,6 @@ const readB64 = (file) => new Promise((res, rej) => {
   r.readAsDataURL(file);
 });
 
-// Accept a File or { file, rel } (rel = relative path, e.g. "Images/a.jpg" when uploading a folder)
 async function upload(input) {
   if (!S.user) return account.open();
   let files = [...input].map((x) => (x instanceof File ? { file: x, rel: x.webkitRelativePath || x.name } : x));
@@ -521,7 +494,6 @@ async function remove(list) {
   t.close(); load(); refreshUsage();
 }
 
-/* ---------- menu "New": the menu of the template (assets/js/components.js) ---------- */
 $('new-button').onclick = (e) => components.menu({
   anchor: e.currentTarget,
   items: [
@@ -532,13 +504,12 @@ $('new-button').onclick = (e) => components.menu({
   ],
 });
 
-/* ---------- events ---------- */
 account.bind($('account-button'));
 $('file-input').onchange = (e) => { upload(e.target.files); e.target.value = ''; };
 $('folder-input').onchange = (e) => { upload(e.target.files); e.target.value = ''; };
-$('refresh-button').onclick = () => { S.head = null; load(); refreshUsage(); }; // read the files again (changes made elsewhere)
+$('refresh-button').onclick = () => { S.head = null; load(); refreshUsage(); };
 $('sort-order').onchange = (e) => { const [key, dir] = e.target.value.split(':'); S.sort = key; S.dir = +dir; render(); };
-const setView = (v) => { S.view = v; try { localStorage.setItem('drivemu.view', v); } catch { /* ignore */ } render(); };
+const setView = (v) => { S.view = v; try { localStorage.setItem('drivemu.view', v); } catch { } render(); };
 $('view-grid-button').onclick = () => setView('grid');
 $('view-list-button').onclick = () => setView('list');
 $('file-search').oninput = (e) => { S.query = e.target.value; render(); };
@@ -548,21 +519,19 @@ $('delete-selected-button').onclick = () => remove(S.items.filter((i) => S.selec
 $('preview-close-button').onclick = () => $('preview').close();
 $('preview').onclose = () => { if (pvUrl) { URL.revokeObjectURL(pvUrl); pvUrl = null; } $('preview-content').replaceChildren(); };
 
-// drag and drop
 let dragDepth = 0;
 const dz = $('drop-zone');
-const hasFiles = (e) => e.dataTransfer && ['Files', 'text/uri-list'].some((t) => e.dataTransfer.types.includes(t)) && !transfer.dragging;   // not a file of this page
+const hasFiles = (e) => e.dataTransfer && ['Files', 'text/uri-list'].some((t) => e.dataTransfer.types.includes(t)) && !transfer.dragging;
 dz.addEventListener('dragenter', (e) => { if (hasFiles(e)) { e.preventDefault(); dragDepth++; $('drop-overlay').classList.remove('hidden'); } });
 dz.addEventListener('dragover', (e) => { if (hasFiles(e)) e.preventDefault(); });
 dz.addEventListener('dragleave', () => { if (--dragDepth <= 0) { dragDepth = 0; $('drop-overlay').classList.add('hidden'); } });
 dz.addEventListener('drop', (e) => {
   if (!hasFiles(e)) return;
   e.preventDefault(); dragDepth = 0; $('drop-overlay').classList.add('hidden');
-  if (![...e.dataTransfer.types].includes('Files')) return transfer.take(e).then(upload);   // a file of the Drive that came as a link
+  if (![...e.dataTransfer.types].includes('Files')) return transfer.take(e).then(upload);
   collectDropped(e.dataTransfer).then(upload);
 });
 
-// Read dropped files, including folder contents (recursive)
 async function collectDropped(dt) {
   const roots = [...(dt.items || [])].map((i) => (i.webkitGetAsEntry ? i.webkitGetAsEntry() : null)).filter(Boolean);
   if (!roots.length) return [...dt.files];
@@ -583,14 +552,12 @@ async function collectDropped(dt) {
   return out;
 }
 
-/* ---------- language ---------- */
 function refreshLanguage() {
   render();
 }
 
-/* ---------- start ---------- */
 (async function init() {
-  await i18n.load();
+  await i18n.load(appData);
   const { drive, fileTypes, thumbnailExtensions, mimeTypes } = i18n.data;
   STORAGE_LIMIT_KB = drive.storageLimitGB * 1024 * 1024;
   DEFAULT_FOLDERS = drive.defaultFolders;
@@ -603,8 +570,8 @@ function refreshLanguage() {
   MIME = mimeTypes;
   i18n.selects();
   i18n.onChange(refreshLanguage);
-  try { S.view = localStorage.getItem('drivemu.view') || 'grid'; } catch { /* ignore */ }
-  if (['grid', 'list'].includes(urlState.get('view'))) S.view = urlState.get('view');   // the address wins
+  try { S.view = localStorage.getItem('drivemu.view') || 'grid'; } catch { }
+  if (['grid', 'list'].includes(urlState.get('view'))) S.view = urlState.get('view');
   const [sortKey, sortDir] = urlState.get('sort').split(':');
   if (['name', 'size', 'type'].includes(sortKey) && [-1, 1].includes(Number(sortDir))) { S.sort = sortKey; S.dir = Number(sortDir); }
   await startFromAccount();

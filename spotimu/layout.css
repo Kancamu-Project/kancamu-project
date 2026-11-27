@@ -1,23 +1,13 @@
-/* Spotimu: the music of the Drive (the audio files), with a player. */
 .hidden { display: none !important; }
-
-/* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
-
-/* Buttons */
 button.active, button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-
-/* Page */
-/* The page is the header, the main, and the footer, directly in the body. The padding and the gap are the ones of the body. */
 .main { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
 
 .header { height: var(--height); }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
+.logo-mark { background-image: url("favicon.png"); }
 .header-tools { height: 100%; }
 
 .toolbar { display: flex; flex-wrap: wrap; gap: var(--gap-small); }
 .toolbar select { width: calc(var(--height) * 6); max-width: 100%; }
-
-/* The tracks: one row each, touching, so the rows are square */
 .music { position: relative; min-height: 0; overflow: auto; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); }
 .track-list { display: flex; flex-direction: column; }
 .track {
@@ -33,8 +23,6 @@ button.active, button[aria-pressed="true"] { background: var(--fg); color: var(-
 .track.playing { color: var(--brand); background: var(--bg-1); }
 .track.playing .track-album, .track.playing .track-size { color: inherit; }
 .track.playing .track-title { font-weight: 700; }
-
-/* The player */
 .player { display: flex; flex-direction: column; gap: var(--gap-small); padding: var(--padding-medium); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); }
 .player-line { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-small); }
 .player-name { min-width: 0; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -44,9 +32,7 @@ button.active, button[aria-pressed="true"] { background: var(--fg); color: var(-
 .repeat-mark { position: absolute; inset-block-end: var(--padding-extra-small); inset-inline-end: var(--padding-extra-small); font-size: var(--font-size-extra-small); line-height: 1; }
 .volume { display: flex; align-items: center; gap: var(--gap-small); flex: 1; min-width: calc(var(--unit) * 50); justify-content: flex-end; }
 .volume .icon { color: var(--fg-1); }
-.volume-slider { flex: 1; width: auto; max-width: calc(var(--unit) * 80); }   /* the slider of the kit (assets/css/components.css), here in the row of the volume */
-
-/* Settings */
+.volume-slider { flex: 1; width: auto; max-width: calc(var(--unit) * 80); }
 dialog { color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--border); padding: 0; }
 dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent); }
 
@@ -56,6 +42,4 @@ dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent)
   .track-album { display: none; }
   .volume { flex-basis: 100%; justify-content: flex-start; }
 }
-
-/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
 #empty-action-button { width: calc(var(--height) * 4); }

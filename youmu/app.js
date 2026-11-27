@@ -1,17 +1,15 @@
-// The account app: the sign-in, the profile, and the settings of every app. The query string says which page shows:
-//   ?page=login  ?page=profile  ?page=settings&app=<app>
-// Any app opens it with its account button, account.open() (assets/js/account.js), which embeds this page in a dialog.
-// The settings of an app are described in its data.json ("settings": fields, defaults, and panels), and are only changed here.
 import { panels } from "./panels.js";
+import { i18n, popups, account, settings, urlState, components } from "../assets/js/shared.js";
+import selfData from "./data.js";
+import { appearance } from "../assets/data/data.js";
 
 const { element } = components;
 const $ = (id) => document.getElementById(id);
 const t = (key) => i18n.t(key);
 const embedded = window.parent !== window;
 const query = new URLSearchParams(location.search);
-const state = { page: query.get("page") || "", app: query.get("app") || "", appData: null, apps: [], loaded: false, run: 0 };   // apps: the apps that have settings, { id, name, icon, data }
+const state = { page: query.get("page") || "", app: query.get("app") || "", appData: null, apps: [], loaded: false, run: 0 };
 
-// What GitHub tells about the account and the token, fetched once per token.
 let details = null;
 async function fetchDetails(token) {
     let response;
@@ -64,7 +62,6 @@ function renderDetails() {
     const date = (value) => (value ? i18n.date(value, { year: "numeric", month: "long", day: "numeric" }) : "");
     const scopes = details.scopes.length ? element("span", "scope-chips") : null;
     details.scopes.forEach((scope) => scopes.append(element("span", "badge", scope)));
-    // The numbers of the account, as a row of tiles
     const numbers = [
         [t("publicRepos"), user.public_repos],
         [t("privateRepos"), user.owned_private_repos],
@@ -76,7 +73,6 @@ function renderDetails() {
         tile.append(element("span", "stat-value", typeof value === "number" ? i18n.number(value) : value), element("span", "stat-label", label));
         return tile;
     }));
-    // The rest opens and closes, like the settings
     box.replaceChildren(
         collapsible(section(t("profile"), [
             [t("githubProfile"), link],
@@ -97,10 +93,7 @@ function renderDetails() {
     $("account-profile").querySelector(".account-bio").textContent = user.bio || "";
 }
 
-/* ---------- the pages ---------- */
-// The page that shows: the settings when asked, else the profile when signed in, else the sign-in.
 const pageNow = () => (state.page === "settings" && (selectedApp() || !state.loaded) ? "settings" : account.get() ? "profile" : "login");
-// The app whose settings show: the one asked, when it has settings.
 const selectedApp = () => (state.apps.some((app) => app.id === state.app && app.data?.settings) ? state.app : "");
 
 function render() {
@@ -131,29 +124,27 @@ function render() {
     if (page === "settings") renderSettings();
 }
 
-// The sidebar: the account, and every app (its button is disabled when the app has no settings yet).
 function renderSide(page, selected) {
     const mark = (tab, on) => { tab.classList.toggle("on", on); tab.setAttribute("aria-selected", on); };
     mark($("account-tab"), page !== "settings");
     $("sidebar-apps").replaceChildren(...state.apps.map((app) => {
         const item = element("button", "sidebar-item");
         item.type = "button";
-        if (app.color) item.style.setProperty("--app-colour", app.color);   // the tint of its button is the colour of the app
-        const icon = element("span", app.glyph ? `icon icon-${app.glyph}` : "app-icon");   // the appearance has a glyph of the kit; an app has its own icon
+        if (app.color) item.style.setProperty("--app-colour", app.color);
+        const icon = element("span", app.glyph ? `icon icon-${app.glyph}` : "app-icon");
         if (!app.glyph) icon.style.backgroundImage = `url("../${app.icon}")`;
         const name = element("span", "app-name");
         const highlight = element("span", "highlight", app.parts[1]);
-        highlight.style.color = app.color;   // the colour of the project (a hex, or the name of a colour of the page)
+        highlight.style.color = app.color;
         name.append(app.parts[0], highlight, app.parts[2]);
         item.append(icon, name);
-        item.disabled = !app.data?.settings;   // an app that has no settings yet
+        item.disabled = !app.data?.settings;
         mark(item, page === "settings" && selected === app.id);
         item.addEventListener("click", () => showPage("settings", app.id));
         return item;
     }));
 }
 
-// An item of the sidebar changes the page without loading this app again, and the address follows.
 function showPage(page, app = "") {
     state.page = page;
     state.app = app;
@@ -162,46 +153,38 @@ function showPage(page, app = "") {
 }
 $("account-tab").addEventListener("click", () => showPage("account"));
 
-/* ---------- the settings ---------- */
 const appData = async (app) => {
     if (!/^[a-z0-9-]+$/.test(app)) return null;
     try {
-        const response = await fetch(`../${app}/data.json`, { cache: "no-store" });
-        if (!response.ok) return null;
-        const text = JSON.stringify(await response.json()).replaceAll("{highlight}", i18n.brand.highlight).replaceAll("{brand}", i18n.brand.name);
+        const text = JSON.stringify((await import(`../${app}/data.js`)).default).replaceAll("{highlight}", i18n.brand.highlight).replaceAll("{brand}", i18n.brand.name);
         return JSON.parse(text);
     } catch {
         return null;
     }
 };
-// Every app of the brand, with its data.json when it has one: { id, name, icon, data }. An app has settings when its data.json has a "settings" part.
 async function loadApps() {
     let projects = [];
-    try { projects = (await (await fetch("../data.json", { cache: "no-store" })).json()).projects; } catch { return []; }
+    try { projects = (await import("../data.js")).default.projects; } catch { return []; }
     const fill = (text) => text.replaceAll("{highlight}", i18n.brand.highlight).replaceAll("{brand}", i18n.brand.name);
     const found = await Promise.all(projects.filter((project) => project.publisher === "{brand}").map(async (project) => {
         const folder = /^[a-z0-9-]+\/$/.test(project.url || "") ? project.url.slice(0, -1) : "";
         const name = fill(i18n.pick(project.name));
-        const highlight = fill(i18n.pick(project.highlight || {}));   // the highlighted part of the name (the "mu"), found in it like the main website does
+        const highlight = fill(i18n.pick(project.highlight || {}));
         const at = highlight ? name.indexOf(highlight) : -1;
         const parts = at < 0 ? [name, "", ""] : [name.slice(0, at), highlight, name.slice(at + highlight.length)];
         return { id: folder || project.id, name, parts, color: /^#/.test(project.color) ? project.color : `var(--${project.color})`, icon: project.icon, data: folder ? await appData(folder) : null };
     }));
-    // The apps that have settings first, then the ones that have none (their buttons are disabled), each group by name.
     found.sort((a, b) => Number(!a.data?.settings) - Number(!b.data?.settings) || a.name.localeCompare(b.name, i18n.lang));
-    // Before them, the appearance of every app (the effects, assets/data/appearance.json): it belongs to no app, and is set like the settings of one.
     try {
-        const data = await (await fetch("../assets/data/appearance.json", { cache: "no-store" })).json();
+        const data = appearance;
         found.unshift({ id: "appearance", name: i18n.pick(data.ui.name), parts: [i18n.pick(data.ui.name), "", ""], glyph: "sliders", data });
-    } catch { /* the page is left out */ }
+    } catch { }
     return found;
 }
 
-// A text of the app that is being set, in the language of the page.
 const appText = (key, params = {}) => (state.appData.ui?.[key] ? i18n.pick(state.appData.ui[key]) : key).replace(/\{(\w+)\}/g, (_, name) => params[name] ?? "");
 
 
-// One button in the header toggles the theme; its icon is the theme that a click gives (a sun in the dark theme).
 $("theme-button").addEventListener("click", () => {
     const theme = document.documentElement.dataset.theme === "light" ? "dark" : "light";
     document.documentElement.dataset.theme = theme;
@@ -218,8 +201,6 @@ window.addEventListener("storage", (event) => {
     if (event.key === "theme" || event.key === null) markTheme();
 });
 
-// The options of a select: written in the field ("options": [{ value, label }]), or taken from a list of the data.json of the app
-// ("optionsFrom": { "list": "video.formats", "value": "id", "label": "name" }, a list of plain values has no value and label, and "labelPrefix" makes the label a text of the app).
 function optionsOf(definition) {
     const from = definition.optionsFrom;
     const items = definition.options || (from.list.split(".").reduce((node, key) => node?.[key], state.appData) || []).map((item) => {
@@ -229,16 +210,14 @@ function optionsOf(definition) {
     return definition.empty ? [{ value: "", label: appText(definition.empty) }, ...items] : items;
 }
 
-// A part of the settings opens and closes: its title becomes a button, and the rest goes in a body that hides. Every part is open when the page is shown.
 function collapsible(box) {
     const title = box.querySelector(":scope > .detail-section-title");
-    if (!title) return box;   // a panel that shows nothing
+    if (!title) return box;
     const part = components.make("collapsible", { heading: title.textContent, open: true }, [...box.children].filter((child) => child !== title));
     part.classList.add("detail-section");
     return part;
 }
 
-// A field of the app that is being set: a label, a hint, and a control. The value is saved at once, kept in range.
 function field(definition, values, save) {
     const box = element("label", `setting-field ${definition.type}`);
     const label = element("span", "field-label", appText(definition.label));
@@ -250,8 +229,8 @@ function field(definition, values, save) {
     } else {
         control = element("input");
         control.type = definition.type;
-        if (definition.type === "range") control.className = "slider";   // the slider of the kit
-        if (definition.type === "checkbox") control.className = "checkbox";   // the checkbox of the kit
+        if (definition.type === "range") control.className = "slider";
+        if (definition.type === "checkbox") control.className = "checkbox";
     }
     for (const name of ["min", "max", "step"]) if (definition[name] !== undefined) control[name] = definition[name];
     if (definition.type === "checkbox") control.checked = !!values[definition.id];
@@ -270,14 +249,14 @@ function field(definition, values, save) {
 
 async function renderSettings() {
     const page = $("settings-page");
-    state.run++;   // what an earlier call is still waiting for is not shown any more
+    state.run++;
     const app = selectedApp();
     if (!app) return page.replaceChildren();
     state.appData = state.apps.find((item) => item.id === app).data;
     const config = state.appData.settings;
     const nodes = [];
     const defaults = config.defaults || {};
-    if (config.fields?.length) {   // the values of the app, under its name
+    if (config.fields?.length) {
         const save = (definition, control) => {
             let value;
             if (definition.type === "checkbox") value = control.checked;
@@ -301,7 +280,6 @@ async function renderSettings() {
         nodes.push(collapsible(box));
     }
     const context = { app, data: state.appData, t: appText, ask: (options) => popups.ask(options), toast: (text, options) => popups.toast(text, options), announce: (message) => settings.announce(app, message) };
-    // The fields show at once; every panel takes its place when it is ready (some ask GitHub).
     const run = ++state.run;
     const waiting = (config.panels || []).filter((name) => panels[name]).map((name) => {
         const place = element("div");
@@ -310,15 +288,13 @@ async function renderSettings() {
     });
     page.replaceChildren(...nodes);
     await Promise.all(waiting);
-    if (state.run === run && !page.textContent.trim()) page.append(element("span", "hint", t("settings.empty")));   // the panels of an app that need the account show nothing without it
+    if (state.run === run && !page.textContent.trim()) page.append(element("span", "hint", t("settings.empty")));
 }
 
-// The error of the sign-in is a popup, like every notice
 function showLoginError(message) {
     if (message) popups.toast(message, { kind: "error" });
 }
 
-// "Sign in with GitHub": the whole page goes to GitHub, and comes back to callback.html (assets/js/account.js)
 $("github-button").addEventListener("click", async () => {
     const button = $("github-button");
     showLoginError("");
@@ -335,24 +311,22 @@ $("sign-out-button").addEventListener("click", () => account.signOut());
 
 $("close-button").hidden = !embedded;
 $("close-button").addEventListener("click", () => window.parent.postMessage({ type: "account:close" }, location.origin));
-// On a narrow screen the list is hidden, and the button of the first row opens it over the page (Escape closes it first).
 const menu = components.drawer({ sidebar: $("sidebar"), button: $("menu-button") });
 $("sidebar").addEventListener("click", (event) => { if (event.target.closest(".sidebar-item")) menu.set(false); });
 document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && embedded) window.parent.postMessage({ type: "account:close" }, location.origin);
 });
 
-// The first control, so the keyboard works at once when the dialog opens.
 const focusFirst = () => (pageNow() === "login" ? $("github-button") : document.querySelector(".content")).focus({ preventScroll: true });
 window.addEventListener("message", (event) => {
     if (event.origin === location.origin && event.data?.type === "account:focus") focusFirst();
 });
 
-await i18n.load();
-loadApps().then((found) => { state.apps = found; state.loaded = true; render(); });   // the sidebar fills in when the apps are known; the page does not wait for it
+await i18n.load(selfData);
+loadApps().then((found) => { state.apps = found; state.loaded = true; render(); });
 account.onChange(render);
 i18n.onChange(render);
-i18n.selects();   // the language select in the header
+i18n.selects();
 markTheme();
 render();
 if (embedded) focusFirst();

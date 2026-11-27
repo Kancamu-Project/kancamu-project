@@ -1,5 +1,7 @@
-// Gallemu: the images and videos of the user's Drive, in one gallery.
-await i18n.load();
+import { i18n, popups, account, storage, urlState, transfer, autocomplete, components } from "../assets/js/shared.js";
+import appData from "./data.js";
+
+await i18n.load(appData);
 i18n.selects();
 
 const { extensionOf, formatSize } = components;
@@ -11,23 +13,21 @@ const els = Object.fromEntries([
   "viewer-previous-button", "viewer-next-button", "account-button"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-// The media types, the limits and the folder are in data.json.
 const { media, limits, mimeTypes } = i18n.data;
 const KIND_OF = new Map(Object.entries(media).flatMap(([kind, extensions]) => extensions.map((extension) => [extension, kind])));
-const ALL = "", ROOT = "/";   // the values of the album select: every album, and the files at the root of the Drive
+const ALL = "", ROOT = "/";
 
 const state = {
-  token: "",       // the token the store was opened with
+  token: "",
   store: null,
-  phase: "signedOut",   // signedOut, loading, ready, or failed
+  phase: "signedOut",
   truncated: false,
-  items: [],       // every image and video: { path, name, album, size, kind }
-  shown: [],       // what the album, the search and the sort leave
+  items: [],
+  shown: [],
   viewIndex: -1,
 };
 
 
-/* ---------- the files ---------- */
 async function loadFiles() {
   const signedIn = account.get();
   if (!signedIn) {
@@ -55,9 +55,6 @@ async function loadFiles() {
   render();
 }
 
-/* ---------- the albums: the folders that hold images or videos ---------- */
-// What is on the screen is also in the address (?album=...&q=...&sort=...), so a reload shows the same (assets/js/url.js). The albums are known when the files are loaded:
-// until then the album of the address waits, and nothing is written (the first render would write "every album").
 let wantedAlbum = urlState.get("album");
 function renderAlbums() {
   const counts = new Map();
@@ -73,9 +70,8 @@ function renderAlbums() {
 }
 const inAlbum = (item) => els.albumSelect.value === ALL || (item.album || ROOT) === els.albumSelect.value;
 
-/* ---------- the grid ---------- */
-const thumbnails = new Map();   // path -> the address of its small image
-let generation = 0;             // changes at every render, so an image that finishes late does not land on a tile that is gone
+const thumbnails = new Map();
+let generation = 0;
 
 function render() {
   generation++;
@@ -126,12 +122,11 @@ function makeTile(item, index) {
     else observer.observe(tile);
   }
   tile.addEventListener("click", () => openViewer(index));
-  transfer.drag(tile, () => fileOf(item));   // the image can be dragged out of the page, as a file
+  transfer.drag(tile, () => fileOf(item));
   return tile;
 }
 const showThumbnail = (tile, url) => { tile.style.backgroundImage = `url("${url}")`; tile.classList.add("loaded"); };
 
-/* The small images are made when a tile comes near the screen, a few at a time. */
 const queue = [];
 let active = 0;
 const observer = new IntersectionObserver((entries) => {
@@ -162,12 +157,11 @@ async function makeThumbnail({ tile, generation: made }) {
       canvas.getContext("2d").drawImage(bitmap, 0, 0);
       bitmap.close();
       url = URL.createObjectURL(await new Promise((resolve) => canvas.toBlob(resolve, "image/webp", 0.8)));
-    } catch { url = URL.createObjectURL(blob); }   // an image the browser cannot shrink (an SVG, for one) is shown as it is
+    } catch { url = URL.createObjectURL(blob); }
     thumbnails.set(item.path, url);
     if (made === generation) showThumbnail(tile, url);
-  } catch { /* the tile keeps its icon */ }
+  } catch { }
 }
-// What transfer.drag needs to drag a file of the Drive out of the page
 const fileOf = (item) => ({ id: item.path, name: item.name, size: item.size, image: item.kind === "image", load: () => readBlob(item) });
 async function readBlob(item) {
   const bytes = await storage.readBinary(state.store, item.path);
@@ -175,10 +169,9 @@ async function readBlob(item) {
   return new Blob([bytes], { type: mimeTypes[extensionOf(item.name)] || "application/octet-stream" });
 }
 
-/* ---------- the viewer ---------- */
-const opened = new Map();   // path -> the address of the whole file, for the last few files that were opened
+const opened = new Map();
 let viewToken = 0;
-let opener = null;   // what had the focus before the viewer opened, to give it back
+let opener = null;
 
 function openViewer(index) {
   opener = document.activeElement;
@@ -214,7 +207,7 @@ async function showCurrent() {
 async function wholeFileUrl(item) {
   if (!opened.has(item.path)) {
     opened.set(item.path, URL.createObjectURL(await readBlob(item)));
-    while (opened.size > limits.viewerCacheSize) {   // the oldest ones are let go
+    while (opened.size > limits.viewerCacheSize) {
       const [oldest, url] = opened.entries().next().value;
       opened.delete(oldest);
       URL.revokeObjectURL(url);
@@ -222,7 +215,6 @@ async function wholeFileUrl(item) {
   }
   return opened.get(item.path);
 }
-// What the viewer shows can be dragged out of the page too (an image as an image, a video as a link)
 for (const media of [els.viewerImage, els.viewerVideo]) {
   transfer.drag(media, () => {
     const item = state.shown[state.viewIndex];
@@ -242,7 +234,7 @@ els.viewerDialog.addEventListener("close", () => { viewToken++; stopVideo(); sta
 els.viewerDialog.addEventListener("keydown", (event) => {
   const forward = document.documentElement.dir === "rtl" ? "ArrowLeft" : "ArrowRight";
   const back = document.documentElement.dir === "rtl" ? "ArrowRight" : "ArrowLeft";
-  if (event.target === els.viewerVideo && (event.key === "ArrowLeft" || event.key === "ArrowRight")) return;   // the arrows seek inside a video
+  if (event.target === els.viewerVideo && (event.key === "ArrowLeft" || event.key === "ArrowRight")) return;
   if (event.key === forward) { event.preventDefault(); step(1); }
   else if (event.key === back) { event.preventDefault(); step(-1); }
 });
@@ -255,7 +247,6 @@ els.viewerDownloadButton.addEventListener("click", async () => {
   link.click();
 });
 
-/* ---------- the toolbar, the settings, the account ---------- */
 els.gallerySearch.addEventListener("input", render);
 els.albumSelect.addEventListener("change", render);
 els.sortOrder.addEventListener("change", render);

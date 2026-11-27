@@ -1,19 +1,8 @@
-/* muJS: lessons that teach JavaScript, with a code editor that runs the code. */
 .hidden { display: none !important; }
 
-/* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
-
-/* Buttons */
-
-/* The page is the header, the sidebar, and the main, directly in the body. The padding and the gap are the ones of the body: the three elements have none. */
-
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
-
-/* The sidebar holds the status line and the copyright at its end */
+.logo-mark { background-image: url("favicon.png"); }
 
 .section-title { color: var(--fg-1); font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; }
-
-/* The lessons on one side, the lesson on the other */
 .unit { display: flex; flex-direction: column; gap: var(--gap-extra-small); padding-block-end: var(--padding-small); }
 .unit-title { display: flex; align-items: center; height: var(--height); padding: 0 var(--padding-medium); color: var(--fg-1); font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sidebar-item { text-transform: none; }
@@ -27,8 +16,6 @@
 .step { flex: 1; height: calc(var(--unit) * 2); background: var(--border); border-radius: var(--border-radius-small); }
 .step.done { background: var(--ok); }
 .step.on { background: var(--brand); }
-
-/* The lesson is the part that has a border around it */
 .main { padding: var(--padding-medium); }
 .breadcrumbs { flex: 1; }
 .breadcrumb { height: auto; font-size: var(--font-size-small); }
@@ -44,8 +31,6 @@
 .task { display: flex; flex-direction: column; gap: var(--gap-small); padding: var(--padding-medium); border: var(--border-width) solid var(--brand); border-radius: var(--border-radius-medium); background: color-mix(in srgb, var(--brand) 10%, var(--bg)); }
 .task .section-title { color: var(--brand); }
 .lesson-task { font-size: var(--font-size-medium); line-height: 1.5; }
-
-/* Code: the example, the editor (a text area over the same text with colours), and the colours of the words */
 .code {
   margin: 0; padding: var(--padding-medium); font-family: var(--font-mono); font-size: calc(var(--font-size-small) * var(--editor-scale, 1)); line-height: 1.6; tab-size: 2;
   white-space: pre; color: var(--fg);
@@ -71,8 +56,6 @@
 .token-call { color: var(--brand); }
 
 .work-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--unit) * 50), 1fr)); gap: var(--gap-small); }
-
-/* The console, like a terminal */
 .terminal { display: flex; flex-direction: column; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); overflow: hidden; min-width: 0; }
 .terminal-bar { display: flex; align-items: center; height: calc(var(--unit) * 10); padding: 0 var(--padding-medium); border-bottom: var(--border-width) solid var(--border); background: var(--bg-1); }
 .console { min-height: calc(var(--unit) * 24); max-height: calc(var(--unit) * 70); overflow: auto; padding: var(--padding-medium); font-family: var(--font-mono); font-size: calc(var(--font-size-small) * var(--editor-scale, 1)); line-height: 1.6; white-space: pre; }
@@ -81,8 +64,6 @@
 .console-line.error { color: var(--danger); }
 .console-line.error::before { color: var(--danger); }
 .console-empty { color: var(--fg-1); font-family: var(--font-sans); white-space: normal; }
-
-/* The result of a check */
 .outcome { display: flex; flex-direction: column; gap: var(--gap-small); padding: var(--padding-medium); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); }
 .outcome.passed { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 8%, var(--bg)); }
 .outcome.failed { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 8%, var(--bg)); }
@@ -99,12 +80,8 @@
 .test-detail { color: var(--fg-1); }
 
 .sandbox-frame { display: none; }
-
-/* Messages */
 dialog { color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--border); padding: 0; }
 dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent); }
-
-/* From a tablet up, the lessons stay beside the lesson; a wide screen puts the code beside what is learned */
 @media (min-width: 48rem) {
   body { grid-template-columns: var(--sidebar-width) minmax(0, 1fr); }
   .header { grid-column: 1; grid-row: 1; }
@@ -117,5 +94,3 @@ dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent)
 @media (min-width: 64rem) {
   .lesson-body { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-
-/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */

@@ -1,25 +1,15 @@
-/* Gallemu: the images and videos of the Drive, in one gallery. */
 .hidden { display: none !important; }
-
-/* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
 :root[dir="rtl"] :is(.icon-chevron-left, .icon-chevron-right) { transform: scaleX(-1); }
-
-/* Buttons */
 button.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-
-/* Page */
-/* The page is the header, the main, and the footer, directly in the body. The padding and the gap are the ones of the body. */
 .main { display: grid; grid-template-rows: auto minmax(0, 1fr); }
 
 .header { height: var(--height); }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
-:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/components.css) */
+.logo-mark { background-image: url("favicon.png"); }
+:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }
 .header-tools { height: 100%; }
 
 .toolbar { display: flex; flex-wrap: wrap; gap: var(--gap-small); }
 .toolbar select { width: calc(var(--height) * 6); max-width: 100%; }
-
-/* The gallery: a grid of tiles, each a square image or a video */
 .gallery { position: relative; min-height: 0; overflow: auto; padding: var(--padding-medium); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-large); }
 .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--unit) * 45)), 1fr)); gap: var(--gap-small); }
 .tile {
@@ -36,8 +26,6 @@ button.active { background: var(--fg); color: var(--bg); border-color: var(--fg)
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0; transition: opacity 0.15s;
 }
 .tile:hover .tile-name, .tile:focus-visible .tile-name { opacity: 1; }
-
-/* The viewer: one image or video at a time */
 dialog { color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--border); padding: 0; }
 dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent); }
 .viewer-dialog { width: min(calc(var(--vw) * 96), calc(var(--unit) * 480)); height: calc(var(--vh) * 92); }
@@ -54,12 +42,8 @@ dialog::backdrop { background: color-mix(in srgb, var(--black) 70%, transparent)
 .viewer-previous { inset-inline-start: var(--padding-medium); }
 .viewer-next { inset-inline-end: var(--padding-medium); }
 
-/* Settings */
-
 @media (max-width: 35rem) {
   .toolbar select { flex: 1; }
   .viewer-dialog { width: calc(var(--vw) * 100); height: calc(var(--vh) * 100); max-width: none; max-height: none; }
 }
-
-/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
 #empty-action-button { width: calc(var(--height) * 4); }

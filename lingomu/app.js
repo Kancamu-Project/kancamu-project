@@ -1,7 +1,7 @@
-// Lingomu: short lessons that teach the words of a language. The courses, the units, the lessons, and the rules of a lesson are in data.json.
-// The progress (lessons done, XP, streak) is kept in this browser, and in the lingomu folder of the storage once the user is signed in.
+import { i18n, popups, account, settings, storage, urlState, components } from "../assets/js/shared.js";
+import appData from "./data.js";
 
-await i18n.load();
+await i18n.load(appData);
 
 const { element, icon } = components;
 const tr = (key, params) => i18n.t(key, params);
@@ -14,7 +14,6 @@ const els = Object.fromEntries([
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
 const { lesson: rules, concepts, courses, units, storageFolder, settings: { defaults } } = i18n.data;
-// A word of a course is a text, or { text, roman } for a script with a reading aid (pinyin, romaji, ...): the aid is shown, and can be typed instead of the script.
 const wordText = (course, id) => (typeof course.words[id] === "string" ? course.words[id] : course.words[id].text);
 const wordRoman = (course, id) => (typeof course.words[id] === "string" ? "" : course.words[id].roman);
 const romanOfText = (course, text) => wordRoman(course, Object.keys(course.words).find((id) => wordText(course, id) === text));
@@ -29,14 +28,13 @@ const shuffled = (list) => {
 
 const say = components.status(els.status);
 
-/* ---------- the progress ---------- */
 const PROGRESS_KEY = "lingomu.progress";
 const blank = () => ({ course: "", done: {}, xp: 0, today: { date: "", xp: 0 }, streak: { days: 0, last: "" }, updated: 0 });
 function readLocal() {
   try { return { ...blank(), ...JSON.parse(localStorage.getItem(PROGRESS_KEY)) }; } catch { return blank(); }
 }
 let progress = readLocal();
-let preferences = settings.get("lingomu", defaults);   // the daily goal and the speech: set in the account app
+let preferences = settings.get("lingomu", defaults);
 
 const dayOf = (offset = 0) => {
   const date = new Date();
@@ -48,11 +46,10 @@ const todayXp = () => (progress.today.date === dayOf() ? progress.today.xp : 0);
 
 function save() {
   progress.updated = Date.now();
-  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); } catch { /* the progress stays in memory */ }
+  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); } catch { }
   scheduleUpload();
 }
 
-/* ---------- the account: the same progress on every device ---------- */
 const sync = { store: null, token: "", timer: 0 };
 async function openStore() {
   const signedIn = account.get();
@@ -70,7 +67,6 @@ function scheduleUpload() {
     } catch (error) { popups.toast(tr("sync.failed", { message: error.message }), { kind: "error" }); }
   }, 1500);
 }
-// The progress of the account and the one of this device: the newest one is kept.
 async function download() {
   say(tr(account.get() ? "status.signedIn" : "status.signedOut"));
   try {
@@ -80,16 +76,13 @@ async function download() {
     const remote = text ? JSON.parse(text) : null;
     if (remote && remote.updated > progress.updated) {
       progress = { ...blank(), ...remote };
-      try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); } catch { /* ignore */ }
+      try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); } catch { }
       renderAll();
     } else if (progress.updated > (remote?.updated || 0)) scheduleUpload();
   } catch (error) { popups.toast(tr("sync.failed", { message: error.message }), { kind: "error" }); }
 }
 
-/* ---------- the courses ---------- */
-// Every course is offered, whatever the language of the page.
 const availableCourses = () => courses;
-// The course and the lesson that are shown are also in the address (?course=...&lesson=...), so a reload shows the same (assets/js/url.js); the address wins until the user chooses a course.
 let courseWish = urlState.get("course");
 const currentCourse = () => {
   const offered = availableCourses();
@@ -102,7 +95,6 @@ function buildCourseSelect() {
 }
 els.courseSelect.addEventListener("change", () => { courseWish = ""; progress.course = els.courseSelect.value; save(); selectedId = ""; renderPath(); });
 
-/* ---------- the lessons ---------- */
 const lessonsOf = () => units.flatMap((unit, unitIndex) => unit.lessons.map((lesson) => ({ ...lesson, unit, unitIndex })));
 const timesDone = (course, lessonId) => progress.done[course.id]?.[lessonId] || 0;
 
@@ -115,16 +107,13 @@ function renderStats() {
   els.goalFill.style.width = `${Math.min(100, Math.round((earned / goal) * 100))}%`;
 }
 
-let selectedId = urlState.get("lesson");   // the lesson that the main part shows
+let selectedId = urlState.get("lesson");
 let view = "overview";
 const isLocked = (course, all, lesson) => {
   const index = all.findIndex((item) => item.id === lesson.id);
   return index > 0 && !timesDone(course, all[index - 1].id);
 };
 
-// On a narrow screen the lessons are hidden, and a button opens them over the main (Escape closes them and gives the focus back).
-
-// Choosing a lesson in the list shows it in the main part (a lesson that is going on asks first).
 async function choose(id) {
   if (view === "lesson" && !(await popups.ask({ title: tr("quit.title"), text: tr("quit.text"), ok: tr("quit.ok") }))) return;
   lesson = null;
@@ -159,7 +148,6 @@ function renderSidebar(course, all) {
   }));
 }
 
-// The main part shows the lesson that is chosen: the words in it, and the button that starts it.
 function renderOverview(course, all) {
   const item = all.find((entry) => entry.id === selectedId);
   const number = item.unit.lessons.findIndex((entry) => entry.id === item.id) + 1;
@@ -196,7 +184,6 @@ function renderAll() {
   renderPath();
 }
 
-/* ---------- a lesson ---------- */
 const canSpeak = "speechSynthesis" in window;
 function speak(text) {
   if (!canSpeak) return;
@@ -205,12 +192,11 @@ function speak(text) {
   utterance.lang = currentCourse().speech;
   speechSynthesis.speak(utterance);
 }
-// Marks that differ only by an accent, a capital, or punctuation do not make a typed answer wrong.
 const plain = (text) => text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^\p{L}\p{M}\p{N} ]/gu, "").replace(/\s+/g, " ").trim();
 
 const sameAnswer = (a, b) => plain(a).replace(/ /g, "") === plain(b).replace(/ /g, "");
 
-let lesson = null;   // { course, data, queue, solved, total, hearts, mistakes, current, answered, chosen }
+let lesson = null;
 
 function buildQueue(course, data) {
   const ids = data.words;
@@ -218,7 +204,6 @@ function buildQueue(course, data) {
   const listening = canSpeak && preferences.speak ? of(rules.listenKind) : [];
   return [...of("meaning"), ...of("word"), { kind: rules.matchKind, ids }, ...shuffled([...of("type"), ...listening])];
 }
-// The right answer and some wrong ones (words of the course that are not the right one), in a random order.
 function choicesFor(course, id, textOf) {
   const right = textOf(id);
   const others = shuffled(Object.keys(course.words).filter((other) => other !== id && textOf(other) !== right)).slice(0, rules.choices - 1).map(textOf);
@@ -337,7 +322,6 @@ function choiceList(options, right, romanOf = () => "") {
   return list;
 }
 
-/* ---------- the pairs: a word of the course on one side, its meaning on the other ---------- */
 function renderMatch() {
   const { course, current } = lesson;
   const pairing = { picked: { word: null, meaning: null }, matched: new Set() };
@@ -379,8 +363,6 @@ function pick(side, id, button) {
   }
 }
 
-/* ---------- checking an answer ---------- */
-// A heart is lost for a wrong answer; with none left, the lesson ends (after the answer was shown, or at once while pairing).
 function loseHeart(immediately = false) {
   lesson.hearts--;
   lesson.mistakes++;
@@ -400,7 +382,7 @@ function checkAnswer() {
   });
   const input = els.exercise.querySelector(".type-input");
   if (input) input.disabled = true;
-  if (!right) lesson.queue.push(current);   // a wrong answer comes back at the end
+  if (!right) lesson.queue.push(current);
   answered(right, lesson.shown || lesson.correct);
   if (!right) loseHeart();
 }
@@ -432,7 +414,6 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-/* ---------- the end of a lesson ---------- */
 function showResult({ title, lines, continueText, retry }) {
   els.resultTitle.textContent = title;
   els.resultLines.replaceChildren(...lines);
@@ -476,7 +457,6 @@ function failLesson() {
   lesson = { ...lesson, retry: data };
 }
 els.resultContinueButton.addEventListener("click", () => {
-  // after a lesson that was done, the next one is shown
   const all = lessonsOf();
   const finished = lesson?.retry ? -1 : all.findIndex((item) => item.id === lesson?.data.id);
   if (finished >= 0 && all[finished + 1]) selectedId = all[finished + 1].id;
@@ -493,7 +473,6 @@ els.quitButton.addEventListener("click", async () => {
   renderPath();
 });
 
-/* ---------- the settings, the account, and the language ---------- */
 settings.onChange("lingomu", defaults, (changed) => { preferences = changed; renderStats(); });
 settings.listen("lingomu", (message) => {
   if (message.type === "progressReset") { progress = blank(); renderAll(); }

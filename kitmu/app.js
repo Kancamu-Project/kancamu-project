@@ -1,6 +1,7 @@
-// Kitmu: the UI kit of the apps: the components (assets/css/components.css), the helpers (assets/js/components.js), and the popups (assets/js/popup.js), each with the code to copy and a way to try it.
-// The tabs: Components (the list: every component as a card with its name and its preview, narrowed down by the search and the tags), Pages (what is made of several components), How to use, Helpers, and Popups (each kept in the address as ?view=pages, ?view=guide, ?view=helpers, ?view=popups).
-await i18n.load();
+import { i18n, popups, account, urlState, components } from "../assets/js/shared.js";
+import appData from "./data.js";
+
+await i18n.load(appData);
 i18n.selects();
 
 const tr = (key, params) => i18n.t(key, params);
@@ -9,9 +10,8 @@ const { element } = components;
 const { popups: popupDocs, items: componentDocs, helpers, guide, tags: tagDocs } = i18n.data;
 const { pages } = i18n.data;
 const views = ["components", "pages", "guide", "helpers", "popups"];
-const single = new Set(["pages", "guide"]);   // the views whose cards are one under another, each as wide as the page (the others are columns)
+const single = new Set(["pages", "guide"]);
 
-/* ---------- the search and the tags, as in the directory: they are in the address (?q=...&tag=...), and so is the tab (?view=pages), assets/js/url.js ---------- */
 const params = new URLSearchParams(location.search);
 const filter = { q: params.get("q") || "", tag: tagDocs[params.get("tag")] ? params.get("tag") : "all" };
 const filtering = () => filter.q.trim() !== "" || filter.tag !== "all";
@@ -21,7 +21,6 @@ function save() {
   urlState.set({ q: filter.q, tag: filter.tag === "all" ? "" : filter.tag, view: view === "components" ? "" : view });
 }
 
-/* ---------- the views: built once, filled again when the language or the theme changes ---------- */
 const boxes = {};
 for (const id of views) {
   const box = element("div", "kit-section");
@@ -33,8 +32,7 @@ for (const id of views) {
 }
 $("content").replaceChildren(...views.map((id) => boxes[id].box), $("no-results"));
 
-/* ---------- a card: the name, the chips, and the preview; with a code, the buttons Preview and Code choose what is shown ---------- */
-const showingCode = new Set();   // the cards whose code is shown instead of the preview, kept when the cards are made again
+const showingCode = new Set();
 function card(key, title, chips, { preview, code = null }) {
   const box = element("div", "doc-card");
   const head = element("div", "doc-head");
@@ -72,8 +70,6 @@ function card(key, title, chips, { preview, code = null }) {
   return box;
 }
 
-/* ---------- templates: each one in a page of its own (so nothing of this app changes it), with the HTML to copy ---------- */
-// What makes a demo work: the expandable parts open and close, a toggle stays pressed, and one button of a toggle group is on.
 const DEMO_SCRIPT = `
 document.querySelectorAll(".section-toggle").forEach((toggle) => !toggle.closest("kit-collapsible") && components.expand({ toggle, body: toggle.nextElementSibling, open: toggle.getAttribute("aria-expanded") !== "false" }));
 document.querySelectorAll("button.toggle").forEach((button) => button.addEventListener("click", () => { button.classList.toggle("on"); button.setAttribute("aria-pressed", button.classList.contains("on")); }));
@@ -82,7 +78,7 @@ document.querySelectorAll(".segmented-control").forEach((group) => group.querySe
 function demoPage(html, script = "") {
   const style = getComputedStyle(document.documentElement);
   const theme = document.documentElement.dataset.theme === "light" ? "light" : "dark";
-  return `<!doctype html><html data-theme="${theme}"><head><meta charset="utf-8"><link rel="stylesheet" href="../assets/css/style.css"><link rel="stylesheet" href="../assets/css/components.css"><link rel="stylesheet" href="../assets/css/page.css"><style>:root { --brand: ${style.getPropertyValue("--brand")}; --brand-ink: ${style.getPropertyValue("--brand-ink")}; } .logo-mark { background-image: url(favicon.png); } body { min-height: 0; }</style></head><body>${html}<script src="../assets/js/popup.js"></script><script src="../assets/js/autocomplete.js"></script><script src="../assets/js/components.js"></script><script>${DEMO_SCRIPT}</script>${script ? `<script>${script.replaceAll("</", "<\\/")}</script>` : ""}</body></html>`;
+  return `<!doctype html><html data-theme="${theme}"><head><meta charset="utf-8"><link rel="stylesheet" href="../assets/css/shared.css"><style>:root { --brand: ${style.getPropertyValue("--brand")}; --brand-ink: ${style.getPropertyValue("--brand-ink")}; } .logo-mark { background-image: url(favicon.png); } body { min-height: 0; }</style></head><body class="page">${html}<script type="module">import { popups, autocomplete, components } from "../assets/js/shared.js"; Object.assign(window, { popups, autocomplete, components });</script><script type="module">${DEMO_SCRIPT}</script>${script ? `<script type="module">${script.replaceAll("</", "<\\/")}</script>` : ""}</body></html>`;
 }
 function component(doc) {
   const frame = element("iframe", "doc-frame");
@@ -94,10 +90,8 @@ function component(doc) {
   return card(`component.${doc.id}`, doc.name, doc.tags ?? [], { preview: [frame], code: [element("span", "doc-text", tr(`components.${doc.id}.text`)), ...note, code] });
 }
 
-/* ---------- the guide: how an app uses Kitmu, one step after another, with the code to copy ---------- */
 const guideItem = (step) => card(`guide.${step.id}`, tr(`guide.${step.id}.title`), [], { preview: [element("span", "doc-text", tr(`guide.${step.id}.text`))], code: step.code ? [element("pre", "doc-code", step.code)] : null });
 
-/* ---------- helpers: the small scripts of components.js, with the code and what it gives ---------- */
 const helperResult = { format: () => `${components.formatSize(1536000)} · ${components.extensionOf("Image.PNG")}` };
 function helperItem(helper) {
   const preview = [element("span", "doc-text", tr(`helpers.${helper.id}.text`))];
@@ -105,7 +99,6 @@ function helperItem(helper) {
   return card(`helper.${helper.id}`, tr(`helpers.${helper.id}.title`), [], { preview, code: [element("pre", "doc-code", helper.code)] });
 }
 
-/* ---------- popups: how each one is used, with the code and a button that tries it ---------- */
 const demos = {
   toast: () => popups.toast(tr("demo.copied")),
   toastInfo: () => popups.toast(tr("demo.syncing"), { kind: "info" }),
@@ -140,8 +133,7 @@ function popupItem(doc) {
   return card(`popup.${doc.id}`, tr(`popups.${doc.id}.title`), [], { preview: [element("span", "doc-text", tr(`popups.${doc.id}.text`)), run], code: [element("pre", "doc-code", doc.code)] });
 }
 
-/* ---------- the list of components: a card for each one, in one list; the search and the tags hide the ones that do not match (they are not made again) ---------- */
-const entries = [...componentDocs].sort((a, b) => a.name.localeCompare(b.name)).map((doc) => ({   // A-Z by name
+const entries = [...componentDocs].sort((a, b) => a.name.localeCompare(b.name)).map((doc) => ({
   tags: doc.tags,
   title: () => doc.name,
   text: () => tr(`components.${doc.id}.text`),
@@ -185,13 +177,11 @@ $("kit-search").addEventListener("input", () => {
 });
 $("reset-button").addEventListener("click", () => { filter.q = ""; filter.tag = "all"; save(); applyFilter(); });
 
-/* ---------- the tabs: one view at a time; only the list of components has the search and the filters ---------- */
 function renderTabs() {
   const buttons = views.map((id) => { const button = element("button", "", tr(`section.${id}`)); button.setAttribute("value", id); button.type = "button"; return button; });
   const tabs = components.make("tabs", { value: view }, buttons);
   tabs.addEventListener("change", (event) => { view = event.detail.value; save(); showView(); });
   $("views").replaceChildren(tabs);
-  // on a narrow screen the row scrolls: the tab that is shown is brought into view (after the layout, when the font has its width)
   requestAnimationFrame(() => requestAnimationFrame(() => tabs.querySelector(".on")?.scrollIntoView({ block: "nearest", inline: "nearest" })));
   document.fonts?.ready.then(() => tabs.querySelector(".on")?.scrollIntoView({ block: "nearest", inline: "nearest" }));
 }
@@ -217,10 +207,8 @@ function renderAll() {
 }
 renderAll();
 i18n.onChange(renderAll);
-// The demos of the templates follow the theme: when it changes (here, or in another app), they are made again.
 new MutationObserver(() => { for (const entry of entries) entry.node = entry.make(); boxes.components.body.replaceChildren(...entries.map((entry) => entry.node)); applyFilter(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
-// One button toggles the theme, to see the kit in both of them; its icon is the theme that a click gives (a sun in the dark theme).
 function markTheme() {
   const light = document.documentElement.dataset.theme === "light";
   const icon = $("theme-button").querySelector(".icon");
@@ -230,7 +218,7 @@ function markTheme() {
 $("theme-button").addEventListener("click", () => {
   const theme = document.documentElement.dataset.theme === "light" ? "dark" : "light";
   document.documentElement.dataset.theme = theme;
-  try { localStorage.setItem("theme", theme); } catch { /* ignore */ }
+  try { localStorage.setItem("theme", theme); } catch { }
 });
 new MutationObserver(markTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 window.addEventListener("storage", (event) => { if (event.key === "theme" || event.key === null) markTheme(); });

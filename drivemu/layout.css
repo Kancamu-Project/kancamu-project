@@ -1,8 +1,4 @@
-
-/* Drivemu follows RULES.md: rem in multiples of 0.2 (except 0.1rem/1px/2px), no em,
-   a fixed height only for elements whose height never changes, spacing between children through gap. */
 :root {
-  /* Colour, font and control-height tokens live in ../assets/css/style.css. Only what is specific to Drivemu is here. */
   --accent-soft: var(--bg-1);
   --danger-soft: color-mix(in srgb, var(--danger) 10%, var(--bg));
   --shadow: none; --shadow-lg: none;
@@ -12,28 +8,19 @@ body { line-height: 1.5; -webkit-font-smoothing: antialiased; text-rendering: op
 .spacer { flex: 1; }
 .muted { color: var(--fg-1); }
 a { color: var(--accent-text); }
-   /* the copyright is gray like the rest of the footer */
 p, h1, h2, h3, ul { margin: 0; padding: 0; }
 ul { list-style: none; }
-
-/* ---------- Icons (masks from assets/icons/, colour = currentColor) ---------- */
-.icon { display: block; width: var(--is, var(--icon-size-medium)); height: var(--is, var(--icon-size-medium)); }   /* the size of an icon here is the one of --is, or medium */
-
-/* Colour per file type (--tc), used by .file-tile and the small icons */
+.icon { display: block; width: var(--is, var(--icon-size-medium)); height: var(--is, var(--icon-size-medium)); }
 .kind-folder { --tc: var(--yellow); } .kind-image { --tc: var(--green); } .kind-video { --tc: var(--blue); } .kind-audio { --tc: var(--red); }
 .kind-pdf { --tc: var(--red); } .kind-text { --tc: var(--blue); } .kind-archive { --tc: var(--yellow); } .kind-file { --tc: var(--fg-1); }
 .file-tile { display: flex; align-items: center; justify-content: center; flex: none; width: var(--height); height: var(--height);
   color: var(--tc); background: color-mix(in srgb, var(--tc) 14%, transparent); }
 .file-tile.large { --is: var(--icon-size-large); width: calc(var(--unit) * 20); height: calc(var(--unit) * 20); }
-
-/* exception: the main action button is taller (3rem) so it becomes the focal point */
 .call-to-action { height: calc(var(--unit) * 15); font-size: var(--font-size-medium); }
 .call-to-action .icon { --is: var(--icon-size-medium); }
-/* Logo = favicon.png (16x16 pixels). Shown at 2rem (exactly 2x) with pixelated rendering so the pixels stay sharp. */
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
-:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/components.css) */
+.logo-mark { background-image: url("favicon.png"); }
+:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }
 .logo.light { color: var(--accent-ink); }
-/* on the panel the orange icon needs a dark background for contrast; tile = 2rem icon + 0.6rem padding */
 .logo.light .logo-mark { box-sizing: content-box; padding: var(--padding-small); background-color: var(--accent-ink); background-origin: content-box; }
 .account-profile { display: flex; align-items: center; gap: var(--gap-small); }
 .account-owner { display: flex; flex-direction: column; min-width: 0; }
@@ -42,20 +29,14 @@ ul { list-style: none; }
 .chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--gap-small); }
 .inline { display: flex; gap: var(--gap-small); }
 .inline > button { flex: none; }
-
-/* ---------- App frame ---------- */
-/* The page is the header, the sidebar, and the panel (the main), directly in the body. The padding and the gap are the ones of the body: the three elements have none. */
 body { grid-template-columns: var(--sidebar-width) minmax(0, 1fr); overflow: hidden; }
-/* The panel is the main: it has a border around it. */
 .main { gap: 0; grid-column: 2; grid-row: 1 / -1; display: grid; grid-template-rows: auto minmax(0, 1fr); overflow: hidden; }
 .topbar { box-sizing: content-box; gap: 0; padding-inline: 0; border-bottom: var(--border-width) solid var(--border); }
 .topbar > :is(#new-button, .searchbox, #sort-order, #refresh-button, .segmented-control) { height: 100%; }
 #new-button { flex: none; }
-.searchbox input { border-inline-start-width: 0; }   /* the button before it has the line */
+.searchbox input { border-inline-start-width: 0; }
 #refresh-button { border-inline-end-width: 0; }
-/* What touches another element is square: the bar of the files, the view switch, the buttons of a row. */
 .topbar :is(input, select, button), .segmented-control button, .actions .icon-button { border-radius: 0; }
-/* The header holds the name and the profile button; the sidebar holds New, the folders, and the storage used. */
 .sidebar { grid-column: 1; grid-row: 2; display: flex; overflow: auto; }
 .header { grid-column: 1; grid-row: 1; }
 .menu-button { display: none; }
@@ -71,7 +52,6 @@ body.plain :is(#new-button, .sidebar-nav, .usage, #refresh-button) { display: no
 .searchbox { flex: none; width: calc(var(--height) * 6); }
 .searchbox .icon { --is: var(--icon-size-medium); }
 .searchbox input { height: 100%; }
-/* The list and grid switch is the same as the main site's: two square buttons side by side, the chosen one inverted. */
 .segmented-control { height: var(--height); }
 .segmented-control button { display: flex; align-items: center; justify-content: center; width: var(--height); padding: 0; cursor: pointer; }
 .segmented-control button .icon { --is: var(--icon-size-small); }
@@ -86,8 +66,6 @@ body.plain :is(#new-button, .sidebar-nav, .usage, #refresh-button) { display: no
 .breadcrumbs .breadcrumb-separator { --is: var(--icon-size-small); }
 .selection-bar { display: flex; align-items: center; gap: var(--gap-small); flex: 1; height: var(--height); padding: 0 var(--padding-medium); border-radius: var(--border-radius-medium); background: var(--accent-soft); color: var(--accent-text); }
 .footer { grid-column: 1; grid-row: 3; flex-direction: column; gap: var(--gap-extra-small); }
-
-/* ---------- List: table ---------- */
 .list-section-title { padding: var(--padding-large) 0 var(--padding-medium); font-size: var(--font-size-small); font-weight: 600; color: var(--fg-1); text-transform: uppercase;}
 .list.list .file-table { border: var(--border-width) solid var(--border); overflow: hidden; }
 .file-row { display: grid; grid-template-columns: var(--height) minmax(0, 1fr) calc(var(--unit) * 40) calc(var(--unit) * 36) calc(var(--unit) * 36); align-items: center; gap: var(--gap-small); height: calc(var(--unit) * 19); padding: 0 var(--padding-large); border-bottom: var(--border-width) solid var(--border); }
@@ -100,26 +78,18 @@ body.plain :is(#new-button, .sidebar-nav, .usage, #refresh-button) { display: no
 .file-name { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .file-cell { font-size: var(--font-size-small); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .numeric-cell { text-align: start; font-variant-numeric: tabular-nums; }
-
-/* custom checkbox */
-.checkbox { opacity: 0; transition: opacity .12s, background .12s, border-color .12s; }   /* it shows when the row is pointed or selected */
+.checkbox { opacity: 0; transition: opacity .12s, background .12s, border-color .12s; }
 .checkbox:checked { opacity: 1; }
 .checkbox.always { opacity: 1; }
 .file-item:hover .checkbox, .file-item:focus-within .checkbox, .selecting .checkbox { opacity: 1; }
-
-/* per-item action buttons */
 .actions { display: flex; align-items: center; justify-content: flex-end; opacity: 0; transition: opacity .12s; }
 .file-item:hover .actions, .file-item:focus-within .actions { opacity: 1; }
-/* exception: small icon buttons are 2.2rem so they fit inside rows and cards */
 .icon-button { display: flex; align-items: center; justify-content: center; width: calc(var(--unit) * 11); height: calc(var(--unit) * 11); padding: 0; color: var(--fg-1); cursor: pointer; }
 .icon-button .icon { --is: var(--icon-size-medium); }
 .icon-button:hover { color: var(--fg); }
 .icon-button.delete:hover { color: var(--danger); background: var(--danger-soft); }
-
-/* ---------- List: grid ---------- */
 .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--unit) * 78)), 1fr)); }
 .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--unit) * 83)), 1fr)); }
-/* The items touch each other, and a line is drawn only where there is an item: every item draws its own top and start line inside, and its end and bottom line outside (where the next item draws its own). */
 .file-chip { display: flex; align-items: center; gap: var(--gap-small); height: calc(var(--unit) * 21); padding-inline: var(--padding-large) var(--padding-medium); border: var(--border-width) solid var(--border); background: var(--bg); cursor: pointer; transition: background .12s, box-shadow .15s, border-color .12s; }
 .file-chip .file-name { flex: 1; min-width: 0; }
 .file-chip { position: relative; }
@@ -139,17 +109,11 @@ body.plain :is(#new-button, .sidebar-nav, .usage, #refresh-button) { display: no
 .card-footer > .icon { --is: var(--icon-size-medium); color: var(--tc); }
 .card-footer .card-text { display: flex; flex-direction: column; min-width: 0; }
 .card-footer .file-meta { font-size: var(--font-size-small); color: var(--fg-1); }
-
-/* ---------- Empty state, loading, drop ---------- */
 .loading { display: flex; flex-direction: column; gap: var(--gap-small); padding-top: var(--padding-medium); }
 .loading::before, .loading::after, .loading i { content: ""; display: block; height: calc(var(--unit) * 19); background: var(--bg-1); animation: pulse 1.4s ease-in-out infinite; }
 .drop-overlay { position: absolute; inset: calc(var(--unit) * 4); z-index: 6; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--gap-small); border: var(--border-width) solid var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--bg)); color: var(--accent-text); font-size: var(--font-size-extra-large); font-weight: 600; pointer-events: none; animation: fade .15s; }
 .drop-overlay .icon { --is: var(--icon-size-extra-large); }
 @keyframes fade { from { opacity: 0; } }
-
-/* ---------- Menu "New" ---------- */
-
-/* ---------- Dialog ---------- */
 .message-dialog { border: var(--border-width) solid var(--border); background: var(--bg); color: var(--fg); padding: var(--padding-extra-large); width: min(calc(var(--unit) * 140), calc(var(--vw) * 92)); box-shadow: var(--shadow-lg); }
 .message-dialog[open] { animation: pop .18s var(--ease); }
 .message-dialog::backdrop { background: color-mix(in srgb, var(--black) 55%, transparent); backdrop-filter: blur(calc(var(--unit) * 2)); }
@@ -166,16 +130,11 @@ body.plain :is(#new-button, .sidebar-nav, .usage, #refresh-button) { display: no
 .preview-body audio { width: 100%; }
 .preview-body iframe { width: 100%; height: calc(var(--vh) * 74); border: 0; background: var(--white); }
 .preview-body pre { margin: 0; width: 100%; white-space: pre-wrap; word-break: break-word; font-size: var(--font-size-small); line-height: 1.6; }
-
-/* ---------- Toast ---------- */
-
-/* ---------- Responsive ---------- */
 @media (max-width: 56rem) {
   body { grid-template-columns: minmax(0, 1fr); }
   .header { grid-column: 1; }
   .main { grid-column: 1; grid-row: 2; }
   .footer { flex-direction: row; justify-content: space-between; }
-  /* New, the folders, and the storage used open over the files with the button of the header */
   .menu-button { display: flex; }
   body.plain .menu-button { display: none; }
   .sidebar { display: none; padding: var(--padding-large); }
@@ -190,7 +149,6 @@ body.plain :is(#new-button, .sidebar-nav, .usage, #refresh-button) { display: no
   .file-thumbnail .checkbox { opacity: 1; }
 }
 @media (max-width: 35rem) {
-  /* The search takes a whole line; the sort and the view buttons share the line under it. */
   .topbar { flex-wrap: wrap; height: auto; border-bottom: 0; }
   .topbar > :is(#new-button, .searchbox, #sort-order, #refresh-button, .segmented-control) { height: var(--height); }
   .searchbox { order: -1; flex: 1 1 100%; border-bottom: var(--border-width) solid var(--border); }
@@ -202,8 +160,6 @@ body.plain :is(#new-button, .sidebar-nav, .usage, #refresh-button) { display: no
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
-
-/* ---------- Main-site look: square corners, 1px lines, uppercase mono buttons ---------- */
 .file-card:hover { transform: none; }
 input:focus, select:focus { box-shadow: none; border-color: var(--fg); }
 .file-card:hover, .file-chip:hover { box-shadow: inset 0 var(--border-width) 0 var(--fg), inset var(--border-width) 0 0 var(--border), var(--border-width) var(--border-width) 0 var(--border); background: var(--bg-1); }
@@ -211,12 +167,8 @@ input:focus, select:focus { box-shadow: none; border-color: var(--fg); }
 .logo.light { color: var(--fg); }
 .logo.light .logo-mark { background-color: var(--fg); }
 .message-dialog::backdrop { backdrop-filter: none; background: color-mix(in srgb, var(--black) 60%, transparent); }
-
-/* ---------- Language and right-to-left ---------- */
 select.language { width: calc(var(--height) * 5); flex: none; padding-inline: var(--padding-medium) var(--padding-extra-large); }
 :root[dir="rtl"] .icon-chevron-left, :root[dir="rtl"] .icon-chevron-right { transform: scaleX(-1); }
-
-/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
 #new-button { width: calc(var(--height) * 3); }
 #delete-selected-button { width: calc(var(--height) * 3); }
 #preview-download-button { width: calc(var(--height) * 4); }

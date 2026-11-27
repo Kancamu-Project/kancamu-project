@@ -1,0 +1,338 @@
+export default {
+  "name": {
+    "en-US": "Spoti{highlight} — your music",
+    "zh-CN": "Spoti{highlight} — 你的音乐",
+    "ar-SA": "Spoti{highlight} — موسيقاك"
+  },
+  "brandColor": "#1cc93d",
+  "repeatModes": [
+    "off",
+    "all",
+    "one"
+  ],
+  "limits": {
+    "cacheSize": 3
+  },
+  "media": {
+    "audio": [
+      "mp3",
+      "wav",
+      "ogg",
+      "m4a",
+      "flac",
+      "aac",
+      "opus",
+      "weba"
+    ]
+  },
+  "mimeTypes": {
+    "mp3": "audio/mpeg",
+    "wav": "audio/wav",
+    "ogg": "audio/ogg",
+    "m4a": "audio/mp4",
+    "flac": "audio/flac",
+    "aac": "audio/aac",
+    "opus": "audio/ogg",
+    "weba": "audio/webm"
+  },
+  "languages": [
+    {
+      "code": "en-US",
+      "name": "English",
+      "dir": "ltr"
+    },
+    {
+      "code": "zh-CN",
+      "name": "简体中文",
+      "dir": "ltr"
+    },
+    {
+      "code": "ar-SA",
+      "name": "العربية",
+      "dir": "rtl"
+    }
+  ],
+  "ui": {
+    "logo": {
+      "en-US": "Spoti<span class=\"highlight\">{highlight}</span>",
+      "zh-CN": "Spoti<span class=\"highlight\">{highlight}</span>",
+      "ar-SA": "Spoti<span class=\"highlight\">{highlight}</span>"
+    },
+    "copyright": {
+      "en-US": "© {brand}",
+      "zh-CN": "© {brand}",
+      "ar-SA": "© {brand}"
+    },
+    "account": {
+      "en-US": "Account",
+      "zh-CN": "账户",
+      "ar-SA": "الحساب"
+    },
+    "settings": {
+      "en-US": "Settings",
+      "zh-CN": "设置",
+      "ar-SA": "الإعدادات"
+    },
+    "close": {
+      "en-US": "Close",
+      "zh-CN": "关闭",
+      "ar-SA": "إغلاق"
+    },
+    "reset": {
+      "en-US": "Reset",
+      "zh-CN": "重置",
+      "ar-SA": "إعادة الضبط"
+    },
+    "reset.title": {
+      "en-US": "Playback settings",
+      "zh-CN": "播放设置",
+      "ar-SA": "إعدادات التشغيل"
+    },
+    "reset.hint": {
+      "en-US": "Volume, shuffle, and repeat go back to their first values.",
+      "zh-CN": "音量、随机播放和循环播放恢复为初始值。",
+      "ar-SA": "يعود مستوى الصوت والتشغيل العشوائي والتكرار إلى قيمها الأولى."
+    },
+    "reset.text": {
+      "en-US": "Volume, shuffle, and repeat will go back to their first values.",
+      "zh-CN": "音量、随机播放和循环播放将恢复为初始值。",
+      "ar-SA": "سيعود مستوى الصوت والتشغيل العشوائي والتكرار إلى قيمها الأولى."
+    },
+    "search": {
+      "en-US": "Search by name…",
+      "zh-CN": "按名称搜索…",
+      "ar-SA": "ابحث بالاسم…"
+    },
+    "search.label": {
+      "en-US": "Search tracks",
+      "zh-CN": "搜索曲目",
+      "ar-SA": "البحث في المقاطع"
+    },
+    "refresh": {
+      "en-US": "Refresh",
+      "zh-CN": "刷新",
+      "ar-SA": "تحديث"
+    },
+    "album.label": {
+      "en-US": "Album",
+      "zh-CN": "专辑",
+      "ar-SA": "الألبوم"
+    },
+    "album.all": {
+      "en-US": "All music",
+      "zh-CN": "所有音乐",
+      "ar-SA": "كل الموسيقى"
+    },
+    "album.root": {
+      "en-US": "Drive root",
+      "zh-CN": "云盘根目录",
+      "ar-SA": "جذر المساحة"
+    },
+    "sort.label": {
+      "en-US": "Sort",
+      "zh-CN": "排序",
+      "ar-SA": "الترتيب"
+    },
+    "sort.albumAsc": {
+      "en-US": "Album, then name",
+      "zh-CN": "先专辑，后名称",
+      "ar-SA": "الألبوم ثم الاسم"
+    },
+    "sort.nameAsc": {
+      "en-US": "Name (A–Z)",
+      "zh-CN": "名称（A–Z）",
+      "ar-SA": "الاسم (أ–ي)"
+    },
+    "sort.nameDesc": {
+      "en-US": "Name (Z–A)",
+      "zh-CN": "名称（Z–A）",
+      "ar-SA": "الاسم (ي–أ)"
+    },
+    "sort.sizeAsc": {
+      "en-US": "Size (small to large)",
+      "zh-CN": "大小（从小到大）",
+      "ar-SA": "الحجم (من الأصغر)"
+    },
+    "sort.sizeDesc": {
+      "en-US": "Size (large to small)",
+      "zh-CN": "大小（从大到小）",
+      "ar-SA": "الحجم (من الأكبر)"
+    },
+    "status.items": {
+      "en-US": "{count} tracks · {size}",
+      "zh-CN": "{count} 首 · {size}",
+      "ar-SA": "{count} مقطع · {size}"
+    },
+    "status.filtered": {
+      "en-US": "{shown} of {total} tracks",
+      "zh-CN": "{total} 首中的 {shown} 首",
+      "ar-SA": "{shown} من {total} مقطع"
+    },
+    "status.truncated": {
+      "en-US": "Your Drive is too big to list in full, so some files are missing.",
+      "zh-CN": "你的云盘太大，无法完整列出，部分文件未显示。",
+      "ar-SA": "مساحتك كبيرة جدًا لعرضها كاملة، لذا بعض الملفات غير ظاهرة."
+    },
+    "loading": {
+      "en-US": "Loading your music…",
+      "zh-CN": "正在加载你的音乐…",
+      "ar-SA": "جارٍ تحميل موسيقاك…"
+    },
+    "empty.title": {
+      "en-US": "No music yet",
+      "zh-CN": "还没有音乐",
+      "ar-SA": "لا توجد موسيقى بعد"
+    },
+    "empty.text": {
+      "en-US": "Upload audio files to your Drive with Drivemu and they show up here.",
+      "zh-CN": "用 Drivemu 把音频文件上传到你的云盘，就会显示在这里。",
+      "ar-SA": "ارفع ملفات الصوت إلى مساحتك عبر Drivemu وستظهر هنا."
+    },
+    "empty.noMatches": {
+      "en-US": "Nothing found",
+      "zh-CN": "没有找到内容",
+      "ar-SA": "لم يتم العثور على شيء"
+    },
+    "empty.noMatchesText": {
+      "en-US": "No track matches \"{query}\" in this album.",
+      "zh-CN": "此专辑中没有与“{query}”匹配的曲目。",
+      "ar-SA": "لا يوجد مقطع يطابق \"{query}\" في هذا الألبوم."
+    },
+    "signedout.title": {
+      "en-US": "Sign in to hear your music",
+      "zh-CN": "登录以收听你的音乐",
+      "ar-SA": "سجّل الدخول للاستماع إلى موسيقاك"
+    },
+    "signedout.text": {
+      "en-US": "Your music is the audio files in your Drive. Sign in once and they show up here.",
+      "zh-CN": "你的音乐就是云盘里的音频文件。登录一次，它们就会显示在这里。",
+      "ar-SA": "موسيقاك هي ملفات الصوت في مساحتك. سجّل الدخول مرة واحدة وستظهر هنا."
+    },
+    "login.signIn": {
+      "en-US": "Sign in",
+      "zh-CN": "登录",
+      "ar-SA": "تسجيل الدخول"
+    },
+    "load.failed": {
+      "en-US": "Could not load your files: {message}",
+      "zh-CN": "无法加载你的文件：{message}",
+      "ar-SA": "تعذر تحميل ملفاتك: {message}"
+    },
+    "acct.tokenInvalid": {
+      "en-US": "The sign-in of {name} has ended. Sign in again.",
+      "zh-CN": "{name} 的登录已失效，请重新登录。",
+      "ar-SA": "انتهى تسجيل دخول {name}. سجّل الدخول مرة أخرى."
+    },
+    "acct.anAccount": {
+      "en-US": "your account",
+      "zh-CN": "你的账户",
+      "ar-SA": "حسابك"
+    },
+    "track.play": {
+      "en-US": "Play {name}",
+      "zh-CN": "播放 {name}",
+      "ar-SA": "تشغيل {name}"
+    },
+    "player.nothing": {
+      "en-US": "Nothing is playing",
+      "zh-CN": "没有正在播放的内容",
+      "ar-SA": "لا يوجد شيء قيد التشغيل"
+    },
+    "player.loading": {
+      "en-US": "Loading {name}…",
+      "zh-CN": "正在加载 {name}…",
+      "ar-SA": "جارٍ تحميل {name}…"
+    },
+    "player.failed": {
+      "en-US": "Could not play this file: {message}",
+      "zh-CN": "无法播放此文件：{message}",
+      "ar-SA": "تعذر تشغيل هذا الملف: {message}"
+    },
+    "player.play": {
+      "en-US": "Play",
+      "zh-CN": "播放",
+      "ar-SA": "تشغيل"
+    },
+    "player.pause": {
+      "en-US": "Pause",
+      "zh-CN": "暂停",
+      "ar-SA": "إيقاف مؤقت"
+    },
+    "player.previous": {
+      "en-US": "Previous track",
+      "zh-CN": "上一首",
+      "ar-SA": "المقطع السابق"
+    },
+    "player.next": {
+      "en-US": "Next track",
+      "zh-CN": "下一首",
+      "ar-SA": "المقطع التالي"
+    },
+    "player.shuffle": {
+      "en-US": "Shuffle",
+      "zh-CN": "随机播放",
+      "ar-SA": "تشغيل عشوائي"
+    },
+    "player.repeat.off": {
+      "en-US": "Repeat: off",
+      "zh-CN": "循环：关",
+      "ar-SA": "التكرار: متوقف"
+    },
+    "player.repeat.all": {
+      "en-US": "Repeat: all tracks",
+      "zh-CN": "循环：全部曲目",
+      "ar-SA": "التكرار: كل المقاطع"
+    },
+    "player.repeat.one": {
+      "en-US": "Repeat: this track",
+      "zh-CN": "循环：当前曲目",
+      "ar-SA": "التكرار: هذا المقطع"
+    },
+    "player.seek": {
+      "en-US": "Position",
+      "zh-CN": "播放位置",
+      "ar-SA": "الموضع"
+    },
+    "player.volume": {
+      "en-US": "Volume",
+      "zh-CN": "音量",
+      "ar-SA": "مستوى الصوت"
+    },
+    "set.repeat.label": {
+      "en-US": "Repeat",
+      "zh-CN": "循环",
+      "ar-SA": "التكرار"
+    }
+  },
+  "settings": {
+    "defaults": {
+      "volume": 0.8,
+      "shuffle": false,
+      "repeat": "off"
+    },
+    "fields": [
+      {
+        "id": "volume",
+        "type": "range",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "label": "player.volume"
+      },
+      {
+        "id": "shuffle",
+        "type": "checkbox",
+        "label": "player.shuffle"
+      },
+      {
+        "id": "repeat",
+        "type": "select",
+        "optionsFrom": {
+          "list": "repeatModes",
+          "labelPrefix": "player.repeat."
+        },
+        "label": "set.repeat.label"
+      }
+    ]
+  }
+};

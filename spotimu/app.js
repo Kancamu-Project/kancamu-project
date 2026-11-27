@@ -1,5 +1,7 @@
-// Spotimu: the audio files of the user's Drive, with a player.
-await i18n.load();
+import { i18n, popups, account, settings, storage, urlState, autocomplete, components } from "../assets/js/shared.js";
+import appData from "./data.js";
+
+await i18n.load(appData);
 i18n.selects();
 
 const { extensionOf, formatSize } = components;
@@ -12,25 +14,23 @@ const els = Object.fromEntries([
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 const audio = els.audioElement;
 
-// The audio types, the limits, the first values of the settings, and the folder are in data.json.
 const { media, limits, mimeTypes, settings: { defaults }, repeatModes } = i18n.data;
 const AUDIO = new Set(media.audio);
-const ALL = "", ROOT = "/";   // the values of the album select: every album, and the files at the root of the Drive
+const ALL = "", ROOT = "/";
 
 const state = {
-  token: "",       // the token the store was opened with
+  token: "",
   store: null,
-  phase: "signedOut",   // signedOut, loading, ready, or failed
+  phase: "signedOut",
   truncated: false,
-  items: [],       // every track: { path, name, title, album, size }
-  shown: [],       // what the album, the search and the sort leave
-  queue: [],       // the tracks that play one after the other: what was shown when a track was started
+  items: [],
+  shown: [],
+  queue: [],
   queueIndex: -1,
-  history: [],     // the tracks played before, for the previous button when the order is shuffled
-  now: null,       // the track that is loaded in the player
+  history: [],
+  now: null,
 };
 
-/* ---------- the playback settings (volume, shuffle, repeat): the player and the account app both set them, and each follows the other ---------- */
 let playback = settings.get("spotimu", defaults);
 const saveSettings = () => settings.set("spotimu", playback);
 settings.onChange("spotimu", defaults, (changed) => { playback = changed; state.history = []; applySettings(); });
@@ -51,7 +51,6 @@ const clock = (seconds) => {
   return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, "0")}`;
 };
 
-/* ---------- the files ---------- */
 async function loadFiles() {
   const signedIn = account.get();
   if (!signedIn) {
@@ -79,9 +78,6 @@ async function loadFiles() {
   render();
 }
 
-/* ---------- the albums: the folders that hold audio files ---------- */
-// What is on the screen is also in the address (?album=...&q=...&sort=...), so a reload shows the same (assets/js/url.js). The albums are known when the files are loaded:
-// until then the album of the address waits, and nothing is written (the first render would write "every album").
 let wantedAlbum = urlState.get("album");
 function renderAlbums() {
   const counts = new Map();
@@ -98,7 +94,6 @@ function renderAlbums() {
 const inAlbum = (item) => els.albumSelect.value === ALL || (item.album || ROOT) === els.albumSelect.value;
 const albumLabel = (item) => item.album || tr("album.root");
 
-/* ---------- the list of tracks ---------- */
 function render() {
   renderAlbums();
   const query = els.musicSearch.value.trim().toLowerCase();
@@ -144,7 +139,7 @@ function makeTrack(item, index) {
   const size = document.createElement("span"); size.className = "track-size"; size.textContent = formatSize(item.size);
   row.append(icon, title, album, size);
   row.addEventListener("click", () => {
-    if (state.now?.path === item.path) return togglePlay();   // the track that is loaded: the same as the play button
+    if (state.now?.path === item.path) return togglePlay();
     state.queue = [...state.shown];
     state.queueIndex = index;
     state.history = [];
@@ -152,7 +147,6 @@ function makeTrack(item, index) {
   });
   return row;
 }
-// The row of the track that is loaded shows a play or pause icon.
 function markPlaying() {
   for (const row of els.trackList.children) {
     const playing = row.dataset.path === state.now?.path;
@@ -163,15 +157,14 @@ function markPlaying() {
   }
 }
 
-/* ---------- the player ---------- */
-const loaded = new Map();   // path -> the address of the whole file, for the last few tracks
+const loaded = new Map();
 let loadToken = 0;
 async function wholeFileUrl(item) {
   if (!loaded.has(item.path)) {
     const bytes = await storage.readBinary(state.store, item.path);
     if (!bytes) throw new Error("not found");
     loaded.set(item.path, URL.createObjectURL(new Blob([bytes], { type: mimeTypes[extensionOf(item.name)] || "application/octet-stream" })));
-    while (loaded.size > limits.cacheSize) {   // the oldest ones are let go
+    while (loaded.size > limits.cacheSize) {
       const [oldest, url] = loaded.entries().next().value;
       loaded.delete(oldest);
       URL.revokeObjectURL(url);
@@ -194,7 +187,7 @@ async function playCurrent() {
     await audio.play();
     els.playerName.textContent = item.title;
     updateMediaSession(item);
-    const next = state.queue[state.queueIndex + 1];   // the next one is read while this one plays, so it starts at once
+    const next = state.queue[state.queueIndex + 1];
     if (next && !playback.shuffle) wholeFileUrl(next).catch(() => {});
   } catch (error) {
     if (token !== loadToken) return;
@@ -203,7 +196,7 @@ async function playCurrent() {
   }
 }
 function togglePlay() {
-  if (!state.now) {   // nothing loaded yet: the first track of the list
+  if (!state.now) {
     if (!state.shown.length) return;
     state.queue = [...state.shown]; state.queueIndex = 0; state.history = [];
     return playCurrent();
@@ -211,7 +204,6 @@ function togglePlay() {
   if (audio.paused) audio.play().catch((error) => popups.toast(tr("player.failed", { message: error.message }), { kind: "error" }));
   else audio.pause();
 }
-// direction is 1 for the next track and -1 for the previous one; automatic is true when a track ended by itself.
 function advance(direction, automatic) {
   const total = state.queue.length;
   if (!total) return;
@@ -227,7 +219,7 @@ function advance(direction, automatic) {
   } else {
     index = state.queueIndex + direction;
     if (index >= total || index < 0) {
-      if (automatic && playback.repeat !== "all") { audio.pause(); audio.currentTime = 0; return; }   // the end of the list
+      if (automatic && playback.repeat !== "all") { audio.pause(); audio.currentTime = 0; return; }
       index = (index + total) % total;
     }
   }
@@ -257,7 +249,6 @@ els.seekSlider.addEventListener("input", () => { audio.currentTime = Number(els.
 els.volumeSlider.addEventListener("input", () => { playback.volume = Number(els.volumeSlider.value); audio.volume = playback.volume; saveSettings(); });
 els.shuffleButton.addEventListener("click", () => { playback.shuffle = !playback.shuffle; state.history = []; applySettings(); saveSettings(); });
 els.repeatButton.addEventListener("click", () => { playback.repeat = repeatModes[(repeatModes.indexOf(playback.repeat) + 1) % repeatModes.length]; applySettings(); saveSettings(); });
-// Space plays and pauses when the focus is not on something that uses the key itself.
 document.addEventListener("keydown", (event) => {
   if (event.key !== " " || event.defaultPrevented || document.querySelector("dialog[open]")) return;
   if (event.target.closest("input, textarea, select, button, a")) return;
@@ -265,7 +256,6 @@ document.addEventListener("keydown", (event) => {
   togglePlay();
 });
 
-// The keys and the lock screen of the device control the player too.
 function updateMediaSession(item) {
   if (!("mediaSession" in navigator)) return;
   navigator.mediaSession.metadata = new MediaMetadata({ title: item.title, artist: albumLabel(item), artwork: [{ src: new URL("favicon.png", location.href).href, sizes: "16x16", type: "image/png" }] });
@@ -277,7 +267,6 @@ if ("mediaSession" in navigator) {
   navigator.mediaSession.setActionHandler("nexttrack", () => advance(1, false));
 }
 
-/* ---------- the toolbar, the settings, the account ---------- */
 els.musicSearch.addEventListener("input", render);
 els.albumSelect.addEventListener("change", render);
 els.sortOrder.addEventListener("change", render);

@@ -1,18 +1,12 @@
-/* Searchmu: the advanced search of Google, with its results beside the fields. */
 .hidden { display: none !important; }
-
-/* Page */
-/* The page is the header, the main, and the footer, directly in the body. The padding and the gap are the ones of the body. */
 .main { display: grid; grid-template-columns: calc(var(--height) * 16) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
-#views { display: none; }   /* the tabs are for a narrow window: from a tablet up the fields and the results are side by side */
+#views { display: none; }
 
 .header { height: var(--height); }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
+.logo-mark { background-image: url("favicon.png"); }
 .header-tools { height: 100%; }
 
 .panel { min-height: 0; min-width: 0; display: flex; flex-direction: column; gap: var(--gap-small); }
-
-/* The fields: the label above its control, in a column that scrolls */
 .filters { gap: var(--gap-medium); overflow-y: auto; padding-inline-end: var(--padding-small); }
 .filters > * { flex: none; }
 .group-title { font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; color: var(--highlight); }
@@ -25,19 +19,13 @@
 .check { display: flex; align-items: center; gap: var(--gap-small); height: var(--height); }
 .field-hint { color: var(--fg-1); font-size: var(--font-size-extra-small); }
 .mono { font-family: "JetBrains Mono", monospace; }
-
-/* What will be searched: the query that the fields make */
 .query { display: flex; flex-direction: column; gap: calc(var(--unit) * 0.5); }
 .query-text {
   min-height: var(--height); padding: var(--padding-small) var(--padding-medium); overflow-wrap: anywhere; font-size: var(--font-size-small);
   border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); background: var(--bg-1);
 }
 .query-text.empty { color: var(--fg-1); font-family: inherit; }
-
-/* The buttons stay at the bottom of the column, in view while the fields scroll */
 .actions { position: sticky; bottom: 0; display: flex; justify-content: flex-end; flex-wrap: wrap; gap: var(--gap-small); padding-block: var(--padding-small); background: var(--bg); }
-
-/* The results of Google */
 .pane-bar { display: flex; align-items: center; gap: var(--gap-small); height: var(--height); }
 .pane-title { flex: 1; min-width: 0; font-size: var(--font-size-extra-small); font-weight: 700; text-transform: uppercase; color: var(--fg-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .results-panel > :not(.frame) { flex: none; }
@@ -45,16 +33,12 @@
 .frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: var(--white); }
 .frame-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--gap-medium); padding: var(--padding-large); text-align: center; color: var(--fg-1); }
 .frame-empty .icon { width: var(--icon-size-large); height: var(--icon-size-large); }
-
-/* A narrow window: one of the two at a time, chosen by the tabs */
 @media (max-width: 48rem) {
   .main { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
   #views { display: block; }
   .main[data-view="filters"] .results-panel { display: none; }
   .main[data-view="results"] .filters { display: none; }
 }
-
-/* Controls that keep their size have a set width: a multiple of the height (RULES.md, Control Width) */
 #search-button { width: calc(var(--height) * 4); }
 #reset-button { width: calc(var(--height) * 4); }
 #copy-button { width: calc(var(--height) * 6); }
