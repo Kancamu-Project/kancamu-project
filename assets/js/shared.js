@@ -23,6 +23,22 @@ document.documentElement.dataset.theme = read();
 window.addEventListener("storage", (event) => {
     if (event.key === "theme" || event.key === null) document.documentElement.dataset.theme = read();
 });
+const markTheme = () => {
+    const light = document.documentElement.dataset.theme === "light";
+    const mark = document.querySelector("#theme-button .icon");
+    mark?.classList.toggle("icon-sun", !light);
+    mark?.classList.toggle("icon-moon", light);
+};
+document.addEventListener("click", (event) => {
+    if (!event.target.closest("#theme-button")) return;
+    const theme = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+    document.documentElement.dataset.theme = theme;
+    try {
+        localStorage.setItem("theme", theme);
+    } catch {}
+});
+new MutationObserver(markTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+document.addEventListener("DOMContentLoaded", markTheme);
 
 const covered = () => {
     try {
@@ -195,6 +211,7 @@ i18n = {
         document.documentElement.dir = language?.dir || "ltr";
         if (this.data?.name) document.title = this.pick(this.data.name);
         if (root === document) components?.refreshTexts?.();
+        if (root === document) this.selects();
         root.querySelectorAll("[data-i18n]").forEach((element) => {
             element.textContent = this.t(element.dataset.i18n);
         });
@@ -1246,7 +1263,7 @@ defineElement("message", ["end", "heading", "footer", "avatar", "bubble"], (host
     return ["message", host.hasAttribute("end") ? "end" : null];
 });
 
-defineElement("header", ["theme", "menu", "menu-label", "menu-text", "no-account", "name"], (host, { refresh }) => {
+defineElement("header", ["theme", "language", "menu", "menu-label", "menu-text", "no-account", "name"], (host, { refresh }) => {
     if (refresh && host.querySelector(".header-tools")) {
         const names = { "theme-button": "theme", "account-button": "account", "menu-button": "menu" };
         for (const button of host.querySelectorAll(".header-tools button")) {
@@ -1272,7 +1289,12 @@ defineElement("header", ["theme", "menu", "menu-label", "menu-text", "no-account
         button.setAttribute("aria-label", label);
         return button;
     };
-    if (host.hasAttribute("theme")) tools.append(tool("theme-button", "square", "sun", kitText("theme")));
+    if (host.hasAttribute("language")) {
+        const select = element("select", "language");
+        select.setAttribute("data-i18n-label", "language");
+        tools.append(select);
+    }
+    if (host.hasAttribute("theme")) tools.append(tool("theme-button", "square", document.documentElement.dataset.theme === "light" ? "moon" : "sun", kitText("theme")));
     if (!host.hasAttribute("no-account")) tools.append(tool("account-button", "ghost square account", "user", kitText("account")));
     if (host.hasAttribute("menu")) {
         const label = host.getAttribute("menu-label") || kitText("menu");
@@ -1478,7 +1500,7 @@ components = { element, icon, extensionOf, formatSize, status, drawer, download,
 const MAX = 6;
 let counter = 0;
 
-function attach(input, { suggestions, max = MAX }) {
+function attach(input, { suggestions, max = MAX, onEmpty = false }) {
     const id = `autocomplete-${++counter}`;
     const list = document.createElement("div");
     list.id = id;
@@ -1535,7 +1557,7 @@ function attach(input, { suggestions, max = MAX }) {
         const lower = query.toLowerCase();
         const seen = new Set();
         const starts = [], holds = [];
-        for (const text of suggestions()) {
+        for (const text of suggestions(query)) {
             const key = String(text).toLowerCase();
             if (!key || seen.has(key) || key === lower) continue;
             seen.add(key);
@@ -1547,7 +1569,7 @@ function attach(input, { suggestions, max = MAX }) {
 
     const render = () => {
         const query = input.value.trim();
-        const texts = query ? fit(query) : [];
+        const texts = query || onEmpty ? fit(query) : [];
         if (!texts.length) return close();
         list.replaceChildren();
         options = texts.map((text, i) => {

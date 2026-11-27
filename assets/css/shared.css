@@ -2154,6 +2154,11 @@ body:where(.page) {
     height: 100%;
 }
 
+:where(body.page) .header > .header-tools > select {
+    width: calc(var(--height) * 4);
+    height: 100%;
+}
+
 :where(body.page) .logo {
     display: flex;
     align-items: center;

@@ -276,4 +276,102 @@ function progressReset({ app, t, ask, toast, announce }) {
     return panel(t("progress.title"), t("progress.hint"), reset);
 }
 
-export const panels = { webgpu, modelList, chatData, restoreDefaults, driveUsage, driveReset, progressReset };
+function bookmarkData({ app, t, ask, toast, announce }) {
+    const key = `${app}.bookmarks`;
+    const read = () => {
+        try {
+            const list = JSON.parse(lsGet(key));
+            return Array.isArray(list) ? list : [];
+        } catch { return []; }
+    };
+    const cleanUrl = (text) => {
+        try {
+            const url = new URL(String(text).trim());
+            return /^https?:$/.test(url.protocol) ? url.href : null;
+        } catch { return null; }
+    };
+    const entriesOf = (text) => {
+        let found;
+        try {
+            const parsed = JSON.parse(text);
+            if (!Array.isArray(parsed)) throw new Error();
+            found = parsed.map((item) => ({ title: item?.title, url: item?.url, group: item?.group }));
+        } catch {
+            const page = new DOMParser().parseFromString(text, "text/html");
+            found = [...page.querySelectorAll("a[href]")].map((link) => {
+                const folder = link.closest("dl")?.previousElementSibling;
+                return { title: link.textContent, url: link.getAttribute("href"), group: folder?.tagName === "H3" ? folder.textContent : "" };
+            });
+        }
+        return found;
+    };
+    const file = element("input");
+    file.type = "file";
+    file.accept = ".json,.html,.htm,application/json,text/html";
+    file.hidden = true;
+    const exportAll = button("download", t("data.exportAll"));
+    const importAll = button("upload", t("data.import"));
+    const deleteAll = button("trash", t("data.deleteAll"), "danger");
+    const row = element("div", "button-row-start");
+    row.append(exportAll, importAll, deleteAll, file);
+
+    exportAll.addEventListener("click", () => {
+        const list = read();
+        if (!list.length) return toast(t("toast.noBookmarks"), { kind: "warning" });
+        download(`${app}-bookmarks.json`, JSON.stringify(list.map(({ title, url, group }) => ({ title, url, group: group ?? "" })), null, 2), "application/json");
+    });
+    importAll.addEventListener("click", () => file.click());
+    file.addEventListener("change", async () => {
+        const chosen = file.files[0];
+        file.value = "";
+        if (!chosen) return;
+        try {
+            const entries = entriesOf(await chosen.text());
+            if (!entries.length) throw new Error();
+            const current = read();
+            const known = new Set(current.map((item) => item.url));
+            const added = [];
+            for (const item of entries) {
+                const url = cleanUrl(item.url);
+                if (!url || known.has(url)) continue;
+                known.add(url);
+                const title = typeof item.title === "string" ? item.title.trim() : "";
+                added.push({ id: crypto.randomUUID(), title: title || new URL(url).hostname.replace(/^www\./, ""), url, group: typeof item.group === "string" ? item.group.trim() : "" });
+            }
+            localStorage.setItem(key, JSON.stringify([...current, ...added]));
+            announce({ type: "bookmarksChanged" });
+            toast(t("toast.imported", { n: added.length }));
+        } catch { toast(t("toast.invalidImport"), { kind: "error" }); }
+    });
+    deleteAll.addEventListener("click", async () => {
+        const count = read().length;
+        if (!count) return toast(t("toast.noBookmarks"), { kind: "warning" });
+        if (!(await ask({ text: t("confirm.deleteAll", { n: count }), ok: t("data.deleteAll") }))) return;
+        lsDelete(key);
+        announce({ type: "bookmarksChanged" });
+        toast(t("data.deleted"));
+    });
+    return panel(t("set.data.label"), t("set.data.hint"), row);
+}
+
+function historyData({ app, t, ask, toast, announce }) {
+    const key = `${app}.history`;
+    const count = () => {
+        try {
+            const list = JSON.parse(lsGet(key));
+            return Array.isArray(list) ? list.length : 0;
+        } catch { return 0; }
+    };
+    const clear = button("trash", t("history.delete"), "danger");
+    clear.addEventListener("click", async () => {
+        const n = count();
+        if (!n) return toast(t("history.none"), { kind: "warning" });
+        if (!(await ask({ text: t("history.confirm", { n }), ok: t("history.delete") }))) return;
+        lsDelete(key);
+        announce({ type: "historyChanged" });
+        toast(t("history.deleted"));
+    });
+    return panel(t("set.history.label"), t("set.history.hint"), clear);
+}
+
+export const panels = { webgpu, modelList, chatData, bookmarkData, historyData, restoreDefaults, driveUsage, driveReset, progressReset };

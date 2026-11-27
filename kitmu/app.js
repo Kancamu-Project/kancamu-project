@@ -209,19 +209,5 @@ renderAll();
 i18n.onChange(renderAll);
 new MutationObserver(() => { for (const entry of entries) entry.node = entry.make(); boxes.components.body.replaceChildren(...entries.map((entry) => entry.node)); applyFilter(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
-function markTheme() {
-  const light = document.documentElement.dataset.theme === "light";
-  const icon = $("theme-button").querySelector(".icon");
-  icon.classList.toggle("icon-sun", !light);
-  icon.classList.toggle("icon-moon", light);
-}
-$("theme-button").addEventListener("click", () => {
-  const theme = document.documentElement.dataset.theme === "light" ? "dark" : "light";
-  document.documentElement.dataset.theme = theme;
-  try { localStorage.setItem("theme", theme); } catch { }
-});
-new MutationObserver(markTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-window.addEventListener("storage", (event) => { if (event.key === "theme" || event.key === null) markTheme(); });
-markTheme();
 
 account.bind($("account-button"));

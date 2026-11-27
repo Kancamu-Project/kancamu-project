@@ -569,6 +569,33 @@ export default {
       ]
     },
     {
+      "id": "homu",
+      "name": {
+        "en-US": "Ho{highlight}"
+      },
+      "description": {
+        "en-US": "A start page for your browser, with a search box and your bookmarks.",
+        "zh-CN": "浏览器的起始页，带有搜索框和你的书签。",
+        "ar-SA": "صفحة بداية لمتصفحك، مع مربع بحث وإشاراتك المرجعية."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "homu/",
+      "icon": "homu/favicon.png",
+      "color": "#1782db",
+      "categories": [
+        "official",
+        "mobile",
+        "tools"
+      ],
+      "alternatives": [
+        "Start.me",
+        "Tabliss"
+      ]
+    },
+    {
       "id": "youmu",
       "name": {
         "en-US": "You{highlight}"
@@ -1169,7 +1196,7 @@ export default {
   },
   "iconSprite": {
     "file": "assets/images/icons.webp",
-    "width": 208,
+    "width": 224,
     "height": 144,
     "cells": {
       "muos": [
@@ -1193,107 +1220,112 @@ export default {
         16
       ],
       "lingomu": [
+        64,
         0,
-        16,
         16
       ],
       "mujs": [
-        16,
+        0,
         16,
         16
       ],
       "picmu": [
-        32,
+        16,
         16,
         16
       ],
       "transmu": [
-        48,
+        32,
         16,
         16
       ],
       "speechmu": [
+        48,
+        16,
+        16
+      ],
+      "hashmu": [
+        64,
+        16,
+        16
+      ],
+      "searchmu": [
         0,
         32,
         16
       ],
-      "hashmu": [
+      "homu": [
         16,
-        32,
-        16
-      ],
-      "searchmu": [
-        32,
         32,
         16
       ],
       "youmu": [
-        48,
+        32,
         32,
         16
       ],
       "assetmu": [
-        0,
         48,
+        32,
         16
       ],
       "kitmu": [
-        16,
-        48,
+        64,
+        32,
         16
       ],
       "muai": [
-        32,
+        0,
         48,
         16
       ],
       "kancamu": [
-        48,
+        16,
         48,
         16
       ],
       "deckcraft": [
-        64,
+        80,
         0,
         48
       ],
       "effectcraft": [
-        112,
+        128,
         0,
         48
       ],
       "filmcraft": [
-        160,
+        176,
         0,
         48
       ],
       "gridcraft": [
-        64,
+        80,
         48,
         48
       ],
       "photocraft": [
-        112,
+        128,
         48,
         48
       ],
       "vectorcraft": [
-        160,
+        176,
         48,
         48
       ],
       "wordcraft": [
-        64,
+        80,
         96,
         48
       ],
       "tracedraw": [
-        112,
+        128,
         96,
         48
       ],
       "pdfcraft": [
-        160,
+        176,
         96,
         48
       ]

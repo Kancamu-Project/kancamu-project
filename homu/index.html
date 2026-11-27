@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homu — A start page for your browser, with a search box and your bookmarks.</title>
+<meta name="description" content="A start page for your browser, with a search box and your bookmarks.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kancamu">
+<meta property="og:title" content="Homu">
+<meta property="og:description" content="A start page for your browser, with a search box and your bookmarks.">
+<meta property="og:url" content="https://kancamu.site/homu/">
+<meta property="og:image" content="https://kancamu.site/homu/preview.png?v=1">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Homu: A start page for your browser, with a search box and your bookmarks.">
+<meta name="twitter:card" content="summary_large_image">
+<!-- seo -->
+<link rel="canonical" href="https://kancamu.site/homu/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Homu","url":"https://kancamu.site/homu/","description":"A start page for your browser, with a search box and your bookmarks.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","image":"https://kancamu.site/homu/preview.png","isPartOf":{"@id":"https://kancamu.site/#website"},"publisher":{"@type":"Organization","name":"Kancamu","url":"https://kancamu.site/"}}</script>
+<!-- /seo -->
+<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+<meta name="theme-color" content="#1a1a1b">
+<link rel="stylesheet" href="../assets/css/shared.css">
+<link rel="stylesheet" href="layout.css">
+<script type="module" src="../assets/js/shared.js" blocking="render"></script>
+<script type="module" src="app.js"></script>
+</head>
+<body class="page">
+<!-- seo-body -->
+<noscript>
+  <h1>Homu</h1>
+  <p>A start page for your browser, with a search box and your bookmarks.</p>
+  <p><a href="../">Kancamu</a></p>
+  <p>This page needs JavaScript.</p>
+</noscript>
+<!-- /seo-body -->
+<kit-header id="header" theme language></kit-header>
+<div id="main" class="main">
+  <div id="clock" class="clock">
+    <span id="clock-time" class="clock-time"></span>
+    <span id="clock-date" class="clock-date"></span>
+    <span id="clock-greeting" class="clock-greeting"></span>
+  </div>
+  <form id="search-form" class="search-form" autocomplete="off">
+    <select id="engine-select" data-i18n-label="engine.label"></select>
+    <kit-search input-id="query" data-i18n-placeholder="search.placeholder" data-i18n-label="search.label"></kit-search>
+    <button id="search-button" class="primary" type="submit" data-i18n-label="action.search"><span class="icon icon-search"></span><span data-i18n="action.search"></span></button>
+  </form>
+  <div id="bookmarks" class="bookmarks"></div>
+</div>
+<kit-footer id="footer" status></kit-footer>
+
+<div id="popups" class="popups"></div>
+</body>
+</html>

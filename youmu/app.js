@@ -185,21 +185,6 @@ async function loadApps() {
 const appText = (key, params = {}) => (state.appData.ui?.[key] ? i18n.pick(state.appData.ui[key]) : key).replace(/\{(\w+)\}/g, (_, name) => params[name] ?? "");
 
 
-$("theme-button").addEventListener("click", () => {
-    const theme = document.documentElement.dataset.theme === "light" ? "dark" : "light";
-    document.documentElement.dataset.theme = theme;
-    try { localStorage.setItem("theme", theme); } catch {}
-    markTheme();
-});
-function markTheme() {
-    const light = document.documentElement.dataset.theme === "light";
-    const icon = $("theme-button").querySelector(".icon");
-    icon.classList.toggle("icon-sun", !light);
-    icon.classList.toggle("icon-moon", light);
-}
-window.addEventListener("storage", (event) => {
-    if (event.key === "theme" || event.key === null) markTheme();
-});
 
 function optionsOf(definition) {
     const from = definition.optionsFrom;
@@ -327,6 +312,5 @@ loadApps().then((found) => { state.apps = found; state.loaded = true; render(); 
 account.onChange(render);
 i18n.onChange(render);
 i18n.selects();
-markTheme();
 render();
 if (embedded) focusFirst();

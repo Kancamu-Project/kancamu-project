@@ -739,14 +739,6 @@ tabStrip.addEventListener("dragleave", (event) => { if (!tabStrip.contains(event
 document.addEventListener("dragend", () => { clearDropTargets(); stopWaiting(); });
 document.addEventListener("drop", () => { clearDropTargets(); stopWaiting(); });
 
-document.getElementById("theme-button").addEventListener("click", () => {
-    const root = document.documentElement;
-    root.dataset.theme = root.dataset.theme === "light" ? "dark" : "light";
-    try {
-        localStorage.setItem("theme", root.dataset.theme);
-    } catch {}
-});
-
 account.bind(document.getElementById("account-button"));
 
 document.getElementById("publisher-filter").addEventListener("change", (event) => {
