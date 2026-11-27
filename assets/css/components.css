@@ -1,0 +1,1622 @@
+/* The components of the apps: what every app makes again, made once (the page itself is in page.css).
+   It is loaded after style.css, and before the layout.css of the app, which only adds what is its own.
+   Kitmu shows each component, with the HTML to copy. The scripts that go with them are in components.js. */
+
+/* What is highlighted (a primary button, the item that is on, a checkbox that is checked, the spinner, the bars) has the colour of the app. An app whose highlight is white (or black, in the light theme)
+   says so in its layout.css: :root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); } */
+:root {
+    --highlight: var(--brand);
+    --highlight-ink: var(--brand-ink);
+}
+
+/* ---------- Icon: an svg of assets/icons used as a mask, so it follows the text colour. <span class="icon icon-user"></span> ---------- */
+.icon {
+    width: var(--icon-size-small);
+    height: var(--icon-size-small);
+    flex: none;
+    background: currentColor;
+    -webkit-mask: var(--icon) center / contain no-repeat;
+    mask: var(--icon) center / contain no-repeat;
+}
+
+.icon-alert { --icon: url("../icons/alert.svg"); }
+.icon-archive { --icon: url("../icons/archive.svg"); }
+.icon-arrow-down { --icon: url("../icons/arrow-down.svg"); }
+.icon-arrow-up { --icon: url("../icons/arrow-up.svg"); }
+.icon-audio { --icon: url("../icons/audio.svg"); }
+.icon-check { --icon: url("../icons/check.svg"); }
+.icon-chevron-down { --icon: url("../icons/chevron-down.svg"); }
+.icon-chevron-left { --icon: url("../icons/chevron-left.svg"); }
+.icon-chevron-right { --icon: url("../icons/chevron-right.svg"); }
+.icon-close { --icon: url("../icons/close.svg"); }
+.icon-copy { --icon: url("../icons/copy.svg"); }
+.icon-cpu { --icon: url("../icons/cpu.svg"); }
+.icon-download { --icon: url("../icons/download.svg"); }
+.icon-external { --icon: url("../icons/external.svg"); }
+.icon-github { --icon: url("../icons/github.svg"); }
+.icon-file { --icon: url("../icons/file.svg"); }
+.icon-file-text { --icon: url("../icons/file-text.svg"); }
+.icon-folder { --icon: url("../icons/folder.svg"); }
+.icon-folder-open { --icon: url("../icons/folder-open.svg"); }
+.icon-folder-plus { --icon: url("../icons/folder-plus.svg"); }
+.icon-folder-up { --icon: url("../icons/folder-up.svg"); }
+.icon-git-branch { --icon: url("../icons/git-branch.svg"); }
+.icon-grid { --icon: url("../icons/grid.svg"); }
+.icon-hard-drive { --icon: url("../icons/hard-drive.svg"); }
+.icon-heart { --icon: url("../icons/heart.svg"); }
+.icon-image { --icon: url("../icons/image.svg"); }
+.icon-info { --icon: url("../icons/info.svg"); }
+.icon-layers { --icon: url("../icons/layers.svg"); }
+.icon-list { --icon: url("../icons/list.svg"); }
+.icon-lock { --icon: url("../icons/lock.svg"); }
+.icon-logout { --icon: url("../icons/logout.svg"); }
+.icon-menu { --icon: url("../icons/menu.svg"); }
+.icon-moon { --icon: url("../icons/moon.svg"); }
+.icon-more { --icon: url("../icons/more.svg"); }
+.icon-pause { --icon: url("../icons/pause.svg"); }
+.icon-pdf { --icon: url("../icons/pdf.svg"); }
+.icon-pencil { --icon: url("../icons/pencil.svg"); }
+.icon-play { --icon: url("../icons/play.svg"); }
+.icon-plus { --icon: url("../icons/plus.svg"); }
+.icon-refresh { --icon: url("../icons/refresh.svg"); }
+.icon-repeat { --icon: url("../icons/repeat.svg"); }
+.icon-search { --icon: url("../icons/search.svg"); }
+.icon-send { --icon: url("../icons/send.svg"); }
+.icon-shuffle { --icon: url("../icons/shuffle.svg"); }
+.icon-skip-back { --icon: url("../icons/skip-back.svg"); }
+.icon-skip-forward { --icon: url("../icons/skip-forward.svg"); }
+.icon-sliders { --icon: url("../icons/sliders.svg"); }
+.icon-star { --icon: url("../icons/star.svg"); }
+.icon-stop { --icon: url("../icons/stop.svg"); }
+.icon-sun { --icon: url("../icons/sun.svg"); }
+.icon-swap { --icon: url("../icons/swap.svg"); }
+.icon-trash { --icon: url("../icons/trash.svg"); }
+.icon-upload { --icon: url("../icons/upload.svg"); }
+.icon-user { --icon: url("../icons/user.svg"); }
+.icon-video { --icon: url("../icons/video.svg"); }
+.icon-volume { --icon: url("../icons/volume.svg"); }
+.icon-warning { --icon: url("../icons/warning.svg"); }
+.icon-zap { --icon: url("../icons/zap.svg"); }
+
+/* ---------- Button: the plain one, primary (the colour of the app), ghost (no line until it is pointed), square (an icon only) ---------- */
+button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--gap-small);
+    height: var(--height);
+    min-width: 0;
+    cursor: pointer;
+    white-space: nowrap;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+button > span:not(.icon) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+button.primary {
+    background: var(--highlight);
+    color: var(--highlight-ink);
+    border-color: var(--highlight);
+}
+
+button.primary:hover:not(:disabled) {
+    background: var(--highlight);
+    border-color: var(--fg);
+}
+
+button.ghost {
+    color: var(--fg-1);
+}
+
+button.ghost:hover:not(:disabled) {
+    color: var(--fg);
+}
+
+button.danger {
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+button.danger:hover:not(:disabled) {
+    background: var(--danger);
+    color: var(--on-color);
+    border-color: var(--danger);
+}
+
+button.square {
+    width: var(--height);
+    padding: 0;
+}
+
+.error {
+    color: var(--danger);
+}
+
+/* ---------- Search box: an input with the search icon at its start ---------- */
+.searchbox {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: calc(var(--unit) * 60);
+}
+
+.searchbox input {
+    width: 100%;
+    padding-inline-start: calc(var(--unit) * 18);
+}
+
+.searchbox .icon {
+    position: absolute;
+    inset-inline-start: calc(var(--unit) * 6);
+    width: var(--icon-size-medium);
+    height: var(--icon-size-medium);
+    color: var(--fg-1);
+    pointer-events: none;
+}
+
+/* ---------- Progress: the bar that fills while something is done ---------- */
+.progress {
+    height: calc(var(--unit) * 2);
+    min-width: 0;
+    background: var(--border);
+    border-radius: var(--border-radius-small);
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0;
+    height: 100%;
+    background: var(--highlight);
+    transition: width 0.2s;
+}
+
+/* ---------- Button group: buttons side by side, joined; in a segmented control (a toggle group) one of them is on ---------- */
+.button-group,
+.segmented-control {
+    display: flex;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.button-group button,
+.segmented-control button {
+    border-radius: 0;
+}
+
+.button-group button + button,
+.segmented-control button + button {
+    border-inline-start: none;
+}
+
+.button-group button.on,
+.segmented-control button.on {
+    background: var(--fg);
+    color: var(--bg);
+}
+
+/* ---------- Expandable part: a button with a title and an arrow, and a body that opens and closes (green line when open, red when closed) ---------- */
+.section-toggle {
+    justify-content: space-between;
+    background: var(--bg-1);
+    border-width: 0;
+    border-radius: var(--border-radius-medium);   /* it stands alone, a gap is between it and the next */
+    border-inline-start: var(--border-width-thick) solid var(--green);
+    color: var(--fg);
+    font-size: var(--font-size-small);
+}
+
+.section-toggle:hover {
+    background: var(--bg-1);
+    border-inline-start-color: var(--green);
+}
+
+.section-toggle[aria-expanded="false"],
+.section-toggle[aria-expanded="false"]:hover {
+    border-inline-start-color: var(--red);
+}
+
+.section-toggle > .icon {
+    transition: transform 0.2s;
+}
+
+.section-toggle[aria-expanded="false"] > .icon {
+    transform: rotate(-90deg);
+}
+
+:root[dir="rtl"] .section-toggle[aria-expanded="false"] > .icon {
+    transform: rotate(90deg);
+}
+
+.section-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small);
+}
+
+.section-body[hidden] {
+    display: none;
+}
+
+/* ---------- Kinds: success (green), info (blue), warning (yellow), error (red). The colour of the border and the icon of an alert or a badge, as in the popups ---------- */
+.alert,
+.badge {
+    --kind: var(--border);
+}
+
+:is(.alert, .badge).success {
+    --kind: var(--ok);
+}
+
+:is(.alert, .badge).info {
+    --kind: var(--blue);
+}
+
+:is(.alert, .badge).warning {
+    --kind: var(--yellow);
+}
+
+:is(.alert, .badge).error {
+    --kind: var(--danger);
+}
+
+/* ---------- Alert: a message that stays in the page, with an icon, a title, and a text ---------- */
+.alert {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--gap-small);
+    padding: var(--padding-medium) var(--padding-large);
+    color: var(--fg);
+    background: var(--bg);
+    border: var(--border-width) solid var(--kind);
+    border-radius: var(--border-radius-medium);
+}
+
+.alert[hidden] {
+    display: none;
+}
+
+.alert > .icon {
+    width: var(--icon-size-medium);
+    height: var(--icon-size-medium);
+    color: var(--kind);
+}
+
+.alert-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.alert-title {
+    font-weight: 700;
+}
+
+.alert-text {
+    color: var(--fg-1);
+    overflow-wrap: anywhere;
+}
+
+/* ---------- Badge: a short label with a colour ---------- */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-extra-small);
+    height: calc(var(--unit) * 8);
+    padding: 0 var(--padding-small);
+    color: var(--kind);
+    border: var(--border-width) solid var(--kind);
+    border-radius: var(--border-radius-small);
+    font-size: var(--font-size-extra-small);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.badge:not(.success, .info, .warning, .error) {
+    color: var(--fg-1);
+}
+
+/* ---------- Separator: a line that divides ---------- */
+.separator {
+    align-self: stretch;
+    flex: none;
+    height: var(--border-width);
+    margin: 0;
+    border: 0;
+    background: var(--border);
+}
+
+.separator.vertical {
+    width: var(--border-width);
+    height: auto;
+}
+
+/* ---------- Kbd: a key of the keyboard ---------- */
+.kbd {
+    display: inline-flex;
+    align-items: center;
+    height: calc(var(--unit) * 9);
+    padding: 0 var(--padding-small);
+    border: var(--border-width) solid var(--border);
+    border-bottom-width: var(--border-width-thick);
+    border-radius: var(--border-radius-small);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-extra-small);
+}
+
+/* ---------- Spinner: something is being done, and nobody knows for how long ---------- */
+.spinner {
+    flex: none;
+    width: var(--icon-size-large);
+    height: var(--icon-size-large);
+    border: var(--border-width-thick) solid var(--border);
+    border-top-color: var(--highlight);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---------- Skeleton: a block that stands where the content will be, while it loads ---------- */
+.skeleton {
+    background: var(--bg-1);
+    border-radius: var(--border-radius-medium);
+    animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    50% {
+        opacity: 0.45;
+    }
+}
+
+/* ---------- Field: a label, a control, and a hint ---------- */
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small);
+}
+
+.field-label {
+    font-weight: 700;
+}
+
+.field-hint {
+    color: var(--fg-1);
+}
+
+/* ---------- Switch: a checkbox that looks like a switch ---------- */
+input.switch {   /* input.: it has to win over input[type="checkbox"] of style.css, which makes a checkbox square */
+    -webkit-appearance: none;
+    appearance: none;
+    position: relative;
+    flex: none;
+    width: calc(var(--unit) * 16);
+    height: calc(var(--unit) * 9);
+    padding: 0;
+    cursor: pointer;
+    background: var(--bg-1);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--border-radius-medium);
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.switch::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    inset-inline-start: var(--unit);
+    width: calc(var(--unit) * 6);
+    height: calc(var(--unit) * 6);
+    background: var(--fg-1);
+    border-radius: var(--border-radius-small);
+    transform: translateY(-50%);
+    transition: inset-inline-start 0.2s, background 0.2s;
+}
+
+.switch:checked {
+    background: var(--highlight);
+    border-color: var(--highlight);
+}
+
+.switch:checked::after {
+    inset-inline-start: calc(100% - var(--unit) * 7);
+    background: var(--highlight-ink);
+}
+
+.switch:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ---------- Toggle: a button that stays pressed (class on, aria-pressed) ---------- */
+button.toggle.on {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--fg);
+}
+
+/* ---------- Account button: its image is the avatar of the signed-in account (assets/js/account.js sets it) ---------- */
+button.account.signed-in {
+    background-size: cover;
+    background-position: center;
+}
+
+/* ---------- Avatar: the image of a person, or the letters of the name ---------- */
+.avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: calc(var(--unit) * 12);
+    height: calc(var(--unit) * 12);
+    overflow: hidden;
+    background: var(--bg-1) center / cover no-repeat;
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--border-radius-medium);
+    font-size: var(--font-size-small);
+    font-weight: 700;
+}
+
+.avatar.large {
+    width: calc(var(--unit) * 20);
+    height: calc(var(--unit) * 20);
+    font-size: var(--font-size-large);
+}
+
+/* ---------- Card: a box with a header (a title and a description), a content, and a footer ---------- */
+.card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    background: var(--bg);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--border-radius-medium);
+}
+
+.card-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-extra-small);
+    padding: var(--padding-large);
+}
+
+.card-title {
+    font-size: var(--font-size-large);
+    font-weight: 700;
+}
+
+.card-description {
+    color: var(--fg-1);
+}
+
+.card-content {
+    padding: 0 var(--padding-large) var(--padding-large);
+}
+
+.card-footer {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-medium);
+    padding: var(--padding-large);
+    border-top: var(--border-width) solid var(--border);
+    min-width: 0;
+}
+
+/* ---------- Item: a row with an image, a title with a description, and actions ---------- */
+.item {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-medium);
+    min-width: 0;
+    padding: var(--padding-medium);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--border-radius-medium);
+}
+
+.item-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.item-title {
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.item-description {
+    color: var(--fg-1);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* An item that is pressed (role="button" and tabindex="0" on the tag; the script does the click and the Enter key): it looks like a button when the pointer is over it */
+.item[role="button"] {
+    cursor: pointer;
+}
+
+.item[role="button"]:hover,
+.item[role="button"]:focus-visible {
+    background-color: var(--bg-1);
+    border-color: var(--fg-1);
+}
+
+/* ---------- Code block: code in a box that scrolls sideways (put dir="ltr" on it: code is always left to right) ---------- */
+.code-block pre {
+    margin: 0;
+    padding: var(--padding-medium);
+    font-family: var(--font-mono);
+    font-size: calc(var(--font-size-small) * var(--editor-scale, 1));
+    line-height: 1.6;
+    tab-size: 2;
+    white-space: pre;
+    color: var(--fg);
+}
+
+.code-block {
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--border-radius-medium);
+    background: var(--bg-1);
+    overflow-x: auto;
+    min-width: 0;
+}
+
+/* ---------- Checkbox and radio: a square (or a circle) that is filled with the colour of the app when it is on ---------- */
+input.checkbox,
+input.radio {
+    -webkit-appearance: none;
+    appearance: none;
+    position: relative;
+    flex: none;
+    width: calc(var(--unit) * 7);
+    height: calc(var(--unit) * 7);
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    background: var(--bg);
+    border: var(--border-width) solid var(--fg-1);
+    border-radius: var(--border-radius-small);
+}
+
+input.radio {
+    border-radius: 50%;
+}
+
+input.checkbox:checked,
+input.radio:checked {
+    background: var(--highlight);
+    border-color: var(--highlight);
+}
+
+input.checkbox:checked::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--highlight-ink);
+    -webkit-mask: url(../icons/check.svg) center / var(--icon-size-small) no-repeat;
+    mask: url(../icons/check.svg) center / var(--icon-size-small) no-repeat;
+}
+
+input.radio:checked::after {
+    content: "";
+    position: absolute;
+    inset: calc(var(--unit) * 2);
+    background: var(--highlight-ink);
+    border-radius: 50%;
+}
+
+input.checkbox:disabled,
+input.radio:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ---------- Breadcrumb: where the user is, as a path ---------- */
+.breadcrumbs {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--gap-small);
+    min-width: 0;
+}
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    height: var(--height);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--fg-1);
+}
+
+.breadcrumb:last-child {
+    color: var(--fg);
+    font-weight: 700;
+}
+
+/* A breadcrumb that is pressed (role="button" and tabindex="0"): it goes to that part of the path */
+.breadcrumb[role="button"] {
+    cursor: pointer;
+}
+
+.breadcrumb[role="button"]:hover,
+.breadcrumb[role="button"]:focus-visible {
+    color: var(--fg);
+}
+
+.breadcrumbs .breadcrumb-separator {
+    width: var(--icon-size-small);
+    height: var(--icon-size-small);
+    color: var(--fg-1);
+}
+
+/* ---------- Tabs: buttons side by side, with a line under the one that is on ---------- */
+.tabs {
+    display: flex;
+    max-width: 100%;
+    overflow-x: auto;   /* more tabs than the width: the row scrolls, the tabs do not shrink */
+    scrollbar-width: none;
+    border-bottom: var(--border-width) solid var(--border);
+}
+
+.tabs > button {
+    flex: none;
+    border: 0;
+    border-bottom: var(--border-width-thick) solid transparent;
+    border-radius: 0;
+    background: transparent;
+    color: var(--fg-1);
+}
+
+.tabs > button:hover:not(:disabled) {
+    color: var(--fg);
+}
+
+.tabs > button.on {
+    color: var(--fg);
+    border-bottom-color: var(--highlight);
+}
+
+/* ---------- Pagination: the pages as buttons, the current one is on ---------- */
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-small);
+}
+
+.pagination > button.on {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--fg);
+}
+
+/* ---------- Table: rows and columns of data ---------- */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: var(--padding-small) var(--padding-medium);
+    text-align: start;
+    border-bottom: var(--border-width) solid var(--border);
+}
+
+.table th {
+    color: var(--fg-1);
+    font-size: var(--font-size-extra-small);
+    text-transform: uppercase;
+}
+
+/* ---------- Menu and popover: a panel under a button (assets/js/components.js: components.menu, components.popover) ---------- */
+.menu,
+.popover {
+    position: fixed;
+    z-index: 40;
+    background: var(--bg);
+    border: var(--border-width) solid var(--border);
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-extra-small);
+    min-width: calc(var(--unit) * 60);
+    padding: var(--padding-small);
+}
+
+.popover {
+    min-width: calc(var(--unit) * 60);
+    max-width: min(calc(var(--unit) * 140), calc(var(--vw) * 100 - 1.6rem));
+    padding: var(--padding-large);
+}
+
+.menu > * {
+    flex: none;   /* an item keeps its height: a long menu scrolls, the items do not shrink */
+}
+
+.menu-item {
+    justify-content: flex-start;
+    border: 0;
+    background: transparent;
+    font-weight: 400;
+    text-align: start;
+    text-transform: none;
+}
+
+.menu-item:hover:not(:disabled),
+.menu-item:focus-visible {
+    background: var(--bg-1);
+}
+
+.menu-item > .icon {
+    color: var(--fg-1);
+}
+
+.menu-item.danger {
+    color: var(--danger);
+}
+
+.menu-separator {
+    height: var(--border-width);
+    margin: 0;
+    border: 0;
+    background: var(--border);
+}
+
+/* ---------- Tooltip: a short text above an element, when it is pointed or has the focus (the attribute data-tooltip) ---------- */
+[data-tooltip] {
+    position: relative;
+}
+
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    inset-inline-start: 50%;
+    bottom: calc(100% + var(--gap-small));
+    z-index: 40;
+    padding: var(--padding-small) var(--padding-medium);
+    color: var(--bg);
+    background: var(--fg);
+    border-radius: var(--border-radius-small);
+    font-size: var(--font-size-extra-small);
+    font-weight: 400;
+    text-transform: none;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%);
+    transition: opacity 0.15s;
+}
+
+:root[dir="rtl"] [data-tooltip]::after {
+    transform: translateX(50%);
+}
+
+[data-tooltip]:hover::after,
+[data-tooltip]:focus-visible::after {
+    opacity: 1;
+}
+
+/* ---------- Hover card: a card that shows when its trigger is pointed or has the focus ---------- */
+.hover-card {
+    position: relative;
+    display: inline-flex;
+}
+
+.hover-card-content {
+    position: absolute;
+    inset-inline-start: 0;
+    top: calc(100% + var(--gap-small));
+    z-index: 40;
+    display: none;
+    flex-direction: column;
+    gap: var(--gap-small);
+    width: calc(var(--unit) * 90);
+    padding: var(--padding-large);
+    background: var(--bg);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--border-radius-large);
+}
+
+.hover-card:hover > .hover-card-content,
+.hover-card:focus-within > .hover-card-content {
+    display: flex;
+}
+
+/* ---------- Menubar and navigation menu: a row of buttons, each one opens a menu or a panel ---------- */
+.menubar,
+.navigation-menu {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-extra-small);
+}
+
+.menubar {
+    align-self: flex-start;
+    padding: var(--padding-small);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--border-radius-medium);
+}
+
+.menubar > button,
+.navigation-menu > button {
+    border-color: transparent;
+    background: transparent;
+}
+
+.menubar > button:hover:not(:disabled),
+.navigation-menu > button:hover:not(:disabled) {
+    background: var(--bg-1);
+}
+
+/* ---------- Blank icon: keeps the room of an icon, shows nothing ---------- */
+.icon-blank {
+    background: transparent;
+}
+
+/* ---------- Slider: a range input. A track as thick as the progress, filled up to the knob with the colour of the app, and a knob like the knob of the switch.
+   --position (0 to 1, where the knob is) is kept by assets/js/components.js, because the browsers cannot paint "what is before the knob" of a track by themselves (Firefox can). ---------- */
+input.slider {
+    --position: 0;
+    --knob: calc(var(--unit) * 5);
+    --track: calc(var(--unit) * 2);
+    --filled: calc(var(--knob) / 2 + (100% - var(--knob)) * var(--position));   /* the knob moves inside the track: its centre goes from half a knob to the end less half a knob */
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: var(--knob);
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+}
+
+input.slider::-webkit-slider-runnable-track {
+    height: var(--track);
+    background: linear-gradient(to right, var(--highlight) var(--filled), var(--border) var(--filled));
+    border-radius: var(--border-radius-small);
+}
+
+input.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: var(--knob);
+    height: var(--knob);
+    margin-top: calc((var(--track) - var(--knob)) / 2);
+    background: var(--fg);
+    border: var(--border-width-thick) solid var(--bg);
+    border-radius: var(--border-radius-small);
+    box-shadow: 0 0 0 var(--border-width) var(--fg-1);
+    transition: background 0.2s;
+}
+
+input.slider::-moz-range-track {
+    height: var(--track);
+    background: var(--border);
+    border-radius: var(--border-radius-small);
+}
+
+input.slider::-moz-range-progress {
+    height: var(--track);
+    background: var(--highlight);
+    border-radius: var(--border-radius-small);
+}
+
+input.slider::-moz-range-thumb {
+    box-sizing: border-box;
+    width: var(--knob);
+    height: var(--knob);
+    background: var(--fg);
+    border: var(--border-width-thick) solid var(--bg);
+    border-radius: var(--border-radius-small);
+    box-shadow: 0 0 0 var(--border-width) var(--fg-1);
+    transition: background 0.2s;
+}
+
+:root[dir="rtl"] input.slider::-webkit-slider-runnable-track {
+    background: linear-gradient(to left, var(--highlight) var(--filled), var(--border) var(--filled));
+}
+
+input.slider:hover:not(:disabled)::-webkit-slider-thumb {
+    background: var(--highlight);
+}
+
+input.slider:hover:not(:disabled)::-moz-range-thumb {
+    background: var(--highlight);
+}
+
+input.slider:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ---------- Input OTP: one input for each character of a code (assets/js/components.js: components.otp) ---------- */
+.otp {
+    display: flex;
+    gap: var(--gap-small);
+}
+
+.otp > input {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: var(--height);
+    width: var(--height);
+    padding: 0;
+    text-align: center;
+}
+
+/* ---------- Select: a button that shows the value, and opens a menu of the options (components.select) ---------- */
+.select-trigger {
+    justify-content: space-between;
+    font-weight: 400;
+    text-transform: none;
+}
+
+/* ---------- Scroll area: a box that scrolls, with a thin bar ---------- */
+.scroll-area {
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+/* ---------- Aspect ratio: a box with a ratio (--ratio, 16 / 9 when it is not given) ---------- */
+.aspect-ratio {
+    aspect-ratio: var(--ratio, 16 / 9);
+    overflow: hidden;
+    background: var(--bg-1);
+    border-radius: var(--border-radius-medium);
+}
+
+.aspect-ratio > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ---------- Resizable: panels with a handle between them (components.resizable); vertical stacks them ---------- */
+.resizable {
+    display: flex;
+    min-height: 0;
+    overflow: hidden;
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--border-radius-medium);
+}
+
+.resizable.vertical {
+    flex-direction: column;
+}
+
+.resizable-panel {
+    min-width: 0;
+    min-height: 0;
+    padding: var(--padding-medium);
+    overflow: auto;
+}
+
+.resizable-handle {
+    flex: none;
+    width: calc(var(--unit) * 2);
+    cursor: col-resize;
+    background: var(--border);
+    touch-action: none;
+}
+
+.resizable.vertical > .resizable-handle {
+    width: auto;
+    height: calc(var(--unit) * 2);
+    cursor: row-resize;
+}
+
+.resizable-handle:hover,
+.resizable-handle:focus-visible {
+    background: var(--highlight);
+}
+
+/* ---------- Typography: the text of an article ---------- */
+.typography > * + * {
+    margin-top: var(--gap-medium);
+}
+
+.typography h1 {
+    font-size: var(--font-size-extra-large);
+    font-weight: 700;
+}
+
+.typography h2 {
+    font-size: var(--font-size-large);
+    font-weight: 700;
+}
+
+.typography h3 {
+    font-size: var(--font-size-medium);
+    font-weight: 700;
+}
+
+.typography p,
+.typography li {
+    line-height: 1.6;
+}
+
+.typography ul {
+    padding-inline-start: var(--padding-extra-large);
+    list-style: disc;
+}
+
+.typography blockquote {
+    padding-inline-start: var(--padding-large);
+    color: var(--fg-1);
+    border-inline-start: var(--border-width-thick) solid var(--border);
+}
+
+.typography code {
+    padding: 0 var(--padding-small);
+    background: var(--bg-1);
+    border-radius: var(--border-radius-small);
+    font-family: var(--font-mono);
+}
+
+/* ---------- Calendar: a month of days (components.calendar) ---------- */
+.calendar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small);
+    width: fit-content;
+    max-width: 100%;
+    padding: var(--padding-medium);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--border-radius-medium);
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-small);
+}
+
+.calendar-title {
+    font-weight: 700;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, var(--height)));
+    gap: var(--gap-extra-small);
+}
+
+.calendar-weekday {
+    text-align: center;
+    color: var(--fg-1);
+    font-size: var(--font-size-extra-small);
+}
+
+.calendar-day {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    border-color: transparent;
+    background: transparent;
+    font-weight: 400;
+    text-transform: none;
+}
+
+.calendar-day.outside {
+    color: var(--fg-1);
+    opacity: 0.5;
+}
+
+.calendar-day.today {
+    border-color: var(--border);
+}
+
+.calendar-day.on {
+    color: var(--highlight-ink);
+    background: var(--highlight);
+    border-color: var(--highlight);
+    opacity: 1;
+}
+
+/* ---------- Carousel: items side by side that snap, with the buttons that move them (components.carousel) ---------- */
+.carousel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small);
+}
+
+.carousel-track {
+    display: flex;
+    gap: var(--gap-small);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.carousel-item {
+    flex: none;
+    width: 100%;
+    scroll-snap-align: start;
+}
+
+.carousel-controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--gap-small);
+}
+
+/* ---------- Chart: bars or a line, drawn in svg in the colour of the app (components.chart) ---------- */
+.chart {
+    width: 100%;
+    height: auto;
+}
+
+.chart-bar {
+    fill: var(--highlight);
+}
+
+.chart-line {
+    fill: none;
+    stroke: var(--highlight);
+    stroke-width: 2;
+}
+
+.chart-dot {
+    fill: var(--highlight);
+}
+
+.chart-axis {
+    stroke: var(--border);
+}
+
+.chart-label {
+    fill: var(--fg-1);
+    font-size: 10px;
+    text-anchor: middle;
+}
+
+/* ---------- Data table: a table with a filter, a sort on each column, and pages (components.dataTable) ---------- */
+.data-table {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small);
+}
+
+.table-sort {
+    justify-content: flex-start;
+    height: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--fg-1);
+    font-size: var(--font-size-extra-small);
+}
+
+.table-sort > .icon {
+    opacity: 0;
+}
+
+.table-sort[data-sort] > .icon {
+    opacity: 1;
+}
+
+.table-sort[data-sort="descending"] > .icon {
+    transform: rotate(180deg);
+}
+
+.data-table-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-small);
+    color: var(--fg-1);
+}
+
+/* ---------- Shimmer: the text of something that is going on ---------- */
+.shimmer {
+    background: linear-gradient(90deg, var(--fg-1) 40%, var(--fg) 50%, var(--fg-1) 60%) 100% 0 / 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 1.6s linear infinite;
+}
+
+@keyframes shimmer {
+    to {
+        background-position: 0 0;
+    }
+}
+
+/* ---------- Bubble: the surface of a message ---------- */
+.bubble {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small);
+    min-width: 0;
+    max-width: 80%;
+    padding: var(--padding-medium);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--border-radius-medium);
+    overflow-wrap: anywhere;
+    line-height: 1.6;
+}
+
+.bubble.filled {
+    background: var(--bg-1);
+    border-color: var(--fg-1);
+}
+
+.bubble.ghost {
+    padding-inline: 0;
+    border-color: transparent;
+}
+
+.bubble-reactions {
+    display: flex;
+    gap: var(--gap-extra-small);
+}
+
+/* ---------- Message: a row with an avatar, and a content with a header, a bubble and a footer; end is the row of the one who writes ---------- */
+.message {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--gap-small);
+    min-width: 0;
+}
+
+.message.end {
+    flex-direction: row-reverse;
+}
+
+.message-avatar {
+    flex: none;
+    width: calc(var(--unit) * 12);
+}
+
+.message-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-extra-small);
+    min-width: 0;
+    max-width: 100%;
+}
+
+.message.end > .message-content {
+    align-items: flex-end;
+}
+
+.message-header,
+.message-footer {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-small);
+    color: var(--fg-1);
+    font-size: var(--font-size-extra-small);
+}
+
+.message-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-extra-small);
+}
+
+/* ---------- Marker: a note in a conversation; border has a line under it, separator is a label between two lines ---------- */
+.marker {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-small);
+    color: var(--fg-1);
+    font-size: var(--font-size-small);
+}
+
+.marker.border {
+    padding-block-end: var(--padding-small);
+    border-bottom: var(--border-width) solid var(--border);
+}
+
+.marker.separator {
+    justify-content: center;
+}
+
+.marker.separator::before,
+.marker.separator::after {
+    content: "";
+    flex: 1;
+    height: var(--border-width);
+    background: var(--border);
+}
+
+/* ---------- Trace: the steps of an agent, one line each: an icon, a title, and a description; a line can open to show more ---------- */
+.trace {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-extra-small);
+    min-width: 0;
+}
+
+.trace-line {
+    justify-content: flex-start;
+    gap: var(--gap-small);
+    min-width: 0;
+    height: auto;
+    padding: var(--padding-extra-small) 0;
+    color: var(--fg-1);
+    border: 0;
+    background: transparent;
+    font-size: var(--font-size-small);
+    font-weight: 400;
+    text-align: start;
+    text-transform: none;
+}
+
+div.trace-line {
+    display: flex;
+    align-items: center;
+}
+
+.trace-title {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--fg);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.trace-description {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.trace-line.error,
+.trace-line.error > .trace-title {
+    color: var(--danger);
+}
+
+.trace-line.running > .trace-title {
+    animation: shimmer 1.6s linear infinite;
+    background: linear-gradient(90deg, var(--fg-1) 40%, var(--fg) 50%, var(--fg-1) 60%) 100% 0 / 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+button.trace-line > .icon:last-child {
+    margin-inline-start: auto;
+    transition: transform 0.2s;
+}
+
+button.trace-line[aria-expanded="false"] > .icon:last-child {
+    transform: rotate(-90deg);
+}
+
+.trace-detail {
+    padding-inline-start: calc(var(--icon-size-small) + var(--gap-small));
+    color: var(--fg-1);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-extra-small);
+    white-space: pre-wrap;
+}
+
+.trace-detail[hidden] {
+    display: none;
+}
+
+/* ---------- Attachment: a file or an image, with its name and its size, and actions (the group is a row that scrolls) ---------- */
+.attachment {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-small);
+    min-width: 0;
+    max-width: calc(var(--unit) * 100);
+    padding: var(--padding-small);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--border-radius-medium);
+}
+
+.attachment.error {
+    border-color: var(--danger);
+}
+
+.attachment-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: var(--height);
+    height: var(--height);
+    background: var(--bg-1) center / cover no-repeat;
+    border-radius: var(--border-radius-small);
+}
+
+.attachment-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.attachment-title {
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.attachment-description {
+    color: var(--fg-1);
+    font-size: var(--font-size-extra-small);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.attachment-actions {
+    display: flex;
+    flex: none;
+}
+
+.attachment-group {
+    display: flex;
+    gap: var(--gap-small);
+    overflow-x: auto;
+}
+
+/* ---------- Message scroller: the box of a conversation (components.scroller) ---------- */
+.message-scroller {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+/* ---------- Choices (a choice has a key, a text, and a description) and the questionnaire: questions one after another (components.questionnaire) ---------- */
+.questionnaire {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small);
+}
+
+.questionnaire-progress {
+    color: var(--fg-1);
+    font-size: var(--font-size-extra-small);
+}
+
+.questionnaire-title {
+    font-size: var(--font-size-large);
+    font-weight: 700;
+}
+
+.questionnaire-description {
+    color: var(--fg-1);
+}
+
+.choices {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(calc(var(--unit) * 70), 1fr));
+    gap: var(--gap-small);
+}
+
+.choice {
+    height: auto;
+    min-height: calc(var(--unit) * 24);
+    justify-content: flex-start;
+    padding: var(--padding-medium);
+    text-transform: none;
+    font-size: var(--font-size-medium);
+    white-space: normal;
+}
+
+.choice-key {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--unit) * 8);
+    height: calc(var(--unit) * 8);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--border-radius-small);
+    color: var(--fg-1);
+    font-size: var(--font-size-small);
+}
+
+.choice-text {
+    flex: 1;
+    min-width: 0;
+    text-align: start;
+    overflow-wrap: anywhere;
+}
+
+.choice-description {
+    display: block;
+    color: inherit;
+    opacity: 0.7;
+    font-size: var(--font-size-small);
+}
+
+.choice.on {
+    border-color: var(--highlight);
+}
+
+.questionnaire-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--gap-small);
+}
+
+/* ---------- Collapsible and trace line: the box of the tags kit-collapsible and kit-trace-line ---------- */
+.collapsible {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small);
+}
+
+.trace-item {
+    display: block;
+}
+
+/* ---------- Empty state: what a list shows when there is nothing in it ---------- */
+.empty-state {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-medium);
+    padding: var(--padding-medium);
+    text-align: center;
+}
+
+.empty-illustration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--unit) * 40);
+    height: calc(var(--unit) * 40);
+    background: var(--bg-1);
+    border-radius: var(--border-radius-large);
+}
+
+.empty-illustration .icon {
+    width: var(--icon-size-extra-large);
+    height: var(--icon-size-extra-large);
+    color: var(--fg-1);
+}
+
+.empty-title {
+    font-size: var(--font-size-large);
+    font-weight: 700;
+}
+
+.empty-text {
+    max-width: calc(var(--unit) * 140);
+    color: var(--fg-1);
+}

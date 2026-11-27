@@ -12,7 +12,7 @@ Plain HTML, CSS, and JavaScript. No framework, no build step, no special server.
 - Every app keeps what is on its screen (the folder, the tab, the search, the language, the lesson, the chat) in its address, so a reload shows the same. In a tab of the directory, the address of the directory keeps it for the app.
 - Dark and light themes. The chosen theme and language are remembered by the browser. A change in one app is followed live by all the others, muOS included.
 - Three languages: English, 简体中文, and العربية (right to left).
-- Two pages, About and Terms and conditions, and a link to support Kancamu (Saweria, the address is in data.js, "support"), with their buttons in the footer of the main website. Their texts are in the main data.js ("pages"), in the three languages, and the page that is open is in the address (?page=terms).
+- Two pages, About and Terms and conditions, and a link to support Kancamu (Saweria, the address is in data.json, "support"), with their buttons in the footer of the main website. Their texts are in the main data.json ("pages"), in the three languages, and the page that is open is in the address (?page=terms).
 - Every app has Open Graph tags and its own preview image, so a link to it looks right where it is shared.
 - A splash screen: when the main website opens, a layer with the logo, the name, and three images (they slide every few seconds, in order) shows until a click or a key; it can be turned off in the Appearance page of the account app.
 - Effects, set in the Appearance page of the account app and shared by every app (except muOS and ArtCraft): today a noise (a fine grain over the page, with an amount and an option to make it move) and a monochrome (the colour taken out, with an amount). An effect is only a layer over the page: a div of its own in the body, which takes no click and changes no element of the page (no style or attribute on any other element), and the noise stays still when the device asks for less motion.
@@ -46,27 +46,38 @@ The directory also lists TraceDraw, an open source vector editor from another pu
 index.html       Page skeleton
 layout.css       Layout and styles specific to this page
 app.js        Logic: list rendering, filters, tabs, language, theme
-data.js        All data: projects, categories, languages, and interface text
+data.json        All data: projects, categories, languages, and interface text
 assets/          Shared assets, in folders
   css/           The styles
-    style.css       The shared styles used by every app except muOS: fonts, colour tokens, reset, input and select, the components every app makes again (shown in Kitmu), and the page (the header, the footer, the main, and the sidebar with its drawer)
+    style.css       Shared styles (fonts, colour tokens, reset, input and select), used by every app except muOS
+    components.css  The components every app makes again: icons, buttons, the search box, the alert, the card, the chat parts and the rest (shown in Kitmu)
+    page.css        The page: the header, the footer, the main, and the sidebar with its drawer
   js/            The scripts
     theme.js        Applies the saved theme, and the effects of the Appearance page (the noise), before the page shows, to avoid a flash
-    kancamu.js      The single JS bundle for all apps (ES module, loaded after theme.js); contains the icons (SVG masks), cleanup, url, i18n, popup, autocomplete, components, account, settings, storage, and transfer — assembled by assets/tools/assemble-bundle.mjs
+    cleanup.js      Deletes what older versions of the code left in the browser (keys of localStorage, databases, caches that are listed in it; nothing else, because muOS and ArtCraft share the origin)
+    i18n.js         Loads an app's data.json and applies the chosen language (en-US, zh-CN, ar-SA)
+    account.js      The shared GitHub sign-in ("Sign in with GitHub"): get, signInWithGitHub, signOut, onChange, and the dialog (open, bind) that embeds /youmu
+    settings.js     The settings of every app (get, set, onChange, listen): written by the account app and by the controls of an app
+    storage.js      The shared data storage: one private repository (<id>-data), made empty and without a README (its first commit is the empty file AppData/.gitkeep), on its default branch: the Drive of Drivemu is the root, shown like a file explorer (Documents, Images, Videos, Audio, and AppData with them), and every app has its data folder in AppData (AppData/muai, AppData/lingomu); muAI keeps conversations/ and files/ in its folder
+    transfer.js     Files of the Drive dragged out of an app: images as real images (any app takes them), other files as a link (the apps of Kancamu take them)
+    url.js          Keeps what is on the screen of an app in the address (the query string: urlState.get, urlState.set), so a reload shows the same; an app in a tab tells the directory, which keeps it in its own address
+    popup.js        The shared popups: the question and message dialog (popups.ask, popups.tell) and the toasts (popups.toast); every notice of every app (work that goes on, a result, an error) is a toast, and the status line of the footer only keeps the hint of the page; the button texts are in popup.json. No app uses alert, confirm, or prompt
+    components.js   The helpers of the components (element, icon, formatSize, menu, popover, calendar, dataTable, questionnaire, and more)
+    autocomplete.js The autocomplete of every search input (autocomplete.attach)
   data/          What the scripts read
-    brand.js      The id, the name, and the highlighted word of the brand, the one place they are written (texts say {brand} and {highlight})
-    popup.js      The texts of the buttons of the popups, in every language
-    appearance.js The Appearance page of the account app: the splash screen and the effects (noise, monochrome, their amounts, and the movement of the noise) with their defaults and texts
-    auth.js       The sign-in with GitHub: the client id (public), the scope, and the address of the Worker (local and production). Never a secret
+    brand.json      The id, the name, and the highlighted word of the brand, the one place they are written (texts say {brand} and {highlight})
+    popup.json      The texts of the buttons of the popups, in every language
+    appearance.json The Appearance page of the account app: the splash screen and the effects (noise, monochrome, their amounts, and the movement of the noise) with their defaults and texts
+    auth.json       The sign-in with GitHub: the client id (public), the scope, and the address of the Worker (local and production). Never a secret
   fonts/         Inter (woff2), used by every app, and JetBrains Mono (woff2), used by muOS
   images/        The images that are content of the site (the splash screen): WebP, compressed, with the original beside each as <name>_raw; splash.webp and icons.png are the sprites (see assets/tools/sprites.mjs), the single files stay
   icons/         Every SVG icon of the main site, Drivemu, and muAI (universal names)
 favicon.png      Site icon
-assets/tools/    What helps to make the project: og-cards.mjs makes the preview.png of the main website and of every app from their cards (node assets/tools/og-cards.mjs); the cards are shown all at once in the section Previews of Assetmu, where each can be saved as an image; muai-helper/ is the Rust program that lets muAI work with the files of one folder of your PC (one command in a terminal downloads and runs it, and muAI connects by itself: see its README), with its install scripts, its programs (`bin/`), and the workflow that builds them for every system (`.github/workflows/muai-helper-release.yml`); sprites.mjs makes the sprites (the images of the splash screen in one square file, assets/images/splash.webp, and the icons of all the apps (16 px for the pixel icons, at most 48 px for the others) in one, assets/images/icons.webp; node assets/tools/sprites.mjs); seo.mjs makes sitemap.xml, robots.txt, and the title, the canonical address, the structured data, and the noscript text of every page (node assets/tools/seo.mjs); data.mjs reads a data.js for the tools, which are ES modules
+assets/tools/    What helps to make the project: og-cards.mjs makes the preview.png of the main website and of every app from their cards (node assets/tools/og-cards.mjs); the cards are shown all at once in the section Previews of Assetmu, where each can be saved as an image; muai-helper/ is the Rust program that lets muAI work with the files of one folder of your PC (one command in a terminal downloads and runs it, and muAI connects by itself: see its README), with its install scripts, its programs (`bin/`), and the workflow that builds them for every system (`.github/workflows/muai-helper-release.yml`); sprites.mjs makes the sprites (the images of the splash screen in one square file, assets/images/splash.webp, and the icons of all the apps (16 px for the pixel icons, at most 48 px for the others) in one, assets/images/icons.webp; node assets/tools/sprites.mjs); seo.mjs makes sitemap.xml, robots.txt, and the title, the canonical address, the structured data, and the noscript text of every page (node assets/tools/seo.mjs)
 preview.png      Open Graph image (1200x630): the card of the main website, which is its splash screen (node assets/tools/og-cards.mjs kancamu), made again when the splash changes, with the number after ?v= raised in the og:image of index.html
 RULES.md         Project rules
 assetmu/         Assetmu: shows every asset (colours, icons, fonts, sizes, files) and the colour and icon of each app
-kitmu/          Kitmu: the UI kit (templates of assets/css/style.css, helpers of assets/js/components.js, popups of assets/js/popup.js)
+kitmu/          Kitmu: the UI kit (templates of assets/css/components.css, helpers of assets/js/components.js, popups of assets/js/popup.js)
 speechmu/       Speech to text (Transformers.js, Whisper; a file or the microphone; saved as text or SRT subtitles) and text to speech (MMS voices that download once, and the voices of the device; saved as WAV); nothing is uploaded
 hashmu/         Hashing and cryptography in the browser (the Web Crypto API; nothing is uploaded): hashes of a text or a file, HMAC, encrypting a text, random passwords and keys, and Base64, Hex, and URL encoding; what the user types in a field is never in the address
 searchmu/       The advanced search of Google: the fields make a query and the filters of Google, and its results are shown in a frame (what the user types in a field is never in the address)
@@ -75,8 +86,8 @@ artcraft/        The eight ArtCraft apps (downloaded by update.ps1)
 drivemu/         File storage on GitHub
 gallemu/        Gallery of the images and videos of the Drive (reads the Drive, read only)
 spotimu/        Music player for the audio files of the Drive (reads the Drive, read only)
-mujs/           JavaScript lessons (units, lessons and tests are in data.js; the code runs in a sandboxed frame, sandbox.js; the progress is in the mujs folder)
-lingomu/        Language lessons (courses, units and lessons are in data.js; the progress is in the lingomu folder)
+mujs/           JavaScript lessons (units, lessons and tests are in data.json; the code runs in a sandboxed frame, sandbox.js; the progress is in the mujs folder)
+lingomu/        Language lessons (courses, units and lessons are in data.json; the progress is in the lingomu folder)
 picmu/          Images and videos in the browser (WebGPU, nothing is uploaded), two tools in tabs: remove the background (RMBG 1.4, BiRefNet lite, MODNet) and upscale (Swin2SR, x2 and x4, a tile at a time); images and videos (frame by frame, saved as WebM, MP4, GIF or a ZIP of PNG frames; a removed background is transparent, white, black or any colour); can take a file from the Drive and save the result to it; every tool has its own model, chosen in the page or in the account app
 transmu/        Translator in the browser (Transformers.js; Opus-MT, NLLB-200 or M2M100, chosen in a select; nothing is uploaded); Opus-MT uses English as the bridge between two other languages
 muai/            AI in the browser, or through an OpenAI-compatible API; the key of the API and the token of muai-helper stay in this browser (localStorage), never in the synced settings
@@ -84,19 +95,19 @@ muos/            Desktop in the browser
 CNAME            The kancamu.site domain for GitHub Pages
 ```
 
-Each project is a plain folder with its own `index.html`. Its link in `data.js` is a relative path.
+Each project is a plain folder with its own `index.html`. Its link in `data.json` is a relative path.
 
-Styles are split in two. `assets/css/style.css` is loaded by every app except muOS and holds fonts, colour and theme tokens, the reset, the basics of `input` and `select`, the components (icons, buttons, the cards, the chat parts, and the rest), and the page template (the header, the footer, the main, and the sidebar with its drawer). Each app then loads its own `layout.css` (`layout.css`, `drivemu/layout.css`, `muai/layout.css`) for its layout and specific components; the main website's `layout.css` resets the parts of the page template it does not use. Load order: `assets/css/style.css` first, then `layout.css`.
+Styles are split in two. `assets/css/style.css` is loaded by every app except muOS and holds fonts, colour and theme tokens, the reset, and the basics of `input` and `select`. Each app then loads its own `layout.css` (`layout.css`, `drivemu/layout.css`, `muai/layout.css`) for its layout and specific components. Load order: `assets/css/style.css` first, then `layout.css`.
 
 Colours have two layers in `assets/css/style.css`. The first is a palette of six colours named after the colour itself: `--black` and `--white` for backgrounds and text, and `--red`, `--yellow`, `--blue`, and `--green` for highlights; there is no gray in the palette. The second is roles (`--bg`, `--bg-1`, `--border`, `--fg`, `--danger`, `--ok`, ...), which are derived from the palette with `color-mix` and change between the dark and light theme. Each theme has two grays, mixes of white and black: `--neutral` for secondary text, and `--neutral-soft` for lines and the second background. Components use role names, or colour names for colours that never change.
 
-In `data.js`, a project's highlight colour (`"color"`) is a palette name such as `"blue"` for projects made here. Projects from other publishers (ArtCraft, TraceDraw) may keep their own colour as hex, for example `"#a78bfa"`.
+In `data.json`, a project's highlight colour (`"color"`) is a palette name such as `"blue"` for projects made here. Projects from other publishers (ArtCraft, TraceDraw) may keep their own colour as hex, for example `"#a78bfa"`.
 
-Every app has four basic files: `index.html`, `layout.css`, `app.js`, and `data.js`. The main site, Drivemu, and muAI each keep them in their own folder. They all load `assets/js/theme.js` synchronously first (to avoid a flash of unstyled content), then `assets/js/kancamu.js` as a module (which contains i18n, account, components, and all other shared scripts), then their own `app.js`.
+Every app has four basic files: `index.html`, `layout.css`, `app.js`, and `data.json`. The main site, Drivemu, and muAI each keep them in their own folder. They all load `assets/js/theme.js` first, and `assets/js/i18n.js` before their own script.
 
-Every app supports English, Chinese, and Arabic (right to left). All its texts live in its own `data.js` (`ui`, one entry per language) and are marked in the HTML with `data-i18n`, `data-i18n-html`, `data-i18n-title`, `data-i18n-placeholder`, or `data-i18n-label`. A `<select class="language">` lets the user choose, and the choice is kept under the same key (`lang`) for every app. CSS uses logical properties (`inline-start`, `inline-end`) so the layout flips for Arabic. muOS has its own language files, and ArtCraft is a third-party app.
+Every app supports English, Chinese, and Arabic (right to left). All its texts live in its own `data.json` (`ui`, one entry per language) and are marked in the HTML with `data-i18n`, `data-i18n-html`, `data-i18n-title`, `data-i18n-placeholder`, or `data-i18n-label`. A `<select class="language">` lets the user choose, and the choice is kept under the same key (`lang`) for every app. CSS uses logical properties (`inline-start`, `inline-end`) so the layout flips for Arabic. muOS has its own language files, and ArtCraft is a third-party app.
 
-Icons live in one place, inline in `assets/js/kancamu.js`, and are used as CSS masks so their colour follows the text. File names are universal (`close`, `plus`, `trash`), not specific to a project. Only muOS has icons of its own.
+Icons live in one place, `assets/icons/`, and are used as CSS masks so their colour follows the text. File names are universal (`close`, `plus`, `trash`), not specific to a project. Only muOS has icons of its own.
 
 ## Running
 
@@ -108,7 +119,7 @@ npx http-server . -p 5173 -c-1
 
 Avoid servers that remove `index.html` from addresses, such as `npx serve` with its defaults: a page like `muos/apps/store/index.html` is then opened as `muos/apps/store`, and its relative files are looked up in the wrong folder.
 
-Opening `index.html` straight from disk does not work, because `data.js` is loaded as an ES module (with `import()`), which the browser only allows over a web server.
+Opening `index.html` straight from disk does not work, because `data.json` is loaded with `fetch`.
 
 ## Updating ArtCraft
 
@@ -120,13 +131,13 @@ powershell -ExecutionPolicy Bypass -File artcraft\update.ps1
 powershell -ExecutionPolicy Bypass -File artcraft\update.ps1 -Only photocraft,deckcraft -Force
 ```
 
-`-ExecutionPolicy Bypass` applies to that one run only; it does not change the policy of the computer. The script does not touch `data.js`: a new app needs an entry in `artcraft/data.json` and its own entry in the site's `data.js` (see "Adding a project"). The zips carry no icon, so the script keeps the folder's `icon-256.png` or takes the app icon from the repository.
+`-ExecutionPolicy Bypass` applies to that one run only; it does not change the policy of the computer. The script does not touch `data.json`: a new app needs an entry in `artcraft/data.json` and its own entry in the site's `data.json` (see "Adding a project"). The zips carry no icon, so the script keeps the folder's `icon-256.png` or takes the app icon from the repository.
 
 The eight apps add up to about 425 MB. GitHub refuses files over 100 MB, and the biggest wasm file (VectorCraft) is 97 MB, so check the sizes after an update.
 
 ## Adding a project
 
-Everything in the list comes from `data.js`. It is an ES module whose whole content is `export default { ... }`. Add one object to `projects`:
+Everything in the list comes from `data.json`. Add one object to `projects`:
 
 ```json
 {
@@ -151,7 +162,7 @@ Everything in the list comes from `data.js`. It is an ES module whose whole cont
 - `name` and `description` are written per language. A missing language falls back to `en-US`.
 - `highlight` is the part of the name shown in bold on the card, for example `mu` in "muOS".
 - `color` is a palette name (`red`, `yellow`, `blue`, or `green`), or a hex value for a project from another publisher.
-- `categories` must use keys that exist under `categories` in `data.js`: `ai`, `tools`, `productivity`, `system`, `office`, `design`, `video`, `creative`, `directory`, `storage`.
+- `categories` must use keys that exist under `categories` in `data.json`: `ai`, `tools`, `productivity`, `system`, `office`, `design`, `video`, `creative`, `directory`, `storage`.
 - `source` (only for a project of another maker) is the address of its source on GitHub: it is the "Source on GitHub" item in the menu of the three dots of its card. The projects of Kancamu have none.
 - `alternatives` lists the products the project is an alternative to (one or more, product names are not translated; `[]` for none). The directory has a filter for them, and the search also finds them.
 - New interface text and new category names are written in all three languages.

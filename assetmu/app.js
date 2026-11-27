@@ -89,7 +89,7 @@ function renderColours() {
 
 /* ---------- the apps: the icon, the name with its highlight, and the colour of each project of the main website ---------- */
 let mainData = { projects: [] };
-try { mainData = (await import(new URL("../data.js", document.baseURI).href)).default; } catch { /* the sections of the apps stay empty */ }
+try { mainData = await (await fetch("../data.json", { cache: "no-store" })).json(); } catch { /* the sections of the apps stay empty */ }
 const projects = mainData.projects;
 const fill = (text) => text.replaceAll("{highlight}", i18n.brand.highlight).replaceAll("{brand}", i18n.brand.name);
 function renderApps() {
@@ -273,10 +273,11 @@ function renderIcons() {
   iconGrid.replaceChildren(...(shown.length ? shown.map((name) => {
     const tile = element("button", "icon-tile");
     tile.type = "button";
-    const glyph = element("span", `icon icon-${name}`);
+    const glyph = element("span", "icon");
+    glyph.style.setProperty("--icon", `url("${new URL(`../assets/icons/${name}.svg`, location.href).href}")`);
     tile.append(glyph, element("span", "icon-name", name));
-    tile.title = name;
-    tile.addEventListener("click", () => copy(name));
+    tile.title = `${name}.svg`;
+    tile.addEventListener("click", () => copy(`${name}.svg`));
     return tile;
   }) : [element("span", "empty", tr("icons.none"))]));
 }

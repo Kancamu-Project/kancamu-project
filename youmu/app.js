@@ -1,7 +1,7 @@
 // The account app: the sign-in, the profile, and the settings of every app. The query string says which page shows:
 //   ?page=login  ?page=profile  ?page=settings&app=<app>
 // Any app opens it with its account button, account.open() (assets/js/account.js), which embeds this page in a dialog.
-// The settings of an app are described in its data.js ("settings": fields, defaults, and panels), and are only changed here.
+// The settings of an app are described in its data.json ("settings": fields, defaults, and panels), and are only changed here.
 import { panels } from "./panels.js";
 
 const { element } = components;
@@ -166,17 +166,18 @@ $("account-tab").addEventListener("click", () => showPage("account"));
 const appData = async (app) => {
     if (!/^[a-z0-9-]+$/.test(app)) return null;
     try {
-        const module = await import(new URL(`../${app}/data.js`, document.baseURI).href);
-        const text = JSON.stringify(module.default).replaceAll("{highlight}", i18n.brand.highlight).replaceAll("{brand}", i18n.brand.name);
+        const response = await fetch(`../${app}/data.json`, { cache: "no-store" });
+        if (!response.ok) return null;
+        const text = JSON.stringify(await response.json()).replaceAll("{highlight}", i18n.brand.highlight).replaceAll("{brand}", i18n.brand.name);
         return JSON.parse(text);
     } catch {
         return null;
     }
 };
-// Every app of the brand, with its data.js when it has one: { id, name, icon, data }. An app has settings when its data.js has a "settings" part.
+// Every app of the brand, with its data.json when it has one: { id, name, icon, data }. An app has settings when its data.json has a "settings" part.
 async function loadApps() {
     let projects = [];
-    try { projects = (await import(new URL("../data.js", document.baseURI).href)).default.projects; } catch { return []; }
+    try { projects = (await (await fetch("../data.json", { cache: "no-store" })).json()).projects; } catch { return []; }
     const fill = (text) => text.replaceAll("{highlight}", i18n.brand.highlight).replaceAll("{brand}", i18n.brand.name);
     const found = await Promise.all(projects.filter((project) => project.publisher === "{brand}").map(async (project) => {
         const folder = /^[a-z0-9-]+\/$/.test(project.url || "") ? project.url.slice(0, -1) : "";
@@ -188,9 +189,9 @@ async function loadApps() {
     }));
     // The apps that have settings first, then the ones that have none (their buttons are disabled), each group by name.
     found.sort((a, b) => Number(!a.data?.settings) - Number(!b.data?.settings) || a.name.localeCompare(b.name, i18n.lang));
-    // Before them, the appearance of every app (the effects, assets/data/appearance.js): it belongs to no app, and is set like the settings of one.
+    // Before them, the appearance of every app (the effects, assets/data/appearance.json): it belongs to no app, and is set like the settings of one.
     try {
-        const data = (await import(new URL("../assets/data/appearance.js", document.baseURI).href)).default;
+        const data = await (await fetch("../assets/data/appearance.json", { cache: "no-store" })).json();
         found.unshift({ id: "appearance", name: i18n.pick(data.ui.name), parts: [i18n.pick(data.ui.name), "", ""], glyph: "sliders", data });
     } catch { /* the page is left out */ }
     return found;
@@ -217,7 +218,7 @@ window.addEventListener("storage", (event) => {
     if (event.key === "theme" || event.key === null) markTheme();
 });
 
-// The options of a select: written in the field ("options": [{ value, label }]), or taken from a list of the data.js of the app
+// The options of a select: written in the field ("options": [{ value, label }]), or taken from a list of the data.json of the app
 // ("optionsFrom": { "list": "video.formats", "value": "id", "label": "name" }, a list of plain values has no value and label, and "labelPrefix" makes the label a text of the app).
 function optionsOf(definition) {
     const from = definition.optionsFrom;

@@ -1,8 +1,0 @@
-export default {
-  "clientId": "Ov23liihNCXM7U0kktDM",
-  "scope": "repo",
-  "worker": {
-    "production": "https://kancamu-auth.yusuf-expert-official.workers.dev",
-    "local": "https://kancamu-auth.yusuf-expert-official.workers.dev"
-  }
-};

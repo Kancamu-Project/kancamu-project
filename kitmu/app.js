@@ -1,4 +1,4 @@
-// Kitmu: the UI kit of the apps: the components (assets/css/style.css), the helpers (assets/js/components.js), and the popups (assets/js/popup.js), each with the code to copy and a way to try it.
+// Kitmu: the UI kit of the apps: the components (assets/css/components.css), the helpers (assets/js/components.js), and the popups (assets/js/popup.js), each with the code to copy and a way to try it.
 // The tabs: Components (the list: every component as a card with its name and its preview, narrowed down by the search and the tags), Pages (what is made of several components), How to use, Helpers, and Popups (each kept in the address as ?view=pages, ?view=guide, ?view=helpers, ?view=popups).
 await i18n.load();
 i18n.selects();
@@ -82,7 +82,7 @@ document.querySelectorAll(".segmented-control").forEach((group) => group.querySe
 function demoPage(html, script = "") {
   const style = getComputedStyle(document.documentElement);
   const theme = document.documentElement.dataset.theme === "light" ? "light" : "dark";
-  return `<!doctype html><html data-theme="${theme}"><head><meta charset="utf-8"><link rel="stylesheet" href="../assets/css/style.css"><style>:root { --brand: ${style.getPropertyValue("--brand")}; --brand-ink: ${style.getPropertyValue("--brand-ink")}; } .logo-mark { background-image: url(favicon.png); } body { min-height: 0; }</style></head><body>${html}<script src="../assets/js/popup.js"></script><script src="../assets/js/autocomplete.js"></script><script src="../assets/js/components.js"></script><script>${DEMO_SCRIPT}</script>${script ? `<script>${script.replaceAll("</", "<\\/")}</script>` : ""}</body></html>`;
+  return `<!doctype html><html data-theme="${theme}"><head><meta charset="utf-8"><link rel="stylesheet" href="../assets/css/style.css"><link rel="stylesheet" href="../assets/css/components.css"><link rel="stylesheet" href="../assets/css/page.css"><style>:root { --brand: ${style.getPropertyValue("--brand")}; --brand-ink: ${style.getPropertyValue("--brand-ink")}; } .logo-mark { background-image: url(favicon.png); } body { min-height: 0; }</style></head><body>${html}<script src="../assets/js/popup.js"></script><script src="../assets/js/autocomplete.js"></script><script src="../assets/js/components.js"></script><script>${DEMO_SCRIPT}</script>${script ? `<script>${script.replaceAll("</", "<\\/")}</script>` : ""}</body></html>`;
 }
 function component(doc) {
   const frame = element("iframe", "doc-frame");

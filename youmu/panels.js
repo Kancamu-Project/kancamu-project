@@ -1,6 +1,6 @@
 // The panels of the settings that need more than a value: they work on the data of an app (its chats, its downloaded models, its drive).
-// An app names the panels it wants in its data.js ("settings": { "panels": [...] }); the account app draws them and does the work, so the app itself has no code for it.
-// Every panel gets { app, data, t, ask, toast, announce }: the name of the app, its data.js, a function for its texts, the shared question dialog, a toast,
+// An app names the panels it wants in its data.json ("settings": { "panels": [...] }); the account app draws them and does the work, so the app itself has no code for it.
+// Every panel gets { app, data, t, ask, toast, announce }: the name of the app, its data.json, a function for its texts, the shared question dialog, a toast,
 // and a function that tells the app what was done to its data (assets/js/settings.js: the app follows it with settings.listen).
 
 const element = (tag, className, text) => {
@@ -53,7 +53,7 @@ async function webgpu({ t }) {
 
 // The models of an app that works with one of them at a time (muAI, Picmu, Transmu): one list with every model of its data, and for each one the choice (the radio), whether its
 // files are in the cache of the browser (Transformers.js keeps them there, under the address of the model), and the deletion of them. It is the list of the models and the list of
-// the downloaded models in one. An app describes it in its data.js: "settings": { "models": { "cache": "transformers-cache", "choose": "model", "list": "models", "repo": "id",
+// the downloaded models in one. An app describes it in its data.json: "settings": { "models": { "cache": "transformers-cache", "choose": "model", "list": "models", "repo": "id",
 // "repoTemplate": "modelTemplate" } }: choose is the setting that holds the choice, list the list of the models of the app (each one has an id and a name), repo the field with the
 // repository of a model on Hugging Face, and repoTemplate (when a model is one repository for each pair of languages, as Opus-MT is) the field with an address such as
 // "Xenova/opus-mt-{from}-{to}": every repository that fits it is of the model. An app with several tools (Picmu) chooses a model for each one: a model has its own "choose"

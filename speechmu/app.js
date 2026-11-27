@@ -16,7 +16,7 @@ const els = Object.fromEntries([
   "status", "account-button"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-// The languages, the models, and the engine are in data.js.
+// The languages, the models, and the engine are in data.json.
 const { speechLanguages: languages, models, engine, speech, settings: { defaults } } = i18n.data;
 const preferences = settings.get("speechmu", defaults);   // the model and the two languages: set here and in the account app
 // What is on the screen is also in the address (?tab=...&model=...&listen=...&speak=...&text=...), so a reload shows the same (assets/js/url.js); the address wins over the settings.

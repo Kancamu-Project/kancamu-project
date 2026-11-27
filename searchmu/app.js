@@ -13,7 +13,7 @@ const els = Object.fromEntries([
   "status", "account-button"
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
-// The languages, the regions, the types of file, the rights, and the limits are in data.js.
+// The languages, the regions, the types of file, the rights, and the limits are in data.json.
 const { searchLanguages, regions, filetypes, rights, limits, settings: { defaults } } = i18n.data;
 const VIEWS = ["filters", "results"];
 const preferences = () => settings.get("searchmu", defaults);

@@ -1,7 +1,7 @@
 /* Gallemu: the images and videos of the Drive, in one gallery. */
 .hidden { display: none !important; }
 
-/* Icon: SVG files from assets/js/icons.js are used as masks so they follow the text colour */
+/* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
 :root[dir="rtl"] :is(.icon-chevron-left, .icon-chevron-right) { transform: scaleX(-1); }
 
 /* Buttons */
@@ -12,8 +12,8 @@ button.active { background: var(--fg); color: var(--bg); border-color: var(--fg)
 .main { display: grid; grid-template-rows: auto minmax(0, 1fr); }
 
 .header { height: var(--height); }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/style.css) */
-:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/style.css) */
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
+:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/components.css) */
 .header-tools { height: 100%; }
 
 .toolbar { display: flex; flex-wrap: wrap; gap: var(--gap-small); }

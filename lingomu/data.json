@@ -1,0 +1,1354 @@
+{
+  "name": {
+    "en-US": "Lingo{highlight} — learn a language",
+    "zh-CN": "Lingo{highlight} — 学习语言",
+    "ar-SA": "Lingo{highlight} — تعلّم لغة"
+  },
+  "brandColor": "#1cc93d",
+  "storageFolder": "lingomu",
+  "lesson": {
+    "hearts": 5,
+    "choices": 4,
+    "xp": 10,
+    "perfectBonus": 5,
+    "matchPairs": 4,
+    "kinds": [
+      "meaning",
+      "word",
+      "type"
+    ],
+    "listenKind": "listen",
+    "matchKind": "match"
+  },
+  "goals": [
+    10,
+    20,
+    30,
+    50
+  ],
+  "settings": {
+    "defaults": {
+      "dailyGoal": 20,
+      "speak": true
+    },
+    "fields": [
+      {
+        "id": "dailyGoal",
+        "type": "select",
+        "optionsFrom": {
+          "list": "goals"
+        },
+        "label": "settings.goal"
+      },
+      {
+        "id": "speak",
+        "type": "checkbox",
+        "label": "settings.speak"
+      }
+    ],
+    "panels": [
+      "progressReset"
+    ]
+  },
+  "concepts": {
+    "hello": {
+      "en-US": "hello",
+      "zh-CN": "你好",
+      "ar-SA": "مرحبا"
+    },
+    "goodbye": {
+      "en-US": "goodbye",
+      "zh-CN": "再见",
+      "ar-SA": "مع السلامة"
+    },
+    "yes": {
+      "en-US": "yes",
+      "zh-CN": "是",
+      "ar-SA": "نعم"
+    },
+    "no": {
+      "en-US": "no",
+      "zh-CN": "不",
+      "ar-SA": "لا"
+    },
+    "please": {
+      "en-US": "please",
+      "zh-CN": "请",
+      "ar-SA": "من فضلك"
+    },
+    "thanks": {
+      "en-US": "thank you",
+      "zh-CN": "谢谢",
+      "ar-SA": "شكرا"
+    },
+    "sorry": {
+      "en-US": "sorry",
+      "zh-CN": "对不起",
+      "ar-SA": "آسف"
+    },
+    "morning": {
+      "en-US": "good morning",
+      "zh-CN": "早上好",
+      "ar-SA": "صباح الخير"
+    },
+    "water": {
+      "en-US": "water",
+      "zh-CN": "水",
+      "ar-SA": "ماء"
+    },
+    "bread": {
+      "en-US": "bread",
+      "zh-CN": "面包",
+      "ar-SA": "خبز"
+    },
+    "milk": {
+      "en-US": "milk",
+      "zh-CN": "牛奶",
+      "ar-SA": "حليب"
+    },
+    "apple": {
+      "en-US": "apple",
+      "zh-CN": "苹果",
+      "ar-SA": "تفاحة"
+    },
+    "coffee": {
+      "en-US": "coffee",
+      "zh-CN": "咖啡",
+      "ar-SA": "قهوة"
+    },
+    "rice": {
+      "en-US": "rice",
+      "zh-CN": "米饭",
+      "ar-SA": "أرز"
+    },
+    "egg": {
+      "en-US": "egg",
+      "zh-CN": "鸡蛋",
+      "ar-SA": "بيضة"
+    },
+    "fish": {
+      "en-US": "fish",
+      "zh-CN": "鱼",
+      "ar-SA": "سمكة"
+    },
+    "cat": {
+      "en-US": "cat",
+      "zh-CN": "猫",
+      "ar-SA": "قطة"
+    },
+    "dog": {
+      "en-US": "dog",
+      "zh-CN": "狗",
+      "ar-SA": "كلب"
+    },
+    "bird": {
+      "en-US": "bird",
+      "zh-CN": "鸟",
+      "ar-SA": "طائر"
+    },
+    "horse": {
+      "en-US": "horse",
+      "zh-CN": "马",
+      "ar-SA": "حصان"
+    },
+    "duck": {
+      "en-US": "duck",
+      "zh-CN": "鸭子",
+      "ar-SA": "بطة"
+    },
+    "cow": {
+      "en-US": "cow",
+      "zh-CN": "牛",
+      "ar-SA": "بقرة"
+    },
+    "pig": {
+      "en-US": "pig",
+      "zh-CN": "猪",
+      "ar-SA": "خنزير"
+    },
+    "monkey": {
+      "en-US": "monkey",
+      "zh-CN": "猴子",
+      "ar-SA": "قرد"
+    }
+  },
+  "courses": [
+    {
+      "id": "english",
+      "language": "en",
+      "speech": "en-US",
+      "dir": "ltr",
+      "name": {
+        "en-US": "English",
+        "zh-CN": "英语",
+        "ar-SA": "الإنجليزية"
+      },
+      "words": {
+        "hello": "hello",
+        "goodbye": "goodbye",
+        "yes": "yes",
+        "no": "no",
+        "please": "please",
+        "thanks": "thank you",
+        "sorry": "sorry",
+        "morning": "good morning",
+        "water": "water",
+        "bread": "bread",
+        "milk": "milk",
+        "apple": "apple",
+        "coffee": "coffee",
+        "rice": "rice",
+        "egg": "egg",
+        "fish": "fish",
+        "cat": "cat",
+        "dog": "dog",
+        "bird": "bird",
+        "horse": "horse",
+        "duck": "duck",
+        "cow": "cow",
+        "pig": "pig",
+        "monkey": "monkey"
+      }
+    },
+    {
+      "id": "chinese",
+      "language": "zh",
+      "speech": "zh-CN",
+      "dir": "ltr",
+      "name": {
+        "en-US": "Chinese",
+        "zh-CN": "中文",
+        "ar-SA": "الصينية"
+      },
+      "words": {
+        "hello": {
+          "text": "你好",
+          "roman": "nǐ hǎo"
+        },
+        "goodbye": {
+          "text": "再见",
+          "roman": "zàijiàn"
+        },
+        "yes": {
+          "text": "是",
+          "roman": "shì"
+        },
+        "no": {
+          "text": "不",
+          "roman": "bù"
+        },
+        "please": {
+          "text": "请",
+          "roman": "qǐng"
+        },
+        "thanks": {
+          "text": "谢谢",
+          "roman": "xièxie"
+        },
+        "sorry": {
+          "text": "对不起",
+          "roman": "duìbuqǐ"
+        },
+        "morning": {
+          "text": "早上好",
+          "roman": "zǎoshang hǎo"
+        },
+        "water": {
+          "text": "水",
+          "roman": "shuǐ"
+        },
+        "bread": {
+          "text": "面包",
+          "roman": "miànbāo"
+        },
+        "milk": {
+          "text": "牛奶",
+          "roman": "niúnǎi"
+        },
+        "apple": {
+          "text": "苹果",
+          "roman": "píngguǒ"
+        },
+        "coffee": {
+          "text": "咖啡",
+          "roman": "kāfēi"
+        },
+        "rice": {
+          "text": "米饭",
+          "roman": "mǐfàn"
+        },
+        "egg": {
+          "text": "鸡蛋",
+          "roman": "jīdàn"
+        },
+        "fish": {
+          "text": "鱼",
+          "roman": "yú"
+        },
+        "cat": {
+          "text": "猫",
+          "roman": "māo"
+        },
+        "dog": {
+          "text": "狗",
+          "roman": "gǒu"
+        },
+        "bird": {
+          "text": "鸟",
+          "roman": "niǎo"
+        },
+        "horse": {
+          "text": "马",
+          "roman": "mǎ"
+        },
+        "duck": {
+          "text": "鸭子",
+          "roman": "yāzi"
+        },
+        "cow": {
+          "text": "牛",
+          "roman": "niú"
+        },
+        "pig": {
+          "text": "猪",
+          "roman": "zhū"
+        },
+        "monkey": {
+          "text": "猴子",
+          "roman": "hóuzi"
+        }
+      }
+    },
+    {
+      "id": "arabic",
+      "language": "ar",
+      "speech": "ar-SA",
+      "dir": "rtl",
+      "name": {
+        "en-US": "Arabic",
+        "zh-CN": "阿拉伯语",
+        "ar-SA": "العربية"
+      },
+      "words": {
+        "hello": {
+          "text": "مرحبا",
+          "roman": "marhaba"
+        },
+        "goodbye": {
+          "text": "مع السلامة",
+          "roman": "maa as-salama"
+        },
+        "yes": {
+          "text": "نعم",
+          "roman": "naam"
+        },
+        "no": {
+          "text": "لا",
+          "roman": "la"
+        },
+        "please": {
+          "text": "من فضلك",
+          "roman": "min fadlik"
+        },
+        "thanks": {
+          "text": "شكرا",
+          "roman": "shukran"
+        },
+        "sorry": {
+          "text": "آسف",
+          "roman": "asif"
+        },
+        "morning": {
+          "text": "صباح الخير",
+          "roman": "sabah al-khayr"
+        },
+        "water": {
+          "text": "ماء",
+          "roman": "maa"
+        },
+        "bread": {
+          "text": "خبز",
+          "roman": "khubz"
+        },
+        "milk": {
+          "text": "حليب",
+          "roman": "halib"
+        },
+        "apple": {
+          "text": "تفاحة",
+          "roman": "tuffaha"
+        },
+        "coffee": {
+          "text": "قهوة",
+          "roman": "qahwa"
+        },
+        "rice": {
+          "text": "أرز",
+          "roman": "aruzz"
+        },
+        "egg": {
+          "text": "بيضة",
+          "roman": "bayda"
+        },
+        "fish": {
+          "text": "سمكة",
+          "roman": "samaka"
+        },
+        "cat": {
+          "text": "قطة",
+          "roman": "qitta"
+        },
+        "dog": {
+          "text": "كلب",
+          "roman": "kalb"
+        },
+        "bird": {
+          "text": "طائر",
+          "roman": "tair"
+        },
+        "horse": {
+          "text": "حصان",
+          "roman": "hisan"
+        },
+        "duck": {
+          "text": "بطة",
+          "roman": "batta"
+        },
+        "cow": {
+          "text": "بقرة",
+          "roman": "baqara"
+        },
+        "pig": {
+          "text": "خنزير",
+          "roman": "khinzir"
+        },
+        "monkey": {
+          "text": "قرد",
+          "roman": "qird"
+        }
+      }
+    },
+    {
+      "id": "japanese",
+      "language": "ja",
+      "speech": "ja-JP",
+      "dir": "ltr",
+      "name": {
+        "en-US": "Japanese",
+        "zh-CN": "日语",
+        "ar-SA": "اليابانية"
+      },
+      "words": {
+        "hello": {
+          "text": "こんにちは",
+          "roman": "konnichiwa"
+        },
+        "goodbye": {
+          "text": "さようなら",
+          "roman": "sayounara"
+        },
+        "yes": {
+          "text": "はい",
+          "roman": "hai"
+        },
+        "no": {
+          "text": "いいえ",
+          "roman": "iie"
+        },
+        "please": {
+          "text": "お願いします",
+          "roman": "onegaishimasu"
+        },
+        "thanks": {
+          "text": "ありがとう",
+          "roman": "arigatou"
+        },
+        "sorry": {
+          "text": "ごめんなさい",
+          "roman": "gomennasai"
+        },
+        "morning": {
+          "text": "おはよう",
+          "roman": "ohayou"
+        },
+        "water": {
+          "text": "水",
+          "roman": "mizu"
+        },
+        "bread": {
+          "text": "パン",
+          "roman": "pan"
+        },
+        "milk": {
+          "text": "牛乳",
+          "roman": "gyuunyuu"
+        },
+        "apple": {
+          "text": "りんご",
+          "roman": "ringo"
+        },
+        "coffee": {
+          "text": "コーヒー",
+          "roman": "koohii"
+        },
+        "rice": {
+          "text": "ごはん",
+          "roman": "gohan"
+        },
+        "egg": {
+          "text": "卵",
+          "roman": "tamago"
+        },
+        "fish": {
+          "text": "魚",
+          "roman": "sakana"
+        },
+        "cat": {
+          "text": "猫",
+          "roman": "neko"
+        },
+        "dog": {
+          "text": "犬",
+          "roman": "inu"
+        },
+        "bird": {
+          "text": "鳥",
+          "roman": "tori"
+        },
+        "horse": {
+          "text": "馬",
+          "roman": "uma"
+        },
+        "duck": {
+          "text": "アヒル",
+          "roman": "ahiru"
+        },
+        "cow": {
+          "text": "牛",
+          "roman": "ushi"
+        },
+        "pig": {
+          "text": "豚",
+          "roman": "buta"
+        },
+        "monkey": {
+          "text": "猿",
+          "roman": "saru"
+        }
+      }
+    },
+    {
+      "id": "korean",
+      "language": "ko",
+      "speech": "ko-KR",
+      "dir": "ltr",
+      "name": {
+        "en-US": "Korean",
+        "zh-CN": "韩语",
+        "ar-SA": "الكورية"
+      },
+      "words": {
+        "hello": {
+          "text": "안녕하세요",
+          "roman": "annyeonghaseyo"
+        },
+        "goodbye": {
+          "text": "안녕히 가세요",
+          "roman": "annyeonghi gaseyo"
+        },
+        "yes": {
+          "text": "네",
+          "roman": "ne"
+        },
+        "no": {
+          "text": "아니요",
+          "roman": "aniyo"
+        },
+        "please": {
+          "text": "부탁합니다",
+          "roman": "butakhamnida"
+        },
+        "thanks": {
+          "text": "감사합니다",
+          "roman": "gamsahamnida"
+        },
+        "sorry": {
+          "text": "죄송합니다",
+          "roman": "joesonghamnida"
+        },
+        "morning": {
+          "text": "좋은 아침",
+          "roman": "joeun achim"
+        },
+        "water": {
+          "text": "물",
+          "roman": "mul"
+        },
+        "bread": {
+          "text": "빵",
+          "roman": "ppang"
+        },
+        "milk": {
+          "text": "우유",
+          "roman": "uyu"
+        },
+        "apple": {
+          "text": "사과",
+          "roman": "sagwa"
+        },
+        "coffee": {
+          "text": "커피",
+          "roman": "keopi"
+        },
+        "rice": {
+          "text": "밥",
+          "roman": "bap"
+        },
+        "egg": {
+          "text": "달걀",
+          "roman": "dalgyal"
+        },
+        "fish": {
+          "text": "생선",
+          "roman": "saengseon"
+        },
+        "cat": {
+          "text": "고양이",
+          "roman": "goyangi"
+        },
+        "dog": {
+          "text": "개",
+          "roman": "gae"
+        },
+        "bird": {
+          "text": "새",
+          "roman": "sae"
+        },
+        "horse": {
+          "text": "말",
+          "roman": "mal"
+        },
+        "duck": {
+          "text": "오리",
+          "roman": "ori"
+        },
+        "cow": {
+          "text": "소",
+          "roman": "so"
+        },
+        "pig": {
+          "text": "돼지",
+          "roman": "dwaeji"
+        },
+        "monkey": {
+          "text": "원숭이",
+          "roman": "wonsungi"
+        }
+      }
+    },
+    {
+      "id": "spanish",
+      "language": "es",
+      "speech": "es-ES",
+      "dir": "ltr",
+      "name": {
+        "en-US": "Spanish",
+        "zh-CN": "西班牙语",
+        "ar-SA": "الإسبانية"
+      },
+      "words": {
+        "hello": "hola",
+        "goodbye": "adiós",
+        "yes": "sí",
+        "no": "no",
+        "please": "por favor",
+        "thanks": "gracias",
+        "sorry": "lo siento",
+        "morning": "buenos días",
+        "water": "agua",
+        "bread": "pan",
+        "milk": "leche",
+        "apple": "manzana",
+        "coffee": "café",
+        "rice": "arroz",
+        "egg": "huevo",
+        "fish": "pez",
+        "cat": "gato",
+        "dog": "perro",
+        "bird": "pájaro",
+        "horse": "caballo",
+        "duck": "pato",
+        "cow": "vaca",
+        "pig": "cerdo",
+        "monkey": "mono"
+      }
+    },
+    {
+      "id": "russian",
+      "language": "ru",
+      "speech": "ru-RU",
+      "dir": "ltr",
+      "name": {
+        "en-US": "Russian",
+        "zh-CN": "俄语",
+        "ar-SA": "الروسية"
+      },
+      "words": {
+        "hello": {
+          "text": "привет",
+          "roman": "privet"
+        },
+        "goodbye": {
+          "text": "до свидания",
+          "roman": "do svidaniya"
+        },
+        "yes": {
+          "text": "да",
+          "roman": "da"
+        },
+        "no": {
+          "text": "нет",
+          "roman": "net"
+        },
+        "please": {
+          "text": "пожалуйста",
+          "roman": "pozhaluysta"
+        },
+        "thanks": {
+          "text": "спасибо",
+          "roman": "spasibo"
+        },
+        "sorry": {
+          "text": "извините",
+          "roman": "izvinite"
+        },
+        "morning": {
+          "text": "доброе утро",
+          "roman": "dobroye utro"
+        },
+        "water": {
+          "text": "вода",
+          "roman": "voda"
+        },
+        "bread": {
+          "text": "хлеб",
+          "roman": "khleb"
+        },
+        "milk": {
+          "text": "молоко",
+          "roman": "moloko"
+        },
+        "apple": {
+          "text": "яблоко",
+          "roman": "yabloko"
+        },
+        "coffee": {
+          "text": "кофе",
+          "roman": "kofe"
+        },
+        "rice": {
+          "text": "рис",
+          "roman": "ris"
+        },
+        "egg": {
+          "text": "яйцо",
+          "roman": "yaytso"
+        },
+        "fish": {
+          "text": "рыба",
+          "roman": "ryba"
+        },
+        "cat": {
+          "text": "кошка",
+          "roman": "koshka"
+        },
+        "dog": {
+          "text": "собака",
+          "roman": "sobaka"
+        },
+        "bird": {
+          "text": "птица",
+          "roman": "ptitsa"
+        },
+        "horse": {
+          "text": "лошадь",
+          "roman": "loshad"
+        },
+        "duck": {
+          "text": "утка",
+          "roman": "utka"
+        },
+        "cow": {
+          "text": "корова",
+          "roman": "korova"
+        },
+        "pig": {
+          "text": "свинья",
+          "roman": "svinya"
+        },
+        "monkey": {
+          "text": "обезьяна",
+          "roman": "obezyana"
+        }
+      }
+    },
+    {
+      "id": "indonesian",
+      "language": "id",
+      "speech": "id-ID",
+      "dir": "ltr",
+      "name": {
+        "en-US": "Indonesian",
+        "zh-CN": "印度尼西亚语",
+        "ar-SA": "الإندونيسية"
+      },
+      "words": {
+        "hello": "halo",
+        "goodbye": "selamat tinggal",
+        "yes": "ya",
+        "no": "tidak",
+        "please": "tolong",
+        "thanks": "terima kasih",
+        "sorry": "maaf",
+        "morning": "selamat pagi",
+        "water": "air",
+        "bread": "roti",
+        "milk": "susu",
+        "apple": "apel",
+        "coffee": "kopi",
+        "rice": "nasi",
+        "egg": "telur",
+        "fish": "ikan",
+        "cat": "kucing",
+        "dog": "anjing",
+        "bird": "burung",
+        "horse": "kuda",
+        "duck": "bebek",
+        "cow": "sapi",
+        "pig": "babi",
+        "monkey": "monyet"
+      }
+    },
+    {
+      "id": "hindi",
+      "language": "hi",
+      "speech": "hi-IN",
+      "dir": "ltr",
+      "name": {
+        "en-US": "Hindi",
+        "zh-CN": "印地语",
+        "ar-SA": "الهندية"
+      },
+      "words": {
+        "hello": {
+          "text": "नमस्ते",
+          "roman": "namaste"
+        },
+        "goodbye": {
+          "text": "अलविदा",
+          "roman": "alvida"
+        },
+        "yes": {
+          "text": "हाँ",
+          "roman": "haan"
+        },
+        "no": {
+          "text": "नहीं",
+          "roman": "nahin"
+        },
+        "please": {
+          "text": "कृपया",
+          "roman": "kripya"
+        },
+        "thanks": {
+          "text": "धन्यवाद",
+          "roman": "dhanyavaad"
+        },
+        "sorry": {
+          "text": "माफ़ कीजिए",
+          "roman": "maaf kijiye"
+        },
+        "morning": {
+          "text": "सुप्रभात",
+          "roman": "suprabhaat"
+        },
+        "water": {
+          "text": "पानी",
+          "roman": "paani"
+        },
+        "bread": {
+          "text": "रोटी",
+          "roman": "roti"
+        },
+        "milk": {
+          "text": "दूध",
+          "roman": "doodh"
+        },
+        "apple": {
+          "text": "सेब",
+          "roman": "seb"
+        },
+        "coffee": {
+          "text": "कॉफ़ी",
+          "roman": "kofi"
+        },
+        "rice": {
+          "text": "चावल",
+          "roman": "chaaval"
+        },
+        "egg": {
+          "text": "अंडा",
+          "roman": "anda"
+        },
+        "fish": {
+          "text": "मछली",
+          "roman": "machhli"
+        },
+        "cat": {
+          "text": "बिल्ली",
+          "roman": "billi"
+        },
+        "dog": {
+          "text": "कुत्ता",
+          "roman": "kutta"
+        },
+        "bird": {
+          "text": "चिड़िया",
+          "roman": "chidiya"
+        },
+        "horse": {
+          "text": "घोड़ा",
+          "roman": "ghoda"
+        },
+        "duck": {
+          "text": "बत्तख",
+          "roman": "battakh"
+        },
+        "cow": {
+          "text": "गाय",
+          "roman": "gaay"
+        },
+        "pig": {
+          "text": "सूअर",
+          "roman": "suar"
+        },
+        "monkey": {
+          "text": "बंदर",
+          "roman": "bandar"
+        }
+      }
+    },
+    {
+      "id": "french",
+      "language": "fr",
+      "speech": "fr-FR",
+      "dir": "ltr",
+      "name": {
+        "en-US": "French",
+        "zh-CN": "法语",
+        "ar-SA": "الفرنسية"
+      },
+      "words": {
+        "hello": "salut",
+        "goodbye": "au revoir",
+        "yes": "oui",
+        "no": "non",
+        "please": "s’il vous plaît",
+        "thanks": "merci",
+        "sorry": "désolé",
+        "morning": "bonjour",
+        "water": "eau",
+        "bread": "pain",
+        "milk": "lait",
+        "apple": "pomme",
+        "coffee": "café",
+        "rice": "riz",
+        "egg": "œuf",
+        "fish": "poisson",
+        "cat": "chat",
+        "dog": "chien",
+        "bird": "oiseau",
+        "horse": "cheval",
+        "duck": "canard",
+        "cow": "vache",
+        "pig": "cochon",
+        "monkey": "singe"
+      }
+    }
+  ],
+  "units": [
+    {
+      "id": "basics",
+      "title": {
+        "en-US": "Basics",
+        "zh-CN": "基础",
+        "ar-SA": "الأساسيات"
+      },
+      "lessons": [
+        {
+          "id": "basics-1",
+          "words": [
+            "hello",
+            "goodbye",
+            "yes",
+            "no"
+          ]
+        },
+        {
+          "id": "basics-2",
+          "words": [
+            "please",
+            "thanks",
+            "sorry",
+            "morning"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food",
+      "title": {
+        "en-US": "Food",
+        "zh-CN": "食物",
+        "ar-SA": "الطعام"
+      },
+      "lessons": [
+        {
+          "id": "food-1",
+          "words": [
+            "water",
+            "bread",
+            "milk",
+            "apple"
+          ]
+        },
+        {
+          "id": "food-2",
+          "words": [
+            "coffee",
+            "rice",
+            "egg",
+            "fish"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "animals",
+      "title": {
+        "en-US": "Animals",
+        "zh-CN": "动物",
+        "ar-SA": "الحيوانات"
+      },
+      "lessons": [
+        {
+          "id": "animals-1",
+          "words": [
+            "cat",
+            "dog",
+            "bird",
+            "horse"
+          ]
+        },
+        {
+          "id": "animals-2",
+          "words": [
+            "duck",
+            "cow",
+            "pig",
+            "monkey"
+          ]
+        }
+      ]
+    }
+  ],
+  "languages": [
+    {
+      "code": "en-US",
+      "name": "English",
+      "dir": "ltr"
+    },
+    {
+      "code": "zh-CN",
+      "name": "简体中文",
+      "dir": "ltr"
+    },
+    {
+      "code": "ar-SA",
+      "name": "العربية",
+      "dir": "rtl"
+    }
+  ],
+  "ui": {
+    "logo": {
+      "en-US": "Lingo<span class=\"highlight\">{highlight}</span>",
+      "zh-CN": "Lingo<span class=\"highlight\">{highlight}</span>",
+      "ar-SA": "Lingo<span class=\"highlight\">{highlight}</span>"
+    },
+    "copyright": {
+      "en-US": "© {brand}",
+      "zh-CN": "© {brand}",
+      "ar-SA": "© {brand}"
+    },
+    "account": {
+      "en-US": "Account",
+      "zh-CN": "账户",
+      "ar-SA": "الحساب"
+    },
+    "course.label": {
+      "en-US": "Course",
+      "zh-CN": "课程",
+      "ar-SA": "الدورة"
+    },
+    "stats.streak": {
+      "en-US": "Day streak",
+      "zh-CN": "连续天数",
+      "ar-SA": "أيام متتالية"
+    },
+    "stats.xp": {
+      "en-US": "Total XP",
+      "zh-CN": "总经验值",
+      "ar-SA": "مجموع النقاط"
+    },
+    "stats.goal": {
+      "en-US": "{xp} / {goal} XP today",
+      "zh-CN": "今天 {xp} / {goal} 经验值",
+      "ar-SA": "{xp} / {goal} نقطة اليوم"
+    },
+    "stats.goalDone": {
+      "en-US": "Daily goal reached",
+      "zh-CN": "已完成今日目标",
+      "ar-SA": "تم بلوغ هدف اليوم"
+    },
+    "unit.title": {
+      "en-US": "Unit {number}: {title}",
+      "zh-CN": "第 {number} 单元：{title}",
+      "ar-SA": "الوحدة {number}: {title}"
+    },
+    "lesson.title": {
+      "en-US": "Lesson {number}",
+      "zh-CN": "第 {number} 课",
+      "ar-SA": "الدرس {number}"
+    },
+    "lesson.open": {
+      "en-US": "Start {title}",
+      "zh-CN": "开始{title}",
+      "ar-SA": "ابدأ {title}"
+    },
+    "lesson.locked": {
+      "en-US": "Locked: finish the lesson before it",
+      "zh-CN": "未解锁：请先完成上一课",
+      "ar-SA": "مقفل: أنهِ الدرس السابق أولا"
+    },
+    "lesson.done": {
+      "en-US": "Done: {count}",
+      "zh-CN": "已完成：{count} 次",
+      "ar-SA": "أُنجز: {count}"
+    },
+    "lesson.new": {
+      "en-US": "Start",
+      "zh-CN": "开始",
+      "ar-SA": "ابدأ"
+    },
+    "lesson.practice": {
+      "en-US": "Practice",
+      "zh-CN": "练习",
+      "ar-SA": "تدرّب"
+    },
+    "prompt.meaning": {
+      "en-US": "What does this mean?",
+      "zh-CN": "这是什么意思？",
+      "ar-SA": "ماذا تعني هذه الكلمة؟"
+    },
+    "prompt.word": {
+      "en-US": "How do you say this in {language}?",
+      "zh-CN": "用{language}怎么说？",
+      "ar-SA": "كيف تقول هذا بـ{language}؟"
+    },
+    "prompt.type": {
+      "en-US": "Write this in {language}",
+      "zh-CN": "用{language}写出来",
+      "ar-SA": "اكتب هذا بـ{language}"
+    },
+    "prompt.listen": {
+      "en-US": "Tap what you hear",
+      "zh-CN": "点选你听到的词",
+      "ar-SA": "اختر ما سمعته"
+    },
+    "prompt.match": {
+      "en-US": "Match the pairs",
+      "zh-CN": "配对",
+      "ar-SA": "طابق الأزواج"
+    },
+    "type.placeholder": {
+      "en-US": "Type the answer",
+      "zh-CN": "输入答案",
+      "ar-SA": "اكتب الإجابة"
+    },
+    "speak": {
+      "en-US": "Listen",
+      "zh-CN": "播放发音",
+      "ar-SA": "استمع"
+    },
+    "check": {
+      "en-US": "Check",
+      "zh-CN": "检查",
+      "ar-SA": "تحقق"
+    },
+    "continue": {
+      "en-US": "Continue",
+      "zh-CN": "继续",
+      "ar-SA": "متابعة"
+    },
+    "feedback.correct": {
+      "en-US": "Correct!",
+      "zh-CN": "答对了！",
+      "ar-SA": "صحيح!"
+    },
+    "feedback.wrong": {
+      "en-US": "Not quite",
+      "zh-CN": "不太对",
+      "ar-SA": "ليس تماما"
+    },
+    "feedback.answer": {
+      "en-US": "Answer: {answer}",
+      "zh-CN": "答案：{answer}",
+      "ar-SA": "الإجابة: {answer}"
+    },
+    "hearts.label": {
+      "en-US": "Hearts left: {count}",
+      "zh-CN": "剩余生命：{count}",
+      "ar-SA": "القلوب المتبقية: {count}"
+    },
+    "quit.label": {
+      "en-US": "Quit the lesson",
+      "zh-CN": "退出课程",
+      "ar-SA": "إنهاء الدرس"
+    },
+    "quit.title": {
+      "en-US": "Quit the lesson?",
+      "zh-CN": "退出本课？",
+      "ar-SA": "إنهاء الدرس؟"
+    },
+    "quit.text": {
+      "en-US": "You will lose the progress of this lesson.",
+      "zh-CN": "本课的进度将丢失。",
+      "ar-SA": "ستفقد تقدّم هذا الدرس."
+    },
+    "quit.ok": {
+      "en-US": "Quit",
+      "zh-CN": "退出",
+      "ar-SA": "إنهاء"
+    },
+    "result.title": {
+      "en-US": "Lesson complete!",
+      "zh-CN": "课程完成！",
+      "ar-SA": "اكتمل الدرس!"
+    },
+    "result.xp": {
+      "en-US": "+{xp} XP",
+      "zh-CN": "+{xp} 经验值",
+      "ar-SA": "+{xp} نقطة"
+    },
+    "result.accuracy": {
+      "en-US": "{percent}% correct",
+      "zh-CN": "正确率 {percent}%",
+      "ar-SA": "صحيح بنسبة {percent}%"
+    },
+    "result.streak": {
+      "en-US": "{count} day streak",
+      "zh-CN": "连续 {count} 天",
+      "ar-SA": "{count} أيام متتالية"
+    },
+    "failed.title": {
+      "en-US": "Out of hearts",
+      "zh-CN": "生命用完了",
+      "ar-SA": "نفدت القلوب"
+    },
+    "failed.text": {
+      "en-US": "Take another look at the words and try the lesson again.",
+      "zh-CN": "再看看这些词，然后重试本课。",
+      "ar-SA": "راجع الكلمات ثم أعد محاولة الدرس."
+    },
+    "failed.retry": {
+      "en-US": "Try again",
+      "zh-CN": "重试",
+      "ar-SA": "حاول مجددا"
+    },
+    "failed.leave": {
+      "en-US": "Back to the lessons",
+      "zh-CN": "返回课程",
+      "ar-SA": "العودة إلى الدروس"
+    },
+    "sync.failed": {
+      "en-US": "Your progress is kept on this device; it could not be saved to your account: {message}",
+      "zh-CN": "进度保存在此设备上，未能保存到你的账户：{message}",
+      "ar-SA": "تقدّمك محفوظ على هذا الجهاز، وتعذّر حفظه في حسابك: {message}"
+    },
+    "status.signedIn": {
+      "en-US": "Progress is saved to your account",
+      "zh-CN": "进度已保存到你的账户",
+      "ar-SA": "يُحفظ تقدّمك في حسابك"
+    },
+    "status.signedOut": {
+      "en-US": "Sign in to keep your progress on every device",
+      "zh-CN": "登录后可在所有设备上保留进度",
+      "ar-SA": "سجّل الدخول لحفظ تقدّمك على كل أجهزتك"
+    },
+    "settings.goal": {
+      "en-US": "Daily goal (XP)",
+      "zh-CN": "每日目标（经验值）",
+      "ar-SA": "الهدف اليومي (نقاط)"
+    },
+    "settings.speak": {
+      "en-US": "Say the words aloud",
+      "zh-CN": "朗读单词",
+      "ar-SA": "نطق الكلمات"
+    },
+    "progress.title": {
+      "en-US": "Progress",
+      "zh-CN": "进度",
+      "ar-SA": "التقدّم"
+    },
+    "progress.hint": {
+      "en-US": "The lessons you finished, your XP, and your streak.",
+      "zh-CN": "你完成的课程、经验值和连续天数。",
+      "ar-SA": "الدروس التي أنهيتها ونقاطك وأيامك المتتالية."
+    },
+    "progress.reset": {
+      "en-US": "Delete the progress",
+      "zh-CN": "删除进度",
+      "ar-SA": "حذف التقدّم"
+    },
+    "progress.text": {
+      "en-US": "This deletes the lessons you finished, your XP, and your streak, here and in your account. It cannot be undone.",
+      "zh-CN": "这将删除你完成的课程、经验值和连续天数（包括此设备和你的账户）。此操作无法撤销。",
+      "ar-SA": "سيؤدي هذا إلى حذف الدروس التي أنهيتها ونقاطك وأيامك المتتالية هنا وفي حسابك. لا يمكن التراجع عن ذلك."
+    },
+    "progress.done": {
+      "en-US": "Progress deleted",
+      "zh-CN": "进度已删除",
+      "ar-SA": "تم حذف التقدّم"
+    },
+    "lesson.lockedShort": {
+      "en-US": "Locked",
+      "zh-CN": "未解锁",
+      "ar-SA": "مقفل"
+    },
+    "type.hint": {
+      "en-US": "You can also type it with the letters of your keyboard.",
+      "zh-CN": "也可以用键盘上的字母输入。",
+      "ar-SA": "يمكنك أيضا كتابتها بحروف لوحة المفاتيح."
+    },
+    "lessons.label": {
+      "en-US": "Lessons",
+      "zh-CN": "课程",
+      "ar-SA": "الدروس"
+    },
+    "overview.words": {
+      "en-US": "Words in this lesson",
+      "zh-CN": "本课的单词",
+      "ar-SA": "كلمات هذا الدرس"
+    }
+  }
+}

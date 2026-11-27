@@ -10,9 +10,9 @@ html, body {
     height: 100%;
 }
 
-:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/style.css) */
+:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/components.css) */
 
-/* The page is the template (assets/css/style.css): the header, the sidebar, the main, and the footer. Here is only what is Youmu's own. */
+/* The page is the template (assets/css/components.css): the header, the sidebar, the main, and the footer. Here is only what is Youmu's own. */
 .logo-mark {
     background-image: url("favicon.png");   /* the logo of the app: its favicon */
 }
@@ -38,7 +38,7 @@ html, body {
         text-transform: none;   /* the name of an app keeps its capitals (muAI) */
 
         /* the tint of the button that is shown, and the line at its start, are the colour of the app (--app-colour, set by app.js; the appearance has none, and keeps the gray and the green).
-           The hover stays the gray of every sidebar (assets/css/style.css). */
+           The hover stays the gray of every sidebar (assets/css/page.css). */
         &.on {
             background: color-mix(in srgb, var(--app-colour, var(--fg)) 16%, transparent);
             border-inline-start-color: var(--app-colour, var(--highlight));   /* the line at the start of the app that is shown */
@@ -133,7 +133,7 @@ html, body {
         text-transform: uppercase;
     }
 
-    /* A part of the settings that opens and closes: the button and the body are the template (assets/css/style.css) */
+    /* A part of the settings that opens and closes: the button and the body are the template (assets/css/components.css) */
     & > .section-body {
         padding: var(--padding-extra-large);
     }
@@ -381,9 +381,6 @@ body.callback {
     align-items: center;
     justify-content: center;
     min-height: 100%;
-    /* It is not a page of the template (assets/css/style.css): no gap or padding of it. */
-    gap: 0;
-    padding: 0;
 }
 
 .callback-box {

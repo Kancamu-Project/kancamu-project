@@ -1,13 +1,13 @@
 /* Lingomu: lessons that teach a language, a few words at a time. */
 .hidden { display: none !important; }
 
-/* Icon: SVG files from assets/js/icons.js are used as masks so they follow the text colour */
+/* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
 
 /* Buttons */
 
 /* The page is the header, the sidebar, and the main, directly in the body. The padding and the gap are the ones of the body: the three elements have none. */
 
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/style.css) */
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
 
 /* The sidebar holds the status line and the copyright at its end */
 

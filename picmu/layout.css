@@ -3,7 +3,7 @@
 .visually-hidden { position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none; }
 .spacer { flex: 1; }
 
-/* Icon: SVG files from assets/js/icons.js are used as masks so they follow the text colour */
+/* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
 
 /* Buttons */
 button.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
@@ -13,7 +13,7 @@ button.active { background: var(--fg); color: var(--bg); border-color: var(--fg)
 .main { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto; }
 
 .header { height: var(--height); }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/style.css) */
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
 .header-tools { height: 100%; }
 
 .model-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small); }

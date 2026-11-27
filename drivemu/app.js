@@ -2,7 +2,7 @@
 (() => {
 'use strict';
 
-// The size limits, the default folders, and the file types are in data.js (drive, fileTypes, thumbnailExtensions, mimeTypes); init() fills these in.
+// The size limits, the default folders, and the file types are in data.json (drive, fileTypes, thumbnailExtensions, mimeTypes); init() fills these in.
 let STORAGE_LIMIT_KB, DEFAULT_FOLDERS, KEEP, MAX_FILE, THUMB_MAX, TYPES, ICON_OF, THUMB_EXT, MIME;   // KEEP: the file that keeps an empty folder alive
 
 const $ = (id) => document.getElementById(id);

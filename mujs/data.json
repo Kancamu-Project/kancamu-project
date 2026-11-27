@@ -1,0 +1,987 @@
+{
+  "name": {
+    "en-US": "{highlight}JS — learn JavaScript",
+    "zh-CN": "{highlight}JS — 学习 JavaScript",
+    "ar-SA": "{highlight}JS — تعلّم جافاسكربت"
+  },
+  "brandColor": "#f89520",
+  "storageFolder": "mujs",
+  "limits": {
+    "timeoutMs": 3000,
+    "maxLines": 200
+  },
+  "settings": {
+    "defaults": {
+      "editorScale": 1
+    },
+    "fields": [
+      {
+        "id": "editorScale",
+        "type": "range",
+        "min": 0.8,
+        "max": 1.6,
+        "step": 0.1,
+        "label": "settings.editorScale"
+      }
+    ],
+    "panels": [
+      "progressReset"
+    ]
+  },
+  "units": [
+    {
+      "id": "basics",
+      "title": {
+        "en-US": "Basics",
+        "zh-CN": "基础",
+        "ar-SA": "الأساسيات"
+      },
+      "lessons": [
+        {
+          "id": "hello",
+          "title": {
+            "en-US": "Say hello",
+            "zh-CN": "打个招呼",
+            "ar-SA": "قل مرحبا"
+          },
+          "explain": {
+            "en-US": [
+              "JavaScript is a language that tells the computer what to do. The simplest thing it can do is show a message.",
+              "console.log() prints whatever you put between its brackets to the console. Text is called a string, and it goes inside quotes."
+            ],
+            "zh-CN": [
+              "JavaScript 是一种告诉计算机该做什么的语言。最简单的事情就是显示一条消息。",
+              "console.log() 会把括号里的内容打印到控制台。文字称为字符串，需要放在引号里。"
+            ],
+            "ar-SA": [
+              "جافاسكربت لغة تخبر الحاسوب بما يجب فعله. وأبسط ما يمكنها فعله هو عرض رسالة.",
+              "تطبع console.log() كل ما تضعه بين قوسيها في وحدة التحكم. يسمى النص سلسلة نصية، ويوضع بين علامتي اقتباس."
+            ]
+          },
+          "example": "console.log(\"Hi there!\");",
+          "task": {
+            "en-US": "Print Hello, world! to the console.",
+            "zh-CN": "把 Hello, world! 打印到控制台。",
+            "ar-SA": "اطبع Hello, world! في وحدة التحكم."
+          },
+          "starter": "",
+          "tests": [
+            {
+              "output": [
+                "Hello, world!"
+              ]
+            }
+          ],
+          "solution": "console.log(\"Hello, world!\");"
+        },
+        {
+          "id": "variables",
+          "title": {
+            "en-US": "Variables",
+            "zh-CN": "变量",
+            "ar-SA": "المتغيرات"
+          },
+          "explain": {
+            "en-US": [
+              "A variable is a named box that holds a value. Use const for a value that never changes, and let for a value that can change later.",
+              "Write the name, an equals sign, and the value. To change a let variable later, give it a new value."
+            ],
+            "zh-CN": [
+              "变量是一个有名字的盒子，用来存放值。值不会改变时用 const，以后可能改变时用 let。",
+              "先写名字，再写等号和值。以后要修改 let 变量，只需给它一个新值。"
+            ],
+            "ar-SA": [
+              "المتغير صندوق له اسم يحتفظ بقيمة. استخدم const للقيمة التي لا تتغير وlet للقيمة التي قد تتغير لاحقا.",
+              "اكتب الاسم ثم علامة المساواة ثم القيمة. ولتغيير متغير let لاحقا أعطه قيمة جديدة."
+            ]
+          },
+          "example": "const city = \"Cairo\";\nlet score = 1;\nscore = score + 1;\nconsole.log(city, score);",
+          "task": {
+            "en-US": "Create a constant city with the value \"Cairo\" and a variable count with the value 3. Then add 1 to count.",
+            "zh-CN": "创建常量 city，值为 \"Cairo\"；创建变量 count，值为 3。然后把 count 加 1。",
+            "ar-SA": "أنشئ ثابتا باسم city قيمته \"Cairo\" ومتغيرا باسم count قيمته 3، ثم أضف 1 إلى count."
+          },
+          "starter": "",
+          "tests": [
+            {
+              "expression": "city",
+              "expect": "Cairo"
+            },
+            {
+              "expression": "count",
+              "expect": 4
+            }
+          ],
+          "solution": "const city = \"Cairo\";\nlet count = 3;\ncount = count + 1;"
+        },
+        {
+          "id": "numbers",
+          "title": {
+            "en-US": "Numbers and math",
+            "zh-CN": "数字和运算",
+            "ar-SA": "الأرقام والحساب"
+          },
+          "explain": {
+            "en-US": [
+              "JavaScript does math with + (add), - (subtract), * (multiply), / (divide), and % (remainder). It follows the usual order: multiplication and division come before addition and subtraction.",
+              "Use brackets to change the order: (2 + 3) * 4 is 20, but 2 + 3 * 4 is 14."
+            ],
+            "zh-CN": [
+              "JavaScript 用 +（加）、-（减）、*（乘）、/（除）和 %（取余）做运算。运算顺序和平常一样：先乘除，后加减。",
+              "可以用括号改变顺序：(2 + 3) * 4 是 20，而 2 + 3 * 4 是 14。"
+            ],
+            "ar-SA": [
+              "تجري جافاسكربت الحساب بالرموز + (جمع) و - (طرح) و * (ضرب) و / (قسمة) و % (الباقي). وتتبع الترتيب المعتاد: الضرب والقسمة قبل الجمع والطرح.",
+              "استخدم الأقواس لتغيير الترتيب: (2 + 3) * 4 يساوي 20، بينما 2 + 3 * 4 يساوي 14."
+            ]
+          },
+          "example": "console.log(2 + 3 * 4);\nconsole.log((2 + 3) * 4);\nconsole.log(10 % 3);",
+          "task": {
+            "en-US": "Create a constant total that holds 12 times 3, plus 4.",
+            "zh-CN": "创建常量 total，值为 12 乘以 3，再加 4。",
+            "ar-SA": "أنشئ ثابتا باسم total قيمته 12 مضروبا في 3 ثم زائد 4."
+          },
+          "starter": "",
+          "tests": [
+            {
+              "expression": "total",
+              "expect": 40
+            }
+          ],
+          "solution": "const total = 12 * 3 + 4;"
+        },
+        {
+          "id": "strings",
+          "title": {
+            "en-US": "Text and templates",
+            "zh-CN": "文字与模板",
+            "ar-SA": "النصوص والقوالب"
+          },
+          "explain": {
+            "en-US": [
+              "A string can be joined to another with +. A template literal is easier: write the text between backticks and put a variable inside ${ }.",
+              "Strings also have helpers. For example \"hello\".toUpperCase() gives \"HELLO\", and \"hello\".length is 5."
+            ],
+            "zh-CN": [
+              "可以用 + 连接字符串。模板字符串更方便：把文字写在反引号里，把变量放进 ${ } 中。",
+              "字符串还有一些方法。例如 \"hello\".toUpperCase() 得到 \"HELLO\"，\"hello\".length 是 5。"
+            ],
+            "ar-SA": [
+              "يمكن ربط نص بآخر بالعلامة +. وقالب النص أسهل: اكتب النص بين علامتي الاقتباس المائلة وضع المتغير داخل ${ }.",
+              "وللنصوص دوال مساعدة، فمثلا \"hello\".toUpperCase() تعطي \"HELLO\"، و\"hello\".length تساوي 5."
+            ]
+          },
+          "example": "const name = \"Sara\";\nconsole.log(`Hello, ${name}!`);\nconsole.log(name.toUpperCase());",
+          "task": {
+            "en-US": "With a template literal, create a constant greeting that holds Hello, Sara! (the name must come from the variable name).",
+            "zh-CN": "使用模板字符串创建常量 greeting，值为 Hello, Sara!（名字必须来自变量 name）。",
+            "ar-SA": "باستخدام قالب نص، أنشئ ثابتا باسم greeting قيمته Hello, Sara! (يجب أن يأتي الاسم من المتغير name)."
+          },
+          "starter": "const name = \"Sara\";\n",
+          "tests": [
+            {
+              "expression": "greeting",
+              "expect": "Hello, Sara!"
+            }
+          ],
+          "solution": "const name = \"Sara\";\nconst greeting = `Hello, ${name}!`;"
+        }
+      ]
+    },
+    {
+      "id": "functions",
+      "title": {
+        "en-US": "Functions",
+        "zh-CN": "函数",
+        "ar-SA": "الدوال"
+      },
+      "lessons": [
+        {
+          "id": "functions",
+          "title": {
+            "en-US": "Functions",
+            "zh-CN": "函数",
+            "ar-SA": "الدوال"
+          },
+          "explain": {
+            "en-US": [
+              "A function is a piece of code you can use again and again. Give it a name, list its inputs (parameters) in brackets, and put the code in curly braces.",
+              "return sends a value back to whoever called the function. Call a function by writing its name and its values in brackets: add(2, 3)."
+            ],
+            "zh-CN": [
+              "函数是可以重复使用的一段代码。给它起个名字，在括号中列出输入（参数），把代码写在花括号里。",
+              "return 会把一个值返回给调用函数的地方。调用函数时写出名字并在括号里给出值：add(2, 3)。"
+            ],
+            "ar-SA": [
+              "الدالة جزء من الشيفرة يمكنك استخدامه مرارا. أعطها اسما، واكتب مدخلاتها (المعاملات) بين قوسين، وضع الشيفرة بين قوسين معقوفين.",
+              "تعيد return قيمة إلى من استدعى الدالة. استدعِ الدالة بكتابة اسمها وقيمها بين قوسين: add(2, 3)."
+            ]
+          },
+          "example": "function add(a, b) {\n  return a + b;\n}\nconsole.log(add(2, 3));",
+          "task": {
+            "en-US": "Write a function add that takes two numbers and returns their sum.",
+            "zh-CN": "编写函数 add，接收两个数并返回它们的和。",
+            "ar-SA": "اكتب دالة باسم add تأخذ عددين وتعيد مجموعهما."
+          },
+          "starter": "function add(a, b) {\n  \n}\n",
+          "tests": [
+            {
+              "expression": "add(2, 3)",
+              "expect": 5
+            },
+            {
+              "expression": "add(-1, 1)",
+              "expect": 0
+            },
+            {
+              "expression": "add(0.5, 0.25)",
+              "expect": 0.75
+            }
+          ],
+          "solution": "function add(a, b) {\n  return a + b;\n}"
+        },
+        {
+          "id": "arrow-functions",
+          "title": {
+            "en-US": "Arrow functions",
+            "zh-CN": "箭头函数",
+            "ar-SA": "الدوال السهمية"
+          },
+          "explain": {
+            "en-US": [
+              "An arrow function is a shorter way to write a function: (inputs) => result. It is often kept in a constant.",
+              "With one input you can skip the brackets, and when the body is one expression you can skip the curly braces and return."
+            ],
+            "zh-CN": [
+              "箭头函数是一种更短的函数写法：(输入) => 结果。它通常保存在常量中。",
+              "只有一个输入时可以省略括号；函数体只有一个表达式时可以省略花括号和 return。"
+            ],
+            "ar-SA": [
+              "الدالة السهمية طريقة أقصر لكتابة الدالة: (المدخلات) => النتيجة. وغالبا ما تُخزَّن في ثابت.",
+              "عندما يكون للدالة مدخل واحد يمكنك حذف القوسين، وعندما يكون الجسم تعبيرا واحدا يمكنك حذف الأقواس المعقوفة وreturn."
+            ]
+          },
+          "example": "const double = (n) => n * 2;\nconsole.log(double(4));",
+          "task": {
+            "en-US": "Create an arrow function square that returns a number multiplied by itself.",
+            "zh-CN": "创建箭头函数 square，返回一个数乘以它自己的结果。",
+            "ar-SA": "أنشئ دالة سهمية باسم square تعيد العدد مضروبا في نفسه."
+          },
+          "starter": "",
+          "tests": [
+            {
+              "expression": "square(4)",
+              "expect": 16
+            },
+            {
+              "expression": "square(-3)",
+              "expect": 9
+            }
+          ],
+          "solution": "const square = (n) => n * n;"
+        }
+      ]
+    },
+    {
+      "id": "decisions",
+      "title": {
+        "en-US": "Decisions",
+        "zh-CN": "判断",
+        "ar-SA": "القرارات"
+      },
+      "lessons": [
+        {
+          "id": "comparisons",
+          "title": {
+            "en-US": "True or false",
+            "zh-CN": "真还是假",
+            "ar-SA": "صح أم خطأ"
+          },
+          "explain": {
+            "en-US": [
+              "A boolean is either true or false. Comparisons give booleans: > greater, < smaller, >= at least, <= at most, === equal, !== different.",
+              "Always use === to compare values. It checks the value and the type."
+            ],
+            "zh-CN": [
+              "布尔值只有 true 和 false 两种。比较运算会得到布尔值：> 大于，< 小于，>= 大于等于，<= 小于等于，=== 相等，!== 不相等。",
+              "比较值时请始终使用 ===，它会同时检查值和类型。"
+            ],
+            "ar-SA": [
+              "القيمة المنطقية إما true أو false. وتعطي المقارنات قيما منطقية: > أكبر، < أصغر، >= أكبر أو يساوي، <= أصغر أو يساوي، === يساوي، !== يختلف.",
+              "استخدم === دائما لمقارنة القيم، فهي تتحقق من القيمة والنوع معا."
+            ]
+          },
+          "example": "const age = 20;\nconsole.log(age > 18);\nconsole.log(age === 21);",
+          "task": {
+            "en-US": "age is 20. Create a constant isAdult that is true when age is at least 18.",
+            "zh-CN": "age 是 20。创建常量 isAdult，当 age 至少为 18 时为 true。",
+            "ar-SA": "قيمة age هي 20. أنشئ ثابتا باسم isAdult يكون true عندما يكون age على الأقل 18."
+          },
+          "starter": "const age = 20;\n",
+          "tests": [
+            {
+              "expression": "isAdult",
+              "expect": true
+            }
+          ],
+          "solution": "const age = 20;\nconst isAdult = age >= 18;"
+        },
+        {
+          "id": "if-else",
+          "title": {
+            "en-US": "If and else",
+            "zh-CN": "if 和 else",
+            "ar-SA": "if و else"
+          },
+          "explain": {
+            "en-US": [
+              "An if statement runs code only when its condition is true. Add else if for more cases, and else for everything that is left.",
+              "Only the first branch whose condition is true runs."
+            ],
+            "zh-CN": [
+              "if 语句只在条件为 true 时才运行代码。用 else if 增加分支，用 else 处理其余情况。",
+              "只会运行第一个条件为 true 的分支。"
+            ],
+            "ar-SA": [
+              "تنفّذ جملة if الشيفرة فقط عندما يكون شرطها true. أضف else if لحالات أخرى وelse لكل ما تبقى.",
+              "يُنفَّذ فقط أول فرع يكون شرطه true."
+            ]
+          },
+          "example": "function describe(n) {\n  if (n > 0) {\n    return \"positive\";\n  } else {\n    return \"not positive\";\n  }\n}\nconsole.log(describe(3));",
+          "task": {
+            "en-US": "Write a function sign that returns \"positive\" for numbers above 0, \"negative\" for numbers below 0, and \"zero\" for 0.",
+            "zh-CN": "编写函数 sign：大于 0 返回 \"positive\"，小于 0 返回 \"negative\"，等于 0 返回 \"zero\"。",
+            "ar-SA": "اكتب دالة باسم sign تعيد \"positive\" للأعداد الأكبر من 0، و\"negative\" للأعداد الأصغر من 0، و\"zero\" للصفر."
+          },
+          "starter": "function sign(n) {\n  \n}\n",
+          "tests": [
+            {
+              "expression": "sign(5)",
+              "expect": "positive"
+            },
+            {
+              "expression": "sign(-2)",
+              "expect": "negative"
+            },
+            {
+              "expression": "sign(0)",
+              "expect": "zero"
+            }
+          ],
+          "solution": "function sign(n) {\n  if (n > 0) {\n    return \"positive\";\n  } else if (n < 0) {\n    return \"negative\";\n  } else {\n    return \"zero\";\n  }\n}"
+        },
+        {
+          "id": "logic",
+          "title": {
+            "en-US": "Combining conditions",
+            "zh-CN": "组合条件",
+            "ar-SA": "دمج الشروط"
+          },
+          "explain": {
+            "en-US": [
+              "&& means and: both sides must be true. || means or: at least one side must be true. ! flips true and false.",
+              "Conditions can be combined in one expression, for example age >= 12 && hasTicket."
+            ],
+            "zh-CN": [
+              "&& 表示“并且”：两边都必须为 true。|| 表示“或者”：至少一边为 true。! 会把 true 和 false 互换。",
+              "条件可以组合在一个表达式中，例如 age >= 12 && hasTicket。"
+            ],
+            "ar-SA": [
+              "تعني && «و»: يجب أن يكون الطرفان true. وتعني || «أو»: يكفي أن يكون أحد الطرفين true. وتقلب ! القيمة بين true وfalse.",
+              "يمكن دمج الشروط في تعبير واحد، مثل age >= 12 && hasTicket."
+            ]
+          },
+          "example": "const age = 15;\nconst hasTicket = true;\nconsole.log(age >= 12 && hasTicket);\nconsole.log(age < 5 || age > 65);",
+          "task": {
+            "en-US": "Write a function canEnter(age, hasTicket) that returns true only when the age is 12 or more and the person has a ticket.",
+            "zh-CN": "编写函数 canEnter(age, hasTicket)：只有年龄至少 12 岁并且有票时才返回 true。",
+            "ar-SA": "اكتب دالة canEnter(age, hasTicket) تعيد true فقط عندما يكون العمر 12 أو أكثر ومع الشخص تذكرة."
+          },
+          "starter": "function canEnter(age, hasTicket) {\n  \n}\n",
+          "tests": [
+            {
+              "expression": "canEnter(15, true)",
+              "expect": true
+            },
+            {
+              "expression": "canEnter(15, false)",
+              "expect": false
+            },
+            {
+              "expression": "canEnter(8, true)",
+              "expect": false
+            },
+            {
+              "expression": "canEnter(12, true)",
+              "expect": true
+            }
+          ],
+          "solution": "function canEnter(age, hasTicket) {\n  return age >= 12 && hasTicket;\n}"
+        }
+      ]
+    },
+    {
+      "id": "loops-and-arrays",
+      "title": {
+        "en-US": "Loops and arrays",
+        "zh-CN": "循环和数组",
+        "ar-SA": "الحلقات والمصفوفات"
+      },
+      "lessons": [
+        {
+          "id": "arrays",
+          "title": {
+            "en-US": "Arrays",
+            "zh-CN": "数组",
+            "ar-SA": "المصفوفات"
+          },
+          "explain": {
+            "en-US": [
+              "An array is an ordered list of values written in square brackets. The first item is at index 0: fruits[0].",
+              "Use push to add an item at the end, and length to count the items."
+            ],
+            "zh-CN": [
+              "数组是用方括号写成的有序值列表。第一项的下标是 0：fruits[0]。",
+              "用 push 在末尾添加一项，用 length 获取项数。"
+            ],
+            "ar-SA": [
+              "المصفوفة قائمة مرتبة من القيم تُكتب بين قوسين مربعين. العنصر الأول فهرسه 0: fruits[0].",
+              "استخدم push لإضافة عنصر في النهاية وlength لعدّ العناصر."
+            ]
+          },
+          "example": "const fruits = [\"apple\", \"banana\"];\nfruits.push(\"cherry\");\nconsole.log(fruits[0], fruits.length);",
+          "task": {
+            "en-US": "Create a constant fruits with \"apple\" and \"banana\", then add \"cherry\" at the end.",
+            "zh-CN": "创建常量 fruits，包含 \"apple\" 和 \"banana\"，然后在末尾添加 \"cherry\"。",
+            "ar-SA": "أنشئ ثابتا باسم fruits يضم \"apple\" و\"banana\" ثم أضف \"cherry\" في النهاية."
+          },
+          "starter": "",
+          "tests": [
+            {
+              "expression": "fruits",
+              "expect": [
+                "apple",
+                "banana",
+                "cherry"
+              ]
+            }
+          ],
+          "solution": "const fruits = [\"apple\", \"banana\"];\nfruits.push(\"cherry\");"
+        },
+        {
+          "id": "for-loops",
+          "title": {
+            "en-US": "For loops",
+            "zh-CN": "for 循环",
+            "ar-SA": "حلقات for"
+          },
+          "explain": {
+            "en-US": [
+              "A for loop repeats code. It has three parts: where to start, when to keep going, and how to step.",
+              "for (let i = 1; i <= 3; i++) runs three times, with i equal to 1, 2, and 3."
+            ],
+            "zh-CN": [
+              "for 循环用来重复执行代码。它有三部分：从哪里开始、何时继续、如何前进。",
+              "for (let i = 1; i <= 3; i++) 会运行三次，i 依次为 1、2、3。"
+            ],
+            "ar-SA": [
+              "تكرّر حلقة for الشيفرة. ولها ثلاثة أجزاء: من أين تبدأ، ومتى تستمر، وكيف تتقدم.",
+              "تعمل for (let i = 1; i <= 3; i++) ثلاث مرات، وقيمة i فيها 1 ثم 2 ثم 3."
+            ]
+          },
+          "example": "for (let i = 1; i <= 3; i++) {\n  console.log(i);\n}",
+          "task": {
+            "en-US": "Write a function sum(n) that returns 1 + 2 + ... + n, using a for loop.",
+            "zh-CN": "编写函数 sum(n)，用 for 循环返回 1 + 2 + ... + n。",
+            "ar-SA": "اكتب دالة sum(n) تعيد 1 + 2 + ... + n باستخدام حلقة for."
+          },
+          "starter": "function sum(n) {\n  \n}\n",
+          "tests": [
+            {
+              "expression": "sum(4)",
+              "expect": 10
+            },
+            {
+              "expression": "sum(10)",
+              "expect": 55
+            },
+            {
+              "expression": "sum(1)",
+              "expect": 1
+            }
+          ],
+          "solution": "function sum(n) {\n  let total = 0;\n  for (let i = 1; i <= n; i++) {\n    total += i;\n  }\n  return total;\n}"
+        },
+        {
+          "id": "map",
+          "title": {
+            "en-US": "Transform with map",
+            "zh-CN": "用 map 转换",
+            "ar-SA": "التحويل بـ map"
+          },
+          "explain": {
+            "en-US": [
+              "map makes a new array by running a function on every item. The original array does not change.",
+              "Combine it with an arrow function: [1, 2, 3].map((n) => n * 10) gives [10, 20, 30]."
+            ],
+            "zh-CN": [
+              "map 会对每一项运行一个函数并生成新数组，原数组不会改变。",
+              "可以配合箭头函数使用：[1, 2, 3].map((n) => n * 10) 得到 [10, 20, 30]。"
+            ],
+            "ar-SA": [
+              "تنشئ map مصفوفة جديدة بتشغيل دالة على كل عنصر، ولا تتغير المصفوفة الأصلية.",
+              "استخدمها مع دالة سهمية: [1, 2, 3].map((n) => n * 10) تعطي [10, 20, 30]."
+            ]
+          },
+          "example": "const names = [\"ann\", \"bo\"];\nconsole.log(names.map((name) => name.toUpperCase()));",
+          "task": {
+            "en-US": "Write a function doubleAll(list) that returns a new array with every number doubled.",
+            "zh-CN": "编写函数 doubleAll(list)，返回每个数都翻倍后的新数组。",
+            "ar-SA": "اكتب دالة doubleAll(list) تعيد مصفوفة جديدة يتضاعف فيها كل عدد."
+          },
+          "starter": "function doubleAll(list) {\n  \n}\n",
+          "tests": [
+            {
+              "expression": "doubleAll([1, 2, 3])",
+              "expect": [
+                2,
+                4,
+                6
+              ]
+            },
+            {
+              "expression": "doubleAll([])",
+              "expect": []
+            },
+            {
+              "expression": "(() => { const list = [1, 2]; doubleAll(list); return list; })()",
+              "expect": [
+                1,
+                2
+              ]
+            }
+          ],
+          "solution": "function doubleAll(list) {\n  return list.map((n) => n * 2);\n}"
+        },
+        {
+          "id": "filter",
+          "title": {
+            "en-US": "Keep with filter",
+            "zh-CN": "用 filter 筛选",
+            "ar-SA": "الاحتفاظ بـ filter"
+          },
+          "explain": {
+            "en-US": [
+              "filter makes a new array with only the items that pass a test. The function you give it must return true or false.",
+              "For example [1, 2, 3, 4].filter((n) => n > 2) gives [3, 4]."
+            ],
+            "zh-CN": [
+              "filter 会生成只包含通过测试的项的新数组。传给它的函数必须返回 true 或 false。",
+              "例如 [1, 2, 3, 4].filter((n) => n > 2) 得到 [3, 4]。"
+            ],
+            "ar-SA": [
+              "تنشئ filter مصفوفة جديدة تضم العناصر التي تجتاز اختبارا فقط. ويجب أن تعيد الدالة التي تعطيها true أو false.",
+              "مثلا [1, 2, 3, 4].filter((n) => n > 2) تعطي [3, 4]."
+            ]
+          },
+          "example": "const ages = [8, 15, 21];\nconsole.log(ages.filter((age) => age >= 18));",
+          "task": {
+            "en-US": "Write a function onlyEven(list) that returns only the even numbers.",
+            "zh-CN": "编写函数 onlyEven(list)，只返回其中的偶数。",
+            "ar-SA": "اكتب دالة onlyEven(list) تعيد الأعداد الزوجية فقط."
+          },
+          "starter": "function onlyEven(list) {\n  \n}\n",
+          "tests": [
+            {
+              "expression": "onlyEven([1, 2, 3, 4, 5, 6])",
+              "expect": [
+                2,
+                4,
+                6
+              ]
+            },
+            {
+              "expression": "onlyEven([1, 3])",
+              "expect": []
+            }
+          ],
+          "solution": "function onlyEven(list) {\n  return list.filter((n) => n % 2 === 0);\n}"
+        }
+      ]
+    },
+    {
+      "id": "objects",
+      "title": {
+        "en-US": "Objects",
+        "zh-CN": "对象",
+        "ar-SA": "الكائنات"
+      },
+      "lessons": [
+        {
+          "id": "objects",
+          "title": {
+            "en-US": "Objects",
+            "zh-CN": "对象",
+            "ar-SA": "الكائنات"
+          },
+          "explain": {
+            "en-US": [
+              "An object groups related values under names, written in curly braces: { name: \"Ali\", age: 30 }. Read a value with a dot: person.name.",
+              "An object can be given to a function like any other value."
+            ],
+            "zh-CN": [
+              "对象把相关的值按名称组合在一起，写在花括号里：{ name: \"Ali\", age: 30 }。用点号读取值：person.name。",
+              "对象可以像其他值一样传给函数。"
+            ],
+            "ar-SA": [
+              "يجمع الكائن قيما مترابطة تحت أسماء، ويُكتب بين قوسين معقوفين: { name: \"Ali\", age: 30 }. اقرأ القيمة بالنقطة: person.name.",
+              "يمكن إعطاء الكائن لدالة مثل أي قيمة أخرى."
+            ]
+          },
+          "example": "const person = { name: \"Ali\", age: 30 };\nconsole.log(person.name);\nperson.age = 31;",
+          "task": {
+            "en-US": "Create a constant person with name \"Ali\" and age 30. Then write a function describe(p) that returns text like Ali is 30.",
+            "zh-CN": "创建常量 person，name 为 \"Ali\"，age 为 30。然后编写函数 describe(p)，返回类似 Ali is 30 的文字。",
+            "ar-SA": "أنشئ ثابتا باسم person فيه name هو \"Ali\" وage هو 30. ثم اكتب دالة describe(p) تعيد نصا مثل Ali is 30."
+          },
+          "starter": "",
+          "tests": [
+            {
+              "expression": "person.name",
+              "expect": "Ali"
+            },
+            {
+              "expression": "person.age",
+              "expect": 30
+            },
+            {
+              "expression": "describe({ name: \"Mia\", age: 5 })",
+              "expect": "Mia is 5"
+            }
+          ],
+          "solution": "const person = { name: \"Ali\", age: 30 };\n\nfunction describe(p) {\n  return `${p.name} is ${p.age}`;\n}"
+        }
+      ]
+    }
+  ],
+  "languages": [
+    {
+      "code": "en-US",
+      "name": "English",
+      "dir": "ltr"
+    },
+    {
+      "code": "zh-CN",
+      "name": "简体中文",
+      "dir": "ltr"
+    },
+    {
+      "code": "ar-SA",
+      "name": "العربية",
+      "dir": "rtl"
+    }
+  ],
+  "ui": {
+    "logo": {
+      "en-US": "<span class=\"highlight\">{highlight}</span>JS",
+      "zh-CN": "<span class=\"highlight\">{highlight}</span>JS",
+      "ar-SA": "<span class=\"highlight\">{highlight}</span>JS"
+    },
+    "copyright": {
+      "en-US": "© {brand}",
+      "zh-CN": "© {brand}",
+      "ar-SA": "© {brand}"
+    },
+    "account": {
+      "en-US": "Account",
+      "zh-CN": "账户",
+      "ar-SA": "الحساب"
+    },
+    "progress.summary": {
+      "en-US": "{done} of {total} lessons done",
+      "zh-CN": "已完成 {done} / {total} 课",
+      "ar-SA": "أُنجز {done} من {total} دروس"
+    },
+    "unit.title": {
+      "en-US": "Unit {number}: {title}",
+      "zh-CN": "第 {number} 单元：{title}",
+      "ar-SA": "الوحدة {number}: {title}"
+    },
+    "lesson.open": {
+      "en-US": "Open {title}",
+      "zh-CN": "打开{title}",
+      "ar-SA": "افتح {title}"
+    },
+    "lesson.counter": {
+      "en-US": "Lesson {number} of {total}",
+      "zh-CN": "第 {number} / {total} 课",
+      "ar-SA": "الدرس {number} من {total}"
+    },
+    "learn.title": {
+      "en-US": "Learn",
+      "zh-CN": "学习",
+      "ar-SA": "تعلّم"
+    },
+    "example.title": {
+      "en-US": "Example",
+      "zh-CN": "示例",
+      "ar-SA": "مثال"
+    },
+    "task.title": {
+      "en-US": "Your task",
+      "zh-CN": "你的任务",
+      "ar-SA": "مهمتك"
+    },
+    "editor.label": {
+      "en-US": "Your code",
+      "zh-CN": "你的代码",
+      "ar-SA": "شيفرتك"
+    },
+    "editor.hint": {
+      "en-US": "Ctrl + Enter runs the code",
+      "zh-CN": "Ctrl + Enter 运行代码",
+      "ar-SA": "اضغط Ctrl + Enter لتشغيل الشيفرة"
+    },
+    "run": {
+      "en-US": "Run",
+      "zh-CN": "运行",
+      "ar-SA": "تشغيل"
+    },
+    "check": {
+      "en-US": "Check",
+      "zh-CN": "检查",
+      "ar-SA": "تحقق"
+    },
+    "reset": {
+      "en-US": "Reset",
+      "zh-CN": "重置",
+      "ar-SA": "إعادة"
+    },
+    "reset.text": {
+      "en-US": "Replace your code with the starting code of this lesson?",
+      "zh-CN": "用本课的初始代码替换你的代码吗？",
+      "ar-SA": "هل تريد استبدال شيفرتك بالشيفرة الأولية لهذا الدرس؟"
+    },
+    "reset.ok": {
+      "en-US": "Reset",
+      "zh-CN": "重置",
+      "ar-SA": "إعادة"
+    },
+    "solution": {
+      "en-US": "Solution",
+      "zh-CN": "参考答案",
+      "ar-SA": "الحل"
+    },
+    "solution.text": {
+      "en-US": "Replace your code with a solution? Try the lesson first: you learn more that way.",
+      "zh-CN": "用参考答案替换你的代码吗？建议先自己尝试，这样学到的更多。",
+      "ar-SA": "هل تريد استبدال شيفرتك بحل؟ جرّب الدرس أولا فهذا أفضل للتعلم."
+    },
+    "solution.ok": {
+      "en-US": "Show the solution",
+      "zh-CN": "查看答案",
+      "ar-SA": "أظهر الحل"
+    },
+    "console.title": {
+      "en-US": "Console",
+      "zh-CN": "控制台",
+      "ar-SA": "وحدة التحكم"
+    },
+    "console.empty": {
+      "en-US": "Run your code to see what it prints.",
+      "zh-CN": "运行代码即可看到它的输出。",
+      "ar-SA": "شغّل شيفرتك لترى ما تطبعه."
+    },
+    "console.silent": {
+      "en-US": "The code ran and printed nothing.",
+      "zh-CN": "代码已运行，没有输出。",
+      "ar-SA": "اشتغلت الشيفرة دون طباعة شيء."
+    },
+    "tests.title": {
+      "en-US": "Tests",
+      "zh-CN": "测试",
+      "ar-SA": "الاختبارات"
+    },
+    "test.output": {
+      "en-US": "The code should print: {expected}",
+      "zh-CN": "代码应当输出：{expected}",
+      "ar-SA": "يجب أن تطبع الشيفرة: {expected}"
+    },
+    "test.expression": {
+      "en-US": "{expression} should be {expected}",
+      "zh-CN": "{expression} 应当是 {expected}",
+      "ar-SA": "{expression} يجب أن تكون {expected}"
+    },
+    "test.got": {
+      "en-US": "it is {got}",
+      "zh-CN": "实际是 {got}",
+      "ar-SA": "لكنها {got}"
+    },
+    "test.printed": {
+      "en-US": "it printed: {got}",
+      "zh-CN": "实际输出：{got}",
+      "ar-SA": "لكنها طبعت: {got}"
+    },
+    "test.nothing": {
+      "en-US": "nothing",
+      "zh-CN": "无",
+      "ar-SA": "لا شيء"
+    },
+    "test.error": {
+      "en-US": "error: {message}",
+      "zh-CN": "错误：{message}",
+      "ar-SA": "خطأ: {message}"
+    },
+    "result.pass": {
+      "en-US": "All tests passed. Lesson complete!",
+      "zh-CN": "所有测试都通过了。本课完成！",
+      "ar-SA": "نجحت كل الاختبارات. اكتمل الدرس!"
+    },
+    "result.fail": {
+      "en-US": "Not yet: {failed} of {total} tests failed.",
+      "zh-CN": "还没有通过：{total} 个测试中有 {failed} 个失败。",
+      "ar-SA": "ليس بعد: فشل {failed} من {total} اختبارات."
+    },
+    "result.error": {
+      "en-US": "The code stopped with an error.",
+      "zh-CN": "代码因错误而停止。",
+      "ar-SA": "توقفت الشيفرة بسبب خطأ."
+    },
+    "result.timeout": {
+      "en-US": "The code ran for too long and was stopped. Is there a loop that never ends?",
+      "zh-CN": "代码运行时间过长，已被停止。是不是有一个永远不会结束的循环？",
+      "ar-SA": "استغرقت الشيفرة وقتا طويلا فأُوقفت. هل هناك حلقة لا تنتهي؟"
+    },
+    "next": {
+      "en-US": "Next lesson",
+      "zh-CN": "下一课",
+      "ar-SA": "الدرس التالي"
+    },
+    "finished": {
+      "en-US": "You finished every lesson!",
+      "zh-CN": "你完成了所有课程！",
+      "ar-SA": "لقد أنهيت كل الدروس!"
+    },
+    "sync.failed": {
+      "en-US": "Your progress is kept on this device; it could not be saved to your account: {message}",
+      "zh-CN": "进度保存在此设备上，未能保存到你的账户：{message}",
+      "ar-SA": "تقدّمك محفوظ على هذا الجهاز، وتعذّر حفظه في حسابك: {message}"
+    },
+    "status.signedIn": {
+      "en-US": "Progress is saved to your account",
+      "zh-CN": "进度已保存到你的账户",
+      "ar-SA": "يُحفظ تقدّمك في حسابك"
+    },
+    "status.signedOut": {
+      "en-US": "Sign in to keep your progress on every device",
+      "zh-CN": "登录后可在所有设备上保留进度",
+      "ar-SA": "سجّل الدخول لحفظ تقدّمك على كل أجهزتك"
+    },
+    "settings.editorScale": {
+      "en-US": "Size of the code text",
+      "zh-CN": "代码文字大小",
+      "ar-SA": "حجم نص الشيفرة"
+    },
+    "progress.title": {
+      "en-US": "Progress",
+      "zh-CN": "进度",
+      "ar-SA": "التقدّم"
+    },
+    "progress.hint": {
+      "en-US": "The lessons you finished and the code you wrote.",
+      "zh-CN": "你完成的课程和你写的代码。",
+      "ar-SA": "الدروس التي أنهيتها والشيفرة التي كتبتها."
+    },
+    "progress.reset": {
+      "en-US": "Delete the progress",
+      "zh-CN": "删除进度",
+      "ar-SA": "حذف التقدّم"
+    },
+    "progress.text": {
+      "en-US": "This deletes the lessons you finished and the code you wrote, here and in your account. It cannot be undone.",
+      "zh-CN": "这将删除你完成的课程和你写的代码（包括此设备和你的账户）。此操作无法撤销。",
+      "ar-SA": "سيؤدي هذا إلى حذف الدروس التي أنهيتها والشيفرة التي كتبتها هنا وفي حسابك. لا يمكن التراجع عن ذلك."
+    },
+    "progress.done": {
+      "en-US": "Progress deleted",
+      "zh-CN": "进度已删除",
+      "ar-SA": "تم حذف التقدّم"
+    },
+    "lessons.label": {
+      "en-US": "Lessons",
+      "zh-CN": "课程",
+      "ar-SA": "الدروس"
+    },
+    "lesson.previous": {
+      "en-US": "Previous lesson",
+      "zh-CN": "上一课",
+      "ar-SA": "الدرس السابق"
+    },
+    "lesson.following": {
+      "en-US": "Next lesson",
+      "zh-CN": "下一课",
+      "ar-SA": "الدرس التالي"
+    }
+  },
+  "syntax": {
+    "keywords": [
+      "const",
+      "let",
+      "var",
+      "function",
+      "return",
+      "if",
+      "else",
+      "for",
+      "while",
+      "do",
+      "break",
+      "continue",
+      "switch",
+      "case",
+      "default",
+      "new",
+      "class",
+      "extends",
+      "this",
+      "typeof",
+      "instanceof",
+      "in",
+      "of",
+      "try",
+      "catch",
+      "finally",
+      "throw",
+      "async",
+      "await",
+      "import",
+      "export",
+      "delete",
+      "void"
+    ],
+    "literals": [
+      "true",
+      "false",
+      "null",
+      "undefined",
+      "NaN",
+      "Infinity"
+    ],
+    "globals": [
+      "console",
+      "Math",
+      "JSON",
+      "Array",
+      "Object",
+      "String",
+      "Number",
+      "Boolean",
+      "Date",
+      "Promise",
+      "Map",
+      "Set",
+      "parseInt",
+      "parseFloat"
+    ]
+  }
+}

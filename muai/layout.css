@@ -9,7 +9,7 @@ body { grid-template-columns: var(--sidebar-width) minmax(0, 1fr); line-height: 
 .note { color: var(--fg-1); }
 .mono {text-transform: uppercase; }
 
-/* Icon: SVG files from assets/js/icons.js are used as masks so they follow the text colour */
+/* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
 
 /* Button */
 button.ghost { height: var(--height-s); font-size: var(--font-size-extra-small); }
@@ -29,8 +29,8 @@ input[type=range] { height: var(--height); padding: 0; border: none; accent-colo
 .logo { height: var(--height); }
 .logo .logo-name { display: flex; }
 .logo .highlight { color: var(--brand, var(--red)); }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/style.css) */
-:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/style.css) */
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
+:root { --highlight: var(--accent); --highlight-ink: var(--accent-ink); }   /* white buttons and highlights (see assets/css/components.css) */
 #chat-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; padding: 0 0 var(--padding-large); }
 .date-group { padding: var(--padding-medium) var(--padding-medium) var(--padding-small);font-size: var(--font-size-extra-small);text-transform: uppercase; color: var(--fg-1); }
 .chat-item {

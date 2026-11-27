@@ -1,7 +1,7 @@
 /* Spotimu: the music of the Drive (the audio files), with a player. */
 .hidden { display: none !important; }
 
-/* Icon: SVG files from assets/js/icons.js are used as masks so they follow the text colour */
+/* Icon: SVG files from assets/icons/ are used as masks so they follow the text colour */
 
 /* Buttons */
 button.active, button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
@@ -11,7 +11,7 @@ button.active, button[aria-pressed="true"] { background: var(--fg); color: var(-
 .main { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
 
 .header { height: var(--height); }
-.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/style.css) */
+.logo-mark { background-image: url("favicon.png"); }   /* the logo of the app: its favicon (the rest is in assets/css/components.css) */
 .header-tools { height: 100%; }
 
 .toolbar { display: flex; flex-wrap: wrap; gap: var(--gap-small); }
@@ -44,7 +44,7 @@ button.active, button[aria-pressed="true"] { background: var(--fg); color: var(-
 .repeat-mark { position: absolute; inset-block-end: var(--padding-extra-small); inset-inline-end: var(--padding-extra-small); font-size: var(--font-size-extra-small); line-height: 1; }
 .volume { display: flex; align-items: center; gap: var(--gap-small); flex: 1; min-width: calc(var(--unit) * 50); justify-content: flex-end; }
 .volume .icon { color: var(--fg-1); }
-.volume-slider { flex: 1; width: auto; max-width: calc(var(--unit) * 80); }   /* the slider of the kit (assets/css/style.css), here in the row of the volume */
+.volume-slider { flex: 1; width: auto; max-width: calc(var(--unit) * 80); }   /* the slider of the kit (assets/css/components.css), here in the row of the volume */
 
 /* Settings */
 dialog { color: var(--fg); background: var(--bg); border: var(--border-width) solid var(--border); padding: 0; }
