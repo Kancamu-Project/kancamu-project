@@ -1,0 +1,8 @@
+name = "kancamu-auth"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+GITHUB_CLIENT_ID = "Ov23liihNCXM7U0kktDM"
+ALLOWED_ORIGINS = "https://kancamu.site,http://localhost:5173"
+CALLBACK_PATH = "/youmu/callback.html"

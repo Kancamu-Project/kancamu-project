@@ -13,6 +13,22 @@ muos/_references/
 .env.*
 *.secret
 
+# Keys and certificates: the signing of the desktop app and of its updates, and any private key
+*.pem
+*.key
+*.pfx
+*.p12
+*.keystore
+*.jks
+
+# Build output and local state of the desktop app and of the auth worker
+target/
+assets/tools/desktop/gen/
+.wrangler/
+
+# Originals of the images of the splash, which only tools/sprites.mjs reads
+assets/images/*_raw.*
+
 # Operating system files
 .DS_Store
 Thumbs.db

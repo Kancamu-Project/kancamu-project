@@ -1,0 +1,9 @@
+{
+  "identifier": "site",
+  "description": "What the website may ask of the app: only the four commands of the native apps, and only from the addresses of the site",
+  "windows": ["main"],
+  "remote": {
+    "urls": ["https://kancamu.site/*", "http://localhost:5173/*"]
+  },
+  "permissions": ["allow-native-status", "allow-native-install", "allow-native-open", "allow-native-remove"]
+}

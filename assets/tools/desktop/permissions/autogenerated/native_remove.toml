@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-native-remove"
+description = "Enables the native_remove command without any pre-configured scope."
+commands.allow = ["native_remove"]
+
+[[permission]]
+identifier = "deny-native-remove"
+description = "Denies the native_remove command without any pre-configured scope."
+commands.deny = ["native_remove"]

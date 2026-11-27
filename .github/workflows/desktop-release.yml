@@ -1,0 +1,79 @@
+name: desktop release
+
+on:
+  push:
+    tags: ["desktop-v*"]
+    branches: [main]
+    paths: ["assets/tools/desktop/**", ".github/workflows/desktop-release.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - { key: windows-x64, os: windows-latest, target: x86_64-pc-windows-msvc, ext: ".exe" }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: The versions agree
+        shell: bash
+        run: |
+          crate="$(grep -m1 '^version' assets/tools/desktop/Cargo.toml | cut -d'"' -f2)"
+          config="$(grep -m1 '"version"' assets/tools/desktop/tauri.conf.json | cut -d'"' -f4)"
+          if [ "$crate" != "$config" ]; then echo "Cargo.toml says $crate but tauri.conf.json says $config"; exit 1; fi
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "${GITHUB_REF_NAME#desktop-v}" != "$crate" ]; then echo "The tag is ${GITHUB_REF_NAME#desktop-v} but Cargo.toml says $crate"; exit 1; fi
+      - name: Rust target
+        run: rustup target add ${{ matrix.target }}
+      - name: Test
+        working-directory: assets/tools/desktop
+        run: cargo test --locked --target ${{ matrix.target }}
+      - name: Build
+        working-directory: assets/tools/desktop
+        run: cargo build --locked --release --target ${{ matrix.target }}
+      - name: Name the program
+        shell: bash
+        run: |
+          mkdir out
+          cp "assets/tools/desktop/target/${{ matrix.target }}/release/desktop${{ matrix.ext }}" "out/desktop-${{ matrix.key }}${{ matrix.ext }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desktop-${{ matrix.key }}
+          path: out/*
+
+  release:
+    needs: build
+    if: github.ref_type == 'tag' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+      - name: The programs and the checksums on main
+        run: |
+          version="$(grep -m1 '^version' assets/tools/desktop/Cargo.toml | cut -d'"' -f2)"
+          base="https://kancamu.site/assets/tools/desktop/bin"
+          mkdir -p assets/tools/desktop/bin
+          cp out/desktop-* assets/tools/desktop/bin/
+          {
+            echo "version $version"
+            for file in out/desktop-*; do
+              name="$(basename "$file")"
+              key="${name#desktop-}"; key="${key%.exe}"
+              echo "$key $(sha256sum "$file" | cut -d' ' -f1) $base/$name"
+            done
+          } > assets/tools/desktop/latest.txt
+          cat assets/tools/desktop/latest.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/tools/desktop/bin assets/tools/desktop/latest.txt
+          git commit -m "desktop $version: the program and its checksum"
+          git push origin HEAD:main

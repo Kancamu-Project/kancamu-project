@@ -1,0 +1,14 @@
+{
+  "name": "kancamu-auth",
+  "private": true,
+  "license": "AGPL-3.0-or-later",
+  "author": "Yuxie",
+  "description": "The sign-in with GitHub of the webs of Kancamu: exchanges the code of GitHub for a token, with the client secret that a static site cannot keep.",
+  "scripts": {
+    "dev": "wrangler dev --port 8787",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}
