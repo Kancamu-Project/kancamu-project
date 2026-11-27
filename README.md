@@ -59,7 +59,7 @@ assets/          Shared assets, in folders
   images/        The images that are content of the site (the splash screen): WebP, compressed, with the original beside each as <name>_raw; splash.webp and icons.png are the sprites (see assets/tools/sprites.mjs), the single files stay
   icons/         icons.js: every SVG icon of the apps, in one file (universal names); shared.js makes a variable --icon-<name> of each
 favicon.png      Site icon
-assets/tools/    What helps to make the project: og-cards.mjs makes the preview.png of the main website and of every app from their cards (node assets/tools/og-cards.mjs); the cards are shown all at once in the section Previews of Assetmu, where each can be saved as an image; muai-helper/ is the Rust program that lets muAI work with the files of one folder of your PC (one command in a terminal downloads and runs it, and muAI connects by itself: see its README), with its install scripts, its programs (`bin/`), and the workflow that builds them for every system (`.github/workflows/muai-helper-release.yml`); sprites.mjs makes the sprites (the images of the splash screen in one square file, assets/images/splash.webp, and the icons of all the apps (16 px for the pixel icons, at most 48 px for the others) in one, assets/images/icons.webp; node assets/tools/sprites.mjs); seo.mjs makes sitemap.xml, robots.txt, and the title, the canonical address, the structured data, and the noscript text of every page (node assets/tools/seo.mjs)
+assets/tools/    What helps to make the project: og-cards.mjs makes the preview.png of the main website and of every app from their cards (node assets/tools/og-cards.mjs); the cards are shown all at once in the section Previews of Assetmu, where each can be saved as an image; muai-helper/ is the Rust program that lets muAI work with the files of one folder of your PC (one command in a terminal downloads and runs it, and muAI connects by itself: see its README), with its install scripts, its programs (`bin/`), and the workflow that builds them for every system (`.github/workflows/muai-helper-release.yml`); sprites.mjs makes the sprites (the images of the splash screen in one square file, assets/images/splash.webp, and the icons of all the apps (16 px for the pixel icons, at most 48 px for the others) in one, assets/images/icons.webp; node assets/tools/sprites.mjs); seo.mjs makes sitemap.xml, robots.txt, and the title, the canonical address, the structured data, and the noscript text of every page (node assets/tools/seo.mjs); repo-card.mjs makes the image of the repository for social networks (.github/social-preview.png, 1280x640; node assets/tools/repo-card.mjs); desktop/ is the website in its own window (Tauri, Rust), which can install the native ArtCraft apps (see Desktop app); auth/ is the sign-in with GitHub (a Cloudflare Worker) that keeps the client secret a static site cannot keep (see its README)
 preview.png      Open Graph image (1200x630): the card of the main website, which is its splash screen (node assets/tools/og-cards.mjs kancamu), made again when the splash changes, with the number after ?v= raised in the og:image of index.html
 RULES.md         Project rules
 assetmu/         Assetmu: shows every asset (colours, icons, fonts, sizes, files) and the colour and icon of each app
@@ -96,6 +96,40 @@ Every app has four basic files: `index.html`, `layout.css`, `app.js`, and `data.
 Every app supports English, Chinese, and Arabic (right to left). All its texts live in its own `data.js` (`ui`, one entry per language) and are marked in the HTML with `data-i18n`, `data-i18n-html`, `data-i18n-title`, `data-i18n-placeholder`, or `data-i18n-label`. A `<select class="language">` lets the user choose, and the choice is kept under the same key (`lang`) for every app. CSS uses logical properties (`inline-start`, `inline-end`) so the layout flips for Arabic. muOS has its own language files, and ArtCraft is a third-party app.
 
 Icons live in one place, `assets/icons/`, and are used as CSS masks so their colour follows the text. File names are universal (`close`, `plus`, `trash`), not specific to a project. Only muOS has icons of its own.
+
+## Desktop app
+
+`assets/tools/desktop/` is a small Tauri app (Rust) that opens https://kancamu.site in a window. The website knows it runs there, and then the menu (the three dots) of an ArtCraft project also offers to install the native app, to update it, to open it, and to remove it. The window is only a window: everything else is the website.
+
+```
+cd assets/tools/desktop
+cargo run
+```
+
+On Windows it needs Rust with the MSVC toolchain (`rustup toolchain install stable-x86_64-pc-windows-msvc`) and the C++ build tools of Visual Studio; the window uses WebView2, which Windows 11 has. Installing native apps works on Windows only for now (the other systems answer that it is not supported).
+
+- How the website knows: `desktop.available` (assets/js/shared.js, part desktop) is true when the window gives the page the global of Tauri. It is a test of what exists, never of the name of a browser, and it is false in every ordinary browser.
+- What the website may ask: four commands (`native_status`, `native_install`, `native_open`, `native_remove`), and only from the addresses in `assets/tools/desktop/capabilities/site.json` (https://kancamu.site and http://localhost:5173). From any other address the app answers that the command is not allowed.
+- What a command takes: the id of an app (`"native": "deckcraft"` in the data.js of the main website), never an address. The app looks the id up in its own list (`catalog.rs`), so the page cannot make it download anything else.
+- What an install does: it asks GitHub for the latest release of that app, picks the file for this computer (the portable zip when there is one, because it needs no administrator, else the MSI), checks it against the SHA-256 that the release publishes (a release without one is not installed), and unpacks or runs it. The apps are kept in `%LOCALAPPDATA%\site.kancamu.app`, with their list in `state.json`.
+- The icon: the only file is `assets/tools/desktop/icons/icon.ico`, which is the `favicon.png` of the site made bigger, pixel by pixel (the logo is a pixel icon). Windows needs it to build the app (the build stops without it); the window takes its icon from it too, so there is no png.
+- Not done yet: the progress of a download is not shown (the page only says that it is installing, and then the result), and the other systems.
+
+To try the site that is on your PC in the window, change `url` of the window and `frontendDist` in `assets/tools/desktop/tauri.conf.json` to `http://localhost:5173/` and serve the folder there; change it back before you commit.
+
+The automatic build is `.github/workflows/desktop-release.yml`: it tests and builds on every push that changes the app, and when a tag `desktop-v<version>` is pushed it also puts the program in `assets/tools/desktop/bin/` with its SHA-256 in `latest.txt` (see the README of that folder).
+
+## Files that are never committed
+
+`.gitignore` keeps these out, and a new kind of secret is added to it in the same change:
+
+- `.dev.vars`, `.env`, `.env.*`, `*.secret`: the client secret of the sign-in (`assets/tools/auth/.dev.vars`) and any other secret.
+- `*.pem`, `*.key`, `*.pfx`, `*.p12`, `*.keystore`, `*.jks`: keys and certificates, such as the signing of the desktop app.
+- `node_modules/`, `target/`, `assets/tools/desktop/gen/`, `.wrangler/`: what is built or kept by a tool.
+- `assets/images/*_raw.*`: the originals of the images of the splash.
+- `muos/_references/`, `.claude/`, `.vscode/`, `.idea/`, logs, and the files of the operating system.
+
+Before the first push of a new folder, look at `git status` and at `git ls-files --others --exclude-standard`, and check a suspect file with `git check-ignore -v <file>`.
 
 ## Running
 
@@ -158,6 +192,14 @@ Everything in the list comes from `data.js`. Add one object to `projects`:
 ## Hosting
 
 The site is static and can be served by any static web server, at the root of a domain or under a sub-path, because every link is relative. Serve the whole folder.
+
+## License
+
+Copyright (c) 2026 Yuxie.
+
+The code is free under the GNU Affero General Public License, version 3 or any later version ([LICENSE](LICENSE)): you may use, change, and share it, and whoever shares a changed version, or lets people use it through a network (a website, for example), must give them the source of the changes under the same license.
+
+The brand and the images and icons of the owner are not under that license: they are shared under CC BY-NC-ND 4.0 (copy and share unchanged, with credit, not for commercial use). What others made (ArtCraft, muOS, the fonts, the images of the splash screen) keeps the license of its makers. [ASSETS.md](ASSETS.md) lists every file that is not under the code license, and what is still to be checked.
 
 ## Rules
 
@@ -390,6 +432,10 @@ Two apps may save at the same moment on the same branch: GitHub then answers 409
 The account (assets/js/shared.js) must be signed in.
 ```
 
+### assets/js/shared.js, part desktop
+
+`desktop` is one object, written once, for what only the desktop app (`assets/tools/desktop/`) can do. `desktop.available` says whether the page runs in it (the global of Tauri is there), and `desktop.call(command, args)` asks the app and gives a promise: the answer, or an error that says why not (the address is not allowed, the app is not in the list, it is not installed). An app of the website asks `desktop.available` first, and shows the extra only when it is true. Today only the menu of the main website uses it (`nativeItems` in its app.js), for a project that has `"native"` in its data.js.
+
 ### assets/tools/seo.mjs
 
 ```
@@ -411,6 +457,17 @@ of the app, so the sites that keep the old image in their cache ask for the new 
   node assets/tools/og-cards.mjs            the main website and every app
   node assets/tools/og-cards.mjs hashmu     one of them, by its id (kancamu is the main website)
 It needs Node 20 or newer and Chrome (the address of chrome.exe is in the variable CHROME when it is not at its usual place).
+```
+
+### assets/tools/repo-card.mjs
+
+```
+Makes the social preview of the repository, .github/social-preview.png (1280x640, the size that GitHub asks for), from the data of the site: the logo and the name with its highlighted word (assets/data/data.js), the line of the splash screen (the "splash.tagline" of data.js), the license, and the icons of the apps made here.
+Everything important is inside a border of 80 px (40 pt), so nothing is cropped. The image is drawn by Chrome from a page that the script writes in a temporary folder.
+  node assets/tools/repo-card.mjs                  makes .github/social-preview.png
+  node assets/tools/repo-card.mjs <file>           makes it at another place (the path is from the root of the repository)
+It needs Node 20 or newer and Chrome (the address of chrome.exe is in the variable CHROME when it is not at its usual place).
+GitHub does not read this file from the repository: upload it in the Settings of the repository, General, Social preview.
 ```
 
 ### assets/tools/sprites.mjs
