@@ -230,7 +230,7 @@ Do not make a border thicker to stand out; use a colour instead.
 Every border is solid: no dashed, dotted, or double border.
 Corners: an element that stands alone is rounded with a --border-radius variable of assets/css/shared.css: medium for a button, an input, a select, a textarea, small for a tag or a thumbnail, large for a dialog, a menu, a toast.
 An element that touches another one is square, with border-radius: 0 set by its app: a bar and what is in it, a group of buttons (such as the view switch), tabs, the rows of a table, a grid of cells, such as the project cards of the main website. Checkboxes, radios, and ranges are square.
-Do not write another radius. This is a trial: change the variables, or the list of square elements, to change the look.
+The one exception is the avatar in Guyonmu, which is round (border-radius: 50%), as the avatar is in the social apps that people know. Do not write another radius. This is a trial: change the variables, or the list of square elements, to change the look.
 
 #### 13. Buttons, Inputs and Selects
 The default look has no colour of its own: the text colour and the background follow the parent, with a gray border, and a gray background on hover. This is set once in assets/css/shared.css. A button that has a colour of its own (the yellow, blue, and green buttons of the filter of categories, primary, danger) does not turn gray on hover: its hover is its own colour (a light tint of it as the background, and its line), and the button that is selected stays as it is.
