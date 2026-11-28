@@ -1,0 +1,17 @@
+name = "kancamu-guyonmu"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+ALLOWED_ORIGINS = "https://kancamu.site,http://localhost:5173"
+GITHUB_API = "https://api.github.com"
+POST_MAX = "280"
+BIO_MAX = "160"
+POSTS_PER_MINUTE = "10"
+SESSION_DAYS = "30"
+PAGE_SIZE = "20"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "guyonmu"
+database_id = "d77eb44d-0946-426b-b052-d2481027c636"
