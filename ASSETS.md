@@ -23,7 +23,7 @@ These have the license of their makers, which is not ours to change.
 - `muos/`: the desktop in the browser, made by others. This repository does not yet say its license: see its own files.
 - `assets/images/splash.webp`: made from images by others, credited on the splash screen (the author and Civitai). The license of each image is the one its author chose and is not checked yet, so these images are not offered under any license here.
 - `assets/fonts/`: Inter (Copyright 2016 The Inter Project Authors, https://github.com/rsms/inter) and JetBrains Mono (Copyright 2020 The JetBrains Mono Project Authors, https://github.com/JetBrains/JetBrainsMono), both under the SIL Open Font License 1.1 (https://openfontlicense.org). The text of the license is not in this repository yet.
-- `assets/icons/icons.js`: the SVG icons. Their source is not written down yet.
+- `assets/icons/icons.js`: the SVG icons. Their source is not written down yet. The icons `home`, `message`, `bookmark`, `share`, `bell`, and `at` have the shapes of the icons house, message-circle, bookmark, share-2, bell, and at-sign of Lucide (ISC license, https://lucide.dev).
 
 ## Not done yet
 

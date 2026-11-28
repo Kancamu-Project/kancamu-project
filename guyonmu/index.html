@@ -38,7 +38,9 @@
 <!-- /seo-body -->
 
 <kit-header id="header" menu data-i18n-menu-label="nav.label"></kit-header>
-<kit-sidebar id="sidebar"></kit-sidebar>
+<kit-sidebar id="sidebar">
+  <button id="new-post-button" slot="after" class="primary new-post" type="button"><span class="icon icon-plus"></span><span data-i18n="compose.new"></span></button>
+</kit-sidebar>
 <div id="main" class="main">
 
   <div class="topbar">
@@ -49,12 +51,21 @@
   </div>
 
   <div id="timeline" class="timeline">
+    <kit-tabs id="feed-tabs" class="hidden" value="home">
+      <button type="button" value="home"><span data-i18n="tabs.home"></span></button>
+      <button type="button" value="following"><span data-i18n="tabs.following"></span></button>
+    </kit-tabs>
     <div id="profile-card" class="profile-card hidden"></div>
+    <div id="feed" class="feed">
+    <div id="root-post" class="root-post"></div>
     <div id="composer" class="composer hidden">
       <div id="composer-avatar" class="avatar"></div>
       <div class="composer-fields">
         <textarea id="composer-text" rows="2" data-i18n-label="compose.label"></textarea>
+        <div id="composer-images" class="composer-images"></div>
         <div class="composer-actions">
+          <button id="composer-image-button" class="square" type="button" data-i18n-title="compose.addImage" data-i18n-label="compose.addImage"><span class="icon icon-image"></span></button>
+          <input id="composer-image-input" class="hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
           <span id="composer-counter" class="composer-counter"></span>
           <button id="composer-button" class="primary" type="button"><span id="composer-button-text"></span></button>
         </div>
@@ -66,12 +77,40 @@
     </div>
     <div id="people" class="people hidden"></div>
     <div id="post-list" class="post-list"></div>
+    </div>
     <kit-empty id="empty-state" class="hidden" icon="message"></kit-empty>
-    <button id="more-button" class="more hidden" type="button"><span data-i18n="load.more"></span></button>
+    <button id="more-button" class="load-more hidden" type="button"><span data-i18n="load.more"></span></button>
   </div>
 
 </div>
 <kit-footer id="footer" status></kit-footer>
+
+<dialog id="compose-dialog" class="compose-dialog">
+  <div class="compose-bar">
+    <span id="compose-title" class="compose-title" data-i18n="compose.new"></span>
+    <button id="compose-close-button" class="square" type="button" data-i18n-title="close" data-i18n-label="close"><span class="icon icon-close"></span></button>
+  </div>
+  <div class="composer">
+    <div id="dialog-avatar" class="avatar"></div>
+    <div class="composer-fields">
+      <textarea id="dialog-text" rows="3" data-i18n-label="compose.label"></textarea>
+      <div id="dialog-images" class="composer-images"></div>
+      <div class="composer-actions">
+        <button id="dialog-image-button" class="square" type="button" data-i18n-title="compose.addImage" data-i18n-label="compose.addImage"><span class="icon icon-image"></span></button>
+          <input id="dialog-image-input" class="hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
+          <span id="dialog-counter" class="composer-counter"></span>
+        <button id="dialog-button" class="primary" type="button"><span id="dialog-button-text" data-i18n="compose.post"></span></button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="image-dialog" class="image-dialog">
+  <div class="image-bar">
+    <button id="image-close-button" class="square" type="button" data-i18n-title="close" data-i18n-label="close"><span class="icon icon-close"></span></button>
+  </div>
+  <img id="image-view" class="image-view" alt="">
+</dialog>
 
 <div id="popups" class="popups"></div>
 </body>

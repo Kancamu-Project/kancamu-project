@@ -636,6 +636,9 @@ select:focus:not(:disabled) {
 .icon-arrow-down { --icon: var(--icon-arrow-down); }
 .icon-arrow-up { --icon: var(--icon-arrow-up); }
 .icon-audio { --icon: var(--icon-audio); }
+.icon-at { --icon: var(--icon-at); }
+.icon-bell { --icon: var(--icon-bell); }
+.icon-bookmark { --icon: var(--icon-bookmark); }
 .icon-check { --icon: var(--icon-check); }
 .icon-chevron-down { --icon: var(--icon-chevron-down); }
 .icon-chevron-left { --icon: var(--icon-chevron-left); }
@@ -679,6 +682,7 @@ select:focus:not(:disabled) {
 .icon-shuffle { --icon: var(--icon-shuffle); }
 .icon-skip-back { --icon: var(--icon-skip-back); }
 .icon-skip-forward { --icon: var(--icon-skip-forward); }
+.icon-share { --icon: var(--icon-share); }
 .icon-sliders { --icon: var(--icon-sliders); }
 .icon-star { --icon: var(--icon-star); }
 .icon-stop { --icon: var(--icon-stop); }
