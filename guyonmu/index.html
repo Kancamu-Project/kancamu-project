@@ -55,6 +55,12 @@
       <button type="button" value="home"><span data-i18n="tabs.home"></span></button>
       <button type="button" value="following"><span data-i18n="tabs.following"></span></button>
     </kit-tabs>
+    <button id="new-posts-button" class="primary new-posts hidden" type="button"><span id="new-posts-text"></span></button>
+    <kit-tabs id="profile-tabs" class="hidden" value="posts">
+      <button type="button" value="posts"><span data-i18n="tabs.posts"></span></button>
+      <button type="button" value="replies"><span data-i18n="tabs.replies"></span></button>
+      <button type="button" value="likes" data-own><span data-i18n="tabs.likes"></span></button>
+    </kit-tabs>
     <div id="profile-card" class="profile-card hidden"></div>
     <div id="feed" class="feed">
     <div id="root-post" class="root-post"></div>
@@ -95,6 +101,7 @@
     <div class="composer-fields">
       <textarea id="dialog-text" rows="3" data-i18n-label="compose.label"></textarea>
       <div id="dialog-images" class="composer-images"></div>
+      <div id="dialog-quote" class="dialog-quote hidden"></div>
       <div class="composer-actions">
         <button id="dialog-image-button" class="square" type="button" data-i18n-title="compose.addImage" data-i18n-label="compose.addImage"><span class="icon icon-image"></span></button>
           <input id="dialog-image-input" class="hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple>

@@ -73,7 +73,7 @@ youmu/       The account app, shown in a dialog by every other app; the query st
 artcraft/        The eight ArtCraft apps (downloaded by update.ps1)
 drivemu/         File storage on GitHub
 gallemu/        Gallery of the images and videos of the Drive (reads the Drive, read only)
-guyonmu/        Social app of short posts, with images (when R2 is on), edits, replies, likes, reposts, saved posts, links to share, notifications, blocks, mutes, and reports for the moderators (the posts, likes, reposts, saves, and follows are on the server of assets/tools/guyonmu, signed in with the GitHub account of the account app; opens on the timeline, the address keeps ?tab, ?user, ?post, ?q)
+guyonmu/        Social app of short posts, with images (when R2 is on), edits, quotes, pinned posts, an Explore page (who to follow and trending tags), a banner of new posts, endless scrolling, drafts, profile tabs (posts, replies, likes), lists of followers, replies, likes, reposts, saved posts, links to share, notifications, blocks, mutes, and reports for the moderators (the posts, likes, reposts, saves, and follows are on the server of assets/tools/guyonmu, signed in with the GitHub account of the account app; opens on the timeline, the address keeps ?tab, ?user, ?post, ?q)
 spotimu/        Music player for the audio files of the Drive (reads the Drive, read only)
 mujs/           JavaScript lessons (units, lessons and tests are in data.js; the code runs in a sandboxed frame, sandbox.js; the progress is in the mujs folder)
 lingomu/        Language lessons (courses, units and lessons are in data.js; the progress is in the lingomu folder)

@@ -1,0 +1,4 @@
+ALTER TABLE posts ADD COLUMN quote_of INTEGER REFERENCES posts(id) ON DELETE SET NULL;
+ALTER TABLE users ADD COLUMN pinned_post_id INTEGER REFERENCES posts(id) ON DELETE SET NULL;
+
+CREATE INDEX posts_by_quote ON posts (quote_of) WHERE quote_of IS NOT NULL;

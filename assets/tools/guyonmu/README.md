@@ -5,18 +5,21 @@ The server of Guyonmu, the social app of short posts: a Cloudflare Worker (`src/
 ```
 GET    /config                       the limits (postMax, bioMax, pageSize)
 POST   /session   { token }          checks the GitHub token with GitHub, gives { session, expires, user }
-GET    /posts                        ?feed=following | feed=saved | user=<login> | parent=<id> | q=<text> | cursor=<id>
+GET    /posts                        ?feed=following | feed=saved | user=<login> | after=<itemId> (only the newer ones, for the banner of new posts) | scope=replies | scope=likes (the likes of the one who asks, never of another) | parent=<id> | q=<text> | cursor=<id>
 POST   /media    <the image>         the body is the image itself (Content-Type image/jpeg, png, webp, or gif); gives { key }
 GET    /media/:key                   the image (public, with no origin check: an <img> does not send one)
-POST   /posts     { body, parentId, images }  makes a post, or a reply when parentId is set; images are keys of /media (up to IMAGES_MAX)
+POST   /posts     { body, parentId, quoteOf, images }  makes a post, a reply when parentId is set, or a quote of another post when quoteOf is set (not both); images are keys of /media (up to IMAGES_MAX)
 GET    /posts/:id
 PATCH  /posts/:id   { body }         only the author, and only in the first EDIT_MINUTES; the post then says that it was edited
 DELETE /posts/:id                    only the author; the replies go with it
 PUT    /posts/:id/like               DELETE takes the like back
 PUT    /posts/:id/repost             shares the post with the followers of the user; DELETE takes it back
 POST   /posts/:id/report { reason }  tells the moderators about a post
+PUT    /posts/:id/pin                pins the post of the user to the top of their profile (one at a time); DELETE unpins
+GET    /explore                      who to follow (friends of the people the user follows first, then the most followed) and the tags most used in the last TRENDING_DAYS days
 PUT    /posts/:id/save               keeps the post for the user alone (a private list); DELETE removes it
 GET    /users?q=<text>               up to 5 people
+GET    /users/:login/followers       and /following: the people, newest first (cursor=<id>), without those with a block between them and the asker
 GET    /users/:login                 the profile, with its counts and whether the viewer follows it
 PUT    /users/:login/follow          DELETE stops following
 PUT    /users/:login/block           DELETE unblocks; the same with /mute

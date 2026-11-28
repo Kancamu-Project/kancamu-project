@@ -99,6 +99,16 @@
 .notification-text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
 .notification-text .post-name { color: var(--fg); }
 .sidebar-item .sidebar-item-title { flex: 1; }
+.new-posts { width: calc(var(--height) * 8); justify-self: center; }
+.post-quote { display: flex; flex-direction: column; gap: var(--gap-extra-small); padding: var(--padding-medium); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-medium); }
+.post-quote[tabindex] { cursor: pointer; }
+.post-quote[tabindex]:hover { background: var(--bg-1); }
+.post-quote-head { display: flex; align-items: baseline; gap: var(--gap-small); min-width: 0; }
+.post-quote-body { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--clamp-lines); line-clamp: var(--clamp-lines); overflow: hidden; overflow-wrap: anywhere; white-space: pre-wrap; }
+.dialog-quote { display: flex; flex-direction: column; }
+.tag-count { color: var(--fg-1); font-size: var(--font-size-small); }
+.tag-chip { padding-inline-start: var(--padding-medium); }
+.tag-chip .tag-count { padding-inline-start: var(--padding-small); }
 .load-more { width: calc(var(--height) * 5); justify-self: center; }
 
 @media (max-width: 35rem) {

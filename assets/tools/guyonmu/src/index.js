@@ -7,6 +7,7 @@ const IMAGE_TYPES = {
 };
 const MEDIA_TYPES = Object.fromEntries(Object.entries(IMAGE_TYPES).map(([type, { extension }]) => [extension, type]));
 const MEDIA_KEY = /^\d+-[a-f0-9]{32}\.(jpg|png|gif|webp)$/;
+const HASHTAG = /#[\p{L}\p{N}_]+/gu;
 const MENTION = /@([A-Za-z0-9](?:[A-Za-z0-9-]{0,38}))/g;
 const MINUTE = 60 * 1000;
 const DAY = 24 * 60 * MINUTE;
@@ -101,7 +102,7 @@ const clean = (value, limit, { multiline = false } = {}) => {
 const like = (text) => `%${text.replace(/[\\%_]/g, "\\$&")}%`;
 
 const postColumns = `
-    t.id, t.body, t.parent_id AS parentId, t.like_count AS likes, t.reply_count AS replies, t.repost_count AS reposts, t.created_at AS createdAt, t.edited_at AS editedAt,
+    t.id, t.body, t.parent_id AS parentId, t.like_count AS likes, t.reply_count AS replies, t.repost_count AS reposts, t.created_at AS createdAt, t.edited_at AS editedAt, t.quote_of AS quoteOf,
     tu.id AS userId, tu.login, tu.name, tu.avatar,
     (SELECT pu.login FROM posts pp JOIN users pu ON pu.id = pp.user_id WHERE pp.id = t.parent_id) AS parentLogin,
     p.id AS itemId, p.repost_of AS repostOf, u.login AS actorLogin, u.name AS actorName,
@@ -139,7 +140,16 @@ async function hydrate(env, rows, viewer) {
         const { results } = await env.DB.prepare(`SELECT post_id AS postId, key FROM media WHERE post_id IN (${ids.map((_, index) => `?${index + 1}`).join(", ")}) ORDER BY rowid`).bind(...ids).all();
         for (const row of results) images.set(row.postId, [...(images.get(row.postId) ?? []), row.key]);
     }
-    return rows.map((row) => ({ ...publicPost(row, viewer), images: images.get(row.id) ?? [] }));
+    const quoted = [...new Set(rows.map((row) => row.quoteOf).filter(Boolean))];
+    const quotes = new Map();
+    if (quoted.length) {
+        const { results } = await env.DB.prepare(
+            `SELECT p.id, p.body, p.created_at AS createdAt, u.login, u.name, u.avatar FROM posts p JOIN users u ON u.id = p.user_id
+            WHERE p.repost_of IS NULL AND p.id IN (${quoted.map((_, index) => `?${index + 1}`).join(", ")})`,
+        ).bind(...quoted).all();
+        for (const row of results) quotes.set(row.id, { id: row.id, body: row.body, createdAt: row.createdAt, user: { login: row.login, name: row.name, avatar: row.avatar } });
+    }
+    return rows.map((row) => ({ ...publicPost(row, viewer), images: images.get(row.id) ?? [], quote: row.quoteOf ? quotes.get(row.quoteOf) ?? null : null }));
 }
 
 async function getPost(env, id, viewer) {
@@ -150,7 +160,7 @@ async function getPost(env, id, viewer) {
 
 async function findUser(env, login, viewer) {
     const row = await env.DB.prepare(
-        `SELECT u.id, u.login, u.name, u.avatar, u.bio, u.created_at AS createdAt,
+        `SELECT u.id, u.login, u.name, u.avatar, u.bio, u.pinned_post_id AS pinnedPostId, u.created_at AS createdAt,
             (SELECT COUNT(*) FROM follows WHERE followee_id = u.id) AS followers,
             (SELECT COUNT(*) FROM follows WHERE follower_id = u.id) AS following,
             (SELECT COUNT(*) FROM posts WHERE user_id = u.id AND parent_id IS NULL AND repost_of IS NULL) AS posts,
@@ -206,11 +216,18 @@ async function listPosts(url, env, viewer) {
         wheres.push(text);
     };
 
+    const scope = query.get("scope") || "posts";
+    if (!["posts", "replies", "likes"].includes(scope)) throw new Failure(400, "request");
     if (parent) add("p.parent_id = ?", integer(parent));
-    else add("p.parent_id IS NULL");
+    else if (scope === "replies") add("p.parent_id IS NOT NULL");
+    else if (scope === "likes") {
+        requireViewer(viewer);
+        add("p.repost_of IS NULL AND p.id IN (SELECT post_id FROM likes WHERE user_id = ?1)");
+    } else add("p.parent_id IS NULL");
     add("p.user_id NOT IN (SELECT target_id FROM blocks WHERE user_id = ?1) AND p.user_id NOT IN (SELECT user_id FROM blocks WHERE target_id = ?1) AND t.user_id NOT IN (SELECT target_id FROM blocks WHERE user_id = ?1) AND t.user_id NOT IN (SELECT user_id FROM blocks WHERE target_id = ?1)");
-    if (query.get("user")) add("u.login = ?", query.get("user"));
+    if (query.get("user") && scope !== "likes") add("u.login = ?", query.get("user"));
     else add("p.user_id NOT IN (SELECT target_id FROM mutes WHERE user_id = ?1) AND t.user_id NOT IN (SELECT target_id FROM mutes WHERE user_id = ?1)");
+    if (query.get("after")) add("p.id > ?", integer(query.get("after")));
     if (query.get("feed") === "following") {
         requireViewer(viewer);
         add("(p.user_id = ?1 OR p.user_id IN (SELECT followee_id FROM follows WHERE follower_id = ?1))");
@@ -240,6 +257,14 @@ async function createPost(body, env, viewer) {
         if (results.length !== keys.length) throw new Failure(400, "request");
     }
     const parent = body.parentId == null ? null : integer(body.parentId);
+    const quote = body.quoteOf == null ? null : integer(body.quoteOf);
+    if (parent !== null && quote !== null) throw new Failure(400, "request");
+    let quoteOwner = null;
+    if (quote !== null) {
+        const found = await original(env, quote);
+        await refuseBlocked(env, viewer, found.userId);
+        quoteOwner = found.userId;
+    }
     let parentOwner = null;
     if (parent !== null) {
         const found = await original(env, parent);
@@ -249,7 +274,7 @@ async function createPost(body, env, viewer) {
     const recent = await env.DB.prepare("SELECT COUNT(*) AS total FROM posts WHERE user_id = ?1 AND created_at > ?2").bind(viewer, Date.now() - MINUTE).first();
     if (recent.total >= number(env.POSTS_PER_MINUTE)) throw new Failure(429, "rate");
     const [inserted] = await env.DB.batch([
-        env.DB.prepare("INSERT INTO posts (user_id, parent_id, body, created_at) VALUES (?1, ?2, ?3, ?4) RETURNING id").bind(viewer, parent, text, Date.now()),
+        env.DB.prepare("INSERT INTO posts (user_id, parent_id, quote_of, body, created_at) VALUES (?1, ?2, ?5, ?3, ?4) RETURNING id").bind(viewer, parent, text, Date.now(), quote),
         env.DB.prepare("UPDATE posts SET reply_count = (SELECT COUNT(*) FROM posts WHERE parent_id = ?1) WHERE id = ?1").bind(parent ?? 0),
     ]);
     const id = inserted.results[0].id;
@@ -259,6 +284,7 @@ async function createPost(body, env, viewer) {
         : [];
     const notices = people.filter((person) => person.id !== parentOwner).map((person) => notify(env, person.id, viewer, "mention", id));
     if (parentOwner !== null) notices.unshift(notify(env, parentOwner, viewer, "reply", id));
+    if (quoteOwner !== null) notices.unshift(notify(env, quoteOwner, viewer, "quote", id));
     const attach = keys.map((key) => env.DB.prepare("UPDATE media SET post_id = ?1 WHERE key = ?2 AND user_id = ?3 AND post_id IS NULL").bind(id, key, viewer));
     if (notices.length || attach.length) await env.DB.batch([...attach, ...notices]);
     return getPost(env, id, viewer);
@@ -513,6 +539,59 @@ async function readNotifications(env, viewer) {
     return { unread: 0 };
 }
 
+async function listPeople(login, kind, url, env, viewer) {
+    const target = await findUser(env, login, viewer);
+    const size = number(env.PAGE_SIZE);
+    const cursor = url.searchParams.get("cursor") ? integer(url.searchParams.get("cursor")) : 0;
+    const [near, far] = kind === "followers" ? ["followee_id", "follower_id"] : ["follower_id", "followee_id"];
+    const { results } = await env.DB.prepare(
+        `SELECT f.rowid AS position, u.login, u.name, u.avatar FROM follows f JOIN users u ON u.id = f.${far}
+        WHERE f.${near} = ?1 AND (?2 = 0 OR f.rowid < ?2)
+            AND u.id NOT IN (SELECT target_id FROM blocks WHERE user_id = ?3) AND u.id NOT IN (SELECT user_id FROM blocks WHERE target_id = ?3)
+        ORDER BY f.rowid DESC LIMIT ${size + 1}`,
+    ).bind(target.id, cursor, viewer ?? 0).all();
+    const rows = results.slice(0, size);
+    return { users: rows.map((row) => ({ login: row.login, name: row.name, avatar: row.avatar })), next: results.length > size ? rows[rows.length - 1].position : null };
+}
+
+async function setPin(id, on, env, viewer) {
+    requireViewer(viewer);
+    const found = await original(env, id);
+    if (found.userId !== viewer) throw new Failure(403, "owner");
+    await env.DB.prepare("UPDATE users SET pinned_post_id = ?2 WHERE id = ?1").bind(viewer, on ? id : null).run();
+    return getPost(env, id, viewer);
+}
+
+async function explore(env, viewer) {
+    const limit = number(env.PEOPLE_MAX);
+    const hidden = "AND u.id NOT IN (SELECT target_id FROM blocks WHERE user_id = ?1) AND u.id NOT IN (SELECT user_id FROM blocks WHERE target_id = ?1)";
+    const known = "AND u.id != ?1 AND u.id NOT IN (SELECT followee_id FROM follows WHERE follower_id = ?1)";
+    const friends = (await env.DB.prepare(
+        `SELECT u.id, u.login, u.name, u.avatar, COUNT(*) AS score FROM follows mine
+        JOIN follows theirs ON theirs.follower_id = mine.followee_id JOIN users u ON u.id = theirs.followee_id
+        WHERE mine.follower_id = ?1 ${known} ${hidden} GROUP BY u.id ORDER BY score DESC, u.id DESC LIMIT ?2`,
+    ).bind(viewer ?? 0, limit).all()).results;
+    const popular = friends.length >= limit ? [] : (await env.DB.prepare(
+        `SELECT u.id, u.login, u.name, u.avatar, (SELECT COUNT(*) FROM follows WHERE followee_id = u.id) AS score FROM users u
+        WHERE 1 = 1 ${known} ${hidden} AND u.id NOT IN (${[0, ...friends.map((row) => row.id)].join(", ")}) ORDER BY score DESC, u.id DESC LIMIT ?2`,
+    ).bind(viewer ?? 0, limit - friends.length).all()).results;
+    const since = Date.now() - number(env.TRENDING_DAYS) * DAY;
+    const { results: bodies } = await env.DB.prepare(
+        "SELECT body FROM posts WHERE repost_of IS NULL AND parent_id IS NULL AND created_at > ?1 AND body LIKE '%#%' ORDER BY id DESC LIMIT ?2",
+    ).bind(since, number(env.TRENDING_SCAN)).all();
+    const counts = new Map();
+    for (const row of bodies) {
+        for (const tag of new Set([...row.body.matchAll(HASHTAG)].map((match) => match[0].toLowerCase()))) counts.set(tag, (counts.get(tag) ?? 0) + 1);
+    }
+    const tags = [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, number(env.TRENDING_MAX)).map(([tag, count]) => ({ tag, count }));
+    return {
+        groups: [
+            { id: "suggested", people: [...friends, ...popular].map((row) => ({ login: row.login, name: row.name, avatar: row.avatar })) },
+            { id: "trending", tags },
+        ],
+    };
+}
+
 async function searchUsers(url, env, viewer) {
     const text = clean(url.searchParams.get("q") || "", number(env.POST_MAX));
     if (!text) return { users: [] };
@@ -593,6 +672,7 @@ async function handle(request, env, cors) {
     if (resource === "posts" && key && action === "report" && method === "POST") return answer(await reportPost(identifier(), await readJson(request), env, viewer));
     if (resource === "reports" && !key && method === "GET") return answer(await listReports(url, env, viewer));
     if (resource === "reports" && key && !action && method === "DELETE") return answer(await dismissReport(identifier(), env, viewer));
+    if (resource === "users" && key && (action === "followers" || action === "following") && method === "GET") return answer(await listPeople(key, action, url, env, viewer));
     if (resource === "users" && key && (action === "block" || action === "mute")) {
         if (method === "PUT") return answer(await setRelation(action, key, true, env, viewer));
         if (method === "DELETE") return answer(await setRelation(action, key, false, env, viewer));
@@ -601,6 +681,11 @@ async function handle(request, env, cors) {
     if (resource === "notifications" && !key && method === "GET") return answer(await listNotifications(url, env, viewer));
     if (resource === "notifications" && key === "count" && method === "GET") return answer(await countNotifications(env, viewer));
     if (resource === "notifications" && key === "read" && method === "PUT") return answer(await readNotifications(env, viewer));
+    if (resource === "explore" && method === "GET") return answer(await explore(env, viewer));
+    if (resource === "posts" && key && action === "pin") {
+        if (method === "PUT") return answer(await setPin(identifier(), true, env, viewer));
+        if (method === "DELETE") return answer(await setPin(identifier(), false, env, viewer));
+    }
     if (resource === "users" && !key && method === "GET") return answer(await searchUsers(url, env, viewer));
     if (resource === "users" && key && !action && method === "GET") return answer(await findUser(env, key, viewer));
     if (resource === "users" && key && action === "follow") {

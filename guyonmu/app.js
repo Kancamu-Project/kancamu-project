@@ -9,7 +9,7 @@ const tr = (key, params) => i18n.t(key, params);
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
   "header", "sidebar", "sidebar-nav", "menu-button", "account-button", "back-button", "view-title", "post-search", "refresh-button", "timeline",
-  "feed-tabs", "compose-title", "dialog-button-text", "image-dialog", "image-close-button", "image-view", "composer-images", "composer-image-button", "composer-image-input", "dialog-images", "dialog-image-button", "dialog-image-input", "new-post-button", "compose-dialog", "compose-close-button", "dialog-avatar", "dialog-text", "dialog-counter", "dialog-button", "profile-card", "feed", "root-post", "composer", "composer-avatar", "composer-text", "composer-counter", "composer-button", "composer-button-text",
+  "feed-tabs", "profile-tabs", "new-posts-button", "new-posts-text", "dialog-quote", "compose-title", "dialog-button-text", "image-dialog", "image-close-button", "image-view", "composer-images", "composer-image-button", "composer-image-input", "dialog-images", "dialog-image-button", "dialog-image-input", "new-post-button", "compose-dialog", "compose-close-button", "dialog-avatar", "dialog-text", "dialog-counter", "dialog-button", "profile-card", "feed", "root-post", "composer", "composer-avatar", "composer-text", "composer-counter", "composer-button", "composer-button-text",
   "signin-row", "signin-button", "people", "post-list", "empty-state", "more-button", "status",
 ].map((id) => [id.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()), $(id)]));
 
@@ -34,6 +34,7 @@ const state = {
   profile: null,
   people: [],
   groups: [],
+  newer: [],
   entries: [],
   counts: {},
   loading: true,
@@ -44,8 +45,17 @@ const state = {
 const composers = {};
 const isModerator = () => !!(savedSession() && readSession()?.moderator);
 const pageOf = (id) => i18n.data.pages.find((page) => page.id === id && (!page.moderator || isModerator()));
+const DRAFT_KEY = "guyonmu.draft";
+const readDraft = () => { try { return localStorage.getItem(DRAFT_KEY) ?? ""; } catch { return ""; } };
+const writeDraft = (text) => {
+  try { if (text) localStorage.setItem(DRAFT_KEY, text); else if (localStorage.getItem(DRAFT_KEY) !== null) localStorage.removeItem(DRAFT_KEY); } catch {}
+};
+function syncDraft() {
+  els.composerText.value = viewOf().kind === "home" ? readDraft() : "";
+}
 const feedOf = (id) => i18n.data.feeds.find((feed) => feed.id === id);
 const trail = [];
+let mainVisible = false;
 const known = new Map();
 
 const failure = (code, status) => Object.assign(new Error(code), { code, status });
@@ -123,18 +133,22 @@ function report(error) {
 
 const viewOf = () => {
   if (urlState.get("post")) return { kind: "thread", id: urlState.get("post") };
-  if (urlState.get("user")) return { kind: "profile", login: urlState.get("user") };
+  if (urlState.get("user")) {
+    const list = urlState.get("list");
+    const scope = urlState.get("scope");
+    return { kind: "profile", login: urlState.get("user"), list: i18n.data.peopleLists.includes(list) ? list : "", scope: i18n.data.profileScopes.includes(scope) ? scope : "" };
+  }
   if (urlState.get("q")) return { kind: "search", query: urlState.get("q") };
   const tab = urlState.get("tab");
   return { kind: feedOf(tab) || pageOf(tab) ? tab : "home" };
 };
-const currentAddress = () => ({ tab: urlState.get("tab"), user: urlState.get("user"), post: urlState.get("post"), q: urlState.get("q") });
+const currentAddress = () => ({ tab: urlState.get("tab"), user: urlState.get("user"), list: urlState.get("list"), scope: urlState.get("scope"), post: urlState.get("post"), q: urlState.get("q") });
 
 function go(next, { remember = true } = {}) {
   if (remember) trail.push(currentAddress());
-  urlState.set({ tab: "", user: "", post: "", q: "", ...next });
+  urlState.set({ tab: "", user: "", list: "", scope: "", post: "", q: "", ...next });
   els.postSearch.value = urlState.get("q");
-  els.composerText.value = "";
+  syncDraft();
   load();
 }
 function goBack() {
@@ -148,7 +162,7 @@ async function load({ append = false } = {}) {
   const view = viewOf();
   state.view = view;
   if (!append) {
-    Object.assign(state, { loading: true, failed: false, missing: false, posts: [], next: null, root: null, profile: null, people: [], groups: [], entries: [] });
+    Object.assign(state, { loading: true, failed: false, missing: false, posts: [], next: null, root: null, profile: null, people: [], groups: [], newer: [], entries: [] });
     render();
   }
   try {
@@ -168,17 +182,17 @@ async function fetchView(view, append, mine) {
   const list = async (params) => {
     const query = new URLSearchParams(params);
     if (append && state.next) query.set("cursor", state.next);
-    const page = await request("GET", `/posts?${query}`, null, { write: !!params.feed });
+    const page = await request("GET", `/posts?${query}`, null, { write: !!params.feed || params.scope === "likes" });
     if (mine !== generation) return;
     state.posts = append ? [...state.posts, ...page.posts] : page.posts;
     state.next = page.next;
   };
   const page = pageOf(view.kind);
-  if ((feedOf(view.kind) || page) && !account.get()) return;
+  if ((feedOf(view.kind) || (page && !page.open)) && !account.get()) return;
   if (page) {
-    const data = await request("GET", `${page.path}${append && state.next ? `?cursor=${state.next}` : ""}`, null, { write: true });
+    const data = await request("GET", `${page.path}${append && state.next ? `?cursor=${state.next}` : ""}`, null, { write: !page.open });
     if (mine !== generation) return;
-    if (page.shape === "groups") state.groups = data.groups.map((group) => ({ title: tr(`group.${group.id}`), people: group.people }));
+    if (page.shape === "groups") state.groups = data.groups.map((group) => ({ title: tr(`group.${group.id}`), people: group.people ?? [], tags: group.tags ?? [] }));
     else {
       state.entries = append ? [...state.entries, ...data[page.shape]] : data[page.shape];
       state.next = data.next;
@@ -191,9 +205,22 @@ async function fetchView(view, append, mine) {
   if (view.kind === "home") return list({});
   if (feedOf(view.kind)) return list({ feed: view.kind });
   if (view.kind === "profile") {
-    const jobs = [list({ user: view.login })];
+    const jobs = [];
+    if (view.list) {
+      const cursor = append && state.next ? `?cursor=${state.next}` : "";
+      jobs.push(request("GET", `/users/${encodeURIComponent(view.login)}/${view.list}${cursor}`).then((data) => {
+        if (mine !== generation) return;
+        state.groups = [{ title: tr(`list.${view.list}`), people: [...(append ? state.groups[0].people : []), ...data.users] }];
+        state.next = data.next;
+      }));
+    } else jobs.push(list({ user: view.login, scope: view.scope }));
     if (!append) jobs.push(request("GET", `/users/${encodeURIComponent(view.login)}`).then((profile) => { if (mine === generation) state.profile = profile; }));
-    return Promise.all(jobs);
+    return Promise.all(jobs).then(async () => {
+      const pinnedId = state.profile?.pinnedPostId;
+      if (append || view.list || view.scope || !pinnedId || mine !== generation) return;
+      const pinned = await request("GET", `/posts/${pinnedId}`);
+      if (mine === generation) state.posts = [{ ...pinned, pinnedHere: true }, ...state.posts.filter((item) => item.id !== pinned.id || item.repostedBy)];
+    });
   }
   if (view.kind === "thread") {
     const jobs = [list({ parent: view.id })];
@@ -283,6 +310,11 @@ function makePost(post, { root = false } = {}) {
   const card = element("div", root ? "post root" : "post");
   card.dataset.id = post.id;
   const content = element("div", "post-content");
+  if (post.pinnedHere) {
+    const pinned = element("span", "post-reposted");
+    pinned.append(icon("star"), element("span", "", tr("post.pinned")));
+    content.append(pinned);
+  }
   if (post.repostedBy) {
     const reposted = element("span", "post-reposted");
     reposted.append(icon("repeat"), element("span", "", tr("post.reposted", { name: post.repostedBy.name })));
@@ -317,7 +349,7 @@ function makePost(post, { root = false } = {}) {
   actions.append(
     actionButton(post.liked ? "post-like on" : "post-like", "heart", tr(post.liked ? "post.unlike" : "post.like"), post.likes, `like-${post.id}`, () => toggleLike(post)),
     actionButton("post-reply", "message", tr("post.reply"), post.replies, `reply-${post.id}`, () => { go({ post: post.id }); els.composerText.focus(); }),
-    actionButton(post.reposted ? "post-repost on" : "post-repost", "repeat", tr(post.reposted ? "post.unrepost" : "post.repost"), post.reposts, `repost-${post.id}`, () => toggleRepost(post)),
+    actionButton(post.reposted ? "post-repost on" : "post-repost", "repeat", tr(post.reposted ? "post.unrepost" : "post.repost"), post.reposts, `repost-${post.id}`, (button) => openRepostMenu(post, button)),
     actionButton("post-share", "share", tr("post.share"), 0, `share-${post.id}`, () => sharePost(post)),
     actionButton(post.saved ? "post-save on" : "post-save", "bookmark", tr(post.saved ? "post.unsave" : "post.save"), 0, `save-${post.id}`, () => toggleSave(post)),
   );
@@ -340,7 +372,7 @@ function makePost(post, { root = false } = {}) {
       gallery.append(frame);
     }
   }
-  content.append(body, ...(expand ? [expand] : []), ...(gallery ? [gallery] : []), actions);
+  content.append(body, ...(expand ? [expand] : []), ...(post.quote ? [makeQuote(post.quote, { open: true })] : []), ...(gallery ? [gallery] : []), actions);
   card.append(avatarLink(post.user), content);
   if (!root) {
     card.tabIndex = 0;
@@ -352,7 +384,7 @@ function makePost(post, { root = false } = {}) {
 }
 
 function replacePost(updated) {
-  state.posts = state.posts.map((post) => (post.id === updated.id ? { ...updated, repostedBy: post.repostedBy } : post));
+  state.posts = state.posts.map((post) => (post.id === updated.id ? { ...updated, repostedBy: post.repostedBy, pinnedHere: post.pinnedHere } : post));
   if (state.root?.id === updated.id) state.root = updated;
 }
 
@@ -447,6 +479,7 @@ function openPostMenu(post, button) {
     components.menu({
       anchor: button,
       items: [
+        { label: tr(state.profile && same(state.profile.login) && state.profile.pinnedPostId === post.id ? "post.unpin" : "post.pin"), icon: "star", onSelect: () => togglePin(post) },
         ...(editable ? [{ label: tr("post.edit"), icon: "pencil", onSelect: () => openComposeDialog(post) }] : []),
         { label: tr("post.delete"), icon: "trash", danger: true, onSelect: () => removePost(post) },
       ],
@@ -527,6 +560,44 @@ function fitComposer(fields) {
   text.style.height = "auto";
   text.style.height = `${text.scrollHeight + text.offsetHeight - text.clientHeight}px`;
 }
+function makeQuote(quote, { open = false } = {}) {
+  const box = element("div", "post-quote");
+  const head = element("div", "post-quote-head");
+  head.append(element("span", "post-name", quote.user.name), element("span", "post-login", `@${quote.user.login}`));
+  const body = element("div", "post-quote-body", quote.body);
+  body.style.setProperty("--clamp-lines", i18n.data.preview.quoteLines);
+  box.append(head, body);
+  if (open) {
+    box.tabIndex = 0;
+    const show = (event) => { event.stopPropagation(); go({ post: quote.id }); };
+    box.addEventListener("click", show);
+    box.addEventListener("keydown", (event) => { if (event.key === "Enter") show(event); });
+  }
+  return box;
+}
+
+function openRepostMenu(post, button) {
+  if (!account.get()) return account.open();
+  components.menu({
+    anchor: button,
+    items: [
+      { label: tr(post.reposted ? "post.unrepost" : "post.repost"), icon: "repeat", onSelect: () => toggleRepost(post) },
+      { label: tr("post.quote"), icon: "message", onSelect: () => openComposeDialog(null, { quote: post }) },
+    ],
+  });
+}
+
+async function togglePin(post) {
+  const pinned = !!state.profile && same(state.profile.login) && state.profile.pinnedPostId === post.id;
+  try {
+    await request(pinned ? "DELETE" : "PUT", `/posts/${post.id}/pin`, null, { write: true });
+    popups.toast(tr(pinned ? "post.pinUndone" : "post.pinDone"), { kind: "success" });
+    if (state.profile && same(state.profile.login)) state.profile = { ...state.profile, pinnedPostId: pinned ? null : post.id };
+    if (state.view.kind === "profile" && same(state.view.login)) return load();
+  } catch (error) { report(error); }
+  render();
+}
+
 function openImage(key) {
   els.imageView.src = `${api}/media/${key}`;
   els.imageDialog.showModal();
@@ -628,8 +699,12 @@ async function publish(fields, { reply }) {
       state.sending = false;
       return render();
     }
-    const post = await request("POST", "/posts", { body: fields.text.value, parentId: reply ? Number(state.view.id) : null, images: fields.images.map((image) => image.key) }, { write: true });
+    const post = await request("POST", "/posts", { body: fields.text.value, parentId: reply ? Number(state.view.id) : null, quoteOf: fields.quoting?.id ?? null, images: fields.images.map((image) => image.key) }, { write: true });
     fields.text.value = "";
+    if (!reply && !fields.quoting) {
+      writeDraft("");
+      els.composerText.value = "";
+    }
     clearImages(fields);
     if (reply) {
       state.posts = [...state.posts, post];
@@ -643,13 +718,16 @@ async function publish(fields, { reply }) {
   render();
 }
 
-function openComposeDialog(post = null) {
+function openComposeDialog(post = null, { quote = null } = {}) {
   if (!account.get()) return account.open();
   menu.set(false);
   composers.dialog.editing = post;
-  els.composeTitle.textContent = tr(post ? "compose.edit" : "compose.new");
+  composers.dialog.quoting = quote;
+  els.dialogQuote.replaceChildren(...(quote ? [makeQuote(quote)] : []));
+  els.dialogQuote.classList.toggle("hidden", !quote);
+  els.composeTitle.textContent = tr(post ? "compose.edit" : quote ? "compose.quote" : "compose.new");
   els.dialogButtonText.textContent = tr(post ? "compose.save" : "compose.post");
-  els.dialogText.value = post ? post.body : "";
+  els.dialogText.value = post ? post.body : quote ? "" : readDraft();
   setAvatar(els.dialogAvatar, account.get());
   els.dialogText.placeholder = tr("compose.placeholder");
   els.composeDialog.showModal();
@@ -707,8 +785,8 @@ function renderProfile() {
   const counts = element("div", "profile-counts");
   counts.append(
     element("span", "", tr("profile.posts", { count: i18n.number(profile.posts) })),
-    element("span", "", tr("profile.followers", { count: i18n.number(profile.followers) })),
-    element("span", "", tr("profile.following", { count: i18n.number(profile.following) })),
+    link("profile-count", `${profileAddress(profile.login)}&list=followers`, tr("profile.followers", { count: i18n.number(profile.followers) }), () => go({ user: profile.login, list: "followers" })),
+    link("profile-count", `${profileAddress(profile.login)}&list=following`, tr("profile.following", { count: i18n.number(profile.following) }), () => go({ user: profile.login, list: "following" })),
     element("span", "", tr("profile.joined", { date: i18n.date(profile.createdAt, { month: "long", year: "numeric" }) })),
   );
   const actions = element("div", "profile-actions");
@@ -728,8 +806,8 @@ function renderProfile() {
 
 function renderPeople() {
   const { kind } = state.view;
-  const groups = kind === "search" ? [{ title: tr("people.title"), people: state.people }] : pageOf(kind)?.shape === "groups" ? state.groups : [];
-  const filled = groups.filter((group) => group.people.length);
+  const groups = kind === "search" ? [{ title: tr("people.title"), people: state.people }] : pageOf(kind)?.shape === "groups" || (kind === "profile" && state.view.list) ? state.groups : [];
+  const filled = groups.filter((group) => group.people.length || group.tags?.length);
   els.people.classList.toggle("hidden", !filled.length);
   els.people.replaceChildren(...filled.map((group) => {
     const list = element("div", "people-list");
@@ -739,6 +817,11 @@ function renderPeople() {
       const avatar = element("span", "avatar");
       setAvatar(avatar, person);
       chip.append(avatar, element("span", "person-name", `${person.name} @${person.login}`));
+      list.append(chip);
+    }
+    for (const { tag, count } of group.tags ?? []) {
+      const chip = link("person tag-chip", `?q=${encodeURIComponent(tag)}`, "", () => go({ q: tag }));
+      chip.append(element("span", "person-name", tag), element("span", "tag-count", i18n.number(count)));
       list.append(chip);
     }
     const section = element("div", "people-group");
@@ -773,10 +856,15 @@ function emptyMessage() {
   const { kind } = state.view;
   if (state.loading) return [tr("loading"), ""];
   if (state.failed) return [tr("error.generic"), ""];
-  if ((feedOf(kind) || pageOf(kind)) && !account.get()) return [tr(`empty.${kind}SignedOut`), tr("compose.signIn")];
+  if ((feedOf(kind) || (pageOf(kind) && !pageOf(kind).open)) && !account.get()) return [tr(`empty.${kind}SignedOut`), tr("compose.signIn")];
   if (state.missing) return kind === "profile" ? [tr("profile.notFound"), ""] : [tr("post.notFound"), ""];
   if (feedOf(kind) || pageOf(kind)) return [tr(`empty.${kind}Title`), tr(`empty.${kind}Text`)];
   if (kind === "search") return [tr("empty.searchTitle"), tr("empty.searchText", { query: state.view.query })];
+  if (kind === "profile" && state.view.list) return [tr(`empty.people${state.view.list[0].toUpperCase()}${state.view.list.slice(1)}`), ""];
+  if (kind === "profile" && state.view.scope) {
+    const scope = `${state.view.scope[0].toUpperCase()}${state.view.scope.slice(1)}`;
+    return [tr(`empty.profile${scope}Title`), tr(`empty.profile${scope}Text`, { name: state.profile?.name ?? state.view.login })];
+  }
   if (kind === "profile") return [tr("empty.profileTitle"), tr("empty.profileText", { name: state.profile?.name ?? state.view.login })];
   if (kind === "thread") return [tr("empty.repliesTitle"), tr("empty.repliesText")];
   return [tr("empty.homeTitle"), tr("empty.homeText")];
@@ -799,6 +887,12 @@ function render() {
   els.viewTitle.textContent = titleOf();
   els.feedTabs.classList.toggle("hidden", kind !== "home" && kind !== "following");
   els.feedTabs.value = kind;
+  const profileTabs = kind === "profile" && !state.view.list && !!state.profile;
+  els.profileTabs.classList.toggle("hidden", !profileTabs);
+  if (profileTabs) {
+    els.profileTabs.value = state.view.scope || "posts";
+    for (const button of els.profileTabs.querySelectorAll("[data-own]")) button.classList.toggle("hidden", !same(state.view.login));
+  }
   els.backButton.classList.toggle("hidden", kind === "home" || !!feedOf(kind) || !!pageOf(kind));
   els.refreshButton.disabled = state.loading;
 
@@ -830,6 +924,8 @@ function render() {
     els.emptyState.text = text;
   }
   els.moreButton.classList.toggle("hidden", !state.next || state.loading);
+  els.newPostsButton.classList.toggle("hidden", !state.newer.length || !(kind === "home" || kind === "following"));
+  els.newPostsText.textContent = tr("feed.newPosts", { count: i18n.number(state.newer.length) });
 
   els.status.textContent = signedIn ? tr("status.signedIn", { login: account.get().login }) : tr("status.signedOut");
   if (keep) els.timeline.querySelector(`[data-focus-key="${keep}"]`)?.focus();
@@ -839,6 +935,29 @@ const menu = components.drawer({ sidebar: els.sidebar, button: els.menuButton })
 
 els.backButton.addEventListener("click", goBack);
 els.refreshButton.addEventListener("click", () => load());
+new IntersectionObserver(([entry]) => { mainVisible = entry.isIntersecting; }).observe($("main"));
+new IntersectionObserver(([entry]) => {
+  if (entry.isIntersecting && !els.moreButton.disabled) els.moreButton.click();
+}, { root: els.timeline }).observe(els.moreButton);
+
+async function pollNewer() {
+  const { kind } = state.view;
+  if (!mainVisible || document.hidden || state.loading || !state.posts.length || !(kind === "home" || (kind === "following" && account.get()))) return;
+  const after = Math.max(...state.posts.map((post) => post.itemId));
+  try {
+    const data = await request("GET", `/posts?after=${after}${kind === "following" ? "&feed=following" : ""}`, null, { write: kind === "following" });
+    if (state.view.kind !== kind) return;
+    state.newer = data.posts.filter((post) => !same(post.user.login) && !same(post.repostedBy?.login));
+    render();
+  } catch {}
+}
+setInterval(pollNewer, i18n.data.pollSeconds * 1000);
+els.newPostsButton.addEventListener("click", () => {
+  state.posts = [...state.newer, ...state.posts];
+  state.newer = [];
+  els.timeline.scrollTop = 0;
+  render();
+});
 els.moreButton.addEventListener("click", () => { els.moreButton.disabled = true; load({ append: true }).finally(() => { els.moreButton.disabled = false; }); });
 Object.assign(composers, {
   inline: { text: els.composerText, counter: els.composerCounter, button: els.composerButton, imageButton: els.composerImageButton, imageInput: els.composerImageInput, imageList: els.composerImages, images: [], uploading: 0, replies: true },
@@ -846,14 +965,19 @@ Object.assign(composers, {
 });
 for (const fields of Object.values(composers)) {
   const reply = () => fields.replies && state.view.kind === "thread";
-  fields.text.addEventListener("input", () => updateComposer(fields));
+  fields.text.addEventListener("input", () => {
+    updateComposer(fields);
+    if (!fields.editing && !fields.quoting && !reply()) writeDraft(fields.text.value);
+  });
   fields.text.addEventListener("keydown", (event) => { if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) { event.preventDefault(); publish(fields, { reply: reply() }); } });
   fields.button.addEventListener("click", () => publish(fields, { reply: reply() }));
 }
 els.newPostButton.addEventListener("click", () => openComposeDialog());
 els.composeDialog.addEventListener("close", () => {
-  if (composers.dialog.editing) els.dialogText.value = "";
+  if (composers.dialog.editing || composers.dialog.quoting) els.dialogText.value = "";
   composers.dialog.editing = null;
+  composers.dialog.quoting = null;
+  els.dialogQuote.replaceChildren();
 });
 els.composeCloseButton.addEventListener("click", () => els.composeDialog.close());
 for (const fields of Object.values(composers)) {
@@ -870,6 +994,7 @@ for (const fields of Object.values(composers)) {
     }
   });
 }
+els.profileTabs.addEventListener("change", (event) => go({ user: state.view.login, scope: event.detail.value === "posts" ? "" : event.detail.value }, { remember: false }));
 els.feedTabs.addEventListener("change", (event) => go(event.detail.value === "home" ? {} : { tab: event.detail.value }));
 els.imageCloseButton.addEventListener("click", () => els.imageDialog.close());
 els.imageDialog.addEventListener("click", (event) => { if (event.target === els.imageDialog) els.imageDialog.close(); });
@@ -898,4 +1023,5 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden) refr
 i18n.onChange(() => render());
 
 els.postSearch.value = urlState.get("q");
+syncDraft();
 load().then(refreshCounts);

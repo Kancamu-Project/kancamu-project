@@ -19,10 +19,20 @@ export default {
       "icon": "bookmark"
     }
   ],
+  "profileScopes": [
+    "replies",
+    "likes"
+  ],
+  "peopleLists": [
+    "followers",
+    "following"
+  ],
   "preview": {
     "chars": 400,
-    "lines": 8
+    "lines": 8,
+    "quoteLines": 4
   },
+  "pollSeconds": 60,
   "imageTypes": [
     "image/jpeg",
     "image/png",
@@ -34,9 +44,17 @@ export default {
     "repost": "repeat",
     "follow": "user",
     "reply": "message",
-    "mention": "at"
+    "mention": "at",
+    "quote": "message"
   },
   "pages": [
+    {
+      "id": "explore",
+      "icon": "search",
+      "path": "/explore",
+      "shape": "groups",
+      "open": true
+    },
     {
       "id": "notifications",
       "icon": "bell",
@@ -671,6 +689,136 @@ export default {
       "en-US": "The time to edit this post has passed.",
       "zh-CN": "编辑这条帖子的时间已过。",
       "ar-SA": "انتهى وقت تعديل هذا المنشور."
+    },
+    "tabs.posts": {
+      "en-US": "Posts",
+      "zh-CN": "帖子",
+      "ar-SA": "المنشورات"
+    },
+    "tabs.replies": {
+      "en-US": "Replies",
+      "zh-CN": "回复",
+      "ar-SA": "الردود"
+    },
+    "tabs.likes": {
+      "en-US": "Likes",
+      "zh-CN": "点赞",
+      "ar-SA": "الإعجابات"
+    },
+    "list.followers": {
+      "en-US": "Followers",
+      "zh-CN": "关注者",
+      "ar-SA": "المتابِعون"
+    },
+    "list.following": {
+      "en-US": "Following",
+      "zh-CN": "正在关注",
+      "ar-SA": "يتابع"
+    },
+    "empty.peopleFollowers": {
+      "en-US": "No followers yet.",
+      "zh-CN": "还没有关注者。",
+      "ar-SA": "لا يوجد متابعون بعد."
+    },
+    "empty.peopleFollowing": {
+      "en-US": "Not following anyone yet.",
+      "zh-CN": "还没有关注任何人。",
+      "ar-SA": "لا يتابع أحدًا بعد."
+    },
+    "empty.profileRepliesTitle": {
+      "en-US": "No replies yet",
+      "zh-CN": "还没有回复",
+      "ar-SA": "لا توجد ردود بعد"
+    },
+    "empty.profileRepliesText": {
+      "en-US": "{name} has not replied to anyone.",
+      "zh-CN": "{name} 还没有回复过任何人。",
+      "ar-SA": "لم يرد {name} على أحد."
+    },
+    "empty.profileLikesTitle": {
+      "en-US": "No likes yet",
+      "zh-CN": "还没有点赞",
+      "ar-SA": "لا توجد إعجابات بعد"
+    },
+    "empty.profileLikesText": {
+      "en-US": "The posts you like show up here, only for you.",
+      "zh-CN": "你点赞的帖子会显示在这里，只有你能看到。",
+      "ar-SA": "تظهر هنا المنشورات التي تعجبك، لك وحدك."
+    },
+    "post.quote": {
+      "en-US": "Quote",
+      "zh-CN": "引用",
+      "ar-SA": "اقتباس"
+    },
+    "compose.quote": {
+      "en-US": "Quote post",
+      "zh-CN": "引用帖子",
+      "ar-SA": "اقتباس منشور"
+    },
+    "notification.quote": {
+      "en-US": "quoted your post",
+      "zh-CN": "引用了你的帖子",
+      "ar-SA": "اقتبس منشورك"
+    },
+    "post.pin": {
+      "en-US": "Pin to your profile",
+      "zh-CN": "置顶到个人资料",
+      "ar-SA": "تثبيت في ملفك"
+    },
+    "post.unpin": {
+      "en-US": "Unpin from your profile",
+      "zh-CN": "取消置顶",
+      "ar-SA": "إلغاء التثبيت من ملفك"
+    },
+    "post.pinned": {
+      "en-US": "Pinned",
+      "zh-CN": "已置顶",
+      "ar-SA": "مثبّت"
+    },
+    "post.pinDone": {
+      "en-US": "Pinned to your profile.",
+      "zh-CN": "已置顶到个人资料。",
+      "ar-SA": "تم التثبيت في ملفك."
+    },
+    "post.pinUndone": {
+      "en-US": "Unpinned.",
+      "zh-CN": "已取消置顶。",
+      "ar-SA": "تم إلغاء التثبيت."
+    },
+    "feed.newPosts": {
+      "en-US": "Show new posts ({count})",
+      "zh-CN": "显示新帖子（{count}）",
+      "ar-SA": "عرض المنشورات الجديدة ({count})"
+    },
+    "nav.explore": {
+      "en-US": "Explore",
+      "zh-CN": "发现",
+      "ar-SA": "استكشاف"
+    },
+    "title.explore": {
+      "en-US": "Explore",
+      "zh-CN": "发现",
+      "ar-SA": "استكشاف"
+    },
+    "group.suggested": {
+      "en-US": "Who to follow",
+      "zh-CN": "推荐关注",
+      "ar-SA": "من تتابع"
+    },
+    "group.trending": {
+      "en-US": "Trending tags",
+      "zh-CN": "热门标签",
+      "ar-SA": "الوسوم الرائجة"
+    },
+    "empty.exploreTitle": {
+      "en-US": "Nothing to explore yet",
+      "zh-CN": "暂时没有可发现的内容",
+      "ar-SA": "لا شيء لاستكشافه بعد"
+    },
+    "empty.exploreText": {
+      "en-US": "Tags that people use and people to follow show up here.",
+      "zh-CN": "大家使用的标签和值得关注的人会显示在这里。",
+      "ar-SA": "تظهر هنا الوسوم التي يستخدمها الناس والأشخاص الذين يمكنك متابعتهم."
     },
     "post.notFound": {
       "en-US": "This post does not exist any more.",
