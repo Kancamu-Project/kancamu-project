@@ -24,6 +24,7 @@ Plain HTML, CSS, and JavaScript. No framework, no build step, no special server.
 | muOS | A complete desktop that runs in the browser | `muos/` |
 | Drivemu | File storage that keeps its data in the user's own GitHub repository | `drivemu/` |
 | Gallemu | A gallery of the images and videos in the user's Drive | `gallemu/` |
+| Guyonmu | Short posts, replies, likes, and follows (the server is a Cloudflare Worker with a D1 database, `assets/tools/guyonmu/`) | `guyonmu/` |
 | Spotimu | A music player for the audio files in the user's Drive | `spotimu/` |
 | muJS | Lessons that teach JavaScript, with an editor that runs the code in a sandbox and checks it with tests; the progress is kept on the user's account | `mujs/` |
 | Lingomu | Short lessons that teach the words of a language (hearts, XP, daily goal, streak); the progress is kept on the user's account | `lingomu/` |
@@ -59,7 +60,7 @@ assets/          Shared assets, in folders
   images/        The images that are content of the site (the splash screen): WebP, compressed, with the original beside each as <name>_raw; splash.webp and icons.png are the sprites (see assets/tools/sprites.mjs), the single files stay
   icons/         icons.js: every SVG icon of the apps, in one file (universal names); shared.js makes a variable --icon-<name> of each
 favicon.png      Site icon
-assets/tools/    What helps to make the project: og-cards.mjs makes the preview.png of the main website and of every app from their cards (node assets/tools/og-cards.mjs); the cards are shown all at once in the section Previews of Assetmu, where each can be saved as an image; muai-helper/ is the Rust program that lets muAI work with the files of one folder of your PC (one command in a terminal downloads and runs it, and muAI connects by itself: see its README), with its install scripts, its programs (`bin/`), and the workflow that builds them for every system (`.github/workflows/muai-helper-release.yml`); sprites.mjs makes the sprites (the images of the splash screen in one square file, assets/images/splash.webp, and the icons of all the apps (16 px for the pixel icons, at most 48 px for the others) in one, assets/images/icons.webp; node assets/tools/sprites.mjs); seo.mjs makes sitemap.xml, robots.txt, and the title, the canonical address, the structured data, and the noscript text of every page (node assets/tools/seo.mjs); repo-card.mjs makes the image of the repository for social networks (.github/social-preview.png, 1280x640; node assets/tools/repo-card.mjs); desktop/ is the website in its own window (Tauri, Rust), which can install the native ArtCraft apps (see Desktop app); auth/ is the sign-in with GitHub (a Cloudflare Worker) that keeps the client secret a static site cannot keep (see its README)
+assets/tools/    What helps to make the project: og-cards.mjs makes the preview.png of the main website and of every app from their cards (node assets/tools/og-cards.mjs); the cards are shown all at once in the section Previews of Assetmu, where each can be saved as an image; muai-helper/ is the Rust program that lets muAI work with the files of one folder of your PC (one command in a terminal downloads and runs it, and muAI connects by itself: see its README), with its install scripts, its programs (`bin/`), and the workflow that builds them for every system (`.github/workflows/muai-helper-release.yml`); sprites.mjs makes the sprites (the images of the splash screen in one square file, assets/images/splash.webp, and the icons of all the apps (16 px for the pixel icons, at most 48 px for the others) in one, assets/images/icons.webp; node assets/tools/sprites.mjs); seo.mjs makes sitemap.xml, robots.txt, and the title, the canonical address, the structured data, and the noscript text of every page (node assets/tools/seo.mjs); repo-card.mjs makes the image of the repository for social networks (.github/social-preview.png, 1280x640; node assets/tools/repo-card.mjs); desktop/ is the website in its own window (Tauri, Rust), which can install the native ArtCraft apps (see Desktop app); auth/ is the sign-in with GitHub (a Cloudflare Worker) that keeps the client secret a static site cannot keep (see its README); guyonmu/ is the server of Guyonmu (a Cloudflare Worker with a D1 database; see its README)
 preview.png      Open Graph image (1200x630): the card of the main website, which is its splash screen (node assets/tools/og-cards.mjs kancamu), made again when the splash changes, with the number after ?v= raised in the og:image of index.html
 RULES.md         Project rules
 assetmu/         Assetmu: shows every asset (colours, icons, fonts, sizes, files) and the colour and icon of each app
@@ -72,6 +73,7 @@ youmu/       The account app, shown in a dialog by every other app; the query st
 artcraft/        The eight ArtCraft apps (downloaded by update.ps1)
 drivemu/         File storage on GitHub
 gallemu/        Gallery of the images and videos of the Drive (reads the Drive, read only)
+guyonmu/        Social app of short posts (the posts, likes, and follows are on the server of assets/tools/guyonmu, signed in with the GitHub account of the account app; opens on the timeline, the address keeps ?tab, ?user, ?post, ?q)
 spotimu/        Music player for the audio files of the Drive (reads the Drive, read only)
 mujs/           JavaScript lessons (units, lessons and tests are in data.js; the code runs in a sandboxed frame, sandbox.js; the progress is in the mujs folder)
 lingomu/        Language lessons (courses, units and lessons are in data.js; the progress is in the lingomu folder)
@@ -123,7 +125,7 @@ The automatic build is `.github/workflows/desktop-release.yml`: it tests and bui
 
 `.gitignore` keeps these out, and a new kind of secret is added to it in the same change:
 
-- `.dev.vars`, `.env`, `.env.*`, `*.secret`: the client secret of the sign-in (`assets/tools/auth/.dev.vars`) and any other secret.
+- `.dev.vars`, `.env`, `.env.*`, `*.secret`: the client secret of the sign-in (`assets/tools/auth/.dev.vars`), the session secret of Guyonmu (`assets/tools/guyonmu/.dev.vars`), and any other secret.
 - `*.pem`, `*.key`, `*.pfx`, `*.p12`, `*.keystore`, `*.jks`: keys and certificates, such as the signing of the desktop app.
 - `node_modules/`, `target/`, `assets/tools/desktop/gen/`, `.wrangler/`: what is built or kept by a tool.
 - `assets/images/*_raw.*`: the originals of the images of the splash.

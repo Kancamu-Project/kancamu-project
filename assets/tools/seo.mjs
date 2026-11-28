@@ -13,7 +13,7 @@ const escape = (text) => text.replace(/&/g, "&amp;").replace(/</g, "&lt;").repla
 const own = data.projects.filter((project) => project.publisher === "{brand}");
 const folderOf = (project) => (project.id === data.home ? "" : project.url.replace(/^\.\/?|\/$/g, ""));
 const addressOf = (project) => `${site}${folderOf(project)}${folderOf(project) ? "/" : ""}`;
-const categoryOf = (project) => (project.categories.includes("design") ? "DesignApplication" : project.categories.includes("education") ? "EducationalApplication" : "UtilitiesApplication");
+const categoryOf = (project) => (project.categories.includes("design") ? "DesignApplication" : project.categories.includes("education") ? "EducationalApplication" : project.categories.includes("social") ? "SocialNetworkingApplication" : "UtilitiesApplication");
 
 const organization = { "@type": "Organization", "@id": `${site}#brand`, name: brand.name, url: site, logo: `${site}favicon.png` };
 const jsonLd = (project) => {

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guyonmu — Short posts, replies, and friends, in one place.</title>
+<meta name="description" content="Short posts, replies, and friends, in one place.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kancamu">
+<meta property="og:title" content="Guyonmu">
+<meta property="og:description" content="Short posts, replies, and friends, in one place.">
+<meta property="og:url" content="https://kancamu.site/guyonmu/">
+<meta property="og:image" content="https://kancamu.site/guyonmu/preview.png?v=1">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Guyonmu: Short posts, replies, and friends, in one place.">
+<meta name="twitter:card" content="summary_large_image">
+<!-- seo -->
+<link rel="canonical" href="https://kancamu.site/guyonmu/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Guyonmu","url":"https://kancamu.site/guyonmu/","description":"Short posts, replies, and friends, in one place.","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","image":"https://kancamu.site/guyonmu/preview.png","isPartOf":{"@id":"https://kancamu.site/#website"},"publisher":{"@type":"Organization","name":"Kancamu","url":"https://kancamu.site/"}}</script>
+<!-- /seo -->
+<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+<meta name="theme-color" content="#1a1a1b">
+<link rel="stylesheet" href="../assets/css/shared.css">
+<link rel="stylesheet" href="layout.css">
+<script type="module" src="../assets/js/shared.js" blocking="render"></script>
+<script type="module" src="app.js"></script>
+</head>
+<body class="page">
+<!-- seo-body -->
+<noscript>
+  <h1>Guyonmu</h1>
+  <p>Short posts, replies, and friends, in one place.</p>
+  <p><a href="../">Kancamu</a></p>
+  <p>This page needs JavaScript.</p>
+</noscript>
+<!-- /seo-body -->
+
+<kit-header id="header" menu data-i18n-menu-label="nav.label"></kit-header>
+<kit-sidebar id="sidebar"></kit-sidebar>
+<div id="main" class="main">
+
+  <div class="topbar">
+    <button id="back-button" class="square hidden" type="button" data-i18n-title="back" data-i18n-label="back"><span class="icon icon-chevron-left"></span></button>
+    <span id="view-title" class="view-title"></span>
+    <kit-search input-id="post-search" data-i18n-placeholder="search" data-i18n-label="search.label"></kit-search>
+    <button id="refresh-button" class="square" type="button" data-i18n-title="refresh" data-i18n-label="refresh"><span class="icon icon-refresh"></span></button>
+  </div>
+
+  <div id="timeline" class="timeline">
+    <div id="profile-card" class="profile-card hidden"></div>
+    <div id="composer" class="composer hidden">
+      <div id="composer-avatar" class="avatar"></div>
+      <div class="composer-fields">
+        <textarea id="composer-text" rows="2" data-i18n-label="compose.label"></textarea>
+        <div class="composer-actions">
+          <span id="composer-counter" class="composer-counter"></span>
+          <button id="composer-button" class="primary" type="button"><span id="composer-button-text"></span></button>
+        </div>
+      </div>
+    </div>
+    <div id="signin-row" class="signin-row hidden">
+      <span data-i18n="compose.signIn"></span>
+      <button id="signin-button" type="button"><span class="icon icon-user"></span><span data-i18n="login.signIn"></span></button>
+    </div>
+    <div id="people" class="people hidden"></div>
+    <div id="post-list" class="post-list"></div>
+    <kit-empty id="empty-state" class="hidden" icon="message"></kit-empty>
+    <button id="more-button" class="more hidden" type="button"><span data-i18n="load.more"></span></button>
+  </div>
+
+</div>
+<kit-footer id="footer" status></kit-footer>
+
+<div id="popups" class="popups"></div>
+</body>
+</html>

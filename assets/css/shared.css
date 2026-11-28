@@ -656,6 +656,7 @@ select:focus:not(:disabled) {
 .icon-grid { --icon: var(--icon-grid); }
 .icon-hard-drive { --icon: var(--icon-hard-drive); }
 .icon-heart { --icon: var(--icon-heart); }
+.icon-home { --icon: var(--icon-home); }
 .icon-image { --icon: var(--icon-image); }
 .icon-info { --icon: var(--icon-info); }
 .icon-layers { --icon: var(--icon-layers); }
@@ -663,6 +664,7 @@ select:focus:not(:disabled) {
 .icon-lock { --icon: var(--icon-lock); }
 .icon-logout { --icon: var(--icon-logout); }
 .icon-menu { --icon: var(--icon-menu); }
+.icon-message { --icon: var(--icon-message); }
 .icon-moon { --icon: var(--icon-moon); }
 .icon-more { --icon: var(--icon-more); }
 .icon-pause { --icon: var(--icon-pause); }

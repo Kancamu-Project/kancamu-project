@@ -322,6 +322,11 @@ export default {
       "en-US": "Education",
       "zh-CN": "教育",
       "ar-SA": "التعليم"
+    },
+    "social": {
+      "en-US": "Social",
+      "zh-CN": "社交",
+      "ar-SA": "اجتماعي"
     }
   },
   "projects": [
@@ -429,6 +434,34 @@ export default {
       ],
       "alternatives": [
         "Spotify"
+      ]
+    },
+    {
+      "id": "guyonmu",
+      "name": {
+        "en-US": "Guyon{highlight}"
+      },
+      "description": {
+        "en-US": "Short posts, replies, and friends, in one place.",
+        "zh-CN": "短帖、回复和朋友，尽在一处。",
+        "ar-SA": "منشورات قصيرة وردود وأصدقاء في مكان واحد."
+      },
+      "highlight": {
+        "en-US": "{highlight}"
+      },
+      "publisher": "{brand}",
+      "url": "guyonmu/",
+      "icon": "guyonmu/favicon.png",
+      "color": "#1782db",
+      "categories": [
+        "official",
+        "mobile",
+        "social"
+      ],
+      "alternatives": [
+        "X",
+        "Threads",
+        "Mastodon"
       ]
     },
     {
@@ -1277,68 +1310,73 @@ export default {
         0,
         16
       ],
-      "lingomu": [
+      "guyonmu": [
         64,
         0,
         16
       ],
-      "mujs": [
+      "lingomu": [
         0,
+        16,
+        16
+      ],
+      "mujs": [
+        16,
         16,
         16
       ],
       "picmu": [
-        16,
+        32,
         16,
         16
       ],
       "transmu": [
-        32,
+        48,
         16,
         16
       ],
       "speechmu": [
-        48,
+        64,
         16,
         16
       ],
       "hashmu": [
-        64,
-        16,
+        0,
+        32,
         16
       ],
       "searchmu": [
-        0,
+        16,
         32,
         16
       ],
       "homu": [
-        16,
+        32,
         32,
         16
       ],
       "youmu": [
-        32,
+        48,
         32,
         16
       ],
       "assetmu": [
-        48,
-        32,
-        16
-      ],
-      "kitmu": [
         64,
         32,
         16
       ],
-      "muai": [
+      "kitmu": [
         0,
         48,
         16
       ],
-      "kancamu": [
+      "muai": [
         16,
+        48,
+        16
+      ],
+      "kancamu": [
+        32,
         48,
         16
       ],
