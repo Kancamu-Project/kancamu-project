@@ -7,7 +7,11 @@ const IMAGE_TYPES = {
 };
 const MEDIA_TYPES = Object.fromEntries(Object.entries(IMAGE_TYPES).map(([type, { extension }]) => [extension, type]));
 const MEDIA_KEY = /^\d+-[a-f0-9]{32}\.(jpg|png|gif|webp)$/;
-const HASHTAG = /#[\p{L}\p{N}_]+/gu;
+const TAG = /#([\p{L}\p{N}_]+)/gu;
+const TAG_ONLY = /^#([\p{L}\p{N}_]+)$/u;
+const tagsOf = (text, env) => [...new Set([...text.matchAll(TAG)].map((match) => match[1].toLowerCase()))].slice(0, number(env.HASHTAGS_MAX));
+const tagStatements = (env, id, text) => tagsOf(text, env).map((tag) => env.DB.prepare("INSERT OR IGNORE INTO hashtags (post_id, tag, created_at) VALUES (?1, ?2, ?3)").bind(id, tag, Date.now()));
+const searchMatch = (text, env) => text.split(" ").filter(Boolean).slice(0, number(env.SEARCH_WORDS)).map((word) => `"${word.replace(/"/g, '""')}"*`).join(" ");
 const MENTION = /@([A-Za-z0-9](?:[A-Za-z0-9-]{0,38}))/g;
 const MINUTE = 60 * 1000;
 const DAY = 24 * 60 * MINUTE;
@@ -145,7 +149,7 @@ async function hydrate(env, rows, viewer) {
     if (quoted.length) {
         const { results } = await env.DB.prepare(
             `SELECT p.id, p.body, p.created_at AS createdAt, u.login, u.name, u.avatar FROM posts p JOIN users u ON u.id = p.user_id
-            WHERE p.repost_of IS NULL AND p.id IN (${quoted.map((_, index) => `?${index + 1}`).join(", ")})`,
+            WHERE p.kind != 'repost' AND p.id IN (${quoted.map((_, index) => `?${index + 1}`).join(", ")})`,
         ).bind(...quoted).all();
         for (const row of results) quotes.set(row.id, { id: row.id, body: row.body, createdAt: row.createdAt, user: { login: row.login, name: row.name, avatar: row.avatar } });
     }
@@ -153,7 +157,7 @@ async function hydrate(env, rows, viewer) {
 }
 
 async function getPost(env, id, viewer) {
-    const row = await env.DB.prepare(`SELECT ${postColumns} WHERE p.id = ?2 AND p.repost_of IS NULL`).bind(viewer ?? 0, id).first();
+    const row = await env.DB.prepare(`SELECT ${postColumns} WHERE p.id = ?2 AND p.kind != 'repost'`).bind(viewer ?? 0, id).first();
     if (!row) throw new Failure(404, "post");
     return (await hydrate(env, [row], viewer))[0];
 }
@@ -163,7 +167,7 @@ async function findUser(env, login, viewer) {
         `SELECT u.id, u.login, u.name, u.avatar, u.bio, u.pinned_post_id AS pinnedPostId, u.created_at AS createdAt,
             (SELECT COUNT(*) FROM follows WHERE followee_id = u.id) AS followers,
             (SELECT COUNT(*) FROM follows WHERE follower_id = u.id) AS following,
-            (SELECT COUNT(*) FROM posts WHERE user_id = u.id AND parent_id IS NULL AND repost_of IS NULL) AS posts,
+            (SELECT COUNT(*) FROM posts WHERE user_id = u.id AND kind IN ('post', 'quote')) AS posts,
             EXISTS(SELECT 1 FROM follows WHERE follower_id = ?2 AND followee_id = u.id) AS followed,
             EXISTS(SELECT 1 FROM blocks WHERE user_id = ?2 AND target_id = u.id) AS blocked,
             EXISTS(SELECT 1 FROM mutes WHERE user_id = ?2 AND target_id = u.id) AS muted
@@ -187,10 +191,13 @@ async function createSession({ token }, env) {
     if (!response.ok) throw new Failure(502, "github");
     const profile = await response.json();
     if (!Number.isInteger(profile.id) || typeof profile.login !== "string") throw new Failure(502, "github");
-    await env.DB.prepare(
-        `INSERT INTO users (id, login, name, avatar, created_at) VALUES (?1, ?2, ?3, ?4, ?5)
-        ON CONFLICT(id) DO UPDATE SET login = excluded.login, name = excluded.name, avatar = excluded.avatar`,
-    ).bind(profile.id, profile.login, profile.name || profile.login, profile.avatar_url || "", Date.now()).run();
+    await env.DB.batch([
+        env.DB.prepare("UPDATE users SET login = login || '~' || id WHERE login = ?1 AND id != ?2").bind(profile.login, profile.id),
+        env.DB.prepare(
+            `INSERT INTO users (id, login, name, avatar, created_at) VALUES (?1, ?2, ?3, ?4, ?5)
+            ON CONFLICT(id) DO UPDATE SET login = excluded.login, name = excluded.name, avatar = excluded.avatar`,
+        ).bind(profile.id, profile.login, profile.name || profile.login, profile.avatar_url || "", Date.now()),
+    ]);
     const expires = Date.now() + number(env.SESSION_DAYS) * DAY;
     return {
         session: await sign({ sub: profile.id, exp: expires }, env),
@@ -219,11 +226,11 @@ async function listPosts(url, env, viewer) {
     const scope = query.get("scope") || "posts";
     if (!["posts", "replies", "likes"].includes(scope)) throw new Failure(400, "request");
     if (parent) add("p.parent_id = ?", integer(parent));
-    else if (scope === "replies") add("p.parent_id IS NOT NULL");
+    else if (scope === "replies") add("p.kind = 'reply'");
     else if (scope === "likes") {
         requireViewer(viewer);
-        add("p.repost_of IS NULL AND p.id IN (SELECT post_id FROM likes WHERE user_id = ?1)");
-    } else add("p.parent_id IS NULL");
+        add("p.kind != 'repost' AND p.id IN (SELECT post_id FROM likes WHERE user_id = ?1)");
+    } else if (!query.get("q")) add("p.kind != 'reply'");
     add("p.user_id NOT IN (SELECT target_id FROM blocks WHERE user_id = ?1) AND p.user_id NOT IN (SELECT user_id FROM blocks WHERE target_id = ?1) AND t.user_id NOT IN (SELECT target_id FROM blocks WHERE user_id = ?1) AND t.user_id NOT IN (SELECT user_id FROM blocks WHERE target_id = ?1)");
     if (query.get("user") && scope !== "likes") add("u.login = ?", query.get("user"));
     else add("p.user_id NOT IN (SELECT target_id FROM mutes WHERE user_id = ?1) AND t.user_id NOT IN (SELECT target_id FROM mutes WHERE user_id = ?1)");
@@ -234,9 +241,14 @@ async function listPosts(url, env, viewer) {
     }
     if (query.get("feed") === "saved") {
         requireViewer(viewer);
-        add("p.repost_of IS NULL AND p.id IN (SELECT post_id FROM saves WHERE user_id = ?1)");
+        add("p.kind != 'repost' AND p.id IN (SELECT post_id FROM saves WHERE user_id = ?1)");
     }
-    if (query.get("q")) add("p.repost_of IS NULL AND p.body LIKE ? ESCAPE '\\'", like(clean(query.get("q"), number(env.POST_MAX))));
+    const text = query.get("q") ? clean(query.get("q"), number(env.POST_MAX)) : "";
+    if (text) {
+        const tag = TAG_ONLY.exec(text);
+        if (tag) add("p.kind != 'repost' AND p.id IN (SELECT post_id FROM hashtags WHERE tag = ?)", tag[1].toLowerCase());
+        else add("p.kind != 'repost' AND p.id IN (SELECT rowid FROM posts_search WHERE posts_search MATCH ?)", searchMatch(text, env));
+    }
     if (cursor) add(parent ? "p.id > ?" : "p.id < ?", cursor);
 
     const order = parent ? "ASC" : "DESC";
@@ -274,7 +286,7 @@ async function createPost(body, env, viewer) {
     const recent = await env.DB.prepare("SELECT COUNT(*) AS total FROM posts WHERE user_id = ?1 AND created_at > ?2").bind(viewer, Date.now() - MINUTE).first();
     if (recent.total >= number(env.POSTS_PER_MINUTE)) throw new Failure(429, "rate");
     const [inserted] = await env.DB.batch([
-        env.DB.prepare("INSERT INTO posts (user_id, parent_id, quote_of, body, created_at) VALUES (?1, ?2, ?5, ?3, ?4) RETURNING id").bind(viewer, parent, text, Date.now(), quote),
+        env.DB.prepare("INSERT INTO posts (kind, user_id, parent_id, quote_of, body, created_at) VALUES (?6, ?1, ?2, ?5, ?3, ?4) RETURNING id").bind(viewer, parent, text, Date.now(), quote, parent !== null ? "reply" : quote !== null ? "quote" : "post"),
         env.DB.prepare("UPDATE posts SET reply_count = (SELECT COUNT(*) FROM posts WHERE parent_id = ?1) WHERE id = ?1").bind(parent ?? 0),
     ]);
     const id = inserted.results[0].id;
@@ -286,7 +298,8 @@ async function createPost(body, env, viewer) {
     if (parentOwner !== null) notices.unshift(notify(env, parentOwner, viewer, "reply", id));
     if (quoteOwner !== null) notices.unshift(notify(env, quoteOwner, viewer, "quote", id));
     const attach = keys.map((key) => env.DB.prepare("UPDATE media SET post_id = ?1 WHERE key = ?2 AND user_id = ?3 AND post_id IS NULL").bind(id, key, viewer));
-    if (notices.length || attach.length) await env.DB.batch([...attach, ...notices]);
+    const tags = tagStatements(env, id, text);
+    if (notices.length || attach.length || tags.length) await env.DB.batch([...attach, ...tags, ...notices]);
     return getPost(env, id, viewer);
 }
 
@@ -335,11 +348,12 @@ async function serveMedia(key, env) {
 
 async function removePost(id, env, viewer) {
     requireViewer(viewer);
-    const row = await env.DB.prepare("SELECT user_id AS userId, parent_id AS parentId FROM posts WHERE id = ?1").bind(id).first();
+    const row = await env.DB.prepare("SELECT user_id AS userId, parent_id AS parentId, body FROM posts WHERE id = ?1").bind(id).first();
     if (!row) throw new Failure(404, "post");
     if (row.userId !== viewer && !isModerator(viewer, env)) throw new Failure(403, "owner");
     const keys = await mediaKeys(env, "SELECT ?1", id);
     await env.DB.batch([
+        ...(row.userId !== viewer ? [env.DB.prepare("INSERT INTO moderation_log (moderator_id, action, post_id, author_id, excerpt, created_at) VALUES (?1, 'delete_post', ?2, ?3, ?4, ?5)").bind(viewer, id, row.userId, row.body.slice(0, number(env.EXCERPT_MAX)), Date.now())] : []),
         env.DB.prepare("DELETE FROM posts WHERE id = ?1").bind(id),
         env.DB.prepare("UPDATE posts SET reply_count = (SELECT COUNT(*) FROM posts WHERE parent_id = ?1) WHERE id = ?1").bind(row.parentId ?? 0),
     ]);
@@ -361,19 +375,23 @@ const unnotify = (env, recipient, actor, kind, postId) => env.DB.prepare(
 
 async function editPost(id, body, env, viewer) {
     requireViewer(viewer);
-    const row = await env.DB.prepare("SELECT user_id AS userId, created_at AS createdAt FROM posts WHERE id = ?1 AND repost_of IS NULL").bind(id).first();
+    const row = await env.DB.prepare("SELECT user_id AS userId, created_at AS createdAt FROM posts WHERE id = ?1 AND kind != 'repost'").bind(id).first();
     if (!row) throw new Failure(404, "post");
     if (row.userId !== viewer) throw new Failure(403, "owner");
     if (Date.now() - row.createdAt > number(env.EDIT_MINUTES) * MINUTE) throw new Failure(403, "window");
     const text = clean(body.body ?? "", number(env.POST_MAX), { multiline: true });
     const image = await env.DB.prepare("SELECT 1 AS found FROM media WHERE post_id = ?1 LIMIT 1").bind(id).first();
     if (!text && !image) throw new Failure(400, "empty");
-    await env.DB.prepare("UPDATE posts SET body = ?2, edited_at = ?3 WHERE id = ?1").bind(id, text, Date.now()).run();
+    await env.DB.batch([
+        env.DB.prepare("UPDATE posts SET body = ?2, edited_at = ?3 WHERE id = ?1").bind(id, text, Date.now()),
+        env.DB.prepare("DELETE FROM hashtags WHERE post_id = ?1").bind(id),
+        ...tagStatements(env, id, text),
+    ]);
     return getPost(env, id, viewer);
 }
 
 const original = async (env, id) => {
-    const found = await env.DB.prepare("SELECT id, user_id AS userId FROM posts WHERE id = ?1 AND repost_of IS NULL").bind(id).first();
+    const found = await env.DB.prepare("SELECT id, user_id AS userId FROM posts WHERE id = ?1 AND kind != 'repost'").bind(id).first();
     if (!found) throw new Failure(404, "post");
     return found;
 };
@@ -407,7 +425,7 @@ async function setRepost(id, on, env, viewer) {
     }
     await env.DB.batch([
         on
-            ? env.DB.prepare("INSERT OR IGNORE INTO posts (user_id, repost_of, body, created_at) VALUES (?1, ?2, '', ?3)").bind(viewer, id, Date.now())
+            ? env.DB.prepare("INSERT OR IGNORE INTO posts (kind, user_id, repost_of, body, created_at) VALUES ('repost', ?1, ?2, '', ?3)").bind(viewer, id, Date.now())
             : env.DB.prepare("DELETE FROM posts WHERE user_id = ?1 AND repost_of = ?2").bind(viewer, id),
         env.DB.prepare("UPDATE posts SET repost_count = (SELECT COUNT(*) FROM posts WHERE repost_of = ?1) WHERE id = ?1").bind(id),
         on ? notify(env, found.userId, viewer, "repost", id) : unnotify(env, found.userId, viewer, "repost", id),
@@ -479,10 +497,10 @@ async function listReports(url, env, viewer) {
     const cursor = url.searchParams.get("cursor") ? integer(url.searchParams.get("cursor")) : 0;
     const { results } = await env.DB.prepare(
         `SELECT r.id, r.reason, r.post_id AS postId, r.created_at AS createdAt, u.login AS reporterLogin, u.name AS reporterName
-        FROM reports r JOIN users u ON u.id = r.reporter_id WHERE (?1 = 0 OR r.id < ?1) ORDER BY r.id DESC LIMIT ${size + 1}`,
+        FROM reports r JOIN users u ON u.id = r.reporter_id WHERE r.status = 'open' AND (?1 = 0 OR r.id < ?1) ORDER BY r.id DESC LIMIT ${size + 1}`,
     ).bind(cursor).all();
     const rows = results.slice(0, size);
-    const found = rows.length ? await env.DB.batch(rows.map((row) => env.DB.prepare(`SELECT ${postColumns} WHERE p.id = ?2 AND p.repost_of IS NULL`).bind(viewer, row.postId))) : [];
+    const found = rows.length ? await env.DB.batch(rows.map((row) => env.DB.prepare(`SELECT ${postColumns} WHERE p.id = ?2 AND p.kind != 'repost'`).bind(viewer, row.postId))) : [];
     const posts = (await hydrate(env, found.map((item) => item.results[0]).filter(Boolean), viewer)).reduce((map, post) => map.set(post.id, post), new Map());
     const reports = rows.filter((row) => posts.has(row.postId)).map((row) => ({
         id: row.id,
@@ -496,7 +514,12 @@ async function listReports(url, env, viewer) {
 
 async function dismissReport(id, env, viewer) {
     requireModerator(viewer, env);
-    await env.DB.prepare("DELETE FROM reports WHERE id = ?1").bind(id).run();
+    const report = await env.DB.prepare("SELECT post_id AS postId FROM reports WHERE id = ?1 AND status = 'open'").bind(id).first();
+    if (!report) throw new Failure(404, "report");
+    await env.DB.batch([
+        env.DB.prepare("UPDATE reports SET status = 'dismissed', resolved_by = ?2, resolved_at = ?3 WHERE id = ?1").bind(id, viewer, Date.now()),
+        env.DB.prepare("INSERT INTO moderation_log (moderator_id, action, post_id, author_id, excerpt, created_at) SELECT ?1, 'dismiss_report', id, user_id, substr(body, 1, ?3), ?4 FROM posts WHERE id = ?2").bind(viewer, report.postId, number(env.EXCERPT_MAX), Date.now()),
+    ]);
     return { dismissed: true };
 }
 
@@ -511,7 +534,7 @@ async function listNotifications(url, env, viewer) {
     ).bind(viewer, cursor).all();
     const rows = results.slice(0, size);
     const withPost = rows.filter((row) => row.postId);
-    const found = withPost.length ? await env.DB.batch(withPost.map((row) => env.DB.prepare(`SELECT ${postColumns} WHERE p.id = ?2 AND p.repost_of IS NULL`).bind(viewer, row.postId))) : [];
+    const found = withPost.length ? await env.DB.batch(withPost.map((row) => env.DB.prepare(`SELECT ${postColumns} WHERE p.id = ?2 AND p.kind != 'repost'`).bind(viewer, row.postId))) : [];
     const posts = (await hydrate(env, found.map((item) => item.results[0]).filter(Boolean), viewer)).reduce((map, post) => map.set(post.id, post), new Map());
     const notifications = rows.map((row) => {
         const post = row.postId ? posts.get(row.postId) ?? null : null;
@@ -575,15 +598,11 @@ async function explore(env, viewer) {
         `SELECT u.id, u.login, u.name, u.avatar, (SELECT COUNT(*) FROM follows WHERE followee_id = u.id) AS score FROM users u
         WHERE 1 = 1 ${known} ${hidden} AND u.id NOT IN (${[0, ...friends.map((row) => row.id)].join(", ")}) ORDER BY score DESC, u.id DESC LIMIT ?2`,
     ).bind(viewer ?? 0, limit - friends.length).all()).results;
-    const since = Date.now() - number(env.TRENDING_DAYS) * DAY;
-    const { results: bodies } = await env.DB.prepare(
-        "SELECT body FROM posts WHERE repost_of IS NULL AND parent_id IS NULL AND created_at > ?1 AND body LIKE '%#%' ORDER BY id DESC LIMIT ?2",
-    ).bind(since, number(env.TRENDING_SCAN)).all();
-    const counts = new Map();
-    for (const row of bodies) {
-        for (const tag of new Set([...row.body.matchAll(HASHTAG)].map((match) => match[0].toLowerCase()))) counts.set(tag, (counts.get(tag) ?? 0) + 1);
-    }
-    const tags = [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, number(env.TRENDING_MAX)).map(([tag, count]) => ({ tag, count }));
+    const { results: trending } = await env.DB.prepare(
+        `SELECT h.tag, COUNT(*) AS uses FROM hashtags h JOIN posts p ON p.id = h.post_id
+        WHERE h.created_at > ?1 AND p.kind IN ('post', 'quote') GROUP BY h.tag ORDER BY uses DESC, h.tag LIMIT ?2`,
+    ).bind(Date.now() - number(env.TRENDING_DAYS) * DAY, number(env.TRENDING_MAX)).all();
+    const tags = trending.map((row) => ({ tag: `#${row.tag}`, count: row.uses }));
     return {
         groups: [
             { id: "suggested", people: [...friends, ...popular].map((row) => ({ login: row.login, name: row.name, avatar: row.avatar })) },

@@ -18,7 +18,7 @@ POST   /posts/:id/report { reason }  tells the moderators about a post
 PUT    /posts/:id/pin                pins the post of the user to the top of their profile (one at a time); DELETE unpins
 GET    /explore                      who to follow (friends of the people the user follows first, then the most followed) and the tags most used in the last TRENDING_DAYS days
 PUT    /posts/:id/save               keeps the post for the user alone (a private list); DELETE removes it
-GET    /users?q=<text>               up to 5 people
+GET    /users?q=<text>               up to PEOPLE_MAX people
 GET    /users/:login/followers       and /following: the people, newest first (cursor=<id>), without those with a block between them and the asker
 GET    /users/:login                 the profile, with its counts and whether the viewer follows it
 PUT    /users/:login/follow          DELETE stops following
@@ -38,6 +38,17 @@ DELETE /me                           deletes the profile, the posts, the likes, 
 - Only the origins of `ALLOWED_ORIGINS` (`wrangler.toml`) may ask. Every query uses bound parameters, and the app writes what it gets with `textContent`, never as HTML.
 - The limits and the other numbers are variables of `wrangler.toml`, not code. `GITHUB_API` is the address of GitHub (it can be changed to try the Worker without GitHub).
 - The posts and the profiles are public, and they are kept in the database of the Cloudflare account of the owner of the site, not in the repository of the user. A user deletes all of theirs with "Delete my data" on their profile (`DELETE /me`).
+
+## The database
+
+One migration, `migrations/0001_init.sql`, makes everything (while nobody depends on the data, the schema is kept as one file; a later change is a new numbered file, and a file that was applied is never edited).
+
+- `posts` holds the four kinds of post in one table, with a `kind` that the database checks: `post`, `reply` (it has a `parent_id`), `repost` (it has a `repost_of` and no text), and `quote` (it has a `quote_of`). CHECK constraints keep the kind and the links in agreement, so a reply without a parent cannot exist. A timeline is the posts that are not replies, a repost is shown with the post that it points to, and `kind != 'repost'` is what "an original post" means everywhere.
+- `hashtags` has one row per post and tag (lowercase, kept in step with the text, also when it is edited). A search for `#tag` is an exact match on it, and the trending tags are a `GROUP BY` of it.
+- `posts_search` is an FTS5 index of the text of the posts, kept by triggers (insert, edit, delete, and the deletes that come from a cascade). The search matches words by their start (`wond` finds `wonderful`, `nderful` does not) and needs all the words; what the user types is quoted, so no character in it is an operator.
+- The counts of likes, replies, and reposts are columns, counted again at each change. `users.pinned_post_id` is the pinned post.
+- `likes`, `saves`, `follows`, `blocks`, `mutes`, `notifications`, `reports`, `moderation_log`, and `media` are the rest. A report has a status (`open` or `dismissed`, with who dismissed it and when) and is never deleted by a dismissal, so the same person cannot open it again; `moderation_log` says who deleted whose post (with the first words of it) and who dismissed which report, and it is read with `npx wrangler d1 execute guyonmu --remote --command "SELECT * FROM moderation_log"`.
+- A login on GitHub can be given to someone else after its owner renames it. When a user signs in with a login that an older account still has, that account is renamed to `<login>~<id>` (it gets its right login at its own next sign-in), so the sign-in never fails.
 
 ## Images
 
@@ -84,5 +95,7 @@ npm run migrate                         # makes the tables
 npx wrangler secret put SESSION_SECRET  # paste a long random text
 npm run deploy
 ```
+
+If a database of an older version of `0001_init.sql` was already made and migrated (the schema was rewritten before the app was opened to anyone), make it again: `npx wrangler d1 delete guyonmu`, then the same steps, with the new `database_id`. Locally, stop `npm run dev`, delete the folder `.wrangler/state`, and run `npm run migrate:local`.
 
 The address that the Worker gets (`https://kancamu-guyonmu.<account>.workers.dev`) is `api.production` in `guyonmu/data.js`. A new file of `migrations/` is applied with `npm run migrate` (never edit one that was already applied).
